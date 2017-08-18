@@ -22,7 +22,6 @@ func UpdateResource(pResource *domain.Resource) bool {
 		oldResource.Email = pResource.Email
 		oldResource.Level = pResource.Level
 		oldResource.Photo = pResource.Photo
-		oldResource.Type = pResource.Type
 		oldResource.Enable = pResource.Enable
 		// TODO Save in DB
 		return true
