@@ -2,19 +2,20 @@ package tool
 
 import (
 	"prm/com.omnicon.prm.service/domain"
-	"prm/com.omnicon.prm.utilities/utils"
+	"prm/com.omnicon.prm.service/util"
 )
 
 func CreateResource(pRequest *domain.CreateResourceRQ) *domain.CreateResourceRS {
-	resource := utils.MappingCreateResource(pRequest)
-	id := utils.GenerateID(resource)
+	resource := util.MappingCreateResource(pRequest)
+	id := util.GenerateID(resource)
 	resource.ID = id
 	// TODO Save in DB
 	response := domain.CreateResourceRS{}
 	return &response
 }
 
-func UpdateResource(pResource *domain.Resource) bool {
+func UpdateResource(pResource *domain.UpdateResourceRQ) *domain.UpdateResourceRS {
+	response := domain.UpdateResourceRS{}
 	oldResource := GetResource(pResource.ID)
 	if oldResource != nil {
 		oldResource.Name = pResource.Name
@@ -24,14 +25,14 @@ func UpdateResource(pResource *domain.Resource) bool {
 		oldResource.Photo = pResource.Photo
 		oldResource.Enable = pResource.Enable
 		// TODO Save in DB
-		return true
 	}
-	return false
+	return &response
 }
 
-func DeleteResource(pResource *domain.Resource) bool {
+func DeleteResource(pResource *domain.DeleteResourceRQ) *domain.DeleteResourceRS {
+	response := domain.DeleteResourceRS{}
 	// TODO Delete in DB
-	return true
+	return &response
 }
 
 func DisableResource(pId string) bool {

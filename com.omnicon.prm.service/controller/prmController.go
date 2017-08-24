@@ -10,3 +10,15 @@ func ProcessCreateResource(pRequest *domain.CreateResourceRQ) *domain.CreateReso
 	// Return response
 	return response
 }
+
+func ProcessUpdateResource(pRequest *domain.UpdateResourceRQ) *domain.UpdateResourceRS {
+	response := tool.UpdateResource(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessDeleteResource(pRequest *domain.DeleteResourceRQ) *domain.DeleteResourceRS {
+	response := tool.DeleteResource(pRequest)
+	// Return response
+	return response
+}
