@@ -215,15 +215,69 @@ func BoolPSQLToBool(pString string) bool {
 	return false
 }
 
+/**
+* Function to mapping create resource request to business entity resource.
+ */
 func MappingCreateResource(pRequest *domain.CreateResourceRQ) *domain.Resource {
-	return new(domain.Resource)
+	resource := new(domain.Resource)
+	resource.Name = pRequest.Name
+	resource.LastName = pRequest.LastName
+	resource.Email = pRequest.Email
+	resource.Photo = pRequest.Photo
+	resource.EngineerRange = pRequest.EngineerRange
+	resource.Enabled = pRequest.Enable
+
+	return resource
 }
 
-func GenerateID(pResource *domain.Resource) string {
-	nameArray := strings.Split(pResource.Name, " ")
-	initials := ""
+/**
+* Function to mapping create project request to business entity project.
+ */
+func MappingCreateProject(pRequest *domain.CreateProjectRQ) *domain.Project {
+	project := new(domain.Project)
+	project.Name = pRequest.Name
+	startDate := new(string)
+	startDate = &pRequest.StartDate
+	endDate := new(string)
+	endDate = &pRequest.EndDate
+	if startDate == nil || endDate == nil || *startDate == "" || *endDate == "" {
+		log.Error("Dates undefined")
+		return nil
+	}
+	startDateInt, endDateInt, err := ConvertirFechasPeticion(startDate, endDate)
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	project.StartDate = time.Unix(startDateInt, 0)
+	project.EndDate = time.Unix(endDateInt, 0)
+	project.Enabled = pRequest.Enable
 
-	initials = string(nameArray[0][0])
+	return project
+}
 
-	return initials + strconv.FormatInt(time.Now().Unix(), 2)
+/**
+* Function to mapping update project request to business entity project.
+ */
+func MappingUpdateProject(pRequest *domain.UpdateProjectRQ) *domain.Project {
+	project := new(domain.Project)
+	project.Name = pRequest.Name
+	startDate := new(string)
+	startDate = &pRequest.StartDate
+	endDate := new(string)
+	endDate = &pRequest.EndDate
+	if startDate == nil || endDate == nil || *startDate == "" || *endDate == "" {
+		log.Error("Dates undefined")
+		return nil
+	}
+	startDateInt, endDateInt, err := ConvertirFechasPeticion(startDate, endDate)
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	project.StartDate = time.Unix(startDateInt, 0)
+	project.EndDate = time.Unix(endDateInt, 0)
+	project.Enabled = pRequest.Enable
+
+	return project
 }

@@ -22,3 +22,21 @@ func ProcessDeleteResource(pRequest *domain.DeleteResourceRQ) *domain.DeleteReso
 	// Return response
 	return response
 }
+
+func ProcessCreateProject(pRequest *domain.CreateProjectRQ) *domain.CreateProjectRS {
+	response := tool.CreateProject(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessUpdateProject(pRequest *domain.UpdateProjectRQ) *domain.UpdateProjectRS {
+	response := tool.UpdateProject(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessDeleteProject(pRequest *domain.DeleteProjectRQ) *domain.DeleteProjectRS {
+	response := tool.DeleteProject(pRequest)
+	// Return response
+	return response
+}

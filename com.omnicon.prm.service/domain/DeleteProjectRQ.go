@@ -1,5 +1,5 @@
 package domain
 
 type DeleteProjectRQ struct {
-	ID string
+	ID int64
 }

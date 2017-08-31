@@ -14,7 +14,7 @@ var (
 	debug          = flag.Bool("debug", true, "enable debugging")
 	password       = flag.String("password", "admin", "the database password")
 	port      *int = flag.Int("port", 1433, "the database port")
-	server         = flag.String("server", "OMNCND5035B29\\SQLEXPRESS", "the database server")
+	server         = flag.String("server", "OMNCND5035B21\\SQLEXPRESS", "the database server")
 	user           = flag.String("user", "admin", "the database user")
 	serverSPN      = flag.String("ServerSPN", "MSSQLSvc/"+*server+":"+strconv.Itoa(*port), "the server SPN label")
 )
@@ -41,24 +41,23 @@ func Connect() *sql.DB {
 		log.Fatal("Open connection failed:", err.Error())
 	}
 	defer conn.Close()
-	/*
-		stmt, err := conn.Prepare("select 1, 'abc'")
-		if err != nil {
-			log.Fatal("Prepare failed:", err.Error())
-		}
-		defer stmt.Close()
+	stmt, err := conn.Prepare("select 1, 'abc'")
+	if err != nil {
+		log.Fatal("Prepare failed:", err.Error())
+	}
+	defer stmt.Close()
 
-		row := stmt.QueryRow()
-		var somenumber int64
-		var somechars string
-		err = row.Scan(&somenumber, &somechars)
-		if err != nil {
-			log.Fatal("Scan failed:", err.Error())
-		}
-		fmt.Printf("somenumber:%d\n", somenumber)
-		fmt.Printf("somechars:%s\n", somechars)
+	row := stmt.QueryRow()
+	var somenumber int64
+	var somechars string
+	err = row.Scan(&somenumber, &somechars)
+	if err != nil {
+		log.Fatal("Scan failed:", err.Error())
+	}
+	fmt.Printf("somenumber:%d\n", somenumber)
+	fmt.Printf("somechars:%s\n", somechars)
 
-		fmt.Printf("bye\n")
-	*/
+	fmt.Printf("bye\n")
+
 	return conn
 }

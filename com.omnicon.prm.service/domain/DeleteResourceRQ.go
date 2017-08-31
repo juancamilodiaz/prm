@@ -1,5 +1,5 @@
 package domain
 
 type DeleteResourceRQ struct {
-	ID string
+	ID int64
 }

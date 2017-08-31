@@ -1,9 +1,9 @@
 package domain
 
 type UpdateProjectRQ struct {
-	ID        string
+	ID        int64
 	Name      string
-	StartDate int64
-	EndDate   int64
+	StartDate string
+	EndDate   string
 	Enable    bool
 }

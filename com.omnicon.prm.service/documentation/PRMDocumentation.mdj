@@ -13943,7 +13943,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFd7KKwL33QqQ4="
 									},
-									"name": "ERDDiagram",
+									"name": "ERDiagram",
 									"visible": true,
 									"defaultDiagram": false,
 									"ownedViews": [

@@ -3,6 +3,6 @@ package domain
 type DeleteProjectRS struct {
 	ID      string
 	Name    string
-	Status  bool
+	Status  string
 	Message string
 }

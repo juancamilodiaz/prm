@@ -1,21 +1,23 @@
 package domain
 
+import "time"
+
 type Resource struct {
-	ID       string
-	Name     string
-	LastName string
-	Email    string
-	Photo    string
-	Level    Level
-	Enable   bool
+	ID            int64  `db:"id"`
+	Name          string `db:"name"`
+	LastName      string `db:"last_name"`
+	Email         string `db:"email"`
+	Photo         string `db:"photo"`
+	EngineerRange string `db:"engineer_range"`
+	Enabled       bool   `db:"enabled"`
 }
 
 type Project struct {
-	ID        string
-	Name      string
-	StartDate int64
-	EndDate   int64
-	Enable    bool
+	ID        int64     `db:"id"`
+	Name      string    `db:"name"`
+	StartDate time.Time `db:"start_date"`
+	EndDate   time.Time `db:"end_date"`
+	Enabled   bool      `db:"enabled"`
 }
 
 type ProjectUsers struct {
@@ -25,5 +27,14 @@ type ProjectUsers struct {
 	ProjectLead   Resource
 }
 
-type Level struct {
+type ResourceSkills struct {
+	ID         int64 `db:"id"`
+	ResourceId int64 `db:"resource_id"`
+	SkillId    int64 `db:"skill_id"`
+	Value      int   `db:"value"`
+}
+
+type Skill struct {
+	ID   int64  `db:"id"`
+	Name string `db:"name"`
 }

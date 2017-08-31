@@ -1,20 +1,20 @@
 package domain
 
 type CreateResourceRS struct {
-	Cabecera *CreateResourceRS_Cabecera
+	Header   *CreateResourceRS_Header
 	Resource *Resource
-	Status   bool
+	Status   string
 	Message  string
 }
 
-type CreateResourceRS_Cabecera struct {
-	TiempoRespuesta string
-	FechaPeticion   string
+type CreateResourceRS_Header struct {
+	ResponseTime string
+	RequestDate  string
 }
 
-func (m *CreateResourceRS) GetCabecera() *CreateResourceRS_Cabecera {
+func (m *CreateResourceRS) GetHeader() *CreateResourceRS_Header {
 	if m != nil {
-		return m.Cabecera
+		return m.Header
 	}
 	return nil
 }

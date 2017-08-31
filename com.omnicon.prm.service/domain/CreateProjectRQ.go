@@ -2,7 +2,7 @@ package domain
 
 type CreateProjectRQ struct {
 	Name      string
-	StartDate int64
-	EndDate   int64
+	StartDate string
+	EndDate   string
 	Enable    bool
 }
