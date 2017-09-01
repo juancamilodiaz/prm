@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"prm/com.omnicon.prm.service/dao"
 	"prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 )
@@ -257,27 +258,39 @@ func MappingCreateProject(pRequest *domain.CreateProjectRQ) *domain.Project {
 }
 
 /**
-* Function to mapping update project request to business entity project.
+* Function to mapping create skill request to business entity project.
  */
-func MappingUpdateProject(pRequest *domain.UpdateProjectRQ) *domain.Project {
-	project := new(domain.Project)
-	project.Name = pRequest.Name
-	startDate := new(string)
-	startDate = &pRequest.StartDate
-	endDate := new(string)
-	endDate = &pRequest.EndDate
-	if startDate == nil || endDate == nil || *startDate == "" || *endDate == "" {
-		log.Error("Dates undefined")
-		return nil
-	}
-	startDateInt, endDateInt, err := ConvertirFechasPeticion(startDate, endDate)
-	if err != nil {
-		log.Error(err)
-		return nil
-	}
-	project.StartDate = time.Unix(startDateInt, 0)
-	project.EndDate = time.Unix(endDateInt, 0)
-	project.Enabled = pRequest.Enable
+func MappingCreateSkill(pRequest *domain.CreateSkillRQ) *domain.Skill {
+	skill := new(domain.Skill)
+	skill.Name = pRequest.Name
+	return skill
+}
 
-	return project
+/**
+* Function to mapping skills in a resource entity.
+ */
+func MappingSkillsInAResource(pResource *domain.Resource, pSkills []*domain.ResourceSkills) {
+	mapSkills := make(map[string]int, len(pSkills))
+	for _, resourceSkill := range pSkills {
+		mapSkills[resourceSkill.Name] = resourceSkill.Value
+	}
+	pResource.Skills = mapSkills
+}
+
+/**
+* Function to mapping resources in a project entity.
+ */
+func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*domain.ProjectResources) {
+	mapResources := make(map[int64]*domain.ResourceAssign, len(pProjectResources))
+	for _, projectResource := range pProjectResources {
+		resourceAssign := domain.ResourceAssign{}
+		resourceAssign.Resource = dao.GetResourceById(projectResource.ResourceId)
+		skills := dao.GetResourceSkillsByResourceId(projectResource.ResourceId)
+		MappingSkillsInAResource(resourceAssign.Resource, skills)
+		resourceAssign.StartDate = projectResource.StartDate
+		resourceAssign.EndDate = projectResource.EndDate
+		resourceAssign.Lead = projectResource.Lead
+		mapResources[projectResource.ID] = &resourceAssign
+	}
+	pProject.ResourceAssign = mapResources
 }

@@ -123,7 +123,7 @@ func UpdateProject(pProject *DOMAIN.Project) (int64, error) {
 	// Close session when ends the method
 	defer session.Close()
 	// Update project in DB
-	q := session.Update("Project").Set(pProject).Where("id = ?", int(pProject.ID))
+	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?", pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled).Where("id = ?", int(pProject.ID))
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)

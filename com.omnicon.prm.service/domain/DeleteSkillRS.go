@@ -1,19 +1,19 @@
 package domain
 
-type DeleteProjectRS struct {
-	Header  *DeleteProjectRS_Header
+type DeleteSkillRS struct {
+	Header  *DeleteSkillRS_Header
 	ID      int64
 	Name    string
 	Status  string
 	Message string
 }
 
-type DeleteProjectRS_Header struct {
+type DeleteSkillRS_Header struct {
 	ResponseTime string
 	RequestDate  string
 }
 
-func (m *DeleteProjectRS) GetHeader() *DeleteProjectRS_Header {
+func (m *DeleteSkillRS) GetHeader() *DeleteSkillRS_Header {
 	if m != nil {
 		return m.Header
 	}

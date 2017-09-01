@@ -50,43 +50,238 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 }
 
 func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
-	/*project := util.MappingCreateProject(pRequest)
-	// Save in DB
-	id, err := dao.AddProject(project)*/
-	// Create response
+	timeResponse := time.Now()
 	response := DOMAIN.UpdateProjectRS{}
-	/*if err != nil || id != 1 {
-		message := "Project wasn't insert"
-		log.Error(message)
-		response.Message = message
-		response.Project = nil
-		response.Status = "Error"
+	oldProject := dao.GetProjectById(pRequest.ID)
+	if oldProject != nil {
+		if pRequest.Name != "" {
+			oldProject.Name = pRequest.Name
+		}
+		if pRequest.StartDate != "" || pRequest.EndDate != "" {
+			startDate := new(string)
+			startDate = &pRequest.StartDate
+			endDate := new(string)
+			endDate = &pRequest.EndDate
+			if startDate == nil || endDate == nil || *startDate == "" || *endDate == "" {
+				log.Error("Dates undefined")
+				return nil
+			}
+			startDateInt, endDateInt, err := util.ConvertirFechasPeticion(startDate, endDate)
+			if err != nil {
+				log.Error(err)
+				return nil
+			}
+			if pRequest.StartDate != "" {
+				oldProject.StartDate = time.Unix(startDateInt, 0)
+			}
+			if pRequest.StartDate != "" {
+				oldProject.EndDate = time.Unix(endDateInt, 0)
+			}
+		}
+		oldProject.Enabled = pRequest.Enabled
+		// Save in DB
+		rowsUpdated, err := dao.UpdateProject(oldProject)
+		if err != nil || rowsUpdated <= 0 {
+			message := "Project wasn't update"
+			log.Error(message)
+			response.Message = message
+			response.Project = nil
+			response.Status = "Error"
+			return &response
+		}
+		// Get Prooject updated
+		project := dao.GetProjectById(pRequest.ID)
+		response.Project = project
+		response.Status = "OK"
+
+		header := new(DOMAIN.UpdateProjectRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
 		return &response
 	}
-	// Get Project inserted
-	project = dao.GetProjectById(id)
-	response.Project = project
-	response.Status = "OK"*/
+
+	message := "Resource wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Project = nil
+	response.Status = "Error"
+
+	header := new(DOMAIN.UpdateProjectRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
 	return &response
 }
 
 func DeleteProject(pRequest *DOMAIN.DeleteProjectRQ) *DOMAIN.DeleteProjectRS {
-	/*project := util.MappingCreateProject(pRequest)
-	// Save in DB
-	id, err := dao.AddProject(project)*/
-	// Create response
+	timeResponse := time.Now()
 	response := DOMAIN.DeleteProjectRS{}
-	/*if err != nil || id != 1 {
-		message := "Project wasn't insert"
-		log.Error(message)
-		response.Message = message
-		response.Project = nil
-		response.Status = "Error"
+	projectToDelete := dao.GetProjectById(pRequest.ID)
+	if projectToDelete != nil {
+		// Delete in DB
+		rowsDeleted, err := dao.DeleteProject(pRequest.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "Project wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+
+		response.ID = projectToDelete.ID
+		response.Name = projectToDelete.Name
+		response.Status = "OK"
+
+		header := new(DOMAIN.DeleteProjectRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
 		return &response
 	}
-	// Get Project inserted
-	project = dao.GetProjectById(id)
-	response.Project = project
-	response.Status = "OK"*/
+
+	message := "Project wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+
+	header := new(DOMAIN.DeleteProjectRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}
+
+func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetResourceToProjectRS {
+	timeResponse := time.Now()
+	response := DOMAIN.SetResourceToProjectRS{}
+	project := dao.GetProjectById(pRequest.ProjectId)
+	if project != nil {
+		// Get Resource in DB
+		resource := dao.GetResourceById(pRequest.ResourceId)
+		if resource != nil {
+			projectResources := DOMAIN.ProjectResources{}
+			projectResources.ResourceId = pRequest.ResourceId
+			projectResources.ProjectId = pRequest.ProjectId
+			startDate := new(string)
+			startDate = &pRequest.StartDate
+			endDate := new(string)
+			endDate = &pRequest.EndDate
+			if startDate == nil || endDate == nil || *startDate == "" || *endDate == "" {
+				log.Error("Dates undefined")
+				return nil
+			}
+			startDateInt, endDateInt, err := util.ConvertirFechasPeticion(startDate, endDate)
+			if err != nil {
+				log.Error(err)
+				return nil
+			}
+			projectResources.StartDate = time.Unix(startDateInt, 0)
+			projectResources.EndDate = time.Unix(endDateInt, 0)
+			projectResources.Lead = pRequest.Lead
+
+			projectResourcesExist := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
+			if projectResourcesExist != nil {
+				if pRequest.ProjectId != 0 {
+					projectResourcesExist.ProjectId = pRequest.ProjectId
+				}
+				if pRequest.ResourceId != 0 {
+					projectResourcesExist.ResourceId = pRequest.ResourceId
+				}
+				if pRequest.StartDate != "" {
+					projectResourcesExist.StartDate = time.Unix(startDateInt, 0)
+				}
+				if pRequest.EndDate != "" {
+					projectResourcesExist.EndDate = time.Unix(endDateInt, 0)
+				}
+				projectResourcesExist.Lead = pRequest.Lead
+				// Call update projectResources operation
+				rowsUpdated, err := dao.UpdateProjectResources(projectResourcesExist)
+				if err != nil || rowsUpdated <= 0 {
+					message := "No Set Resource To Project"
+					log.Error(message)
+					response.Message = message
+					response.Project = nil
+					response.Status = "Error"
+					return &response
+				}
+				// Get ProjectResources inserted
+				projectResourceUpdated := dao.GetProjectResourcesById(projectResourcesExist.ID)
+				if projectResourceUpdated != nil {
+					response.Project = dao.GetProjectById(pRequest.ProjectId)
+					// Get all resources to this project
+					resourcesOfProject := dao.GetProjectResourcesByProjectId(pRequest.ProjectId)
+					// Mapping resources in the project of the response
+					util.MappingResourcesInAProject(response.Project, resourcesOfProject)
+
+					header := new(DOMAIN.SetResourceToProjectRS_Header)
+					header.RequestDate = time.Now().String()
+					responseTime := time.Now().Sub(timeResponse)
+					header.ResponseTime = responseTime.String()
+					response.Header = header
+
+					response.Status = "OK"
+
+					return &response
+				}
+			} else {
+				id, err := dao.AddProjectResources(&projectResources)
+				if err != nil {
+					message := "No Set Resource To Project"
+					log.Error(message)
+					response.Message = message
+					response.Project = nil
+					response.Status = "Error"
+					return &response
+				}
+				// Get ProjectResources inserted
+				projectResourceInserted := dao.GetProjectResourcesById(id)
+				if projectResourceInserted != nil {
+					response.Project = dao.GetProjectById(pRequest.ProjectId)
+					// Get all resources to this project
+					resourcesOfProject := dao.GetProjectResourcesByProjectId(pRequest.ProjectId)
+					// Mapping resources in the project of the response
+					util.MappingResourcesInAProject(response.Project, resourcesOfProject)
+
+					header := new(DOMAIN.SetResourceToProjectRS_Header)
+					header.RequestDate = time.Now().String()
+					responseTime := time.Now().Sub(timeResponse)
+					header.ResponseTime = responseTime.String()
+					response.Header = header
+
+					response.Status = "OK"
+
+					return &response
+				}
+			}
+
+		} else {
+			message := "Resource doesn't exist, plese create it"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+	}
+	message := "Project doesn't exist, plese create it"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	return &response
+
+	header := new(DOMAIN.SetResourceToProjectRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
 	return &response
 }

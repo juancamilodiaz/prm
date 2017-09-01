@@ -27,7 +27,7 @@ var cfgConfig util.Config
 func init() {
 	// Se establece la zona horaria local a UTC para que al utilizar
 	// los metodos de time.Parse o time.Unix cambie la fecha por la diferencia horaria
-	// TODO validar zona horaria por defecto AER-399
+	// TODO validar zona horaria por defecto
 	zona, _ := time.LoadLocation("Europe/Madrid")
 	time.Local = zona
 	//time.Local = time.UTC

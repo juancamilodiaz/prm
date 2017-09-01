@@ -40,3 +40,39 @@ func ProcessDeleteProject(pRequest *domain.DeleteProjectRQ) *domain.DeleteProjec
 	// Return response
 	return response
 }
+
+func ProcessCreateSkill(pRequest *domain.CreateSkillRQ) *domain.CreateSkillRS {
+	response := tool.CreateSkill(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessUpdateSkill(pRequest *domain.UpdateSkillRQ) *domain.UpdateSkillRS {
+	response := tool.UpdateSkill(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessDeleteSkill(pRequest *domain.DeleteSkillRQ) *domain.DeleteSkillRS {
+	response := tool.DeleteSkill(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessSetSkillToResource(pRequest *domain.SetSkillToResourceRQ) *domain.SetSkillToResourceRS {
+	response := tool.SetSkillToResource(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessDeleteSkillToResource(pRequest *domain.DeleteSkillToResourceRQ) *domain.DeleteSkillToResourceRS {
+	response := tool.DeleteSkillToResource(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessSetResourceToProject(pRequest *domain.SetResourceToProjectRQ) *domain.SetResourceToProjectRS {
+	response := tool.SetResourceToProject(pRequest)
+	// Return response
+	return response
+}

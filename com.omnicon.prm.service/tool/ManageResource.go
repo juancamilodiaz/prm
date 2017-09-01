@@ -178,3 +178,146 @@ func ValidateRQ(pResource *DOMAIN.Resource) bool {
 	// TODO Validations here
 	return true
 }
+
+func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillToResourceRS {
+	timeResponse := time.Now()
+	response := DOMAIN.SetSkillToResourceRS{}
+	resource := dao.GetResourceById(pRequest.ResourceId)
+	if resource != nil {
+		// Get Skill in DB
+		skill := dao.GetSkillById(pRequest.SkillId)
+		if skill != nil {
+			resourceSkill := DOMAIN.ResourceSkills{}
+			resourceSkill.ResourceId = pRequest.ResourceId
+			resourceSkill.SkillId = pRequest.SkillId
+			resourceSkill.Name = skill.Name
+			resourceSkill.Value = pRequest.Value
+
+			resourceSkillExist := dao.GetResourceSkillsByResourceIdAndSkillId(pRequest.ResourceId, pRequest.SkillId)
+			if resourceSkillExist != nil {
+				resourceSkillExist.Value = pRequest.Value
+				// Call update resourceSkill operation
+				rowsUpdated, err := dao.UpdateResourceSkills(resourceSkillExist)
+				if err != nil || rowsUpdated <= 0 {
+					message := "No Set Skill To Resource"
+					log.Error(message)
+					response.Message = message
+					response.Resource = nil
+					response.Status = "Error"
+					return &response
+				}
+				// Get ResourceSkill inserted
+				resourceSkillUpdated := dao.GetResourceSkillsById(resourceSkillExist.ID)
+				if resourceSkillUpdated != nil {
+					response.Resource = dao.GetResourceById(pRequest.ResourceId)
+					// Get all skills to this resource
+					skillsOfResource := dao.GetResourceSkillsByResourceId(pRequest.ResourceId)
+					// Mapping skills in the resource of the response
+					util.MappingSkillsInAResource(response.Resource, skillsOfResource)
+
+					header := new(DOMAIN.SetSkillToResourceRS_Header)
+					header.RequestDate = time.Now().String()
+					responseTime := time.Now().Sub(timeResponse)
+					header.ResponseTime = responseTime.String()
+					response.Header = header
+
+					response.Status = "OK"
+
+					return &response
+				}
+			} else {
+				id, err := dao.AddResourceSkills(&resourceSkill)
+				if err != nil {
+					message := "No Set Skill To Resource"
+					log.Error(message)
+					response.Message = message
+					response.Resource = nil
+					response.Status = "Error"
+					return &response
+				}
+				// Get ResourceSkill inserted
+				resourceSkillInserted := dao.GetResourceSkillsById(id)
+				if resourceSkillInserted != nil {
+					response.Resource = dao.GetResourceById(pRequest.ResourceId)
+					// Get all skills to this resource
+					skillsOfResource := dao.GetResourceSkillsByResourceId(pRequest.ResourceId)
+					// Mapping skills in the resource of the response
+					util.MappingSkillsInAResource(response.Resource, skillsOfResource)
+
+					header := new(DOMAIN.SetSkillToResourceRS_Header)
+					header.RequestDate = time.Now().String()
+					responseTime := time.Now().Sub(timeResponse)
+					header.ResponseTime = responseTime.String()
+					response.Header = header
+
+					response.Status = "OK"
+
+					return &response
+				}
+			}
+
+		} else {
+			message := "Skill doesn't exist, plese create it"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+	}
+	message := "Resource doesn't exist, plese create it"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	return &response
+
+	header := new(DOMAIN.SetSkillToResourceRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}
+
+func DeleteSkillToResource(pRequest *DOMAIN.DeleteSkillToResourceRQ) *DOMAIN.DeleteSkillToResourceRS {
+	timeResponse := time.Now()
+	response := DOMAIN.DeleteSkillToResourceRS{}
+	resourceSkill := dao.GetResourceSkillsByResourceIdAndSkillId(pRequest.ResourceId, pRequest.SkillId)
+	if resourceSkill != nil {
+		// Delete in DB
+		rowsDeleted, err := dao.DeleteResourceSkillsByResourceIdAndSkillId(pRequest.ResourceId, pRequest.SkillId)
+		if err != nil || rowsDeleted <= 0 {
+			message := "ResourceSkill wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+
+		response.ID = resourceSkill.ID
+		resource := dao.GetResourceById(resourceSkill.ResourceId)
+		response.ResourceName = resource.Name
+		response.SkillName = resourceSkill.Name
+		response.Status = "OK"
+
+		header := new(DOMAIN.DeleteSkillToResourceRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
+	}
+	message := "ResourceSkill wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+
+	header := new(DOMAIN.DeleteSkillToResourceRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}
