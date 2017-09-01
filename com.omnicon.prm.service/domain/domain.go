@@ -20,7 +20,7 @@ type Project struct {
 	EndDate        time.Time `db:"end_date"`
 	Enabled        bool      `db:"enabled"`
 	ResourceAssign map[int64]*ResourceAssign
-	Lead           Resource
+	Lead           string
 }
 
 type ProjectResources struct {

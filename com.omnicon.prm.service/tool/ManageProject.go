@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"fmt"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -164,6 +165,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	timeResponse := time.Now()
 	response := DOMAIN.SetResourceToProjectRS{}
 	project := dao.GetProjectById(pRequest.ProjectId)
+	fmt.Println("FIRST Project", project)
 	if project != nil {
 		// Get Resource in DB
 		resource := dao.GetResourceById(pRequest.ResourceId)
@@ -216,11 +218,12 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 				// Get ProjectResources inserted
 				projectResourceUpdated := dao.GetProjectResourcesById(projectResourcesExist.ID)
 				if projectResourceUpdated != nil {
-					response.Project = dao.GetProjectById(pRequest.ProjectId)
 					// Get all resources to this project
 					resourcesOfProject := dao.GetProjectResourcesByProjectId(pRequest.ProjectId)
 					// Mapping resources in the project of the response
-					util.MappingResourcesInAProject(response.Project, resourcesOfProject)
+					lead := util.MappingResourcesInAProject(project, resourcesOfProject)
+					project.Lead = lead
+					response.Project = project
 
 					header := new(DOMAIN.SetResourceToProjectRS_Header)
 					header.RequestDate = time.Now().String()
@@ -245,11 +248,12 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 				// Get ProjectResources inserted
 				projectResourceInserted := dao.GetProjectResourcesById(id)
 				if projectResourceInserted != nil {
-					response.Project = dao.GetProjectById(pRequest.ProjectId)
 					// Get all resources to this project
 					resourcesOfProject := dao.GetProjectResourcesByProjectId(pRequest.ProjectId)
 					// Mapping resources in the project of the response
-					util.MappingResourcesInAProject(response.Project, resourcesOfProject)
+					lead := util.MappingResourcesInAProject(project, resourcesOfProject)
+					project.Lead = lead
+					response.Project = project
 
 					header := new(DOMAIN.SetResourceToProjectRS_Header)
 					header.RequestDate = time.Now().String()
@@ -278,6 +282,57 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	return &response
 
 	header := new(DOMAIN.SetResourceToProjectRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}
+
+func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN.DeleteResourceToProjectRS {
+	timeResponse := time.Now()
+	response := DOMAIN.DeleteResourceToProjectRS{}
+	projectResource := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
+	if projectResource != nil {
+		// Delete in DB
+		rowsDeleted, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
+		if err != nil || rowsDeleted <= 0 {
+			message := "ProjectResource wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+
+		response.ID = projectResource.ID
+		project := dao.GetProjectById(projectResource.ProjectId)
+		response.ProjectName = project.Name
+		resource := dao.GetResourceById(projectResource.ResourceId)
+		if resource == nil {
+			message := "Resource is not in DB"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		response.ResourceName = resource.Name
+		response.Status = "OK"
+
+		header := new(DOMAIN.DeleteResourceToProjectRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
+	}
+	message := "ResourceSkill wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+
+	header := new(DOMAIN.DeleteResourceToProjectRS_Header)
 	header.RequestDate = time.Now().String()
 	responseTime := time.Now().Sub(timeResponse)
 	header.ResponseTime = responseTime.String()

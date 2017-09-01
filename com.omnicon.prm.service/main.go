@@ -61,25 +61,7 @@ func main() {
 	log.Info("Frontal HTTP arrancado....")
 	fmt.Println("Escuchando en el puerto: ", cfgConfig.Service.Port)
 	log.Info("Escuchando en el puerto: ", cfgConfig.Service.Port)
-	/*
-		project := dao.GetProjectById(int64(1))
-		fmt.Println("Project Name :", project.Name)
-		project.Name = "PRM"
-		rowsUpdated, err := dao.UpdateProject(project)
-		fmt.Println("Rows updated", rowsUpdated)
-		project = dao.GetProjectById(int64(1))
-		fmt.Println("Project Name :", project.Name)
-		rowsDeleted, err := dao.DeleteProject(int64(1))
-		fmt.Println("Rows deleted", rowsDeleted)
-		projectDeleted := dao.GetProjectById(int64(1))
-		if projectDeleted == nil {
-			fmt.Println("Deleted correctly")
-		}
-		idInserted, err := dao.AddProject(project)
-		fmt.Println("Id inserted", idInserted)
-		projectDeleted = dao.GetProjectById(idInserted)
-		fmt.Println("Project New Name :", projectDeleted.Name)
-	*/
+
 	err := http.ListenAndServe(":"+cfgConfig.Service.Port, nil)
 
 	// Si se produce un error con el listener de la aplicacion, se imprimi- el error

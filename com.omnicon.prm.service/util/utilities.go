@@ -226,7 +226,7 @@ func MappingCreateResource(pRequest *domain.CreateResourceRQ) *domain.Resource {
 	resource.Email = pRequest.Email
 	resource.Photo = pRequest.Photo
 	resource.EngineerRange = pRequest.EngineerRange
-	resource.Enabled = pRequest.Enable
+	resource.Enabled = pRequest.Enabled
 
 	return resource
 }
@@ -252,7 +252,7 @@ func MappingCreateProject(pRequest *domain.CreateProjectRQ) *domain.Project {
 	}
 	project.StartDate = time.Unix(startDateInt, 0)
 	project.EndDate = time.Unix(endDateInt, 0)
-	project.Enabled = pRequest.Enable
+	project.Enabled = pRequest.Enabled
 
 	return project
 }
@@ -280,7 +280,8 @@ func MappingSkillsInAResource(pResource *domain.Resource, pSkills []*domain.Reso
 /**
 * Function to mapping resources in a project entity.
  */
-func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*domain.ProjectResources) {
+func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*domain.ProjectResources) string {
+	var lead string
 	mapResources := make(map[int64]*domain.ResourceAssign, len(pProjectResources))
 	for _, projectResource := range pProjectResources {
 		resourceAssign := domain.ResourceAssign{}
@@ -290,7 +291,12 @@ func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*d
 		resourceAssign.StartDate = projectResource.StartDate
 		resourceAssign.EndDate = projectResource.EndDate
 		resourceAssign.Lead = projectResource.Lead
+		if projectResource.Lead {
+			lead = resourceAssign.Resource.Name
+		}
 		mapResources[projectResource.ID] = &resourceAssign
 	}
 	pProject.ResourceAssign = mapResources
+
+	return lead
 }

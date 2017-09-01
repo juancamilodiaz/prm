@@ -34,6 +34,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/SetSkillToResource", setSkillToResource)
 	http.HandleFunc("/DeleteSkillToResource", deleteSkillToResource)
 	http.HandleFunc("/SetResourceToProject", setResourceToProject)
+	http.HandleFunc("/DeleteResourceToProject", deleteResourceToProject)
 }
 
 /*
@@ -749,7 +750,7 @@ func setResourceToProject(pResponse http.ResponseWriter, pRequest *http.Request)
 
 	//time1 := time.Now()
 
-	log.Info("Proces Set Skill To Resource", message)
+	log.Info("Proces Set Resource To Project", message)
 
 	response := controller.ProcessSetResourceToProject(message)
 
@@ -777,6 +778,67 @@ func setResourceToProject(pResponse http.ResponseWriter, pRequest *http.Request)
 
 	// Send ProcessTime for updating service metrics
 	go func(pResponse *domain.SetResourceToProjectRS) {
+		if pResponse != nil {
+			//TODO Insert code here
+		}
+	}(response)
+}
+
+/*
+Description : Function to delete a resource in a project according to input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func deleteResourceToProject(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	StartTime := time.Now()
+
+	defer panics.CatchPanic("DeleteResourceToProject")
+
+	message := new(domain.DeleteResourceToProjectRQ)
+	accept := pRequest.Header.Get("Accept")
+	//timeUnmarshal := time.Now()
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		json.NewDecoder(pRequest.Body).Decode(&message)
+	}
+
+	if err != nil {
+		log.Error("Error in Unmarshal process", err)
+	}
+
+	//time1 := time.Now()
+
+	log.Info("Proces Delete Resource To Project", message)
+
+	response := controller.ProcessDeleteResourceToProject(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+	}
+
+	//timeMarshal := time.Now()
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		var value []byte
+		var err error
+		if response != nil {
+			value, err = json.Marshal(response)
+		}
+		if err != nil {
+			fmt.Printf("Error Marshalling json: %v", err)
+		}
+		pResponse.Header().Add("Content-Type", "application/json")
+		pResponse.Write(value)
+	}
+
+	processTime := time.Now().Sub(StartTime)
+	log.Info("Process Time:", processTime.String())
+
+	// Send ProcessTime for updating service metrics
+	go func(pResponse *domain.DeleteResourceToProjectRS) {
 		if pResponse != nil {
 			//TODO Insert code here
 		}

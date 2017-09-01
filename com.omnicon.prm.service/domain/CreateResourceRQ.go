@@ -6,5 +6,5 @@ type CreateResourceRQ struct {
 	Email         string
 	Photo         string
 	EngineerRange string
-	Enable        bool
+	Enabled       bool
 }
