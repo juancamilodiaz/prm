@@ -360,6 +360,12 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 					if resourceProject.Lead {
 						project.Lead = resource.Name
 					}
+
+					resourceSkill := dao.GetResourceSkillsByResourceId(resource.ID)
+					if len(resourceSkill) > 0 {
+						util.MappingSkillsInAResource(resource, resourceSkill)
+					}
+
 					resourceAssign := new(DOMAIN.ResourceAssign)
 					resourceAssign.Resource = resource
 					resourceAssign.Lead = resourceProject.Lead
