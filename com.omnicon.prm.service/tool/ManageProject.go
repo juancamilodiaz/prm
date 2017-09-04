@@ -348,6 +348,28 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	projects := dao.GetProjectsByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
 
 	if projects != nil && len(projects) > 0 {
+
+		for _, project := range projects {
+			resourcesProject := dao.GetProjectResourcesByProjectId(project.ID)
+			if len(resourcesProject) > 0 {
+				project.ResourceAssign = make(map[int64]*DOMAIN.ResourceAssign)
+			}
+			for _, resourceProject := range resourcesProject {
+				resource := dao.GetResourceById(resourceProject.ResourceId)
+				if resource != nil {
+					if resourceProject.Lead {
+						project.Lead = resource.Name
+					}
+					resourceAssign := new(DOMAIN.ResourceAssign)
+					resourceAssign.Resource = resource
+					resourceAssign.Lead = resourceProject.Lead
+					resourceAssign.StartDate = resourceProject.StartDate
+					resourceAssign.EndDate = resourceProject.EndDate
+					project.ResourceAssign[resource.ID] = resourceAssign
+				}
+			}
+		}
+
 		response.Projects = projects
 		// Create response
 		response.Status = "OK"
