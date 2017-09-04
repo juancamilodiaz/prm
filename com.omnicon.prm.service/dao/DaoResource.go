@@ -160,6 +160,12 @@ func DeleteResource(pResourceId int64) (int64, error) {
 	return deleteCount, nil
 }
 
+/**
+*	Name : GetResourcesByFilters
+*	Params: pResourceFilters, pEnabled
+*	Return: []*DOMAIN.Resource
+*	Description: Get resources by filters in DB
+ */
 func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) []*DOMAIN.Resource {
 	// Slice to keep all resources
 	resources := []*DOMAIN.Resource{}
