@@ -55,6 +55,7 @@ func GetResourceById(pId int64) *DOMAIN.Resource {
 	err := res.One(&resource)
 	if err != nil {
 		log.Error(err)
+		return nil
 	}
 	return &resource
 }

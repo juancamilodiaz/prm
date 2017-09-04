@@ -330,7 +330,7 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 
 	var resultResources []*DOMAIN.Resource
 
-	if len(resources) == 0 && len(filters.Skills) > 0 {
+	if len(resources) == 0 {
 		resources = dao.GetAllResources()
 	}
 
