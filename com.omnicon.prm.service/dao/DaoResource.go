@@ -2,6 +2,7 @@ package dao
 
 import (
 	"bytes"
+	"strconv"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
@@ -159,7 +160,7 @@ func DeleteResource(pResourceId int64) (int64, error) {
 	return deleteCount, nil
 }
 
-func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource) []*DOMAIN.Resource {
+func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) []*DOMAIN.Resource {
 	// Slice to keep all resources
 	resources := []*DOMAIN.Resource{}
 	result := getResourceCollection().Find()
@@ -191,6 +192,14 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource) []*DOMAIN.Resource
 		}
 		filters.WriteString("engineer_range = '")
 		filters.WriteString(pResourceFilters.EngineerRange)
+		filters.WriteString("'")
+	}
+	if pEnabled != nil {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("enabled = '")
+		filters.WriteString(strconv.FormatBool(*pEnabled))
 		filters.WriteString("'")
 	}
 	if filters.String() != "" {

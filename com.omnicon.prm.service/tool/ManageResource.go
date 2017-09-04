@@ -326,7 +326,7 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetResourcesRS{}
 	filters := util.MappingFilters(pRequest)
-	resources := dao.GetResourcesByFilters(filters)
+	resources := dao.GetResourcesByFilters(filters, pRequest.Enabled)
 
 	var resultResources []*DOMAIN.Resource
 
