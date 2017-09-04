@@ -330,3 +330,33 @@ func MappingFilters(pRequest *domain.GetResourcesRQ) *domain.Resource {
 	}
 	return nil
 }
+
+/**
+* Function to mapping request to get projects in a project entity.
+ */
+func MappingFiltersProject(pRequest *domain.GetProjectsRQ) *domain.Project {
+	if pRequest != nil {
+		filters := domain.Project{}
+
+		if pRequest.Name != nil {
+			filters.Name = *pRequest.Name
+		}
+		if pRequest.StartDate != nil {
+			startDate, err := time.Parse("2006-01-02", *pRequest.StartDate)
+			if err == nil {
+				filters.StartDate = startDate
+			}
+		}
+		if pRequest.EndDate != nil {
+			endDate, err := time.Parse("2006-01-02", *pRequest.EndDate)
+			if err == nil {
+				filters.EndDate = endDate
+			}
+		}
+		if pRequest.Enabled != nil {
+			filters.Enabled = *pRequest.Enabled
+		}
+		return &filters
+	}
+	return nil
+}

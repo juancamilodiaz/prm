@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"bytes"
+	"strconv"
 	"time"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
@@ -155,4 +157,38 @@ func DeleteProject(pProjectId int64) (int64, error) {
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
 	return deleteCount, nil
+}
+
+func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate *string, pEnabled *bool) []*DOMAIN.Project {
+	// Slice to keep all resources
+	projects := []*DOMAIN.Project{}
+	result := getProjectCollection().Find()
+	var filters bytes.Buffer
+	if pProjectFilters.Name != "" {
+		filters.WriteString("name = '")
+		filters.WriteString(pProjectFilters.Name)
+		filters.WriteString("'")
+	}
+	if pStartDate != nil {
+		filters.WriteString("start_date = '")
+		filters.WriteString(*pStartDate)
+		filters.WriteString("'")
+	}
+	if pEndDate != nil {
+		filters.WriteString("end_date = '")
+		filters.WriteString(*pEndDate)
+		filters.WriteString("'")
+	}
+	if pEnabled != nil {
+		filters.WriteString("enabled = '")
+		filters.WriteString(strconv.FormatBool(*pEnabled))
+		filters.WriteString("'")
+	}
+	err := result.Where(filters.String()).All(&projects)
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	return projects
 }

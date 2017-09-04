@@ -88,3 +88,9 @@ func ProcessGetResources(pRequest *domain.GetResourcesRQ) *domain.GetResourcesRS
 	// Return response
 	return response
 }
+
+func ProcessGetProjects(pRequest *domain.GetProjectsRQ) *domain.GetProjectsRS {
+	response := tool.GetProjects(pRequest)
+	// Return response
+	return response
+}

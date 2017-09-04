@@ -340,3 +340,36 @@ func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN
 
 	return &response
 }
+
+func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
+	timeResponse := time.Now()
+	response := DOMAIN.GetProjectsRS{}
+	filters := util.MappingFiltersProject(pRequest)
+	projects := dao.GetProjectsByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
+
+	if projects != nil && len(projects) > 0 {
+		response.Projects = projects
+		// Create response
+		response.Status = "OK"
+
+		header := new(DOMAIN.GetProjectsRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
+	}
+	message := "Projects wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+
+	header := new(DOMAIN.GetProjectsRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}
