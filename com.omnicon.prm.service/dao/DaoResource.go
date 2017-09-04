@@ -29,7 +29,7 @@ func GetAllResources() []*DOMAIN.Resource {
 	// Slice to keep all resources
 	var resources []*DOMAIN.Resource
 	// Add all resources in resources variable
-	err := getResourceCollection().Find().All(resources)
+	err := getResourceCollection().Find().All(&resources)
 	// Close session when ends the method
 	defer session.Close()
 	if err != nil {
@@ -193,10 +193,12 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource) []*DOMAIN.Resource
 		filters.WriteString(pResourceFilters.EngineerRange)
 		filters.WriteString("'")
 	}
-	err := result.Where(filters.String()).All(&resources)
+	if filters.String() != "" {
+		err := result.Where(filters.String()).All(&resources)
 
-	if err != nil {
-		log.Error(err)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 
 	return resources

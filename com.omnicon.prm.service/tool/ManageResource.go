@@ -330,6 +330,10 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 
 	var resultResources []*DOMAIN.Resource
 
+	if len(resources) == 0 && len(filters.Skills) > 0 {
+		resources = dao.GetAllResources()
+	}
+
 	if resources != nil && len(resources) > 0 {
 		// Filter by skills
 		if len(filters.Skills) > 0 {
@@ -341,7 +345,7 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 					for _, skill := range skills {
 						if skill.Name == nameSkill {
 							resourceSkill := dao.GetResourceSkillsByResourceIdAndSkillId(idResource, skill.ID)
-							if resourceSkill.Value >= valueSkill {
+							if resourceSkill != nil && resourceSkill.Value >= valueSkill {
 								resultSkills = append(resultSkills, resourceSkill)
 							}
 						}

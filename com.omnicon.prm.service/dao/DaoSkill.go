@@ -66,7 +66,7 @@ func GetSkillsByName(pName string) []*DOMAIN.Skill {
 	// Slice to keep all skills
 	skills := []*DOMAIN.Skill{}
 	// Filter skills by name
-	res := getSkillCollection().Find().Where("name like %?%", pName)
+	res := getSkillCollection().Find().Where("name  = ?", pName)
 	// Close session when ends the method
 	defer session.Close()
 	// Add all skills in skills variable
