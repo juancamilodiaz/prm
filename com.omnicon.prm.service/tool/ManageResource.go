@@ -321,3 +321,69 @@ func DeleteSkillToResource(pRequest *DOMAIN.DeleteSkillToResourceRQ) *DOMAIN.Del
 
 	return &response
 }
+
+func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.GetResourcesRS{}
+	filters := util.MappingFilters(pRequest)
+	resources := dao.GetResourcesByFilters(filters)
+
+	var resultResources []*DOMAIN.Resource
+
+	if resources != nil && len(resources) > 0 {
+		// Filter by skills
+		if len(filters.Skills) > 0 {
+			for _, resource := range resources {
+				idResource := resource.ID
+				var resultSkills []*DOMAIN.ResourceSkills
+				for nameSkill, valueSkill := range filters.Skills {
+					skills := dao.GetSkillsByName(nameSkill)
+					for _, skill := range skills {
+						if skill.Name == nameSkill {
+							resourceSkill := dao.GetResourceSkillsByResourceIdAndSkillId(idResource, skill.ID)
+							if resourceSkill.Value >= valueSkill {
+								resultSkills = append(resultSkills, resourceSkill)
+							}
+						}
+					}
+				}
+				if len(resultSkills) > 0 {
+					util.MappingSkillsInAResource(resource, resultSkills)
+					resultResources = append(resultResources, resource)
+				}
+			}
+			response.Resources = resultResources
+		} else {
+			for _, resource := range resources {
+				resourceSkill := dao.GetResourceSkillsByResourceId(resource.ID)
+				if len(resourceSkill) > 0 {
+					util.MappingSkillsInAResource(resource, resourceSkill)
+				}
+			}
+			response.Resources = resources
+		}
+
+		// Create response
+		response.Status = "OK"
+
+		header := new(DOMAIN.GetResourcesRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
+	}
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+
+	header := new(DOMAIN.GetResourcesRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}

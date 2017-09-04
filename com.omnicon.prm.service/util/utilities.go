@@ -300,3 +300,33 @@ func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*d
 
 	return lead
 }
+
+/**
+* Function to mapping request to get resources in a resource entity.
+ */
+func MappingFilters(pRequest *domain.GetResourcesRQ) *domain.Resource {
+	if pRequest != nil {
+		filters := domain.Resource{}
+
+		if pRequest.Name != nil {
+			filters.Name = *pRequest.Name
+		}
+		if pRequest.LastName != nil {
+			filters.LastName = *pRequest.LastName
+		}
+		if pRequest.Email != nil {
+			filters.Email = *pRequest.Email
+		}
+		if pRequest.EngineerRange != nil {
+			filters.EngineerRange = *pRequest.EngineerRange
+		}
+		if pRequest.Enabled != nil {
+			filters.Enabled = *pRequest.Enabled
+		}
+		if len(pRequest.Skills) > 0 {
+			filters.Skills = pRequest.Skills
+		}
+		return &filters
+	}
+	return nil
+}

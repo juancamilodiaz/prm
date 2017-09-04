@@ -82,3 +82,9 @@ func ProcessDeleteResourceToProject(pRequest *domain.DeleteResourceToProjectRQ) 
 	// Return response
 	return response
 }
+
+func ProcessGetResources(pRequest *domain.GetResourcesRQ) *domain.GetResourcesRS {
+	response := tool.GetResources(pRequest)
+	// Return response
+	return response
+}

@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"bytes"
+
 	DOMAIN "prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 	"upper.io/db.v3"
@@ -155,4 +157,47 @@ func DeleteResource(pResourceId int64) (int64, error) {
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
 	return deleteCount, nil
+}
+
+func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource) []*DOMAIN.Resource {
+	// Slice to keep all resources
+	resources := []*DOMAIN.Resource{}
+	result := getResourceCollection().Find()
+	var filters bytes.Buffer
+	if pResourceFilters.Name != "" {
+		filters.WriteString("name = '")
+		filters.WriteString(pResourceFilters.Name)
+		filters.WriteString("'")
+	}
+	if pResourceFilters.LastName != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("last_name = '")
+		filters.WriteString(pResourceFilters.LastName)
+		filters.WriteString("'")
+	}
+	if pResourceFilters.Email != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("email = '")
+		filters.WriteString(pResourceFilters.Email)
+		filters.WriteString("'")
+	}
+	if pResourceFilters.EngineerRange != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("engineer_range = '")
+		filters.WriteString(pResourceFilters.EngineerRange)
+		filters.WriteString("'")
+	}
+	err := result.Where(filters.String()).All(&resources)
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	return resources
 }
