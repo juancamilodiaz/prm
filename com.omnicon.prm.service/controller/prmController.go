@@ -94,3 +94,9 @@ func ProcessGetProjects(pRequest *domain.GetProjectsRQ) *domain.GetProjectsRS {
 	// Return response
 	return response
 }
+
+func ProcessGetSkills(pRequest *domain.GetSkillsRQ) *domain.GetSkillsRS {
+	response := tool.GetSkills(pRequest)
+	// Return response
+	return response
+}

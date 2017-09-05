@@ -27,7 +27,7 @@ func GetAllSkills() []*DOMAIN.Skill {
 	// Slice to keep all skills
 	var skills []*DOMAIN.Skill
 	// Add all skills in skills variable
-	err := getSkillCollection().Find().All(skills)
+	err := getSkillCollection().Find().All(&skills)
 	// Close session when ends the method
 	defer session.Close()
 	if err != nil {
