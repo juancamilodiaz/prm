@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"prm/com.omnicon.prm.service/dao"
 	"prm/com.omnicon.prm.service/domain"
+	"prm/com.omnicon.prm.service/util"
 )
 
 func init() {
@@ -28,8 +29,8 @@ func TestCRUDProject(t *testing.T) {
 	assert.NotNil(t, resultCreateProject.Project, "The project is nil.")
 	assert.Equal(t, "OK", resultCreateProject.Status, "The status is not OK")
 	assert.Equal(t, requestCreateProject.Name, resultCreateProject.Project.Name, "The name not changed")
-	assert.Equal(t, requestCreateProject.StartDate, resultCreateProject.Project.StartDate.String(), "The StartDate not changed")
-	assert.Equal(t, requestCreateProject.EndDate, resultCreateProject.Project.EndDate.String(), "The EndDate not changed")
+	assert.Equal(t, requestCreateProject.StartDate, util.GetFechaConFormato(resultCreateProject.Project.StartDate.Unix(), util.DATEFORMAT), "The StartDate not changed")
+	assert.Equal(t, requestCreateProject.EndDate, util.GetFechaConFormato(resultCreateProject.Project.EndDate.Unix(), util.DATEFORMAT), "The EndDate not changed")
 	assert.Equal(t, requestCreateProject.Enabled, resultCreateProject.Project.Enabled, "The Enabled not changed")
 
 	requestUpdateProject := domain.UpdateProjectRQ{}
@@ -47,8 +48,8 @@ func TestCRUDProject(t *testing.T) {
 	assert.NotNil(t, resultUpdateProject.Project, "The project is nil.")
 	assert.Equal(t, "OK", resultUpdateProject.Status, "The status is not OK")
 	assert.Equal(t, requestUpdateProject.Name, resultUpdateProject.Project.Name, "The name not changed")
-	assert.Equal(t, requestUpdateProject.StartDate, resultUpdateProject.Project.StartDate, "The StartDate not changed")
-	assert.Equal(t, requestUpdateProject.EndDate, resultUpdateProject.Project.EndDate, "The EndDate not changed")
+	assert.Equal(t, requestUpdateProject.StartDate, util.GetFechaConFormato(resultUpdateProject.Project.StartDate.Unix(), util.DATEFORMAT), "The StartDate not changed")
+	assert.Equal(t, requestUpdateProject.EndDate, util.GetFechaConFormato(resultUpdateProject.Project.EndDate.Unix(), util.DATEFORMAT), "The EndDate not changed")
 	assert.Equal(t, requestUpdateProject.Enabled, resultUpdateProject.Project.Enabled, "The Enabled not changed")
 
 	requestDeleteProject := domain.DeleteProjectRQ{}

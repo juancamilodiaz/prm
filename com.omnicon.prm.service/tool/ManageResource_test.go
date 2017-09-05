@@ -494,3 +494,36 @@ func TestSetSkillToResourceErrorSkillNotFound(t *testing.T) {
 	assert.Equal(t, "OK", resultDeleteResource.Status, "The status is not OK")
 
 }
+
+func TestSetSkillToResourceErrorResourceNotFound(t *testing.T) {
+
+	setSkillToResource := domain.SetSkillToResourceRQ{}
+	setSkillToResource.ResourceId = int64(0)
+	setSkillToResource.SkillId = int64(0)
+	setSkillToResource.Value = 99
+
+	resultSetSkillToResource := SetSkillToResource(&setSkillToResource)
+
+	assert.NotNil(t, resultSetSkillToResource, "The result is nil.")
+	assert.NotNil(t, resultSetSkillToResource.GetHeader(), "The header of result is nil.")
+	assert.NotEmpty(t, resultSetSkillToResource.Message, "The message is empty.")
+	assert.Nil(t, resultSetSkillToResource.Resource, "The resource is not nil.")
+	assert.Equal(t, "Error", resultSetSkillToResource.Status, "The status is OK")
+
+}
+
+func TestDeleteSkillToResourceErrorResourceNotFound(t *testing.T) {
+
+	deleteSkillToResource := domain.DeleteSkillToResourceRQ{}
+	deleteSkillToResource.ResourceId = int64(0)
+	deleteSkillToResource.SkillId = int64(0)
+
+	resultDeleteSkillToResource := DeleteSkillToResource(&deleteSkillToResource)
+
+	assert.NotNil(t, resultDeleteSkillToResource, "The result is nil.")
+	assert.NotNil(t, resultDeleteSkillToResource.GetHeader(), "The header of result is nil.")
+	assert.NotEmpty(t, resultDeleteSkillToResource.Message, "The message is empty.")
+	assert.Equal(t, "", resultDeleteSkillToResource.ResourceName, "The resource is not nil.")
+	assert.Equal(t, "Error", resultDeleteSkillToResource.Status, "The status is OK")
+
+}
