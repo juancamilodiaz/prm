@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -122,6 +121,7 @@ func TestSetResourceToProject(t *testing.T) {
 	assert.Equal(t, "OK", resultCreateResource.Status, "The status is not OK")
 
 	//////////////////////
+
 	requestSetResourceToProject := new(domain.SetResourceToProjectRQ)
 	requestSetResourceToProject.ProjectId = resultCreateProject.Project.ID
 	requestSetResourceToProject.ResourceId = resultCreateResource.Resource.ID
@@ -136,9 +136,10 @@ func TestSetResourceToProject(t *testing.T) {
 	assert.Empty(t, responseSetResourceToProject.Message, "The message is not empty.")
 	assert.Equal(t, "OK", responseSetResourceToProject.Status, "The status is not OK")
 	assert.NotNil(t, "OK", responseSetResourceToProject.Project, "The project is nil")
-	fmt.Println(*responseSetResourceToProject.Project)
+	assert.Equal(t, responseSetResourceToProject.Project.Name, resultCreateProject.Project.Name)
+	assert.Equal(t, responseSetResourceToProject.Project.Lead, resultCreateResource.Resource.Name)
 
-	/////////////////////
+	//////////////////////
 
 	requestDeleteResourceToProject := new(domain.DeleteResourceToProjectRQ)
 	requestDeleteResourceToProject.ProjectId = resultCreateProject.Project.ID
@@ -150,9 +151,10 @@ func TestSetResourceToProject(t *testing.T) {
 	assert.NotNil(t, responseDeleteResourceToProject.GetHeader(), "The header of result is nil.")
 	assert.Empty(t, responseDeleteResourceToProject.Message, "The message is not empty.")
 	assert.Equal(t, "OK", responseDeleteResourceToProject.Status, "The status is not OK")
-	fmt.Println(responseDeleteResourceToProject.ProjectName, responseDeleteResourceToProject.ResourceName)
+	assert.Equal(t, responseDeleteResourceToProject.ProjectName, resultCreateProject.Project.Name)
+	assert.Equal(t, responseDeleteResourceToProject.ResourceName, resultCreateResource.Resource.Name)
 
-	//////////////////
+	//////////////////////
 
 	requestDeleteResource := domain.DeleteResourceRQ{}
 	requestDeleteResource.ID = resultCreateResource.Resource.ID
