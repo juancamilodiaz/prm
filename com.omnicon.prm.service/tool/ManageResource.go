@@ -260,6 +260,11 @@ func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillT
 			message := "Skill doesn't exist, plese create it"
 			log.Error(message)
 			response.Message = message
+			header := new(DOMAIN.SetSkillToResourceRS_Header)
+			header.RequestDate = time.Now().String()
+			responseTime := time.Now().Sub(timeResponse)
+			header.ResponseTime = responseTime.String()
+			response.Header = header
 			response.Status = "Error"
 			return &response
 		}
@@ -268,7 +273,6 @@ func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillT
 	log.Error(message)
 	response.Message = message
 	response.Status = "Error"
-	return &response
 
 	header := new(DOMAIN.SetSkillToResourceRS_Header)
 	header.RequestDate = time.Now().String()
@@ -326,11 +330,11 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetResourcesRS{}
 	filters := util.MappingFilters(pRequest)
-	resources := dao.GetResourcesByFilters(filters, pRequest.Enabled)
+	resources, filterString := dao.GetResourcesByFilters(filters, pRequest.Enabled)
 
 	var resultResources []*DOMAIN.Resource
 
-	if len(resources) == 0 {
+	if len(resources) == 0 && filterString == "" {
 		resources = dao.GetAllResources()
 	}
 
@@ -381,7 +385,7 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	message := "Resources wasn't found in DB"
 	log.Error(message)
 	response.Message = message
-	response.Status = "Error"
+	response.Status = "OK"
 
 	header := new(DOMAIN.GetResourcesRS_Header)
 	header.RequestDate = time.Now().String()

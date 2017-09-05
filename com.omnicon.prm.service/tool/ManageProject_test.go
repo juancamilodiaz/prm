@@ -16,8 +16,8 @@ func init() {
 func TestCRUDProject(t *testing.T) {
 	requestCreateProject := domain.CreateProjectRQ{}
 	requestCreateProject.Name = "Project Test"
-	requestCreateProject.StartDate = "2017/09/05"
-	requestCreateProject.EndDate = "2017/09/10"
+	requestCreateProject.StartDate = "2017-09-05"
+	requestCreateProject.EndDate = "2017-09-10"
 	requestCreateProject.Enabled = true
 
 	resultCreateProject := CreateProject(&requestCreateProject)
@@ -28,15 +28,15 @@ func TestCRUDProject(t *testing.T) {
 	assert.NotNil(t, resultCreateProject.Project, "The project is nil.")
 	assert.Equal(t, "OK", resultCreateProject.Status, "The status is not OK")
 	assert.Equal(t, requestCreateProject.Name, resultCreateProject.Project.Name, "The name not changed")
-	assert.Equal(t, requestCreateProject.StartDate, resultCreateProject.Project.StartDate, "The StartDate not changed")
-	assert.Equal(t, requestCreateProject.EndDate, resultCreateProject.Project.EndDate, "The EndDate not changed")
+	assert.Equal(t, requestCreateProject.StartDate, resultCreateProject.Project.StartDate.String(), "The StartDate not changed")
+	assert.Equal(t, requestCreateProject.EndDate, resultCreateProject.Project.EndDate.String(), "The EndDate not changed")
 	assert.Equal(t, requestCreateProject.Enabled, resultCreateProject.Project.Enabled, "The Enabled not changed")
 
 	requestUpdateProject := domain.UpdateProjectRQ{}
 	requestUpdateProject.ID = resultCreateProject.Project.ID
 	requestUpdateProject.Name = "Project Test 2"
-	requestUpdateProject.StartDate = "2017/09/10"
-	requestUpdateProject.EndDate = "2017/09/15"
+	requestUpdateProject.StartDate = "2017-09-10"
+	requestUpdateProject.EndDate = "2017-09-15"
 	requestUpdateProject.Enabled = false
 
 	resultUpdateProject := UpdateProject(&requestUpdateProject)

@@ -52,6 +52,7 @@ func GetSkillById(pId int64) *DOMAIN.Skill {
 	err := res.One(&skill)
 	if err != nil {
 		log.Error(err)
+		return nil
 	}
 	return &skill
 }

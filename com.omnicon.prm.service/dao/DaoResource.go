@@ -167,7 +167,7 @@ func DeleteResource(pResourceId int64) (int64, error) {
 *	Return: []*DOMAIN.Resource
 *	Description: Get resources by filters in DB
  */
-func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) []*DOMAIN.Resource {
+func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([]*DOMAIN.Resource, string) {
 	// Slice to keep all resources
 	resources := []*DOMAIN.Resource{}
 	result := getResourceCollection().Find()
@@ -217,5 +217,5 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) []
 		}
 	}
 
-	return resources
+	return resources, filters.String()
 }

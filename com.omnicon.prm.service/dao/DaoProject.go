@@ -56,6 +56,7 @@ func GetProjectById(pId int64) *DOMAIN.Project {
 	err := res.One(&project)
 	if err != nil {
 		log.Error(err)
+		return nil
 	}
 	return &project
 }
