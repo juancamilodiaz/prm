@@ -270,6 +270,13 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			log.Error(message)
 			response.Message = message
 			response.Status = "Error"
+
+			header := new(DOMAIN.SetResourceToProjectRS_Header)
+			header.RequestDate = time.Now().String()
+			responseTime := time.Now().Sub(timeResponse)
+			header.ResponseTime = responseTime.String()
+			response.Header = header
+
 			return &response
 		}
 	}
