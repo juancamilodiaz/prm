@@ -36,7 +36,7 @@ func main() {
 	flag.Parse()
 
 	// Se lee el archivo de configuración del servicio y se parsea en la variable cfgConfig
-	err1 := gcfg.ReadFileInto(&cfgConfig, lib_conf.CONF_PREFIX+"/config.ini")
+	err1 := gcfg.ReadFileInto(&cfgConfig, lib_conf.CONF_PREFIX)
 	if err1 != nil {
 		panic(err1)
 	}
