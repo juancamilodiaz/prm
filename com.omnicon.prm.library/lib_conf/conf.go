@@ -8,14 +8,14 @@ import (
 )
 
 func init() {
-	flag.StringVar(&CONF_PREFIX, "loaderConfig", ".", "Is necessary to spcify the application configuration directory: -loaderConfig ./myconf")
+	flag.StringVar(&CONF_PREFIX, "fileConfig", ".", "Is necessary to spcify the application configuration directory: -fileConfig ./myconf")
 	//flag.Parse()
 	setLoaderConf()
 }
 
 var CONF_PREFIX string = ""
 
-const CONF_PREFIX_NAME = "loaderConfig"
+const CONF_PREFIX_NAME = "fileConfig"
 
 func setLoaderConf() {
 	for _, k := range os.Args {
