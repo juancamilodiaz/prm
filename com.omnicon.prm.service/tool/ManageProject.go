@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -165,7 +164,6 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	timeResponse := time.Now()
 	response := DOMAIN.SetResourceToProjectRS{}
 	project := dao.GetProjectById(pRequest.ProjectId)
-	fmt.Println("FIRST Project", project)
 	if project != nil {
 		// Get Resource in DB
 		resource := dao.GetResourceById(pRequest.ResourceId)
