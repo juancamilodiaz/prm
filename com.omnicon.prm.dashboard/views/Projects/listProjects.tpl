@@ -122,8 +122,8 @@
 	 	{{range $key, $project := .Projects}}
 		<tr>
 			<td>{{$project.Name}}</td>
-			<td>{{$project.StartDate}}</td>
-			<td>{{$project.EndDate}}</td>
+			<td>{{dateformat $project.StartDate "2006-01-02"}}</td>
+			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
 			<td>{{$project.Enabled}}</td>
 			<td>
 				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick="$('#projectID').val({{$project.ID}};" >Update</button>

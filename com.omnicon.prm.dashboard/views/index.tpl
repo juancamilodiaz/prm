@@ -83,7 +83,7 @@
 		<div class="content container-fluid" id="content" ng-bind-html="content">
 		</div>
 		<div id="ImagesHidden">
-			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 400px;" src="/img/loading.gif"></div>
+			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px;" src="/img/loading.gif"></div>
 		</div>
 	</div>
 	
