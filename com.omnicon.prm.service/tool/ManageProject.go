@@ -10,10 +10,21 @@ import (
 )
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
+
 	timeResponse := time.Now()
-	project := util.MappingCreateProject(pRequest)
 	// Create response
 	response := DOMAIN.CreateProjectRS{}
+
+	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, true)
+	if !isValid {
+		response.Message = message
+		response.Project = nil
+		response.Status = "Error"
+		return &response
+	}
+
+	project := util.MappingCreateProject(pRequest)
+
 	if project != nil {
 		// Save in DB
 		id, err := dao.AddProject(project)
@@ -41,7 +52,7 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 	response.Project = nil
 	response.Status = "Error"
 
-	message := "Error in creation of project"
+	message = "Error in creation of project"
 	log.Error(message)
 	response.Message = message
 
@@ -56,6 +67,15 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 	timeResponse := time.Now()
 	response := DOMAIN.UpdateProjectRS{}
+
+	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
+	if !isValid {
+		response.Message = message
+		response.Project = nil
+		response.Status = "Error"
+		return &response
+	}
+
 	oldProject := dao.GetProjectById(pRequest.ID)
 	if oldProject != nil {
 		if pRequest.Name != "" {
@@ -107,7 +127,7 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 		return &response
 	}
 
-	message := "Resource wasn't found in DB"
+	message = "Resource wasn't found in DB"
 	log.Error(message)
 	response.Message = message
 	response.Project = nil
@@ -167,6 +187,15 @@ func DeleteProject(pRequest *DOMAIN.DeleteProjectRQ) *DOMAIN.DeleteProjectRS {
 func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetResourceToProjectRS {
 	timeResponse := time.Now()
 	response := DOMAIN.SetResourceToProjectRS{}
+
+	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
+	if !isValid {
+		response.Message = message
+		response.Project = nil
+		response.Status = "Error"
+		return &response
+	}
+
 	project := dao.GetProjectById(pRequest.ProjectId)
 	if project != nil {
 		// Get Resource in DB
@@ -284,7 +313,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			return &response
 		}
 	}
-	message := "Project doesn't exist, plese create it"
+	message = "Project doesn't exist, plese create it"
 	log.Error(message)
 	response.Message = message
 	response.Status = "Error"
@@ -352,6 +381,15 @@ func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN
 func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetProjectsRS{}
+
+	isValid, message := util.ValidateDates(pRequest.StartDate, pRequest.EndDate)
+	if !isValid {
+		response.Message = message
+		response.Project = nil
+		response.Status = "Error"
+		return &response
+	}
+
 	filters := util.MappingFiltersProject(pRequest)
 	projects, filterString := dao.GetProjectsByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
 
