@@ -382,10 +382,9 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetProjectsRS{}
 
-	isValid, message := util.ValidateDates(pRequest.StartDate, pRequest.EndDate)
+	isValid, message := util.ValidateDates(pRequest.StartDate, pRequest.EndDate, false)
 	if !isValid {
 		response.Message = message
-		response.Project = nil
 		response.Status = "Error"
 		return &response
 	}
@@ -438,7 +437,7 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 
 		return &response
 	}
-	message := "Projects wasn't found in DB"
+	message = "Projects wasn't found in DB"
 	log.Error(message)
 	response.Message = message
 	response.Status = "Error"
