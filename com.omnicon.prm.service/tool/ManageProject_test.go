@@ -141,6 +141,25 @@ func TestSetResourceToProject(t *testing.T) {
 
 	//////////////////////
 
+	requestGetProjects := new(domain.GetProjectsRQ)
+	requestGetProjects.Name = &requestCreateProject.Name
+	resultGetProjects := GetProjects(requestGetProjects)
+
+	assert.NotNil(t, resultGetProjects, "The result is nil.")
+	assert.NotNil(t, resultGetProjects.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, resultGetProjects.Message, "The message is not empty.")
+	if assert.Len(t, resultGetProjects.Projects, 1, "The project list is empty.") {
+		assert.Equal(t, requestCreateProject.Name, resultGetProjects.Projects[0].Name, "The name not changed")
+		assert.Equal(t, requestCreateProject.StartDate, util.GetFechaConFormato(resultGetProjects.Projects[0].StartDate.Unix(), util.DATEFORMAT), "The StartDate not changed")
+		assert.Equal(t, requestCreateProject.EndDate, util.GetFechaConFormato(resultGetProjects.Projects[0].EndDate.Unix(), util.DATEFORMAT), "The EndDate not changed")
+		assert.Equal(t, requestCreateProject.Enabled, resultGetProjects.Projects[0].Enabled, "The Enabled not changed")
+		if assert.Len(t, resultGetProjects.Projects[0].ResourceAssign, 1, "The resource map is empty.") {
+			assert.NotNil(t, requestCreateProject.Enabled, resultGetProjects.Projects[0].ResourceAssign[resultCreateResource.Resource.ID].Resource)
+			assert.Len(t, resultGetProjects.Projects[0].ResourceAssign[resultCreateResource.Resource.ID].Resource.Skills, 1)
+		}
+	}
+	assert.Equal(t, "OK", resultGetProjects.Status, "The status is not OK")
+
 	requestDeleteResourceToProject := new(domain.DeleteResourceToProjectRQ)
 	requestDeleteResourceToProject.ProjectId = resultCreateProject.Project.ID
 	requestDeleteResourceToProject.ResourceId = resultCreateResource.Resource.ID
