@@ -256,7 +256,7 @@ func TestUpdateResourceToProject(t *testing.T) {
 	assert.Equal(t, "OK", responseSetResourceToProject.Status, "The status is not OK")
 	assert.NotNil(t, "OK", responseSetResourceToProject.Project, "The project is nil")
 	assert.Equal(t, responseSetResourceToProject.Project.Name, resultCreateProject.Project.Name)
-	assert.Equal(t, responseSetResourceToProject.Project.Lead, resultCreateResource.Resource.Name)
+	assert.Equal(t, "", responseSetResourceToProject.Project.Lead)
 
 	//////////////////////
 
