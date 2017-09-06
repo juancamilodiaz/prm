@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -138,8 +137,13 @@ func DeleteSkill(pRequest *DOMAIN.DeleteSkillRQ) *DOMAIN.DeleteSkillRS {
 func GetSkills(pRequest *DOMAIN.GetSkillsRQ) *DOMAIN.GetSkillsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetSkillsRS{}
-	skills := dao.GetAllSkills()
-	fmt.Println("SKILLS", skills)
+
+	var skills []*DOMAIN.Skill
+	if pRequest.Name == nil {
+		skills = dao.GetAllSkills()
+	} else {
+		skills = dao.GetSkillsByName(*pRequest.Name)
+	}
 	if skills != nil && len(skills) > 0 {
 
 		response.Skills = skills
@@ -153,17 +157,18 @@ func GetSkills(pRequest *DOMAIN.GetSkillsRQ) *DOMAIN.GetSkillsRS {
 		response.Header = header
 
 		return &response
+	} else {
+		message := "Skills wasn't found in DB"
+		log.Error(message)
+		response.Message = message
+		response.Status = "Error"
+
+		header := new(DOMAIN.GetSkillsRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
 	}
-	message := "Skills wasn't found in DB"
-	log.Error(message)
-	response.Message = message
-	response.Status = "Error"
-
-	header := new(DOMAIN.GetSkillsRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
-
-	return &response
 }
