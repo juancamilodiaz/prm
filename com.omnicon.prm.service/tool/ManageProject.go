@@ -39,7 +39,11 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 		return &response
 	}
 	response.Project = nil
-	response.Status = "ERROR"
+	response.Status = "Error"
+
+	message := "Error in creation of project"
+	log.Error(message)
+	response.Message = message
 
 	header := new(DOMAIN.CreateProjectRS_Header)
 	header.RequestDate = time.Now().String()
@@ -284,7 +288,6 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	log.Error(message)
 	response.Message = message
 	response.Status = "Error"
-	return &response
 
 	header := new(DOMAIN.SetResourceToProjectRS_Header)
 	header.RequestDate = time.Now().String()

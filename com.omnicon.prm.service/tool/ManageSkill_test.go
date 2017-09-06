@@ -142,3 +142,17 @@ func TestGetSkills(t *testing.T) {
 	assert.NotEqual(t, 0, len(resultGetSkills.Skills), "The skills are 0.")
 	assert.Equal(t, "OK", resultGetSkills.Status, "The status is Error")
 }
+
+func TestGetSkillsByName(t *testing.T) {
+	requestGetSkills := domain.GetSkillsRQ{}
+	name := "Skill Test"
+	requestGetSkills.Name = &name
+
+	resultGetSkills := GetSkills(&requestGetSkills)
+
+	assert.NotNil(t, resultGetSkills, "The result is nil.")
+	assert.NotNil(t, resultGetSkills.GetHeader(), "The header of result is nil.")
+	assert.NotEmpty(t, resultGetSkills.Message, "The message is empty.")
+	assert.Len(t, resultGetSkills.Skills, 0, "The skills are not empty.")
+	assert.Equal(t, "Error", resultGetSkills.Status, "The status is Error")
+}
