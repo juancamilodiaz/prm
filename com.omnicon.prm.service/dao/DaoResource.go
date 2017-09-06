@@ -172,6 +172,11 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([
 	resources := []*DOMAIN.Resource{}
 	result := getResourceCollection().Find()
 	var filters bytes.Buffer
+	if pResourceFilters.ID != 0 {
+		filters.WriteString("id = '")
+		filters.WriteString(strconv.FormatInt(pResourceFilters.ID, 10))
+		filters.WriteString("'")
+	}
 	if pResourceFilters.Name != "" {
 		filters.WriteString("name = '")
 		filters.WriteString(pResourceFilters.Name)

@@ -165,6 +165,11 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 	projects := []*DOMAIN.Project{}
 	result := getProjectCollection().Find()
 	var filters bytes.Buffer
+	if pProjectFilters.ID != 0 {
+		filters.WriteString("id = '")
+		filters.WriteString(strconv.FormatInt(pProjectFilters.ID, 10))
+		filters.WriteString("'")
+	}
 	if pProjectFilters.Name != "" {
 		filters.WriteString("name = '")
 		filters.WriteString(pProjectFilters.Name)
