@@ -180,12 +180,12 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		filters.WriteString("'")
 	}
 	if pStartDate != nil {
-		filters.WriteString("start_date = '")
+		filters.WriteString("start_date <= '")
 		filters.WriteString(*pStartDate)
 		filters.WriteString("'")
 	}
 	if pEndDate != nil {
-		filters.WriteString("end_date = '")
+		filters.WriteString("end_date >= '")
 		filters.WriteString(*pEndDate)
 		filters.WriteString("'")
 	}
