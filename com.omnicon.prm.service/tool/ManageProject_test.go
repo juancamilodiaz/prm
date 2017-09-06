@@ -435,6 +435,18 @@ func TestGetProjectWithResourcesAndSkills(t *testing.T) {
 	assert.Equal(t, resultCreateSkill.Skill.Name, resultDeleteSkillToResource.SkillName, "The name is not the same")
 	assert.Equal(t, "OK", resultDeleteSkillToResource.Status, "The status is not OK")
 
+	requestDeleteSkill := domain.DeleteSkillRQ{}
+	requestDeleteSkill.ID = resultCreateSkill.Skill.ID
+
+	resultDeleteSkill := DeleteSkill(&requestDeleteSkill)
+
+	assert.NotNil(t, resultDeleteSkill, "The result is nil.")
+	assert.NotNil(t, resultDeleteSkill.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, resultDeleteSkill.Message, "The message is not empty.")
+	assert.Equal(t, resultCreateSkill.Skill.ID, resultDeleteSkill.ID, "The id is not the same")
+	assert.Equal(t, resultCreateSkill.Skill.Name, resultDeleteSkill.Name, "The name is not the same")
+	assert.Equal(t, "OK", resultDeleteSkill.Status, "The status is Error")
+
 	requestDeleteResource := domain.DeleteResourceRQ{}
 	requestDeleteResource.ID = resultCreateResource.Resource.ID
 
