@@ -306,7 +306,7 @@ func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*d
 /**
 * Function to mapping request to get resources in a resource entity.
  */
-func MappingFilters(pRequest *domain.GetResourcesRQ) *domain.Resource {
+func MappingFiltersResource(pRequest *domain.GetResourcesRQ) *domain.Resource {
 	if pRequest != nil {
 		filters := domain.Resource{}
 
@@ -363,6 +363,24 @@ func MappingFiltersProject(pRequest *domain.GetProjectsRQ) *domain.Project {
 		}
 		if pRequest.Enabled != nil {
 			filters.Enabled = *pRequest.Enabled
+		}
+		return &filters
+	}
+	return nil
+}
+
+/**
+* Function to mapping request to get skills in a Skill entity.
+ */
+func MappingFiltersSkill(pRequest *domain.GetSkillsRQ) *domain.Skill {
+	if pRequest != nil {
+		filters := domain.Skill{}
+
+		if pRequest.ID != nil {
+			filters.ID = *pRequest.ID
+		}
+		if pRequest.Name != nil {
+			filters.Name = *pRequest.Name
 		}
 		return &filters
 	}

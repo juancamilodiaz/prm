@@ -160,10 +160,14 @@ func DeleteProject(pProjectId int64) (int64, error) {
 	return deleteCount, nil
 }
 
-func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate *string, pEnabled *bool) []*DOMAIN.Project {
+func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate *string, pEnabled *bool) ([]*DOMAIN.Project, string) {
 	// Slice to keep all resources
 	projects := []*DOMAIN.Project{}
 	result := getProjectCollection().Find()
+
+	// Close session when ends the method
+	defer session.Close()
+
 	var filters bytes.Buffer
 	if pProjectFilters.ID != 0 {
 		filters.WriteString("id = '")
@@ -196,5 +200,5 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		log.Error(err)
 	}
 
-	return projects
+	return projects, filters.String()
 }

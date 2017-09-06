@@ -329,7 +329,7 @@ func DeleteSkillToResource(pRequest *DOMAIN.DeleteSkillToResourceRQ) *DOMAIN.Del
 func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetResourcesRS{}
-	filters := util.MappingFilters(pRequest)
+	filters := util.MappingFiltersResource(pRequest)
 	resources, filterString := dao.GetResourcesByFilters(filters, pRequest.Enabled)
 
 	var resultResources []*DOMAIN.Resource

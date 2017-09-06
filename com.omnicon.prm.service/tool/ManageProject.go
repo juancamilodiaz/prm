@@ -353,7 +353,11 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetProjectsRS{}
 	filters := util.MappingFiltersProject(pRequest)
-	projects := dao.GetProjectsByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
+	projects, filterString := dao.GetProjectsByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
+
+	if len(projects) == 0 && filterString == "" {
+		projects = dao.GetAllProjects()
+	}
 
 	if projects != nil && len(projects) > 0 {
 

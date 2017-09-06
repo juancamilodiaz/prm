@@ -171,6 +171,10 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([
 	// Slice to keep all resources
 	resources := []*DOMAIN.Resource{}
 	result := getResourceCollection().Find()
+
+	// Close session when ends the method
+	defer session.Close()
+
 	var filters bytes.Buffer
 	if pResourceFilters.ID != 0 {
 		filters.WriteString("id = '")

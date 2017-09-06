@@ -1,6 +1,9 @@
 package dao
 
 import (
+	"bytes"
+	"strconv"
+
 	DOMAIN "prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 	"upper.io/db.v3"
@@ -76,6 +79,41 @@ func GetSkillsByName(pName string) []*DOMAIN.Skill {
 		log.Error(err)
 	}
 	return skills
+}
+
+/**
+*	Name : GetSkillsByFilters
+*	Params: pName
+*	Return: []*DOMAIN.Skill
+*	Description: Get a slice of skill with a name in a skill table
+ */
+func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
+	// Slice to keep all skills
+	skills := []*DOMAIN.Skill{}
+	// Filter skills by name
+	result := getSkillCollection().Find()
+
+	// Close session when ends the method
+	defer session.Close()
+
+	var filters bytes.Buffer
+	if pSkillFilters.ID != 0 {
+		filters.WriteString("id = '")
+		filters.WriteString(strconv.FormatInt(pSkillFilters.ID, 10))
+		filters.WriteString("'")
+	}
+	if pSkillFilters.Name != "" {
+		filters.WriteString("name = '")
+		filters.WriteString(pSkillFilters.Name)
+		filters.WriteString("'")
+	}
+
+	// Add all skills in skills variable
+	err := result.Where(filters.String()).All(&skills)
+	if err != nil {
+		log.Error(err)
+	}
+	return skills, filters.String()
 }
 
 /**
