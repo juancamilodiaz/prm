@@ -343,6 +343,9 @@ func MappingFiltersProject(pRequest *domain.GetProjectsRQ) *domain.Project {
 	if pRequest != nil {
 		filters := domain.Project{}
 
+		if pRequest.ID != nil {
+			filters.ID = *pRequest.ID
+		}
 		if pRequest.Name != nil {
 			filters.Name = *pRequest.Name
 		}
