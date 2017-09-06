@@ -131,6 +131,18 @@ func TestDeleteSkillNotFoundError(t *testing.T) {
 }
 
 func TestGetSkills(t *testing.T) {
+	requestCreateSkill := domain.CreateSkillRQ{}
+	requestCreateSkill.Name = "Test Skill"
+
+	resultCreateSkill := CreateSkill(&requestCreateSkill)
+
+	assert.NotNil(t, resultCreateSkill, "The result is nil.")
+	assert.NotNil(t, resultCreateSkill.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, resultCreateSkill.Message, "The message is not empty.")
+	assert.NotNil(t, resultCreateSkill.Skill, "The skill is nil.")
+	assert.Equal(t, "Test Skill", resultCreateSkill.Skill.Name, "The name is not the same")
+	assert.Equal(t, "OK", resultCreateSkill.Status, "The status is Error")
+
 	requestGetSkills := domain.GetSkillsRQ{}
 
 	resultGetSkills := GetSkills(&requestGetSkills)
@@ -141,6 +153,18 @@ func TestGetSkills(t *testing.T) {
 	assert.NotNil(t, resultGetSkills.Skills, "The skills are nil.")
 	assert.NotEqual(t, 0, len(resultGetSkills.Skills), "The skills are 0.")
 	assert.Equal(t, "OK", resultGetSkills.Status, "The status is Error")
+
+	requestDeleteSkill := domain.DeleteSkillRQ{}
+	requestDeleteSkill.ID = resultCreateSkill.Skill.ID
+
+	resultDeleteSkill := DeleteSkill(&requestDeleteSkill)
+
+	assert.NotNil(t, resultDeleteSkill, "The result is nil.")
+	assert.NotNil(t, resultDeleteSkill.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, resultDeleteSkill.Message, "The message is not empty.")
+	assert.Equal(t, resultCreateSkill.Skill.ID, resultDeleteSkill.ID, "The id is not the same")
+	assert.Equal(t, resultCreateSkill.Skill.Name, resultDeleteSkill.Name, "The name is not the same")
+	assert.Equal(t, "OK", resultDeleteSkill.Status, "The status is Error")
 }
 
 func TestGetSkillsByName(t *testing.T) {
