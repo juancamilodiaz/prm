@@ -310,6 +310,9 @@ func MappingFilters(pRequest *domain.GetResourcesRQ) *domain.Resource {
 	if pRequest != nil {
 		filters := domain.Resource{}
 
+		if pRequest.ID != nil {
+			filters.ID = *pRequest.ID
+		}
 		if pRequest.Name != nil {
 			filters.Name = *pRequest.Name
 		}
