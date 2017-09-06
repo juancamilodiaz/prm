@@ -22,4 +22,10 @@ func init() {
 	beego.Router("/projects/read", &controllers.MainController{}, "post:ReadProject")
 	beego.Router("/projects/update", &controllers.MainController{}, "post:UpdateProject")
 	beego.Router("/projects/delete", &controllers.MainController{}, "post:DeleteProject")
+	// Skills
+	beego.Router("/skills", &controllers.MainController{}, "post:ListSkills")
+	beego.Router("/skills/create", &controllers.MainController{}, "post:CreateSkill")
+	beego.Router("/skills/read", &controllers.MainController{}, "post:ReadSkill")
+	beego.Router("/skills/update", &controllers.MainController{}, "post:UpdateSkill")
+	beego.Router("/skills/delete", &controllers.MainController{}, "post:DeleteSkill")
 }

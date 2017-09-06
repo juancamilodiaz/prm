@@ -87,6 +87,8 @@ input{
   background-color: #005C8A;
   color: white;
   font-weight: bold;
+  padding-left: 4;
+  border-radius: 6px;
 }
 /* Menu */
 #NavMenuButton{

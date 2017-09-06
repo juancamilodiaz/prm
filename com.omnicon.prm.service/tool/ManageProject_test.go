@@ -481,14 +481,13 @@ func TestGetProjectWithResourcesAndSkills(t *testing.T) {
 func TestCreateProjectErrorMapping(t *testing.T) {
 	requestCreateProject := domain.CreateProjectRQ{}
 	requestCreateProject.Name = "Project Test"
-	requestCreateProject.StartDate = ""
-	requestCreateProject.EndDate = ""
+	requestCreateProject.StartDate = "20017-08-09"
+	requestCreateProject.EndDate = "20017-08-09"
 	requestCreateProject.Enabled = false
 
 	resultCreateProject := CreateProject(&requestCreateProject)
 
 	assert.NotNil(t, resultCreateProject, "The result is nil.")
-	assert.NotNil(t, resultCreateProject.GetHeader(), "The header of result is nil.")
 	assert.NotEmpty(t, resultCreateProject.Message, "The message is empty.")
 	assert.Nil(t, resultCreateProject.Project, "The resource is not nil.")
 	assert.Equal(t, "Error", resultCreateProject.Status, "The status is not Error")
@@ -601,6 +600,8 @@ func TestDeleteResourceToProjectNotExist(t *testing.T) {
 func TestGetProjectNotExist(t *testing.T) {
 
 	requestGetProjects := new(domain.GetProjectsRQ)
+	projectId := int64(999999999999999)
+	requestGetProjects.ID = &projectId
 
 	responseGetProjects := GetProjects(requestGetProjects)
 
