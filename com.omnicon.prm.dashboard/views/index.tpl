@@ -73,6 +73,9 @@
 			<ul>
 				<li><a ng-click="link('resources')">Resources</a></li>
 			</ul>
+			<ul>
+				<li><a ng-click="link('projects')">Projects</a></li>
+			</ul>
 		</div>
 		<div class="content container-fluid" id="content" ng-bind-html="content">
 		</div>

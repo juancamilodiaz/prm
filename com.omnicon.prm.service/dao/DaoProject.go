@@ -31,7 +31,7 @@ func GetAllProjects() []*DOMAIN.Project {
 	// Slice to keep all projects
 	var projects []*DOMAIN.Project
 	// Add all projects in projects variable
-	err := getProjectCollection().Find().All(projects)
+	err := getProjectCollection().Find().All(&projects)
 	// Close session when ends the method
 	defer session.Close()
 	if err != nil {
