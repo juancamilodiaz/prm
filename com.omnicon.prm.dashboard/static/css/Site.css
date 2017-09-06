@@ -1,0 +1,147 @@
+/* Body */
+#BodyPlaceHolder{
+	position: absolute;
+  top:50px;
+  bottom:50px;
+  width:100%;
+  display:flex;
+}
+.control-group {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border: 2px solid #aaaaaa;
+}
+#div2 {
+  width: 350px;
+  height: 70px;
+  
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+}
+.container {
+  position: absolute;
+  top: 50px;
+  width: 100%;
+}
+.content{
+  width:100%;
+  overflow-y: auto;
+  margin:10px;
+}
+#ImagesHidden{
+	display:none;
+}
+/* Header */
+#HeaderPlaceHolder{
+	height:50px;
+  display:block;
+  background-color: #2F4350;
+  width: 100%;
+  z-index: 10;
+  position:fixed;
+}
+.NavItem{
+	display: inline-block;
+  vertical-align: top;
+}
+#NavMenuButton
+{
+	display: block;
+  vertical-align: middle;
+  border-width: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 50px;
+  height: 50px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: normal;
+  overflow: visible;
+  cursor: pointer;
+  outline-offset: -1px;
+  background-color:#005C8A;
+}
+#NavRight{
+	position:absolute;
+  right:0px;
+}
+/* Footer */
+#FooterPlaceHolder{
+	height:50px;
+  display:block;
+  background-color: #2F4350;
+  width: 100%;
+  z-index: 10;
+  bottom:0;
+  position:fixed;
+}
+/* Inputs */
+input{
+	color:black;
+}
+/* Buttons */
+.BlueButton{
+  background-color: #005C8A;
+  color: white;
+  font-weight: bold;
+}
+/* Menu */
+#NavMenuButton{
+  font-size:20px;
+}
+#login
+{
+	height: 100%;
+  color: white;
+  padding: 10px;
+}
+.sidebar {
+  width: 200px;
+  position: relative;
+  left: 0;
+  background-color: #A7D7EE;
+  transition: all .25s;
+  overflow-y: auto;
+  padding: 10px;
+}
+.sidebar.collapsed {
+  left: -200px;
+  margin-right: -200px;
+}
+/* datatables */
+div.dataTables_wrapper {
+  width: 800px;
+  margin: 0 auto;
+  background-color: #F5F5F5;
+  padding: 10px;
+}
+
+
+/* forms */
+.form-group {
+    margin-bottom: 2px!important;
+}
+.form-group label.control-label {
+    font-size: 11px !important;
+    font-weight: normal;
+    text-align: left!important;
+    /*line-height: 1.2em;*/
+    padding: 3px 0 3px 4px;
+}
+.form-group-sm input.form-control,.form-group-sm select.form-control,.form-group-sm select.form-control{
+    /*border: solid 1px #ccc;*/
+    border-radius: 2px !important;
+    font-size: 12px;
+    padding: 1px 10px;
+    height: 24px!important;
+    line-height:24px!important;
+}
+.form-group .form-control {
+    border-radius: 2px;
+}
+a {
+	cursor: pointer;
+}
