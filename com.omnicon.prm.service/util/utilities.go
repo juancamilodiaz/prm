@@ -293,6 +293,8 @@ func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*d
 		resourceAssign.Lead = projectResource.Lead
 		if projectResource.Lead {
 			lead = resourceAssign.Resource.Name
+		} else if pProject.Lead == resourceAssign.Resource.Name {
+			lead = ""
 		}
 		mapResources[projectResource.ID] = &resourceAssign
 	}
