@@ -12,6 +12,7 @@ func init() {
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/resources", &controllers.MainController{}, "post:ListResources")
 	beego.Router("/resources/create", &controllers.MainController{}, "post:CreateResource")
+	beego.Router("/resources/read", &controllers.MainController{}, "post:ReadResource")
 	beego.Router("/resources/update", &controllers.MainController{}, "post:UpdateResource")
 	beego.Router("/resources/delete", &controllers.MainController{}, "post:DeleteResource")
 }

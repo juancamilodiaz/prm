@@ -25,18 +25,26 @@
 	<link rel="stylesheet" type="text/css" href="/css/Site.css">
 	
 	<script>
-		var app = angular.module('myApp', ['ngSanitize']);
+		var app = angular.module('index', ['ngSanitize']);
 		
-		app.controller('myCtrl', function($scope, $http, $compile){
+		app.controller('indexCtrl', function($scope, $http, $compile){
 			$scope.link = function(url){
 				$("#content").html("<div>"+$("#imgLoading").html()+"</div>");
+				data="";
 				$http.post(url)
 			    .then(function(response) {
-			        $("#content").html(response.data);
+					data=response.data;
+					$("#content").html(data);
 			    });
+				
 			}
 		    
 		});
+		
+		app.config(['$qProvider', function ($qProvider) {
+		    $qProvider.errorOnUnhandledRejections(false);
+		}]);
+		
 	</script>
 </head>
 
@@ -60,7 +68,7 @@
 		</div>
 	</div>
 	
-	<div id="BodyPlaceHolder" ng-app="myApp" ng-controller='myCtrl'>
+	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
 		<div class="sidebar collapsed" id="sidebar">
 			<ul>
 				<li><a ng-click="link('resources')">Resources</a></li>
