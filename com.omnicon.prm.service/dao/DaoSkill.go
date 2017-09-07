@@ -111,10 +111,12 @@ func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
 		filters.WriteString("'")
 	}
 
-	// Add all skills in skills variable
-	err := result.Where(filters.String()).All(&skills)
-	if err != nil {
-		log.Error(err)
+	if filters.String() != "" {
+		// Add all skills in skills variable
+		err := result.Where(filters.String()).All(&skills)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return skills, filters.String()
 }

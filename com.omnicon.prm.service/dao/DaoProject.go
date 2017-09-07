@@ -206,10 +206,12 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		filters.WriteString(strconv.FormatBool(*pEnabled))
 		filters.WriteString("'")
 	}
-	err := result.Where(filters.String()).All(&projects)
+	if filters.String() != "" {
+		err := result.Where(filters.String()).All(&projects)
 
-	if err != nil {
-		log.Error(err)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 
 	return projects, filters.String()

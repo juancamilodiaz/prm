@@ -71,12 +71,17 @@ func (main *MainController) CreateResource() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	message := new(domain.GetResourcesRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
 
 func (main *MainController) ReadResource() {
@@ -131,12 +136,16 @@ func (main *MainController) UpdateResource() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
-
+	if err != nil {
+		log.Error(err.Error())
+	}
 	message := new(domain.UpdateResourceRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
 
 func (main *MainController) DeleteResource() {
@@ -153,12 +162,17 @@ func (main *MainController) DeleteResource() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	message := new(domain.GetResourcesRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
 
 /* Projects */
@@ -208,11 +222,17 @@ func (main *MainController) CreateProject() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Error(err.Error())
+	}
+
 	defer res.Body.Close()
 	message := new(domain.CreateProjectRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
 
 func (main *MainController) ReadProject() {
@@ -265,12 +285,17 @@ func (main *MainController) UpdateProject() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	defer res.Body.Close()
 	message := new(domain.UpdateProjectRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
 
 func (main *MainController) DeleteProject() {
@@ -287,12 +312,17 @@ func (main *MainController) DeleteProject() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	message := new(domain.DeleteProjectRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 	main.Data["Title"] = "The project deleted successfully."
 	main.Data["Message"] = message.Message
 	main.Data["Type"] = message.Status
@@ -343,12 +373,17 @@ func (main *MainController) CreateSkill() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	message := new(domain.GetSkillsRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
 
 func (main *MainController) ReadSkill() {
@@ -387,20 +422,29 @@ func (main *MainController) UpdateSkill() {
 	url := "http://localhost:10104/UpdateSkill"
 
 	payload := strings.NewReader("{" +
-		"\n\t\"ID\":\"" + main.Ctx.Input.Param(":ID") + "\"," +
-		"\n\t\"Name\":\"" + main.Ctx.Input.Param(":Name") + "\"," + "\n}")
+		"\n\t\"ID\":" + main.GetString("ID") + "," +
+		"\n\t\"Name\":\"" + main.GetString("Name") + "\"" + "\n}")
 
+	fmt.Println(payload)
 	req, _ := http.NewRequest("POST", url, payload)
 
 	req.Header.Add("accept", "application/json")
 	req.Header.Add("content-type", "application/json")
 	req.Header.Add("cache-control", "no-cache")
-	req.Header.Add("postman-token", "4c022020-525b-e96b-a4c8-9b72d14476b1")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	defer res.Body.Close()
-	log.Error(err.Error())
+	message := new(domain.UpdateSkillRS)
+	err = json.NewDecoder(res.Body).Decode(&message)
+	fmt.Println(message)
+	if err != nil {
+		log.Error(err.Error())
+	}
+
 }
 
 func (main *MainController) DeleteSkill() {
@@ -417,10 +461,15 @@ func (main *MainController) DeleteSkill() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	message := new(domain.GetSkillsRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
