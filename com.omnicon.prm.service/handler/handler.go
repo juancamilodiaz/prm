@@ -50,38 +50,20 @@ Parametros :
 */
 func createResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
-
+	startTime := time.Now()
 	defer panics.CatchPanic("CreateResource")
-
-	// Commented only testing
-	/*f, errprof := os.Create("cpuprofile.pprof")
-	if errprof != nil {
-		log.Error(errprof)
-	}
-	pprof.StartCPUProfile(f)
-
-	f2, errprof2 := os.Create("memprofile.pprof")
-	if errprof2 != nil {
-		log.Error(errprof2)
-	}*/
 
 	message := new(domain.CreateResourceRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Unmarshal error", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
-	}
-
-	//time1 := time.Now()
-
 	log.Info("Process Create Resource", message)
-
 	response := controller.ProcessCreateResource(message)
 
 	// Se asigna tiempo de respuesta de todo el proceso.
@@ -89,32 +71,30 @@ func createResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Descripcion : Funcion encargada de realizar el marshal de la respuesta en formato JSon
+	de los servicios.
+*/
+func marshalJson(pAccept string, pResourceRs interface{}) []byte {
+	var value []byte
+	if pAccept == "application/json" || strings.Contains(pAccept, "application/json") {
 		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
+		if pResourceRs != nil {
+			value, err = json.Marshal(pResourceRs)
 		}
 		if err != nil {
 			fmt.Printf("Error Marshalling json: %v", err)
 		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
 	}
-
-	processTime := time.Now().Sub(StartTime)
-	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.CreateResourceRS) {
-		if pResponse != nil {
-			//TODO Insertar codigo aqui
-		}
-	}(response)
-
-	/*pprof.StopCPUProfile()
-	pprof.WriteHeapProfile(f2)*/
+	return value
 }
 
 /*
@@ -126,26 +106,23 @@ Parametros :
 */
 func updateResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("UpdateResource")
 
 	message := new(domain.UpdateResourceRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
 	}
 
 	if err != nil {
 		log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
 	}
 
-	//time1 := time.Now()
-
 	log.Info("Process Update Resource", message)
-
 	response := controller.ProcessUpdateResource(message)
 
 	// Se asigna tiempo de respuesta de todo el proceso.
@@ -153,21 +130,11 @@ func updateResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
 
 	// Send ProcessTime for updating service metrics
@@ -187,26 +154,22 @@ Parametros :
 */
 func deleteResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("DeleteResource")
 
 	message := new(domain.DeleteResourceRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Delete Resource", message)
-
 	response := controller.ProcessDeleteResource(message)
 
 	// Se asigna tiempo de respuesta de todo el proceso.
@@ -214,29 +177,12 @@ func deleteResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.DeleteResourceRS) {
-		if pResponse != nil {
-			//TODO Insertar codigo aqui
-		}
-	}(response)
 }
 
 /*
@@ -248,26 +194,22 @@ Parametros :
 */
 func createProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("CreateProject")
 
 	message := new(domain.CreateProjectRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Create Project", message)
-
 	response := controller.ProcessCreateProject(message)
 
 	// Se asigna tiempo de respuesta de todo el proceso.
@@ -275,29 +217,12 @@ func createProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.CreateProjectRS) {
-		if pResponse != nil {
-			//TODO Insertar codigo aqui
-		}
-	}(response)
 }
 
 /*
@@ -309,26 +234,21 @@ Parametros :
 */
 func updateProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("UpdateProject")
 
 	message := new(domain.UpdateProjectRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
-	}
-
-	//time1 := time.Now()
-
 	log.Info("Process Update Project", message)
-
 	response := controller.ProcessUpdateProject(message)
 
 	// Se asigna tiempo de respuesta de todo el proceso.
@@ -336,29 +256,12 @@ func updateProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.UpdateProjectRS) {
-		if pResponse != nil {
-			//TODO Insertar codigo aqui
-		}
-	}(response)
 }
 
 /*
@@ -370,26 +273,22 @@ Parametros :
 */
 func deleteProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("DeleteProject")
 
 	message := new(domain.DeleteProjectRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Delete Project", message)
-
 	response := controller.ProcessDeleteProject(message)
 
 	// Se asigna tiempo de respuesta de todo el proceso.
@@ -397,29 +296,12 @@ func deleteProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.DeleteProjectRS) {
-		if pResponse != nil {
-			//TODO Insertar codigo aqui
-		}
-	}(response)
 }
 
 /*
@@ -431,26 +313,22 @@ Params :
 */
 func createSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("CreateSkill")
 
 	message := new(domain.CreateSkillRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Create Skill", message)
-
 	response := controller.ProcessCreateSkill(message)
 
 	// Set response time to all process.
@@ -458,29 +336,12 @@ func createSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.CreateSkillRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -492,26 +353,21 @@ Params :
 */
 func updateSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("UpdateSkill")
 
 	message := new(domain.UpdateSkillRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
-
 	log.Info("Process Update Skill", message)
-
 	response := controller.ProcessUpdateSkill(message)
 
 	// Set response time to all process.
@@ -519,29 +375,12 @@ func updateSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.UpdateSkillRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -553,26 +392,22 @@ Params :
 */
 func deleteSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("DeleteSkill")
 
 	message := new(domain.DeleteSkillRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Delete Skill", message)
-
 	response := controller.ProcessDeleteSkill(message)
 
 	// Set response time to all process.
@@ -580,29 +415,12 @@ func deleteSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.DeleteSkillRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -614,26 +432,22 @@ Params :
 */
 func setSkillToResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("SetSkillToResource")
 
 	message := new(domain.SetSkillToResourceRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Set Skill To Resource", message)
-
 	response := controller.ProcessSetSkillToResource(message)
 
 	// Set response time to all process.
@@ -641,29 +455,12 @@ func setSkillToResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.SetSkillToResourceRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -675,26 +472,22 @@ Params :
 */
 func deleteSkillToResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("DeleteSkillToResource")
 
 	message := new(domain.DeleteSkillToResourceRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Delete Skill To Resource", message)
-
 	response := controller.ProcessDeleteSkillToResource(message)
 
 	// Set response time to all process.
@@ -702,29 +495,12 @@ func deleteSkillToResource(pResponse http.ResponseWriter, pRequest *http.Request
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.DeleteSkillToResourceRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -736,26 +512,22 @@ Params :
 */
 func setResourceToProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("SetResourceToProject")
 
 	message := new(domain.SetResourceToProjectRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Set Resource To Project", message)
-
 	response := controller.ProcessSetResourceToProject(message)
 
 	// Set response time to all process.
@@ -763,29 +535,12 @@ func setResourceToProject(pResponse http.ResponseWriter, pRequest *http.Request)
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.SetResourceToProjectRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -797,23 +552,20 @@ Params :
 */
 func deleteResourceToProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("DeleteResourceToProject")
 
 	message := new(domain.DeleteResourceToProjectRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Delete Resource To Project", message)
 
@@ -824,29 +576,12 @@ func deleteResourceToProject(pResponse http.ResponseWriter, pRequest *http.Reque
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.DeleteResourceToProjectRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -858,23 +593,19 @@ Params :
 */
 func getResources(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
-
+	startTime := time.Now()
 	defer panics.CatchPanic("GetResources")
 
 	message := new(domain.GetResourcesRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Get Resources", message)
 
@@ -885,29 +616,12 @@ func getResources(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.GetResourcesRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -919,23 +633,20 @@ Params :
 */
 func getProjects(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
+	startTime := time.Now()
 
 	defer panics.CatchPanic("GetProjects")
 
 	message := new(domain.GetProjectsRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Get Projects", message)
 
@@ -946,29 +657,12 @@ func getProjects(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.GetProjectsRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -980,26 +674,21 @@ Params :
 */
 func getSkills(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
-
+	startTime := time.Now()
 	defer panics.CatchPanic("GetSkills")
 
 	message := new(domain.GetSkillsRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Get Skills", message)
-
 	response := controller.ProcessGetSkills(message)
 
 	// Set response time to all process.
@@ -1007,29 +696,12 @@ func getSkills(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.GetSkillsRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
 
 /*
@@ -1041,26 +713,21 @@ Params :
 */
 func getResourcesToProjects(pResponse http.ResponseWriter, pRequest *http.Request) {
 
-	StartTime := time.Now()
-
+	startTime := time.Now()
 	defer panics.CatchPanic("GetResourcesToProjects")
 
 	message := new(domain.GetResourcesToProjectsRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		json.NewDecoder(pRequest.Body).Decode(&message)
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
 	}
-
-	if err != nil {
-		log.Error("Error in Unmarshal process", err)
-	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Get Resources To Projects", message)
-
 	response := controller.ProcessGetResourcesToProjects(message)
 
 	// Set response time to all process.
@@ -1068,27 +735,10 @@ func getResourcesToProjects(pResponse http.ResponseWriter, pRequest *http.Reques
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
-	processTime := time.Now().Sub(StartTime)
+	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
-
-	// Send ProcessTime for updating service metrics
-	go func(pResponse *domain.GetResourcesToProjectsRS) {
-		if pResponse != nil {
-			//TODO Insert code here
-		}
-	}(response)
 }
