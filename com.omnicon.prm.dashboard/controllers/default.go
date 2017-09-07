@@ -24,7 +24,7 @@ func (c *MainController) Get() {
 
 /* Resources */
 func (main *MainController) ListResources() {
-	url := "http://172.16.33.81:10104/GetResources"
+	url := "http://localhost:10104/GetResources"
 
 	payload := strings.NewReader("{\n\n}")
 
@@ -53,7 +53,7 @@ func (main *MainController) ListResources() {
 }
 
 func (main *MainController) CreateResource() {
-	url := "http://172.16.33.81:10104/CreateResource"
+	url := "http://localhost:10104/CreateResource"
 
 	payload := strings.NewReader("{" +
 		"\n\t\"Name\":\"" + main.GetString("Name") + "\"," +
@@ -80,7 +80,7 @@ func (main *MainController) CreateResource() {
 }
 
 func (main *MainController) ReadResource() {
-	url := "http://172.16.33.81:10104/GetResources"
+	url := "http://localhost:10104/GetResources"
 
 	payload := strings.NewReader("{\n\t\"Id\":" + main.Ctx.Input.Param(":id") + "\n}")
 
@@ -112,7 +112,7 @@ func (main *MainController) ReadResource() {
 }
 
 func (main *MainController) UpdateResource() {
-	url := "http://172.16.33.81:10104/CreateResource"
+	url := "http://localhost:10104/UpdateResource"
 
 	payload := strings.NewReader("{" +
 		"\n\t\"ID\":\"" + main.Ctx.Input.Param(":ID") + "\"," +
@@ -137,7 +137,7 @@ func (main *MainController) UpdateResource() {
 }
 
 func (main *MainController) DeleteResource() {
-	url := "http://172.16.33.81:10104/DeleteResource"
+	url := "http://localhost:10104/DeleteResource"
 
 	payload := strings.NewReader("{" +
 		"\n\t\"ID\":" + main.GetString("ID") +
@@ -160,7 +160,7 @@ func (main *MainController) DeleteResource() {
 
 /* Projects */
 func (main *MainController) ListProjects() {
-	url := "http://172.16.33.81:10104/GetProjects"
+	url := "http://localhost:10104/GetProjects"
 
 	payload := strings.NewReader("{\n\n}")
 
@@ -189,7 +189,7 @@ func (main *MainController) ListProjects() {
 }
 
 func (main *MainController) CreateProject() {
-	url := "http://172.16.33.81:10104/CreateProject"
+	url := "http://localhost:10104/CreateProject"
 
 	payload := strings.NewReader("{" +
 		"\n\t\"Name\":\"" + main.GetString("Name") + "\"," +
@@ -213,7 +213,7 @@ func (main *MainController) CreateProject() {
 }
 
 func (main *MainController) ReadProject() {
-	url := "http://172.16.33.81:10104/GetProjects"
+	url := "http://localhost:10104/GetProjects"
 
 	payload := strings.NewReader("{\n\t\"Id\":" + main.Ctx.Input.Param(":id") + "\n}")
 
@@ -245,30 +245,33 @@ func (main *MainController) ReadProject() {
 }
 
 func (main *MainController) UpdateProject() {
-	url := "http://172.16.33.81:10104/UptadeProject"
+	url := "http://localhost:10104/UpdateProject"
 
 	payload := strings.NewReader("{" +
-		"\n\t\"ID\":\"" + main.Ctx.Input.Param(":ID") + "\"," +
-		"\n\t\"Name\":\"" + main.Ctx.Input.Param(":Name") + "\"," +
-		"\n\t\"StartDate\":\"" + main.Ctx.Input.Param(":StartDate") + "\"," +
-		"\n\t\"EndDate\":\"" + main.Ctx.Input.Param(":EndDate") + "\"," +
-		"\n\t\"Enabled\":" + main.Ctx.Input.Param(":Enabled") + "\n}")
+		"\n\t\"ID\":" + main.GetString("ID") + "," +
+		"\n\t\"Name\":\"" + main.GetString("Name") + "\"," +
+		"\n\t\"StartDate\":\"" + main.GetString("StartDate") + "\"," +
+		"\n\t\"EndDate\":\"" + main.GetString("EndDate") + "\"," +
+		"\n\t\"Enabled\":" + main.GetString("Enabled") + "\n}")
 
+	fmt.Println(payload)
 	req, _ := http.NewRequest("POST", url, payload)
 
 	req.Header.Add("accept", "application/json")
 	req.Header.Add("content-type", "application/json")
 	req.Header.Add("cache-control", "no-cache")
-	req.Header.Add("postman-token", "4c022020-525b-e96b-a4c8-9b72d14476b1")
 
 	res, err := http.DefaultClient.Do(req)
 
 	defer res.Body.Close()
+	message := new(domain.UpdateProjectRS)
+	json.NewDecoder(res.Body).Decode(&message)
+	fmt.Println(message)
 	log.Error(err.Error())
 }
 
 func (main *MainController) DeleteProject() {
-	url := "http://172.16.33.81:10104/DeleteProject"
+	url := "http://localhost:10104/DeleteProject"
 
 	payload := strings.NewReader("{" +
 		"\n\t\"ID\":" + main.GetString("ID") +
@@ -295,7 +298,7 @@ func (main *MainController) DeleteProject() {
 
 /* Skills */
 func (main *MainController) ListSkills() {
-	url := "http://172.16.33.81:10104/GetSkills"
+	url := "http://localhost:10104/GetSkills"
 
 	payload := strings.NewReader("{\n\n}")
 
@@ -324,7 +327,7 @@ func (main *MainController) ListSkills() {
 }
 
 func (main *MainController) CreateSkill() {
-	url := "http://172.16.33.81:10104/CreateSkill"
+	url := "http://localhost:10104/CreateSkill"
 
 	payload := strings.NewReader("{" +
 		"\n\t\"Name\":\"" + main.GetString("Name") + "\"" +
@@ -346,7 +349,7 @@ func (main *MainController) CreateSkill() {
 }
 
 func (main *MainController) ReadSkill() {
-	url := "http://172.16.33.81:10104/GetSkills"
+	url := "http://localhost:10104/GetSkills"
 
 	payload := strings.NewReader("{\n\t\"Id\":" + main.Ctx.Input.Param(":id") + "\n}")
 
@@ -378,7 +381,7 @@ func (main *MainController) ReadSkill() {
 }
 
 func (main *MainController) UpdateSkill() {
-	url := "http://172.16.33.81:10104/UptadeSkill"
+	url := "http://localhost:10104/UpdateSkill"
 
 	payload := strings.NewReader("{" +
 		"\n\t\"ID\":\"" + main.Ctx.Input.Param(":ID") + "\"," +
@@ -398,7 +401,7 @@ func (main *MainController) UpdateSkill() {
 }
 
 func (main *MainController) DeleteSkill() {
-	url := "http://172.16.33.81:10104/DeleteSkill"
+	url := "http://localhost:10104/DeleteSkill"
 
 	payload := strings.NewReader("{" +
 		"\n\t\"ID\":" + main.GetString("ID") +
