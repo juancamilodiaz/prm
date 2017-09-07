@@ -14,7 +14,7 @@ var session sqlbuilder.Database
 var settings = mssql.ConnectionURL{
 	User:     "admin",
 	Password: "admin",
-	Host:     "OMNCND5035B21\\SQLEXPRESS",
+	Host:     "OMNCND5035B21",
 	Database: "master",
 }
 
