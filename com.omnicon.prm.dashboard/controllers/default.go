@@ -115,23 +115,26 @@ func (main *MainController) UpdateResource() {
 	url := "http://localhost:10104/UpdateResource"
 
 	payload := strings.NewReader("{" +
-		"\n\t\"ID\":\"" + main.Ctx.Input.Param(":ID") + "\"," +
-		"\n\t\"Name\":\"" + main.Ctx.Input.Param(":Name") + "\"," +
-		"\n\t\"LastName\":\"" + main.Ctx.Input.Param(":LastName") + "\"," +
-		"\n\t\"Email\":\"" + main.Ctx.Input.Param(":Email") + "\"," +
-		"\n\t\"Photo\":\"" + main.Ctx.Input.Param(":Photo") + "\"," +
-		"\n\t\"EngineerRange\":\"" + main.Ctx.Input.Param(":EngineerRange") + "\"," +
-		"\n\t\"Enabled\":" + main.Ctx.Input.Param(":Enabled") + "\n}")
+		"\n\t\"ID\":" + main.GetString("ID") + "," +
+		"\n\t\"Name\":\"" + main.GetString("Name") + "\"," +
+		"\n\t\"LastName\":\"" + main.GetString("LastName") + "\"," +
+		"\n\t\"Email\":\"" + main.GetString("Email") + "\"," +
+		"\n\t\"Photo\":\"" + main.GetString("Photo") + "\"," +
+		"\n\t\"EngineerRange\":\"" + main.GetString("EngineerRange") + "\"," +
+		"\n\t\"Enabled\":" + main.GetString("Enabled") + "\n}")
 
+	fmt.Println(payload)
 	req, _ := http.NewRequest("POST", url, payload)
 
 	req.Header.Add("accept", "application/json")
 	req.Header.Add("content-type", "application/json")
 	req.Header.Add("cache-control", "no-cache")
-	req.Header.Add("postman-token", "4c022020-525b-e96b-a4c8-9b72d14476b1")
 
 	res, err := http.DefaultClient.Do(req)
 
+	message := new(domain.UpdateResourceRS)
+	json.NewDecoder(res.Body).Decode(&message)
+	fmt.Println(message)
 	defer res.Body.Close()
 	log.Error(err.Error())
 }
