@@ -54,31 +54,17 @@ func createResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	defer panics.CatchPanic("CreateResource")
 
-	// Commented only testing
-	/*f, errprof := os.Create("cpuprofile.pprof")
-	if errprof != nil {
-		log.Error(errprof)
-	}
-	pprof.StartCPUProfile(f)
-
-	f2, errprof2 := os.Create("memprofile.pprof")
-	if errprof2 != nil {
-		log.Error(errprof2)
-	}*/
-
 	message := new(domain.CreateResourceRQ)
 	accept := pRequest.Header.Get("Accept")
-	//timeUnmarshal := time.Now()
+
 	var err error
 	if accept == "application/json" || strings.Contains(accept, "application/json") {
 		json.NewDecoder(pRequest.Body).Decode(&message)
 	}
-
+	//?????
 	if err != nil {
 		log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
 	}
-
-	//time1 := time.Now()
 
 	log.Info("Process Create Resource", message)
 
@@ -89,19 +75,23 @@ func createResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
 	}
 
-	//timeMarshal := time.Now()
-	if accept == "application/json" || strings.Contains(accept, "application/json") {
-		var value []byte
-		var err error
-		if response != nil {
-			value, err = json.Marshal(response)
-		}
-		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
-		}
-		pResponse.Header().Add("Content-Type", "application/json")
-		pResponse.Write(value)
-	}
+	/*
+		//timeMarshal := time.Now()
+		if accept == "application/json" || strings.Contains(accept, "application/json") {
+			var value []byte
+			var err error
+			if response != nil {
+				value, err = json.Marshal(response)
+			}
+			if err != nil {
+				fmt.Printf("Error Marshalling json: %v", err)
+			}
+			pResponse.Header().Add("Content-Type", "application/json")
+			pResponse.Write(value)
+		}*/
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 
 	processTime := time.Now().Sub(StartTime)
 	log.Info("Process Time:", processTime.String())
@@ -113,8 +103,20 @@ func createResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 		}
 	}(response)
 
-	/*pprof.StopCPUProfile()
-	pprof.WriteHeapProfile(f2)*/
+}
+
+func marshalJson(pAccept string, pResourceRs interface{}) []byte {
+	var value []byte
+	if pAccept == "application/json" || strings.Contains(pAccept, "application/json") {
+		var err error
+		if pResourceRs != nil {
+			value, err = json.Marshal(pResourceRs)
+		}
+		if err != nil {
+			fmt.Printf("Error Marshalling json: %v", err)
+		}
+	}
+	return value
 }
 
 /*
