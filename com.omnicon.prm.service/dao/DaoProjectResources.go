@@ -2,6 +2,7 @@ package dao
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
@@ -262,6 +263,7 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		filters.WriteString(strconv.FormatBool(*pLead))
 		filters.WriteString("'")
 	}
+	fmt.Println("Query", filters.String())
 	err := result.Where(filters.String()).All(&projectsResources)
 
 	if err != nil {
