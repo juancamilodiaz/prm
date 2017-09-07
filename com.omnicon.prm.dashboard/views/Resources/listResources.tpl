@@ -132,7 +132,7 @@
 			<td>{{$resource.EngineerRange}}</td>
 			<td>{{$resource.Enabled}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="$('#resourceID').val({{$resource.ID}};" >Update</button>
+				<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="$('#resourceID').val({{$resource.ID}};" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
 			</td>
 		</tr>
@@ -197,8 +197,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="resourceCreate" class="btn btn-default" onclick="createResource()">Create</button>
-        <button type="button" id="resourceUpdate" class="btn btn-default" onclick="update()">Update</button>
+        <button type="button" id="resourceCreate" class="btn btn-default" onclick="createResource()" data-dismiss="modal">Create</button>
+        <button type="button" id="resourceUpdate" class="btn btn-default" onclick="update()" data-dismiss="modal">Update</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>

@@ -114,8 +114,8 @@
 		<tr>
 			<td>{{$skilll.Name}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="$('#skillID').val({{$skilll.ID}};" >Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});">Delete</button>
+				<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="$('#skillID').val({{$skilll.ID}};" data-dismiss="modal">Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">Delete</button>
 			</td>
 		</tr>
 		{{end}}	
@@ -147,8 +147,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="skillCreate" class="btn btn-default" onclick="createSkill()">Create</button>
-        <button type="button" id="skillUpdate" class="btn btn-default" onclick="update()">Update</button>
+        <button type="button" id="skillCreate" class="btn btn-default" onclick="createSkill()" data-dismiss="modal">Create</button>
+        <button type="button" id="skillUpdate" class="btn btn-default" onclick="update()" data-dismiss="modal">Update</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>

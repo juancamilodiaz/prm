@@ -126,8 +126,8 @@
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
 			<td>{{$project.Enabled}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick="$('#projectID').val({{$project.ID}};" >Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});">Delete</button>
+				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick="$('#projectID').val({{$project.ID}};" data-dismiss="modal">Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
 			</td>
 		</tr>
 		{{end}}	
@@ -183,8 +183,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="projectCreate" class="btn btn-default" onclick="createProject()">Create</button>
-        <button type="button" id="projectUpdate" class="btn btn-default" onclick="update()">Update</button>
+        <button type="button" id="projectCreate" class="btn btn-default" onclick="createProject()" data-dismiss="modal">Create</button>
+        <button type="button" id="projectUpdate" class="btn btn-default" onclick="update()" data-dismiss="modal">Update</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>
