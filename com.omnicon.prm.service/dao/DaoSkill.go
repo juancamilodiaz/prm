@@ -103,6 +103,9 @@ func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
 		filters.WriteString("'")
 	}
 	if pSkillFilters.Name != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("name = '")
 		filters.WriteString(pSkillFilters.Name)
 		filters.WriteString("'")

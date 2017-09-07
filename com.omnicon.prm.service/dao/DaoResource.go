@@ -182,6 +182,9 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([
 		filters.WriteString("'")
 	}
 	if pResourceFilters.Name != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("name = '")
 		filters.WriteString(pResourceFilters.Name)
 		filters.WriteString("'")

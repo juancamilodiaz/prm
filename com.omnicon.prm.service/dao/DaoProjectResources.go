@@ -2,7 +2,6 @@ package dao
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
@@ -239,31 +238,45 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		filters.WriteString("'")
 	}
 	if pProjectResourceFilters.ProjectId != 0 {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("project_id = '")
 		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ProjectId, 10))
 		filters.WriteString("'")
 	}
 	if pProjectResourceFilters.ResourceId != 0 {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("resource_id = '")
 		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ResourceId, 10))
 		filters.WriteString("'")
 	}
 	if pStartDate != nil {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("start_date >= '")
 		filters.WriteString(*pStartDate)
 		filters.WriteString("'")
 	}
 	if pEndDate != nil {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("end_date <= '")
 		filters.WriteString(*pEndDate)
 		filters.WriteString("'")
 	}
 	if pLead != nil {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("lead = '")
 		filters.WriteString(strconv.FormatBool(*pLead))
 		filters.WriteString("'")
 	}
-	fmt.Println("Query", filters.String())
 	err := result.Where(filters.String()).All(&projectsResources)
 
 	if err != nil {

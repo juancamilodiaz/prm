@@ -175,21 +175,33 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		filters.WriteString("'")
 	}
 	if pProjectFilters.Name != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("name = '")
 		filters.WriteString(pProjectFilters.Name)
 		filters.WriteString("'")
 	}
 	if pStartDate != nil {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("start_date >= '")
 		filters.WriteString(*pStartDate)
 		filters.WriteString("'")
 	}
 	if pEndDate != nil {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("end_date <= '")
 		filters.WriteString(*pEndDate)
 		filters.WriteString("'")
 	}
 	if pEnabled != nil {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
 		filters.WriteString("enabled = '")
 		filters.WriteString(strconv.FormatBool(*pEnabled))
 		filters.WriteString("'")
