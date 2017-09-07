@@ -386,3 +386,39 @@ func MappingFiltersSkill(pRequest *domain.GetSkillsRQ) *domain.Skill {
 	}
 	return nil
 }
+
+/**
+* Function to mapping request to get reosurcestoproject in a projectresource entity.
+ */
+func MappingFiltersProjectResource(pRequest *domain.GetResourcesToProjectsRQ) *domain.ProjectResources {
+	if pRequest != nil {
+		filters := domain.ProjectResources{}
+
+		if pRequest.ID != nil {
+			filters.ID = *pRequest.ID
+		}
+		if pRequest.ProjectId != nil {
+			filters.ProjectId = *pRequest.ProjectId
+		}
+		if pRequest.ResourceId != nil {
+			filters.ResourceId = *pRequest.ResourceId
+		}
+		if pRequest.StartDate != nil {
+			startDate, err := time.Parse("2006-01-02", *pRequest.StartDate)
+			if err == nil {
+				filters.StartDate = startDate
+			}
+		}
+		if pRequest.EndDate != nil {
+			endDate, err := time.Parse("2006-01-02", *pRequest.EndDate)
+			if err == nil {
+				filters.EndDate = endDate
+			}
+		}
+		if pRequest.Lead != nil {
+			filters.Lead = *pRequest.Lead
+		}
+		return &filters
+	}
+	return nil
+}

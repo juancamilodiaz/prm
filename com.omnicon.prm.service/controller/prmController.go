@@ -100,3 +100,9 @@ func ProcessGetSkills(pRequest *domain.GetSkillsRQ) *domain.GetSkillsRS {
 	// Return response
 	return response
 }
+
+func ProcessGetResourcesToProjects(pRequest *domain.GetResourcesToProjectsRQ) *domain.GetResourcesToProjectsRS {
+	response := tool.GetResourcesToProjects(pRequest)
+	// Return response
+	return response
+}

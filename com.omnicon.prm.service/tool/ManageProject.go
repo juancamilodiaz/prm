@@ -450,3 +450,54 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 
 	return &response
 }
+
+func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.GetResourcesToProjectsRS {
+	timeResponse := time.Now()
+	response := DOMAIN.GetResourcesToProjectsRS{}
+
+	isValid, message := util.ValidateDates(pRequest.StartDate, pRequest.EndDate, false)
+	if !isValid {
+		response.Message = message
+		response.Status = "Error"
+		return &response
+	}
+
+	filters := util.MappingFiltersProjectResource(pRequest)
+	projectsResources, filterString := dao.GetProjectsResourcesByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Lead)
+
+	if len(projectsResources) == 0 && filterString == "" {
+		projectsResources = dao.GetAllProjectResources()
+	}
+
+	if projectsResources != nil && len(projectsResources) > 0 {
+
+		/*for _, projectResource := range projectsResources {
+			projectInformation := dao.GetProjectById(projectResource.ProjectId)
+			resourceInformation := dao.GetResourceById(projectResource.ResourceId)
+		}*/
+
+		response.ResourcesToProjects = projectsResources
+		// Create response
+		response.Status = "OK"
+
+		header := new(DOMAIN.GetResourcesToProjectsRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
+	}
+	message = "Resources To Projects wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+
+	header := new(DOMAIN.GetResourcesToProjectsRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}

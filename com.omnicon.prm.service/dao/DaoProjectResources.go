@@ -1,6 +1,9 @@
 package dao
 
 import (
+	"bytes"
+	"strconv"
+
 	DOMAIN "prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 	"upper.io/db.v3"
@@ -218,4 +221,52 @@ func DeleteProjectResourcesByProjectIdAndResourceId(pProjectId, pResourceId int6
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
 	return deleteCount, nil
+}
+
+func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResources, pStartDate, pEndDate *string, pLead *bool) ([]*DOMAIN.ProjectResources, string) {
+	// Slice to keep all resources
+	projectsResources := []*DOMAIN.ProjectResources{}
+	result := getProjectResourcesCollection().Find()
+
+	// Close session when ends the method
+	defer session.Close()
+
+	var filters bytes.Buffer
+	if pProjectResourceFilters.ID != 0 {
+		filters.WriteString("id = '")
+		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ID, 10))
+		filters.WriteString("'")
+	}
+	if pProjectResourceFilters.ProjectId != 0 {
+		filters.WriteString("project_id = '")
+		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ProjectId, 10))
+		filters.WriteString("'")
+	}
+	if pProjectResourceFilters.ResourceId != 0 {
+		filters.WriteString("resource_id = '")
+		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ResourceId, 10))
+		filters.WriteString("'")
+	}
+	if pStartDate != nil {
+		filters.WriteString("start_date >= '")
+		filters.WriteString(*pStartDate)
+		filters.WriteString("'")
+	}
+	if pEndDate != nil {
+		filters.WriteString("end_date <= '")
+		filters.WriteString(*pEndDate)
+		filters.WriteString("'")
+	}
+	if pLead != nil {
+		filters.WriteString("lead = '")
+		filters.WriteString(strconv.FormatBool(*pLead))
+		filters.WriteString("'")
+	}
+	err := result.Where(filters.String()).All(&projectsResources)
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	return projectsResources, filters.String()
 }

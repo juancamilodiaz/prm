@@ -38,6 +38,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/GetResources", getResources)
 	http.HandleFunc("/GetProjects", getProjects)
 	http.HandleFunc("/GetSkills", getSkills)
+	http.HandleFunc("/GetResourcesToProjects", getResourcesToProjects)
 }
 
 /*
@@ -1025,6 +1026,67 @@ func getSkills(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Send ProcessTime for updating service metrics
 	go func(pResponse *domain.GetSkillsRS) {
+		if pResponse != nil {
+			//TODO Insert code here
+		}
+	}(response)
+}
+
+/*
+Description : Function to get a resources to projects according to filters input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getResourcesToProjects(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	StartTime := time.Now()
+
+	defer panics.CatchPanic("GetResourcesToProjects")
+
+	message := new(domain.GetResourcesToProjectsRQ)
+	accept := pRequest.Header.Get("Accept")
+	//timeUnmarshal := time.Now()
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		json.NewDecoder(pRequest.Body).Decode(&message)
+	}
+
+	if err != nil {
+		log.Error("Error in Unmarshal process", err)
+	}
+
+	//time1 := time.Now()
+
+	log.Info("Process Get Resources To Projects", message)
+
+	response := controller.ProcessGetResourcesToProjects(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+	}
+
+	//timeMarshal := time.Now()
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		var value []byte
+		var err error
+		if response != nil {
+			value, err = json.Marshal(response)
+		}
+		if err != nil {
+			fmt.Printf("Error Marshalling json: %v", err)
+		}
+		pResponse.Header().Add("Content-Type", "application/json")
+		pResponse.Write(value)
+	}
+
+	processTime := time.Now().Sub(StartTime)
+	log.Info("Process Time:", processTime.String())
+
+	// Send ProcessTime for updating service metrics
+	go func(pResponse *domain.GetResourcesToProjectsRS) {
 		if pResponse != nil {
 			//TODO Insert code here
 		}
