@@ -135,7 +135,7 @@ func TestSetResourceToProject(t *testing.T) {
 	assert.NotNil(t, responseSetResourceToProject.GetHeader(), "The header of result is nil.")
 	assert.Empty(t, responseSetResourceToProject.Message, "The message is not empty.")
 	assert.Equal(t, "OK", responseSetResourceToProject.Status, "The status is not OK")
-	assert.NotNil(t, "OK", responseSetResourceToProject.Project, "The project is nil")
+	assert.NotNil(t, responseSetResourceToProject.Project, "The project is nil")
 	assert.Equal(t, responseSetResourceToProject.Project.Name, resultCreateProject.Project.Name)
 	assert.Equal(t, responseSetResourceToProject.Project.Lead, resultCreateResource.Resource.Name)
 
@@ -237,7 +237,7 @@ func TestUpdateResourceToProject(t *testing.T) {
 	assert.NotNil(t, responseSetResourceToProject.GetHeader(), "The header of result is nil.")
 	assert.Empty(t, responseSetResourceToProject.Message, "The message is not empty.")
 	assert.Equal(t, "OK", responseSetResourceToProject.Status, "The status is not OK")
-	assert.NotNil(t, "OK", responseSetResourceToProject.Project, "The project is nil")
+	assert.NotNil(t, responseSetResourceToProject.Project, "The project is nil")
 	assert.Equal(t, responseSetResourceToProject.Project.Name, resultCreateProject.Project.Name)
 	assert.Equal(t, responseSetResourceToProject.Project.Lead, resultCreateResource.Resource.Name)
 
@@ -254,7 +254,7 @@ func TestUpdateResourceToProject(t *testing.T) {
 	assert.NotNil(t, responseSetResourceToProject.GetHeader(), "The header of result is nil.")
 	assert.Empty(t, responseSetResourceToProject.Message, "The message is not empty.")
 	assert.Equal(t, "OK", responseSetResourceToProject.Status, "The status is not OK")
-	assert.NotNil(t, "OK", responseSetResourceToProject.Project, "The project is nil")
+	assert.NotNil(t, responseSetResourceToProject.Project, "The project is nil")
 	assert.Equal(t, responseSetResourceToProject.Project.Name, resultCreateProject.Project.Name)
 	assert.Equal(t, "", responseSetResourceToProject.Project.Lead)
 
@@ -382,7 +382,7 @@ func TestGetProjectWithResourcesAndSkills(t *testing.T) {
 	assert.NotNil(t, responseSetResourceToProject.GetHeader(), "The header of result is nil.")
 	assert.Empty(t, responseSetResourceToProject.Message, "The message is not empty.")
 	assert.Equal(t, "OK", responseSetResourceToProject.Status, "The status is not OK")
-	assert.NotNil(t, "OK", responseSetResourceToProject.Project, "The project is nil")
+	assert.NotNil(t, responseSetResourceToProject.Project, "The project is nil")
 	assert.Equal(t, responseSetResourceToProject.Project.Name, resultCreateProject.Project.Name)
 	assert.Equal(t, responseSetResourceToProject.Project.Lead, resultCreateResource.Resource.Name)
 
@@ -609,5 +609,139 @@ func TestGetProjectNotExist(t *testing.T) {
 	assert.NotNil(t, responseGetProjects.GetHeader(), "The header of result is nil.")
 	assert.NotEmpty(t, responseGetProjects.Message, "The message is empty.")
 	assert.Equal(t, "Error", responseGetProjects.Status, "The status is not Error")
+
+}
+
+func TestGetResourcesToProjects(t *testing.T) {
+	requestCreateProject := domain.CreateProjectRQ{}
+	requestCreateProject.Name = "Project Test Set Resource"
+	requestCreateProject.StartDate = "2017-09-05"
+	requestCreateProject.EndDate = "2017-09-10"
+	requestCreateProject.Enabled = true
+
+	resultCreateProject := CreateProject(&requestCreateProject)
+
+	assert.NotNil(t, resultCreateProject, "The result is nil.")
+	assert.NotNil(t, resultCreateProject.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, resultCreateProject.Message, "The message is not empty nil.")
+	assert.NotNil(t, resultCreateProject.Project, "The project is nil.")
+	assert.Equal(t, "OK", resultCreateProject.Status, "The status is not OK")
+	assert.Equal(t, requestCreateProject.Name, resultCreateProject.Project.Name, "The name not changed")
+	assert.Equal(t, requestCreateProject.StartDate, util.GetFechaConFormato(resultCreateProject.Project.StartDate.Unix(), util.DATEFORMAT), "The StartDate not changed")
+	assert.Equal(t, requestCreateProject.EndDate, util.GetFechaConFormato(resultCreateProject.Project.EndDate.Unix(), util.DATEFORMAT), "The EndDate not changed")
+	assert.Equal(t, requestCreateProject.Enabled, resultCreateProject.Project.Enabled, "The Enabled not changed")
+
+	requestCreateResource := domain.CreateResourceRQ{}
+	requestCreateResource.Name = "Resource Test Set Resource"
+	requestCreateResource.LastName = "Test LastName"
+	requestCreateResource.Email = "email@test1.com"
+	requestCreateResource.EngineerRange = "E1"
+	requestCreateResource.Photo = "/test/path/1"
+	requestCreateResource.Enabled = true
+
+	resultCreateResource := CreateResource(&requestCreateResource)
+
+	assert.NotNil(t, resultCreateResource, "The result is nil.")
+	assert.NotNil(t, resultCreateResource.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, resultCreateResource.Message, "The message is not empty.")
+	assert.NotNil(t, resultCreateResource.Resource, "The resource is nil.")
+	assert.Equal(t, "OK", resultCreateResource.Status, "The status is not OK")
+
+	//////////////////////
+
+	requestSetResourceToProject := new(domain.SetResourceToProjectRQ)
+	requestSetResourceToProject.ProjectId = resultCreateProject.Project.ID
+	requestSetResourceToProject.ResourceId = resultCreateResource.Resource.ID
+	requestSetResourceToProject.StartDate = "2017-09-06"
+	requestSetResourceToProject.EndDate = "2017-09-09"
+	requestSetResourceToProject.Lead = true
+
+	responseSetResourceToProject := SetResourceToProject(requestSetResourceToProject)
+
+	assert.NotNil(t, responseSetResourceToProject, "The result is nil.")
+	assert.NotNil(t, responseSetResourceToProject.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, responseSetResourceToProject.Message, "The message is not empty.")
+	assert.Equal(t, "OK", responseSetResourceToProject.Status, "The status is not OK")
+	assert.NotNil(t, responseSetResourceToProject.Project, "The project is nil")
+	assert.Equal(t, responseSetResourceToProject.Project.Name, resultCreateProject.Project.Name)
+	assert.Equal(t, responseSetResourceToProject.Project.Lead, resultCreateResource.Resource.Name)
+
+	requestGetResourcesToProjects := new(domain.GetResourcesToProjectsRQ)
+	projectID := resultCreateProject.Project.ID
+	requestGetResourcesToProjects.ProjectId = &projectID
+	resourceID := resultCreateResource.Resource.ID
+	requestGetResourcesToProjects.ResourceId = &resourceID
+	responseGetResourcesToProjects := GetResourcesToProjects(requestGetResourcesToProjects)
+
+	assert.NotNil(t, responseGetResourcesToProjects, "The result is nil.")
+	assert.NotNil(t, responseGetResourcesToProjects.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, responseGetResourcesToProjects.Message, "The message is not empty.")
+	assert.Equal(t, "OK", responseGetResourcesToProjects.Status, "The status is not OK")
+	assert.NotNil(t, responseGetResourcesToProjects.ResourcesToProjects, "The ResourcesToProjects is nil")
+	if assert.Len(t, responseGetResourcesToProjects.ResourcesToProjects, 1) {
+		assert.Equal(t, resultCreateProject.Project.ID, responseGetResourcesToProjects.ResourcesToProjects[0].ProjectId)
+		assert.Equal(t, resultCreateResource.Resource.ID, responseGetResourcesToProjects.ResourcesToProjects[0].ResourceId)
+	}
+
+	//////////////////////
+
+	requestDeleteResourceToProject := new(domain.DeleteResourceToProjectRQ)
+	requestDeleteResourceToProject.ProjectId = resultCreateProject.Project.ID
+	requestDeleteResourceToProject.ResourceId = resultCreateResource.Resource.ID
+
+	responseDeleteResourceToProject := DeleteResourceToProject(requestDeleteResourceToProject)
+
+	assert.NotNil(t, responseDeleteResourceToProject, "The result is nil.")
+	assert.NotNil(t, responseDeleteResourceToProject.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, responseDeleteResourceToProject.Message, "The message is not empty.")
+	assert.Equal(t, "OK", responseDeleteResourceToProject.Status, "The status is not OK")
+	assert.Equal(t, responseDeleteResourceToProject.ProjectName, resultCreateProject.Project.Name)
+	assert.Equal(t, responseDeleteResourceToProject.ResourceName, resultCreateResource.Resource.Name)
+
+	//////////////////////
+
+	requestDeleteResource := domain.DeleteResourceRQ{}
+	requestDeleteResource.ID = resultCreateResource.Resource.ID
+
+	resultDeleteResource := DeleteResource(&requestDeleteResource)
+
+	assert.NotNil(t, resultDeleteResource, "The result is nil.")
+	assert.NotNil(t, resultDeleteResource.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, resultDeleteResource.Message, "The message is not empty.")
+	assert.Equal(t, requestCreateResource.Name, resultDeleteResource.Name, "The name not changed")
+	assert.Equal(t, requestCreateResource.LastName, resultDeleteResource.LastName, "The email not changed")
+	assert.Equal(t, "OK", resultDeleteResource.Status, "The status is not OK")
+
+	resultGetResourceAfterDelete := dao.GetResourceById(resultDeleteResource.ID)
+	assert.Nil(t, resultGetResourceAfterDelete, "The result is not nil.")
+
+	requestDeleteProject := domain.DeleteProjectRQ{}
+	requestDeleteProject.ID = resultCreateProject.Project.ID
+
+	resultDeleteProject := DeleteProject(&requestDeleteProject)
+
+	assert.NotNil(t, resultDeleteProject, "The result is nil.")
+	assert.NotNil(t, resultDeleteProject.GetHeader(), "The header of result is nil.")
+	assert.Empty(t, resultDeleteProject.Message, "The message is not empty.")
+	assert.Equal(t, resultDeleteProject.ID, resultDeleteProject.ID, "The name not changed")
+	assert.Equal(t, resultDeleteProject.Name, resultDeleteProject.Name, "The email not changed")
+	assert.Equal(t, "OK", resultDeleteProject.Status, "The status is not OK")
+
+	resultGetProjectAfterDelete := dao.GetProjectById(resultDeleteProject.ID)
+	assert.Nil(t, resultGetProjectAfterDelete, "The result is not nil.")
+}
+
+func TestGetResourcesToProjectsNotExist(t *testing.T) {
+
+	requestGetResourcesToProjects := new(domain.GetResourcesToProjectsRQ)
+	projectID := int64(9999999999)
+	requestGetResourcesToProjects.ProjectId = &projectID
+	responseGetResourcesToProjects := GetResourcesToProjects(requestGetResourcesToProjects)
+
+	assert.NotNil(t, responseGetResourcesToProjects, "The result is nil.")
+	assert.NotNil(t, responseGetResourcesToProjects.GetHeader(), "The header of result is nil.")
+	assert.NotEmpty(t, responseGetResourcesToProjects.Message, "The message is empty.")
+	assert.Equal(t, "Error", responseGetResourcesToProjects.Status, "The status is not Error")
+	assert.Nil(t, responseGetResourcesToProjects.ResourcesToProjects, "The ResourcesToProjects is not nil")
 
 }
