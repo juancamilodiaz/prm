@@ -332,47 +332,51 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	filters := util.MappingFiltersResource(pRequest)
 	resources, filterString := dao.GetResourcesByFilters(filters, pRequest.Enabled)
 
-	var resultResources []*DOMAIN.Resource
+	//	var resultResources []*DOMAIN.Resource
 
 	if len(resources) == 0 && filterString == "" {
 		resources = dao.GetAllResources()
 	}
 
 	if resources != nil && len(resources) > 0 {
-		// Filter by skills
-		if len(filters.Skills) > 0 {
-			for _, resource := range resources {
-				idResource := resource.ID
-				var resultSkills []*DOMAIN.ResourceSkills
-				for nameSkill, valueSkill := range filters.Skills {
-					skills := dao.GetSkillsByName(nameSkill)
-					for _, skill := range skills {
-						if skill.Name == nameSkill {
-							resourceSkill := dao.GetResourceSkillsByResourceIdAndSkillId(idResource, skill.ID)
-							if resourceSkill != nil && resourceSkill.Value >= valueSkill {
-								resultSkills = append(resultSkills, resourceSkill)
+
+		/*
+			// Filter by skills
+			if len(filters.Skills) > 0 {
+				for _, resource := range resources {
+					idResource := resource.ID
+					var resultSkills []*DOMAIN.ResourceSkills
+					for nameSkill, valueSkill := range filters.Skills {
+						skills := dao.GetSkillsByName(nameSkill)
+						for _, skill := range skills {
+							if skill.Name == nameSkill {
+								resourceSkill := dao.GetResourceSkillsByResourceIdAndSkillId(idResource, skill.ID)
+								if resourceSkill != nil && resourceSkill.Value >= valueSkill {
+									resultSkills = append(resultSkills, resourceSkill)
+								}
 							}
 						}
 					}
+					if len(resultSkills) > 0 {
+						util.MappingSkillsInAResource(resource, resultSkills)
+						resultResources = append(resultResources, resource)
+					}
 				}
-				if len(resultSkills) > 0 {
-					util.MappingSkillsInAResource(resource, resultSkills)
-					resultResources = append(resultResources, resource)
+				response.Resources = resultResources
+			} else {
+				for _, resource := range resources {
+					resourceSkill := dao.GetResourceSkillsByResourceId(resource.ID)
+					if len(resourceSkill) > 0 {
+						util.MappingSkillsInAResource(resource, resourceSkill)
+					}
 				}
+				response.Resources = resources
 			}
-			response.Resources = resultResources
-		} else {
-			for _, resource := range resources {
-				resourceSkill := dao.GetResourceSkillsByResourceId(resource.ID)
-				if len(resourceSkill) > 0 {
-					util.MappingSkillsInAResource(resource, resourceSkill)
-				}
-			}
-			response.Resources = resources
-		}
+		*/
 
 		// Create response
 		response.Status = "OK"
+		response.Resources = resources
 
 		header := new(DOMAIN.GetResourcesRS_Header)
 		header.RequestDate = time.Now().String()
@@ -382,6 +386,7 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 
 		return &response
 	}
+
 	message := "Resources wasn't found in DB"
 	log.Error(message)
 	response.Message = message
