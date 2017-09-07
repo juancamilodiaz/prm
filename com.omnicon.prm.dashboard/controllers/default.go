@@ -205,11 +205,10 @@ func (main *MainController) CreateProject() {
 	req.Header.Add("cache-control", "no-cache")
 
 	res, err := http.DefaultClient.Do(req)
-
-	message := new(domain.GetProjectsRS)
+	defer res.Body.Close()
+	message := new(domain.CreateProjectRS)
 	json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
-	defer res.Body.Close()
 	log.Error(err.Error())
 }
 
@@ -283,11 +282,15 @@ func (main *MainController) DeleteProject() {
 
 	res, err := http.DefaultClient.Do(req)
 
-	message := new(domain.GetProjectsRS)
+	message := new(domain.DeleteProjectRS)
 	json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
 	log.Error(err.Error())
+	main.Data["Title"] = "The project deleted successfully."
+	main.Data["Message"] = message.Message
+	main.Data["Type"] = message.Status
+	main.TplName = "Common/message.tpl"
 }
 
 /* Skills */
