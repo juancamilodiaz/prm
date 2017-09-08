@@ -107,6 +107,7 @@
 			<td>
 				<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="$('#resourceID').val({{$resource.ID}});" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#resourceID').val({{$resource.ID}});">Skills</button>
 			</td>
 		</tr>
 		{{end}}	

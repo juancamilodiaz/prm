@@ -3,9 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	//	"io/ioutil"
-	"net/http"
-	//"os"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -125,13 +122,7 @@ func (main *ResourceController) DeleteResource() {
 		"\n\t\"ID\":" + main.GetString("ID") +
 		"\n}")
 	fmt.Println(payload)
-	req, _ := http.NewRequest("POST", operation, payload)
-
-	req.Header.Add("accept", "application/json")
-	req.Header.Add("content-type", "application/json")
-	req.Header.Add("cache-control", "no-cache")
-
-	res, err := http.DefaultClient.Do(req)
+	res, err := PostData(operation, payload)
 
 	message := new(domain.GetResourcesRS)
 	json.NewDecoder(res.Body).Decode(&message)

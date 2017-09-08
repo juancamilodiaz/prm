@@ -79,6 +79,23 @@
 		});
 	}
 	
+	getResourcesByProject = function(projectID){
+		var settings = {
+			method: 'POST',
+			url: '/projects/resources',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"ID": projectID
+			}
+		}
+		console.log(settings);
+		$.ajax(settings).done(function (response) {
+		  console.log(response);
+		});
+	}
+	
 </script>
 <div>
 <table id="viewProjects" class="table table-striped table-bordered">
@@ -101,6 +118,7 @@
 			<td>
 				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick="$('#projectID').val({{$project.ID}});" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
+				<button class="BlueButton" onclick="getResourcesByProject({{$project.ID}});" data-dismiss="modal">More Info.</button>
 			</td>
 		</tr>
 		{{end}}	

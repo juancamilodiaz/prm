@@ -176,7 +176,7 @@ func (main *MainController) DeleteResource() {
 }
 */
 
-/* Projects */
+/* Projects * /
 func (main *MainController) ListProjects() {
 	url := "http://localhost:10104/GetProjects"
 
