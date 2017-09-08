@@ -4,6 +4,26 @@
 
 		});
 	});
+	
+	configureCreateModal = function(){
+		
+		$("#skillID").val(null);
+		$("#skillName").val(null);
+		
+		$("#modalTitle").html("Create Skill");
+		$("#skillUpdate").css("display", "none");
+		$("#skillCreate").css("display", "inline-block");
+	}
+	
+	configureUpdateModal = function(pID, pName){
+		
+		$("#skillID").val(pID);
+		$("#skillName").val(pName);
+		
+		$("#modalTitle").html("Update Skill");
+		$("#skillCreate").css("display", "none");
+		$("#skillUpdate").css("display", "inline-block");
+	}
 
 	createSkill = function(){
 		var settings = {
@@ -87,7 +107,7 @@
 		<tr>
 			<td>{{$skilll.Name}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">Update</button>
+				<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">Delete</button>
 			</td>
 		</tr>
@@ -95,7 +115,7 @@
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#skillModal">Create</button>
+	<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="configureCreateModal()" >Create</button>
 </div>
 </div>
 
@@ -106,7 +126,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Create/Update Skill</h4>
+        <h4 id="modalTitle" class="modal-title">Create/Update Skill</h4>
       </div>
       <div class="modal-body">
         <input type="hidden" id="skillID">
