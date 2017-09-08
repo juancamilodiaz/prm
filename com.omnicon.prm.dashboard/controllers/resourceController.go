@@ -68,6 +68,10 @@ func (this *ResourceController) CreateResource() {
 	}
 
 	defer res.Body.Close()
+	if err != nil {
+		log.Error(err.Error())
+	}
+	this.TplName = "Common/message.tpl"
 }
 
 func (this *ResourceController) ReadResource() {
@@ -126,6 +130,7 @@ func (this *ResourceController) UpdateResource() {
 	if err != nil {
 		log.Error(err.Error())
 	}
+	this.TplName = "Common/message.tpl"
 }
 
 func (this *ResourceController) DeleteResource() {
@@ -152,4 +157,5 @@ func (this *ResourceController) DeleteResource() {
 	if err != nil {
 		log.Error(err.Error())
 	}
+	this.TplName = "Common/message.tpl"
 }

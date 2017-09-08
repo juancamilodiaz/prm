@@ -32,8 +32,8 @@ type SetResourceToProjectRQ struct {
 }
 
 type GetResourcesToProjectsRQ struct {
-	ID         *int64
-	ProjectId  *int64
+	ID         *int64 `form:"ID"`
+	ProjectId  *int64 `form:"ProjectId"`
 	ResourceId *int64
 	StartDate  *string
 	EndDate    *string

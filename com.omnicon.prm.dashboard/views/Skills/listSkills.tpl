@@ -1,7 +1,6 @@
 <script>
 	$(document).ready(function(){
 		$('#viewSkills').DataTable({
-
 		});
 	});
 	
@@ -38,7 +37,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/skills');
 		});
 	}
 	
@@ -56,7 +55,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/skills');
 		});
 	}
 	
@@ -89,7 +88,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/skills');
 		});
 	}
 	

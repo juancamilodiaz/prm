@@ -1,7 +1,6 @@
 <script>
 	$(document).ready(function(){
 		$('#viewProjects').DataTable({
-
 		});
 	});
 	
@@ -47,7 +46,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/projects')
 		});
 	}
 	
@@ -68,7 +67,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/projects')
 		});
 	}
 	
@@ -101,11 +100,11 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/projects')
 		});
 	}
 	
-	getResourcesByProject = function(projectID){
+	getResourcesByProject = function(projectID, projectName){
 		var settings = {
 			method: 'POST',
 			url: '/projects/resources',
@@ -113,12 +112,13 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"ID": projectID
+				"ID": projectID,
+				"ProjectName": projectName
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+			console.log(response);
+		  $("#content").html(response);
 		});
 	}
 	
@@ -144,7 +144,7 @@
 			<td>
 				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
-				<button class="BlueButton" onclick="getResourcesByProject({{$project.ID}});" data-dismiss="modal">More Info.</button>
+				<button class="BlueButton" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">More Info.</button>
 			</td>
 		</tr>
 		{{end}}	

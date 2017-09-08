@@ -35,10 +35,8 @@
 			    .then(function(response) {
 					data=response.data;
 					$("#content").html(data);
-			    });
-				
-			}
-		    
+			    });				
+			}		    
 		});
 		
 		app.config(['$qProvider', function ($qProvider) {
@@ -58,7 +56,26 @@
 				$("#mask").css("display","block");
 			}
 		}
-		</script>
+		
+		function sendTitle(sectionName){
+			$('#titlePag').html(sectionName)
+		}
+		
+		reload = function(path){
+			var settings = {
+				method: 'POST',
+				url: path,
+				headers: {
+					'Content-Type': undefined
+				},
+				data: { 
+				}
+			}
+			$.ajax(settings).done(function (response) {
+			  $("#content").html(response);
+			});
+		}
+	</script>
 </head>
 
 <body>
@@ -103,15 +120,18 @@
 	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
-		  <a ng-click="link('resources')" onclick="toNav()">Resources</a>
-		  <a ng-click="link('projects')" onclick="toNav()">Projects</a>
-		  <a ng-click="link('skills')" onclick="toNav()">Skills</a>
+		  <a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
+		  <a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
+		  <a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
 		  <a href="#">About</a>
 		</div>
 		<div id="sidebar">
 			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>
 		</div>
-		<div class="content container-fluid" id="content" ng-bind-html="content">
+		<div class="content container-fluid">
+			<h1 id="titlePag"></h1>
+			<div  id="content" ng-bind-html="content">
+			</div>
 		</div>
 		<div id="ImagesHidden">
 			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px;" src="/img/loading.gif"></div>

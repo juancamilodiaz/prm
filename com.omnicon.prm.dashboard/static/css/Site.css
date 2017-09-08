@@ -39,6 +39,11 @@
     background-color: rgba(0,0,0,0.4);
     display: none;
 }
+#titlePag{
+    font-size: 44px;
+    margin-top: 0px;
+    margin-bottom: 17px;
+}
 /* Header */
 #HeaderPlaceHolder{
 	height:50px;

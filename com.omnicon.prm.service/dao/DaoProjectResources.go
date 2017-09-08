@@ -233,25 +233,23 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 
 	var filters bytes.Buffer
 	if pProjectResourceFilters.ID != 0 {
-		filters.WriteString("id = '")
+		filters.WriteString("id = ")
 		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ID, 10))
-		filters.WriteString("'")
 	}
 	if pProjectResourceFilters.ProjectId != 0 {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
-		filters.WriteString("project_id = '")
+		filters.WriteString("project_id = ")
 		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ProjectId, 10))
-		filters.WriteString("'")
 	}
 	if pProjectResourceFilters.ResourceId != 0 {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
-		filters.WriteString("resource_id = '")
+		filters.WriteString("resource_id = ")
 		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ResourceId, 10))
-		filters.WriteString("'")
+
 	}
 	if pStartDate != nil {
 		if filters.String() != "" {

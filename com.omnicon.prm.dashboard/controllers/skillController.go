@@ -116,7 +116,7 @@ func (this *SkillController) UpdateSkill() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-
+	this.TplName = "Common/message.tpl"
 }
 
 func (this *SkillController) DeleteSkill() {
@@ -143,4 +143,5 @@ func (this *SkillController) DeleteSkill() {
 	if err != nil {
 		log.Error(err.Error())
 	}
+	this.TplName = "Common/message.tpl"
 }

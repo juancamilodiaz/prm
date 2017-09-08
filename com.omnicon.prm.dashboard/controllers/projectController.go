@@ -61,6 +61,7 @@ func (this *ProjectController) CreateProject() {
 	if err != nil {
 		log.Error(err.Error())
 	}
+	this.TplName = "Common/message.tpl"
 }
 
 func (this *ProjectController) ReadProject() {
@@ -119,6 +120,7 @@ func (this *ProjectController) UpdateProject() {
 	if err != nil {
 		log.Error(err.Error())
 	}
+	this.TplName = "Common/message.tpl"
 }
 
 func (this *ProjectController) DeleteProject() {
@@ -152,9 +154,11 @@ func (this *ProjectController) DeleteProject() {
 }
 
 func (this *ProjectController) GetResourcesByProject() {
-	operation := "GetProjects"
+	operation := "GetResourcesToProjects"
 
-	input := domain.GetProjectsRQ{}
+	input := domain.GetResourcesToProjectsRQ{}
+	value, _ := this.GetInt64("ID")
+	input.ProjectId = &value
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -167,11 +171,12 @@ func (this *ProjectController) GetResourcesByProject() {
 
 	if err == nil {
 		defer res.Body.Close()
-		message := new(domain.GetProjectsRS)
+		message := new(domain.GetResourcesToProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("Projects", message.Projects)
-		this.Data["Projects"] = message.Projects
-		this.TplName = "Projects/listProjects.tpl"
+		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
+		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+		this.Data["Title"] = this.GetString("ProjectName")
+		this.TplName = "Projects/listResourceByProject.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."

@@ -51,7 +51,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/resources');
 		});
 	}
 	
@@ -74,7 +74,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/resources');
 		});
 	}
 	
@@ -107,7 +107,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/resources');
 		});
 	}
 		
