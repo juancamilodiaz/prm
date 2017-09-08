@@ -13,7 +13,7 @@
 		$("#projectEndDate").val(null);
 		$("#projectActive").prop('checked', false);
 		
-		$("#modalTittle").html("Create Project");
+		$("#modalTitle").html("Create Project");
 		$("#projectUpdate").css("display", "none");
 		$("#projectCreate").css("display", "inline-block");
 	}
@@ -26,7 +26,7 @@
 		$("#projectEndDate").val(pEndDate);
 		$("#projectActive").prop('checked', pEnabled);
 		
-		$("#modalTittle").html("Update Project");
+		$("#modalTitle").html("Update Project");
 		$("#projectCreate").css("display", "none");
 		$("#projectUpdate").css("display", "inline-block");
 	}
@@ -162,7 +162,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTittle" class="modal-title"></h4>
+        <h4 id="modalTitle" class="modal-title"></h4>
       </div>
       <div class="modal-body">
         <input type="hidden" id="projectID">
