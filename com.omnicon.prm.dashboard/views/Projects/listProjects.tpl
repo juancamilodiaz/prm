@@ -18,13 +18,13 @@
 		$("#projectCreate").css("display", "inline-block");
 	}
 	
-	configureUpdateModal = function(pID, pName, pStartDate, pEndDate, pEnabled){
+	configureUpdateModal = function(pID, pName, pStartDate, pEndDate, pActive){
 		
 		$("#projectID").val(pID);
 		$("#projectName").val(pName);
 		$("#projectStartDate").val(pStartDate);
 		$("#projectEndDate").val(pEndDate);
-		$("#projectActive").prop('checked', pEnabled);
+		$("#projectActive").prop('checked', pActive);
 		
 		$("#modalTitle").html("Update Project");
 		$("#projectCreate").css("display", "none");

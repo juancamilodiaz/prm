@@ -4,6 +4,34 @@
 
 		});
 	});
+	
+	configureCreateModal = function(){
+		
+		$("#resourceID").val(null);
+		$("#resourceName").val(null);
+		$("#resourceLastName").val(null);
+		$("#resourceEmail").val(null);
+		$("#resourceRank").val(null);
+		$("#resourceActive").prop('checked', false);
+		
+		$("#modalTitle").html("Create Resource");
+		$("#resourceUpdate").css("display", "none");
+		$("#resourceCreate").css("display", "inline-block");
+	}
+	
+	configureUpdateModal = function(pID, pName, pLastName, pEmail, pRank, pActive){
+		
+		$("#resourceID").val(pID);
+		$("#resourceName").val(pName);
+		$("#resourceLastName").val(pLastName);
+		$("#resourceEmail").val(pEmail);
+		$("#resourceRank").val(pRank);
+		$("#resourceActive").prop('checked', pActive);
+		
+		$("#modalTitle").html("Update Resource");
+		$("#resourceCreate").css("display", "none");
+		$("#resourceUpdate").css("display", "inline-block");
+	}
 
 	createResource = function(){
 		var settings = {
@@ -105,7 +133,7 @@
 			<td>{{$resource.EngineerRange}}</td>
 			<td>{{$resource.Enabled}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="$('#resourceID').val({{$resource.ID}});" data-dismiss="modal">Update</button>
+				<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#resourceID').val({{$resource.ID}});">Skills</button>
 			</td>
@@ -114,7 +142,7 @@
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#resourceModal">Create</button>
+	<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="configureCreateModal()">Create</button>
 </div>
 </div>
 
@@ -125,17 +153,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Create/Update Resource</h4>
+        <h4 id="modalTitle" class="modal-title"></h4>
       </div>
       <div class="modal-body">
-		<div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="ID"> ID </label>
-              <div class="col-sm-8">
-              	<input type="text" id="resourceID" disabled>
-        		</div>
-          </div>
-        </div>
+		<input type="hidden" id="projectID">
         <div class="row-box col-sm-12">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
