@@ -93,7 +93,7 @@
 		</div>
 		<div id="NavRight" class="NavItem">
 			<div id="login" class="NavItem">
-				<label>User:</label><input type="text" id="LogUser"><label>Password:</label> <input type="password" id="LogPassword"> <button class="BlueButton">Login</button>
+				<label>User:</label><input type="text" id="LogUser"><label>Password:</label> <input type="password" id="LogPassword"> <button class="BlueButton" disabled>Login</button>
 			</div>
 		</div>
 	</div>

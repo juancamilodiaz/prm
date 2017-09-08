@@ -24,9 +24,9 @@
 			<td>{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>
 			<td>{{$resourceToProject.Lead}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick="$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign of project</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceId}}');$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Update assign</button>
-				<button class="BlueButton" onclick="getResourcesByProject({{$resourceToProject.ResourceId}});" data-dismiss="modal">Resource Info.</button>
+				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick="$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal" disabled>Unassign of project</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceId}}');$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal" disabled>Update assign</button>
+				<button class="BlueButton" onclick="getResourcesByProject({{$resourceToProject.ResourceId}});" data-dismiss="modal" disabled>Resource Info.</button>
 			</td>
 		</tr>
 		{{end}}	
