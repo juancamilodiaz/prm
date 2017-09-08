@@ -17,6 +17,7 @@ func init() {
 	beego.Router("/resources/read", &controllers.ResourceController{}, "post:ReadResource")
 	beego.Router("/resources/update", &controllers.ResourceController{}, "post:UpdateResource")
 	beego.Router("/resources/delete", &controllers.ResourceController{}, "post:DeleteResource")
+	beego.Router("/resources/skills", &controllers.ResourceController{}, "post:GetSkillsByResource")
 	// Projects
 	beego.Router("/projects", &controllers.ProjectController{}, "post:ListProjects")
 	beego.Router("/projects/create", &controllers.ProjectController{}, "post:CreateProject")
@@ -30,4 +31,5 @@ func init() {
 	beego.Router("/skills/read", &controllers.SkillController{}, "post:ReadSkill")
 	beego.Router("/skills/update", &controllers.SkillController{}, "post:UpdateSkill")
 	beego.Router("/skills/delete", &controllers.SkillController{}, "post:DeleteSkill")
+
 }

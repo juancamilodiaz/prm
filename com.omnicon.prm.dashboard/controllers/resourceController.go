@@ -159,3 +159,36 @@ func (this *ResourceController) DeleteResource() {
 	}
 	this.TplName = "Common/message.tpl"
 }
+
+func (this *ResourceController) GetSkillsByResource() {
+	operation := "GetSkillsByResource"
+
+	input := domain.GetResourcesRQ{}
+	value, _ := this.GetInt64("ID")
+	input.ID = &value
+	fmt.Println(value)
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.GetSkillByResourceRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		fmt.Println("GetSkillsByResource", message.Skills)
+		this.Data["Skills"] = message.Skills
+		this.Data["Title"] = this.GetString("ResourceName")
+		this.TplName = "Resources/listSkillsByResource.tpl"
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
