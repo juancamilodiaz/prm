@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -38,14 +37,21 @@ func (this *SkillController) ListSkills() {
 func (this *SkillController) CreateSkill() {
 	operation := "CreateSkill"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"Name\":\"" + this.GetString("Name") + "\"" +
-		"\n}")
-	fmt.Println(payload)
+	input := domain.CreateSkillRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, payload)
+	inputBuffer := EncoderInput(input)
 
-	message := new(domain.GetSkillsRS)
+	res, err := PostData(operation, inputBuffer)
+	if err != nil {
+		log.Error(err.Error())
+	}
+
+	message := new(domain.CreateSkillRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
@@ -58,8 +64,16 @@ func (this *SkillController) CreateSkill() {
 func (this *SkillController) ReadSkill() {
 	operation := "GetSkills"
 
-	payload := strings.NewReader("{\n\t\"Id\":" + this.Ctx.Input.Param(":id") + "\n}")
-	res, err := PostData(operation, payload)
+	input := domain.GetSkillsRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
 
 	if err == nil {
 		fmt.Println("Respuesta", res)
@@ -81,13 +95,16 @@ func (this *SkillController) ReadSkill() {
 func (this *SkillController) UpdateSkill() {
 	operation := "UpdateSkill"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"ID\":" + this.GetString("ID") + "," +
-		"\n\t\"Name\":\"" + this.GetString("Name") + "\"" + "\n}")
+	input := domain.UpdateSkillRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	fmt.Println(payload)
+	inputBuffer := EncoderInput(input)
 
-	res, err := PostData(operation, payload)
+	res, err := PostData(operation, inputBuffer)
 	if err != nil {
 		log.Error(err.Error())
 	}
@@ -105,17 +122,21 @@ func (this *SkillController) UpdateSkill() {
 func (this *SkillController) DeleteSkill() {
 	operation := "DeleteSkill"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"ID\":" + this.GetString("ID") +
-		"\n}")
-	fmt.Println(payload)
+	input := domain.DeleteSkillRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, payload)
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
 	if err != nil {
 		log.Error(err.Error())
 	}
 
-	message := new(domain.GetSkillsRS)
+	message := new(domain.DeleteSkillRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()

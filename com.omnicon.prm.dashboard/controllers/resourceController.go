@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -48,17 +47,16 @@ func (this *ResourceController) ListResources() {
 func (this *ResourceController) CreateResource() {
 	operation := "CreateResource"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"Name\":\"" + this.GetString("Name") + "\"," +
-		"\n\t\"LastName\":\"" + this.GetString("LastName") + "\"," +
-		"\n\t\"Email\":\"" + this.GetString("Email") + "\"," +
-		"\n\t\"Photo\":\"" + this.GetString("Photo") + "\"," +
-		"\n\t\"EngineerRange\":\"" + this.GetString("EngineerRange") + "\"," +
-		"\n\t\"Enabled\":" + this.GetString("Enabled") +
-		"\n}")
-	fmt.Println(payload)
+	input := domain.GetResourcesRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	res, _ := PostData(operation, payload)
+	inputBuffer := EncoderInput(input)
+
+	res, _ := PostData(operation, inputBuffer)
 
 	message := new(domain.GetResourcesRS)
 	json.NewDecoder(res.Body).Decode(&message)
@@ -67,12 +65,19 @@ func (this *ResourceController) CreateResource() {
 	defer res.Body.Close()
 }
 
-func (main *ResourceController) ReadResource() {
+func (this *ResourceController) ReadResource() {
 	operation := "GetResources"
 
-	payload := strings.NewReader("{\n\t\"Id\":" + main.Ctx.Input.Param(":id") + "\n}")
+	input := domain.GetResourcesRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, payload)
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
 
 	if err == nil {
 		fmt.Println("Respuesta", res)
@@ -80,53 +85,66 @@ func (main *ResourceController) ReadResource() {
 		message := new(domain.GetResourcesRS)
 		json.NewDecoder(res.Body).Decode(&message)
 
-		main.Data["Resources"] = message.Resources
-		main.TplName = "Resources/viewResources.tpl"
+		this.Data["Resources"] = message.Resources
+		this.TplName = "Resources/viewResources.tpl"
 	} else {
 		log.Error(err.Error())
-		main.Data["Title"] = "The Service is down."
-		main.Data["Message"] = "Please contact with the system manager."
-		main.Data["Type"] = "Error"
-		main.TplName = "Common/message.tpl"
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
 	}
 	//body, _ := ioutil.ReadAll(res.Body)
 }
 
-func (main *ResourceController) UpdateResource() {
+func (this *ResourceController) UpdateResource() {
 	operation := "UpdateResource"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"ID\":" + main.GetString("ID") + "," +
-		"\n\t\"Name\":\"" + main.GetString("Name") + "\"," +
-		"\n\t\"LastName\":\"" + main.GetString("LastName") + "\"," +
-		"\n\t\"Email\":\"" + main.GetString("Email") + "\"," +
-		"\n\t\"Photo\":\"" + main.GetString("Photo") + "\"," +
-		"\n\t\"EngineerRange\":\"" + main.GetString("EngineerRange") + "\"," +
-		"\n\t\"Enabled\":" + main.GetString("Enabled") + "\n}")
+	input := domain.UpdateResourceRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	fmt.Println(payload)
+	inputBuffer := EncoderInput(input)
 
-	res, err := PostData(operation, payload)
+	res, err := PostData(operation, inputBuffer)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	message := new(domain.UpdateResourceRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
 
-func (main *ResourceController) DeleteResource() {
+func (this *ResourceController) DeleteResource() {
 	operation := "DeleteResource"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"ID\":" + main.GetString("ID") +
-		"\n}")
-	fmt.Println(payload)
-	res, err := PostData(operation, payload)
+	input := domain.GetResourcesRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	message := new(domain.GetResourcesRS)
-	json.NewDecoder(res.Body).Decode(&message)
+	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
-	log.Error(err.Error())
+	if err != nil {
+		log.Error(err.Error())
+	}
 }
