@@ -23,7 +23,7 @@
 	<link rel="stylesheet" type="text/css" href="/js/Bootstrap/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="/css/Site.css">
-	
+
 	<script>
 		var app = angular.module('index', ['ngSanitize']);
 		
@@ -46,16 +46,29 @@
 		}]);
 		
 	</script>
+	<script>
+		function toNav() {
+			if (document.getElementById("mySidenav").style.width == '250px') {
+				document.getElementById("mySidenav").style.width = "0";
+			    document.getElementById("sidebar").style.marginLeft= "0";
+				$("#mask").css("display","none");
+			} else {
+				document.getElementById("mySidenav").style.width = "250px";
+			    document.getElementById("sidebar").style.marginLeft = "250px";
+				$("#mask").css("display","block");
+			}
+		}
+		</script>
 </head>
 
 <body>
 	<div id="HeaderPlaceHolder">
 		<div id="NavLeft"  class="NavItem">
-			<div class="NavItem">
+			<!--div class="NavItem">
 				<div class="dropdown">
 					<button id="NavMenuButton" class="btn btn-primary btn-menu toggle" type="button"><span class="glyphicon glyphicon-th-list"></span></button>
 				</div>
-			</div>
+			</div-->
 			<div class="NavItem">
 			</div>
 		</div>
@@ -68,7 +81,7 @@
 		</div>
 	</div>
 	
-	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
+	<!--div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
 		<div class="sidebar collapsed" id="sidebar">
 			<ul>
 				<li><a ng-click="link('resources')">Resources</a></li>
@@ -85,9 +98,30 @@
 		<div id="ImagesHidden">
 			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px;" src="/img/loading.gif"></div>
 		</div>
+	</div-->
+	
+	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
+		<div id="mySidenav" class="sidenav">
+		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
+		  <a ng-click="link('resources')" onclick="toNav()">Resources</a>
+		  <a ng-click="link('projects')" onclick="toNav()">Projects</a>
+		  <a ng-click="link('skills')" onclick="toNav()">Skills</a>
+		  <a href="#">About</a>
+		</div>
+		<div id="sidebar">
+			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>
+		</div>
+		<div class="content container-fluid" id="content" ng-bind-html="content">
+		</div>
+		<div id="ImagesHidden">
+			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px;" src="/img/loading.gif"></div>
+		</div>
 	</div>
 	
 	<div id ="FooterPlaceHolder">
 	</div>
+	<div id="mask" onclick="toNav()">
+    
+</div>
 </body>
 </html>
