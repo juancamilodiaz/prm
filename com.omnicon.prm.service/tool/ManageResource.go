@@ -148,32 +148,6 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 	return &response
 }
 
-func DisableResource(pId string) bool {
-	oldResource := GetResource(pId)
-	if oldResource != nil {
-		oldResource.Enabled = false
-		// TODO Save in DB
-		return true
-	}
-	return false
-}
-
-func EnableResource(pId string) bool {
-	oldResource := GetResource(pId)
-	if oldResource != nil {
-		oldResource.Enabled = true
-		// TODO Save in DB
-		return true
-	}
-	return false
-}
-
-func GetResource(pId string) *DOMAIN.Resource {
-	resource := DOMAIN.Resource{}
-	// TODO Get from DB
-	return &resource
-}
-
 func ValidateRQ(pResource *DOMAIN.Resource) bool {
 	// TODO Validations here
 	return true
@@ -393,6 +367,40 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	response.Status = "OK"
 
 	header := new(DOMAIN.GetResourcesRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}
+
+func GetSkillsToResources(pRequest *DOMAIN.GetSkillByResourceRQ) *DOMAIN.GetSkillByResourceRS {
+	timeResponse := time.Now()
+	response := DOMAIN.GetSkillByResourceRS{}
+
+	resourcesSkills := dao.GetResourceSkillsByResourceId(pRequest.ID)
+
+	if resourcesSkills != nil && len(resourcesSkills) > 0 {
+		// Create response
+		response.Status = "OK"
+		response.Skills = resourcesSkills
+
+		header := new(DOMAIN.GetSkillbyResourceRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "OK"
+
+	header := new(DOMAIN.GetSkillbyResourceRS_Header)
 	header.RequestDate = time.Now().String()
 	responseTime := time.Now().Sub(timeResponse)
 	header.ResponseTime = responseTime.String()

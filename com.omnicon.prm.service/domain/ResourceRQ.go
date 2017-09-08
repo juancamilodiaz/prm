@@ -54,3 +54,7 @@ type UpdateResourceRQ struct {
 	EngineerRange string
 	Enabled       bool
 }
+
+type GetSkillByResourceRQ struct {
+	ID int64
+}
