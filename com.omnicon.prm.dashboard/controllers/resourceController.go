@@ -47,7 +47,7 @@ func (this *ResourceController) ListResources() {
 func (this *ResourceController) CreateResource() {
 	operation := "CreateResource"
 
-	input := domain.GetResourcesRQ{}
+	input := domain.CreateResourceRQ{}
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -56,11 +56,16 @@ func (this *ResourceController) CreateResource() {
 
 	inputBuffer := EncoderInput(input)
 
-	res, _ := PostData(operation, inputBuffer)
+	res, err := PostData(operation, inputBuffer)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
-	message := new(domain.GetResourcesRS)
-	json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
+	message := new(domain.CreateResourceRS)
+	err = json.NewDecoder(res.Body).Decode(&message)
+	if err != nil {
+		log.Error(err.Error())
+	}
 
 	defer res.Body.Close()
 }
@@ -126,7 +131,7 @@ func (this *ResourceController) UpdateResource() {
 func (this *ResourceController) DeleteResource() {
 	operation := "DeleteResource"
 
-	input := domain.GetResourcesRQ{}
+	input := domain.DeleteResourceRQ{}
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -140,7 +145,7 @@ func (this *ResourceController) DeleteResource() {
 		log.Error(err.Error())
 	}
 
-	message := new(domain.GetResourcesRS)
+	message := new(domain.DeleteResourceRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()
