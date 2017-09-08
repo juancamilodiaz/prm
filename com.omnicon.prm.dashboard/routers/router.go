@@ -10,12 +10,13 @@ func init() {
 	beego.SetStaticPath("/js", "static/js")
 	beego.SetStaticPath("/img", "static/img")
 	beego.Router("/", &controllers.MainController{})
+
 	// Resources
-	beego.Router("/resources", &controllers.MainController{}, "post:ListResources")
-	beego.Router("/resources/create", &controllers.MainController{}, "post:CreateResource")
-	beego.Router("/resources/read", &controllers.MainController{}, "post:ReadResource")
-	beego.Router("/resources/update", &controllers.MainController{}, "post:UpdateResource")
-	beego.Router("/resources/delete", &controllers.MainController{}, "post:DeleteResource")
+	beego.Router("/resources", &controllers.ResourceController{}, "post:ListResources")
+	beego.Router("/resources/create", &controllers.ResourceController{}, "post:CreateResource")
+	beego.Router("/resources/read", &controllers.ResourceController{}, "post:ReadResource")
+	beego.Router("/resources/update", &controllers.ResourceController{}, "post:UpdateResource")
+	beego.Router("/resources/delete", &controllers.ResourceController{}, "post:DeleteResource")
 	// Projects
 	beego.Router("/projects", &controllers.MainController{}, "post:ListProjects")
 	beego.Router("/projects/create", &controllers.MainController{}, "post:CreateProject")
