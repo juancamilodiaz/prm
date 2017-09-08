@@ -156,7 +156,7 @@
         <h4 id="modalTitle" class="modal-title"></h4>
       </div>
       <div class="modal-body">
-		<input type="hidden" id="projectID">
+		<input type="hidden" id="resourceID">
         <div class="row-box col-sm-12">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
