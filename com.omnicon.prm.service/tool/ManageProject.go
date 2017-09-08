@@ -204,6 +204,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 		if resource != nil {
 			projectResources := DOMAIN.ProjectResources{}
 			projectResources.ResourceId = pRequest.ResourceId
+			projectResources.ResourceName = resource.Name + " " + resource.LastName
 			projectResources.ProjectId = pRequest.ProjectId
 			startDate := new(string)
 			startDate = &pRequest.StartDate

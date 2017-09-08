@@ -25,6 +25,7 @@ func init() {
 	beego.Router("/projects/update", &controllers.ProjectController{}, "post:UpdateProject")
 	beego.Router("/projects/delete", &controllers.ProjectController{}, "post:DeleteProject")
 	beego.Router("/projects/resources", &controllers.ProjectController{}, "post:GetResourcesByProject")
+	beego.Router("/projects/resources/unassign", &controllers.ProjectController{}, "post:DeleteResourceToProject")
 	// Skills
 	beego.Router("/skills", &controllers.SkillController{}, "post:ListSkills")
 	beego.Router("/skills/create", &controllers.SkillController{}, "post:CreateSkill")

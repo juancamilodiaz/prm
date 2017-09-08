@@ -137,11 +137,13 @@ func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, err
 	res, err := session.InsertInto("ProjectResources").Columns(
 		"project_id",
 		"resource_id",
+		"resource_name",
 		"start_date",
 		"end_date",
 		"lead").Values(
 		pProjectResources.ProjectId,
 		pProjectResources.ResourceId,
+		pProjectResources.ResourceName,
 		pProjectResources.StartDate,
 		pProjectResources.EndDate,
 		pProjectResources.Lead).Exec()
@@ -249,6 +251,15 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		}
 		filters.WriteString("resource_id = ")
 		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ResourceId, 10))
+
+	}
+	if pProjectResourceFilters.ResourceName != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("resource_name = '")
+		filters.WriteString(pProjectResourceFilters.ResourceName)
+		filters.WriteString("'")
 
 	}
 	if pStartDate != nil {

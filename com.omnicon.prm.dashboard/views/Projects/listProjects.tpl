@@ -46,7 +46,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/projects')
+		  reload('/projects', {})
 		});
 	}
 	
@@ -67,7 +67,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/projects')
+		  reload('/projects', {})
 		});
 	}
 	
@@ -100,7 +100,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/projects')
+		  reload('/projects', {})
 		});
 	}
 	

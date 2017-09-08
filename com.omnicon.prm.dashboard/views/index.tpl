@@ -61,15 +61,14 @@
 			$('#titlePag').html(sectionName)
 		}
 		
-		reload = function(path){
+		reload = function(pPath, pData){
 			var settings = {
 				method: 'POST',
-				url: path,
+				url: pPath,
 				headers: {
 					'Content-Type': undefined
 				},
-				data: { 
-				}
+				data: pData
 			}
 			$.ajax(settings).done(function (response) {
 			  $("#content").html(response);

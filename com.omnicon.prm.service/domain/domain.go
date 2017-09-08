@@ -24,12 +24,13 @@ type Project struct {
 }
 
 type ProjectResources struct {
-	ID         int64     `db:"id"`
-	ProjectId  int64     `db:"project_id"`
-	ResourceId int64     `db:"resource_id"`
-	StartDate  time.Time `db:"start_date"`
-	EndDate    time.Time `db:"end_date"`
-	Lead       bool      `db:"lead"`
+	ID           int64     `db:"id"`
+	ProjectId    int64     `db:"project_id"`
+	ResourceId   int64     `db:"resource_id"`
+	ResourceName string    `db:"resource_name"`
+	StartDate    time.Time `db:"start_date"`
+	EndDate      time.Time `db:"end_date"`
+	Lead         bool      `db:"lead"`
 }
 
 type ResourceSkills struct {

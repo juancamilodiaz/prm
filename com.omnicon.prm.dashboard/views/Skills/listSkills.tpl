@@ -37,7 +37,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/skills');
+		  reload('/skills', {});
 		});
 	}
 	
@@ -55,7 +55,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/skills');
+		  reload('/skills', {});
 		});
 	}
 	
@@ -88,7 +88,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/skills');
+		  reload('/skills', {});
 		});
 	}
 	
