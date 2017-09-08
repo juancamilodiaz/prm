@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -67,9 +66,16 @@ func (this *ProjectController) CreateProject() {
 func (this *ProjectController) ReadProject() {
 	operation := "GetProjects"
 
-	payload := strings.NewReader("{\n\t\"Id\":" + this.Ctx.Input.Param(":id") + "\n}")
+	input := domain.GetProjectsRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, payload)
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
 
 	if err == nil {
 		fmt.Println("Respuesta", res)
@@ -92,15 +98,16 @@ func (this *ProjectController) ReadProject() {
 func (this *ProjectController) UpdateProject() {
 	operation := "UpdateProject"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"ID\":" + this.GetString("ID") + "," +
-		"\n\t\"Name\":\"" + this.GetString("Name") + "\"," +
-		"\n\t\"StartDate\":\"" + this.GetString("StartDate") + "\"," +
-		"\n\t\"EndDate\":\"" + this.GetString("EndDate") + "\"," +
-		"\n\t\"Enabled\":" + this.GetString("Enabled") + "\n}")
+	input := domain.UpdateProjectRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	fmt.Println(payload)
-	res, err := PostData(operation, payload)
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
 	if err != nil {
 		log.Error(err.Error())
 	}
@@ -117,11 +124,16 @@ func (this *ProjectController) UpdateProject() {
 func (this *ProjectController) DeleteProject() {
 	operation := "DeleteProject"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"ID\":" + this.GetString("ID") +
-		"\n}")
-	fmt.Println(payload)
-	res, err := PostData(operation, payload)
+	input := domain.DeleteProjectRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
 	if err != nil {
 		log.Error(err.Error())
 	}
@@ -142,12 +154,16 @@ func (this *ProjectController) DeleteProject() {
 func (this *ProjectController) GetResourcesByProject() {
 	operation := "GetProjects"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"ID\":" + this.GetString("ID") +
-		"\n}")
-	fmt.Println(payload)
+	input := domain.GetProjectsRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, payload)
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
 
 	if err == nil {
 		defer res.Body.Close()
