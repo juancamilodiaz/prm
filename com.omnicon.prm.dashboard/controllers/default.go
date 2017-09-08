@@ -19,7 +19,7 @@ type MainController struct {
 func (c *MainController) Get() {
 	c.Data["Website"] = "beego.me"
 	c.Data["Email"] = "astaxie@gmail.com"
-	c.TplName = "index.tpl"
+	c.TplName = "index2.tpl"
 }
 
 /* Resources * /
@@ -330,7 +330,7 @@ func (main *MainController) DeleteProject() {
 	main.TplName = "Common/message.tpl"
 }
 
-/* Skills */
+/* Skills * /
 func (main *MainController) ListSkills() {
 	url := "http://localhost:10104/GetSkills"
 
@@ -474,3 +474,4 @@ func (main *MainController) DeleteSkill() {
 		log.Error(err.Error())
 	}
 }
+*/
