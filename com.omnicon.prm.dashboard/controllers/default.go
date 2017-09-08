@@ -22,7 +22,7 @@ func (c *MainController) Get() {
 	c.TplName = "index.tpl"
 }
 
-/* Resources */
+/* Resources * /
 func (main *MainController) ListResources() {
 	url := "http://localhost:10104/GetResources"
 
@@ -174,6 +174,7 @@ func (main *MainController) DeleteResource() {
 		log.Error(err.Error())
 	}
 }
+*/
 
 /* Projects */
 func (main *MainController) ListProjects() {
