@@ -1,16 +1,17 @@
 package controllers
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
-	"strings"
 
 	"prm/com.omnicon.prm.service/log"
 )
 
-func PostData(pOperation string, pRequest *strings.Reader) (*http.Response, error) {
+func PostData(pOperation string, pRequest *bytes.Buffer) (*http.Response, error) {
 
 	if pRequest == nil {
-		pRequest = strings.NewReader("{\n\n}")
+		pRequest = bytes.NewBuffer([]byte("{\n\n}"))
 	}
 	req, _ := http.NewRequest("POST", getURL(pOperation), pRequest)
 	req.Header.Add("accept", "application/json")
@@ -24,7 +25,16 @@ func PostData(pOperation string, pRequest *strings.Reader) (*http.Response, erro
 
 	return res, err
 }
+
 func getURL(pOperation string) string {
 	postUrl := URL + pOperation
 	return postUrl
+}
+
+func EncoderInput(pInput interface{}) *bytes.Buffer {
+
+	bufferInput := new(bytes.Buffer)
+	json.NewEncoder(bufferInput).Encode(pInput)
+
+	return bufferInput
 }

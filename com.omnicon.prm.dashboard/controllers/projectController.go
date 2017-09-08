@@ -40,14 +40,16 @@ func (this *ProjectController) CreateProject() {
 
 	operation := "CreateProject"
 
-	payload := strings.NewReader("{" +
-		"\n\t\"Name\":\"" + this.GetString("Name") + "\"," +
-		"\n\t\"StartDate\":\"" + this.GetString("StartDate") + "\"," +
-		"\n\t\"EndDate\":\"" + this.GetString("EndDate") + "\"," +
-		"\n\t\"Enabled\":" + this.GetString("Enabled") +
-		"\n}")
-	fmt.Println(payload)
-	res, err := PostData(operation, payload)
+	input := domain.CreateProjectRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
 
 	if err != nil {
 		log.Error(err.Error())
