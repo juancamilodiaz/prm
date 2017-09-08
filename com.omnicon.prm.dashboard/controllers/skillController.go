@@ -9,33 +9,23 @@ import (
 	"prm/com.omnicon.prm.service/log"
 )
 
-type ResourceController struct {
+type SkillController struct {
 	beego.Controller
 }
 
-var URL string = "http://localhost:10104/"
-
 /*Index*/
-func (this *ResourceController) Get() {
-	this.Data["Website"] = "beego.me"
-	this.Data["Email"] = "astaxie@gmail.com"
-	this.TplName = "index.tpl"
-	//TODO quitar website....
-}
-
-/* Resources */
-func (this *ResourceController) ListResources() {
-	operation := "GetResources"
+func (this *SkillController) ListSkills() {
+	operation := "GetSkills"
 
 	res, err := PostData(operation, nil)
 
 	if err == nil {
 		defer res.Body.Close()
-		message := new(domain.GetResourcesRS)
+		message := new(domain.GetSkillsRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("Resources", message.Resources)
-		this.Data["Resources"] = message.Resources
-		this.TplName = "Resources/listResources.tpl"
+		fmt.Println("Skills", message.Skills)
+		this.Data["Skills"] = message.Skills
+		this.TplName = "Skills/listSkills.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."
@@ -44,10 +34,10 @@ func (this *ResourceController) ListResources() {
 	}
 }
 
-func (this *ResourceController) CreateResource() {
-	operation := "CreateResource"
+func (this *SkillController) CreateSkill() {
+	operation := "CreateSkill"
 
-	input := domain.CreateResourceRQ{}
+	input := domain.CreateSkillRQ{}
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -61,23 +51,20 @@ func (this *ResourceController) CreateResource() {
 		log.Error(err.Error())
 	}
 
-	message := new(domain.CreateResourceRS)
+	message := new(domain.CreateSkillRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	if err != nil {
-		log.Error(err.Error())
-	}
-
+	fmt.Println(message)
 	defer res.Body.Close()
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Common/message.tpl"
+	this.TplName = "Skills/listSkills.tpl"
 }
 
-func (this *ResourceController) ReadResource() {
-	operation := "GetResources"
+func (this *SkillController) ReadSkill() {
+	operation := "GetSkills"
 
-	input := domain.GetResourcesRQ{}
+	input := domain.GetSkillsRQ{}
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -91,11 +78,11 @@ func (this *ResourceController) ReadResource() {
 	if err == nil {
 		fmt.Println("Respuesta", res)
 		defer res.Body.Close()
-		message := new(domain.GetResourcesRS)
+		message := new(domain.GetSkillsRS)
 		json.NewDecoder(res.Body).Decode(&message)
 
-		this.Data["Resources"] = message.Resources
-		this.TplName = "Resources/viewResources.tpl"
+		this.Data["Skills"] = message.Skills
+		this.TplName = "Skills/viewSkills.tpl"
 	} else {
 		log.Error(err.Error())
 		this.Data["Title"] = "The Service is down."
@@ -103,13 +90,12 @@ func (this *ResourceController) ReadResource() {
 		this.Data["Type"] = "Error"
 		this.TplName = "Common/message.tpl"
 	}
-	//body, _ := ioutil.ReadAll(res.Body)
 }
 
-func (this *ResourceController) UpdateResource() {
-	operation := "UpdateResource"
+func (this *SkillController) UpdateSkill() {
+	operation := "UpdateSkill"
 
-	input := domain.UpdateResourceRQ{}
+	input := domain.UpdateSkillRQ{}
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -123,20 +109,20 @@ func (this *ResourceController) UpdateResource() {
 		log.Error(err.Error())
 	}
 
-	message := new(domain.UpdateResourceRS)
+	defer res.Body.Close()
+	message := new(domain.UpdateSkillRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
-	defer res.Body.Close()
 	if err != nil {
 		log.Error(err.Error())
 	}
 	this.TplName = "Common/message.tpl"
 }
 
-func (this *ResourceController) DeleteResource() {
-	operation := "DeleteResource"
+func (this *SkillController) DeleteSkill() {
+	operation := "DeleteSkill"
 
-	input := domain.DeleteResourceRQ{}
+	input := domain.DeleteSkillRQ{}
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -150,7 +136,7 @@ func (this *ResourceController) DeleteResource() {
 		log.Error(err.Error())
 	}
 
-	message := new(domain.DeleteResourceRS)
+	message := new(domain.DeleteSkillRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
 	fmt.Println(message)
 	defer res.Body.Close()

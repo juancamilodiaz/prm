@@ -1,10 +1,35 @@
 <script>
 	$(document).ready(function(){
 		$('#viewProjects').DataTable({
-
 		});
 	});
-
+	
+	configureCreateModal = function(){
+		
+		$("#projectID").val(null);
+		$("#projectName").val(null);
+		$("#projectStartDate").val(null);
+		$("#projectEndDate").val(null);
+		$("#projectActive").prop('checked', false);
+		
+		$("#modalTitle").html("Create Project");
+		$("#projectUpdate").css("display", "none");
+		$("#projectCreate").css("display", "inline-block");
+	}
+	
+	configureUpdateModal = function(pID, pName, pStartDate, pEndDate, pActive){
+		
+		$("#projectID").val(pID);
+		$("#projectName").val(pName);
+		$("#projectStartDate").val(pStartDate);
+		$("#projectEndDate").val(pEndDate);
+		$("#projectActive").prop('checked', pActive);
+		
+		$("#modalTitle").html("Update Project");
+		$("#projectCreate").css("display", "none");
+		$("#projectUpdate").css("display", "inline-block");
+	}
+	
 	createProject = function(){
 		var settings = {
 			method: 'POST',
@@ -21,7 +46,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/projects')
 		});
 	}
 	
@@ -42,7 +67,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/projects')
 		});
 	}
 	
@@ -75,7 +100,25 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
+		  reload('/projects')
+		});
+	}
+	
+	getResourcesByProject = function(projectID, projectName){
+		var settings = {
+			method: 'POST',
+			url: '/projects/resources',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"ID": projectID,
+				"ProjectName": projectName
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			console.log(response);
+		  $("#content").html(response);
 		});
 	}
 	
@@ -99,15 +142,16 @@
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
 			<td>{{$project.Enabled}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick="$('#projectID').val({{$project.ID}});" data-dismiss="modal">Update</button>
+				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
+				<button class="BlueButton" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">More Info.</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#projectModal">Create</button>
+	<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick='configureCreateModal()'>Create</button>
 </div>
 </div>
 
@@ -118,7 +162,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Create/Update Project</h4>
+        <h4 id="modalTitle" class="modal-title"></h4>
       </div>
       <div class="modal-body">
         <input type="hidden" id="projectID">
