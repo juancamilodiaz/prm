@@ -86,6 +86,8 @@ func (m *SetResourceToProjectRS) GetHeader() *SetResourceToProjectRS_Header {
 type GetResourcesToProjectsRS struct {
 	Header              *GetResourcesToProjectsRS_Header
 	ResourcesToProjects []*ProjectResources
+	Projects            []*Project
+	Resources           []*Resource
 	Status              string
 	Message             string
 }

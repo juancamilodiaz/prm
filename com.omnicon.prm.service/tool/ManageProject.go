@@ -473,10 +473,13 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 	if projectsResources != nil && len(projectsResources) > 0 {
 
-		/*for _, projectResource := range projectsResources {
-			projectInformation := dao.GetProjectById(projectResource.ProjectId)
-			resourceInformation := dao.GetResourceById(projectResource.ResourceId)
-		}*/
+		requestProjects := DOMAIN.GetProjectsRQ{}
+		responseProjects := GetProjects(&requestProjects)
+		response.Projects = responseProjects.Projects
+
+		requestResources := DOMAIN.GetResourcesRQ{}
+		responseResources := GetResources(&requestResources)
+		response.Resources = responseResources.Resources
 
 		response.ResourcesToProjects = projectsResources
 		// Create response

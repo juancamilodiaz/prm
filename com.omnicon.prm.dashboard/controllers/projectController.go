@@ -239,6 +239,8 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+		this.Data["Projects"] = message.Projects
+		this.Data["Resources"] = message.Resources
 		this.Data["Title"] = input.ProjectName
 		this.TplName = "Projects/listResourceByProjectToday.tpl"
 	} else {
