@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -385,7 +384,7 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetProjectsRS{}
 
-	isValid, message := util.ValidateDates(pRequest.StartDate, pRequest.EndDate, false)
+	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
 	if !isValid {
 		response.Message = message
 		response.Status = "Error"
@@ -466,9 +465,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	}
 
 	filters := util.MappingFiltersProjectResource(pRequest)
-	fmt.Println("FILTROS", filters)
 	projectsResources, filterString := dao.GetProjectsResourcesByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Lead)
-	fmt.Println("FILTROS String", filterString)
 
 	if len(projectsResources) == 0 && filterString == "" {
 		projectsResources = dao.GetAllProjectResources()

@@ -310,20 +310,20 @@ func MappingFiltersResource(pRequest *domain.GetResourcesRQ) *domain.Resource {
 	if pRequest != nil {
 		filters := domain.Resource{}
 
-		if pRequest.ID != nil {
-			filters.ID = *pRequest.ID
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
 		}
-		if pRequest.Name != nil {
-			filters.Name = *pRequest.Name
+		if pRequest.Name != "" {
+			filters.Name = pRequest.Name
 		}
-		if pRequest.LastName != nil {
-			filters.LastName = *pRequest.LastName
+		if pRequest.LastName != "" {
+			filters.LastName = pRequest.LastName
 		}
-		if pRequest.Email != nil {
-			filters.Email = *pRequest.Email
+		if pRequest.Email != "" {
+			filters.Email = pRequest.Email
 		}
-		if pRequest.EngineerRange != nil {
-			filters.EngineerRange = *pRequest.EngineerRange
+		if pRequest.EngineerRange != "" {
+			filters.EngineerRange = pRequest.EngineerRange
 		}
 		if pRequest.Enabled != nil {
 			filters.Enabled = *pRequest.Enabled
@@ -343,20 +343,20 @@ func MappingFiltersProject(pRequest *domain.GetProjectsRQ) *domain.Project {
 	if pRequest != nil {
 		filters := domain.Project{}
 
-		if pRequest.ID != nil {
-			filters.ID = *pRequest.ID
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
 		}
-		if pRequest.Name != nil {
-			filters.Name = *pRequest.Name
+		if pRequest.Name != "" {
+			filters.Name = pRequest.Name
 		}
-		if pRequest.StartDate != nil {
-			startDate, err := time.Parse("2006-01-02", *pRequest.StartDate)
+		if pRequest.StartDate != "" {
+			startDate, err := time.Parse("2006-01-02", pRequest.StartDate)
 			if err == nil {
 				filters.StartDate = startDate
 			}
 		}
-		if pRequest.EndDate != nil {
-			endDate, err := time.Parse("2006-01-02", *pRequest.EndDate)
+		if pRequest.EndDate != "" {
+			endDate, err := time.Parse("2006-01-02", pRequest.EndDate)
 			if err == nil {
 				filters.EndDate = endDate
 			}
@@ -376,11 +376,11 @@ func MappingFiltersSkill(pRequest *domain.GetSkillsRQ) *domain.Skill {
 	if pRequest != nil {
 		filters := domain.Skill{}
 
-		if pRequest.ID != nil {
-			filters.ID = *pRequest.ID
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
 		}
-		if pRequest.Name != nil {
-			filters.Name = *pRequest.Name
+		if pRequest.Name != "" {
+			filters.Name = pRequest.Name
 		}
 		return &filters
 	}

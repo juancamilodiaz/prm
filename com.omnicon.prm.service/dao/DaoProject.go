@@ -160,7 +160,7 @@ func DeleteProject(pProjectId int64) (int64, error) {
 	return deleteCount, nil
 }
 
-func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate *string, pEnabled *bool) ([]*DOMAIN.Project, string) {
+func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
 	// Slice to keep all resources
 	projects := []*DOMAIN.Project{}
 	result := getProjectCollection().Find()
@@ -182,20 +182,20 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		filters.WriteString(pProjectFilters.Name)
 		filters.WriteString("'")
 	}
-	if pStartDate != nil {
+	if pStartDate != "" {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
 		filters.WriteString("start_date >= '")
-		filters.WriteString(*pStartDate)
+		filters.WriteString(pStartDate)
 		filters.WriteString("'")
 	}
-	if pEndDate != nil {
+	if pEndDate != "" {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
 		filters.WriteString("end_date <= '")
-		filters.WriteString(*pEndDate)
+		filters.WriteString(pEndDate)
 		filters.WriteString("'")
 	}
 	if pEnabled != nil {
