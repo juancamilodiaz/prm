@@ -164,9 +164,6 @@ func (this *ResourceController) GetSkillsByResource() {
 	operation := "GetSkillsByResource"
 
 	input := domain.GetResourcesRQ{}
-	value, _ := this.GetInt64("ID")
-	input.ID = &value
-	fmt.Println(value)
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)

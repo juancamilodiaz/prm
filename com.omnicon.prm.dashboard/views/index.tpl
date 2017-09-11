@@ -75,6 +75,29 @@
 			});
 		}
 	</script>
+	
+	
+	<script>
+		$(document).ready(function(){
+			getResourcesByProjectToday();
+		});
+
+		getResourcesByProjectToday = function(){
+			var time = new Date();
+			var mm = time.getMonth() + 1; // getMonth() is zero-based
+			var dd = time.getDate();
+	        var date =  [time.getFullYear(),
+		          (mm>9 ? '' : '0') + mm,
+		          (dd>9 ? '' : '0') + dd
+		         ].join('-');
+		  	data = { 
+					"StartDate": date,
+					"EndDate": date
+				}
+			reload('/projects/resources/today', data);
+		}
+	</script>
+
 </head>
 
 <body>

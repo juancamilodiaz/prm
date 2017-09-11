@@ -218,3 +218,33 @@ func (this *ProjectController) DeleteResourceToProject() {
 	}
 	//body, _ := ioutil.ReadAll(res.Body)
 }
+
+func (this *ProjectController) GetResourcesByProjectToday() {
+	operation := "GetResourcesToProjects"
+
+	input := domain.GetResourcesToProjectsRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.GetResourcesToProjectsRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
+		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+		this.Data["Title"] = input.ProjectName
+		this.TplName = "Projects/listResourceByProjectToday.tpl"
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
