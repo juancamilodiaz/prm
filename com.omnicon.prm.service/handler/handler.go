@@ -756,7 +756,7 @@ func getSkillsToResources(pResponse http.ResponseWriter, pRequest *http.Request)
 	startTime := time.Now()
 	defer panics.CatchPanic("GetSkillsToResources")
 
-	message := new(domain.GetResourcesRQ)
+	message := new(domain.GetSkillByResourceRQ)
 	accept := pRequest.Header.Get("Accept")
 
 	var err error
