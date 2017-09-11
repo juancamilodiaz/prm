@@ -1,8 +1,8 @@
 <script>
 	$(document).ready(function(){
-		$('#viewResources').DataTable({
-
-		});
+		$('#viewResources').DataTable({});
+		$('#backButton').css("display", "none");
+		sendTitle("Resources");
 	});
 	
 	configureCreateModal = function(){
@@ -151,16 +151,16 @@
 			<td>{{$resource.EngineerRange}}</td>
 			<td>{{$resource.Enabled}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
-				<button class="BlueButton" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Skills</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
+				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Skills</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="configureCreateModal()">Create</button>
+	<button class="button button2" data-toggle="modal" data-target="#resourceModal" onclick="configureCreateModal()">New Resource</button>
 </div>
 </div>
 

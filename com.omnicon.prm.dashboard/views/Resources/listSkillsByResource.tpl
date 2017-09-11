@@ -4,6 +4,11 @@
 
 		});
 		$('#titlePag').html("{{.Title}}")
+		$('#backButton').css("display", "inline-block");
+		$('#backButton').html("Resources");
+		$('#backButton').click(function(){
+			reload('/resources',{});
+		}); 
 	});
 </script>
 <table id="viewSkillsInResource" class="table table-striped table-bordered">
@@ -20,8 +25,8 @@
 			<td>{{$skill.Name}}</td>
 			<td>{{$skill.Value}}</td>
 			<td>
-				<!--button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skill.ID}},'{{$skill.Name}}')" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.ID}});" data-dismiss="modal">Delete</button-->
+				<button class="buttonTable button2" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skill.ID}},'{{$skill.Name}}')" data-dismiss="modal" disabled>Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.ID}});" data-dismiss="modal" disabled>Delete</button>
 			</td>
 		</tr>
 		{{end}}	

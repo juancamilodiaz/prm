@@ -2,6 +2,7 @@
 	$(document).ready(function(){
 		$('#viewSkills').DataTable({
 		});
+		$('#backButton').css("display", "none");
 	});
 	
 	configureCreateModal = function(){
@@ -106,15 +107,15 @@
 		<tr>
 			<td>{{$skilll.Name}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">Delete</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">Delete</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="configureCreateModal()" >Create</button>
+	<button class="button button2" data-toggle="modal" data-target="#skillModal" onclick="configureCreateModal()" >Create</button>
 </div>
 </div>
 

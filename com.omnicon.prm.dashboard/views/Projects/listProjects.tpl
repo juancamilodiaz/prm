@@ -2,6 +2,8 @@
 	$(document).ready(function(){
 		$('#viewProjects').DataTable({
 		});
+		$('#backButton').css("display", "none");
+		sendTitle("Projects");
 	});
 	
 	configureCreateModal = function(){
@@ -142,16 +144,16 @@
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
 			<td>{{$project.Enabled}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
-				<button class="BlueButton" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">More Info.</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
+				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">More Info.</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick='configureCreateModal()'>Create</button>
+	<button class="button button2" data-toggle="modal" data-target="#projectModal" onclick='configureCreateModal()'>New Project</button>
 </div>
 </div>
 

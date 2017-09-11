@@ -92,7 +92,7 @@
 		</div>
 		<div id="NavRight" class="NavItem">
 			<div id="login" class="NavItem">
-				<label>User:</label><input type="text" id="LogUser"><label>Password:</label> <input type="password" id="LogPassword"> <button class="BlueButton" disabled>Login</button>
+				<label>User:</label><input type="text" id="LogUser"><label>Password:</label> <input type="password" id="LogPassword"> <button class="buttonTable button2" disabled>Login</button>
 			</div>
 		</div>
 	</div>
@@ -128,7 +128,10 @@
 			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>
 		</div>
 		<div class="content container-fluid">
-			<h1 id="titlePag"></h1>
+			<h1>
+				<div id="titlePag"></div>
+				<button id="backButton" class="button button2" style="display: none;"></button>				
+			</h1>
 			<div  id="content" ng-bind-html="content">
 			</div>
 		</div>
