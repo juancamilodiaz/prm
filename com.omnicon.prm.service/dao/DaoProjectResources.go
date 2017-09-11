@@ -30,7 +30,7 @@ func GetAllProjectResources() []*DOMAIN.ProjectResources {
 	// Slice to keep all ProjectResources
 	var projectResources []*DOMAIN.ProjectResources
 	// Add all ProjectResources in projectResources variable
-	err := getProjectResourcesCollection().Find().All(projectResources)
+	err := getProjectResourcesCollection().Find().All(&projectResources)
 	// Close session when ends the method
 	defer session.Close()
 	if err != nil {
@@ -297,10 +297,13 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		filters.WriteString(strconv.FormatBool(*pLead))
 		filters.WriteString("'")
 	}
-	err := result.Where(filters.String()).All(&projectsResources)
 
-	if err != nil {
-		log.Error(err)
+	if filters.String() != "" {
+		err := result.Where(filters.String()).All(&projectsResources)
+
+		if err != nil {
+			log.Error(err)
+		}
 	}
 
 	return projectsResources, filters.String()
