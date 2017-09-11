@@ -394,23 +394,23 @@ func MappingFiltersProjectResource(pRequest *domain.GetResourcesToProjectsRQ) *d
 	if pRequest != nil {
 		filters := domain.ProjectResources{}
 
-		if pRequest.ID != nil {
-			filters.ID = *pRequest.ID
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
 		}
-		if pRequest.ProjectId != nil {
-			filters.ProjectId = *pRequest.ProjectId
+		if pRequest.ProjectId != 0 {
+			filters.ProjectId = pRequest.ProjectId
 		}
-		if pRequest.ResourceId != nil {
-			filters.ResourceId = *pRequest.ResourceId
+		if pRequest.ResourceId != 0 {
+			filters.ResourceId = pRequest.ResourceId
 		}
-		if pRequest.StartDate != nil {
-			startDate, err := time.Parse("2006-01-02", *pRequest.StartDate)
+		if pRequest.StartDate != "" {
+			startDate, err := time.Parse("2006-01-02", pRequest.StartDate)
 			if err == nil {
 				filters.StartDate = startDate
 			}
 		}
-		if pRequest.EndDate != nil {
-			endDate, err := time.Parse("2006-01-02", *pRequest.EndDate)
+		if pRequest.EndDate != "" {
+			endDate, err := time.Parse("2006-01-02", pRequest.EndDate)
 			if err == nil {
 				filters.EndDate = endDate
 			}

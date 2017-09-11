@@ -458,7 +458,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	timeResponse := time.Now()
 	response := DOMAIN.GetResourcesToProjectsRS{}
 
-	isValid, message := util.ValidateDates(pRequest.StartDate, pRequest.EndDate, false)
+	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
 	if !isValid {
 		response.Message = message
 		response.Status = "Error"

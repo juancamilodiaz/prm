@@ -227,7 +227,7 @@ func DeleteProjectResourcesByProjectIdAndResourceId(pProjectId, pResourceId int6
 	return deleteCount, nil
 }
 
-func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResources, pStartDate, pEndDate *string, pLead *bool) ([]*DOMAIN.ProjectResources, string) {
+func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResources, pStartDate, pEndDate string, pLead *bool) ([]*DOMAIN.ProjectResources, string) {
 	// Slice to keep all resources
 	projectsResources := []*DOMAIN.ProjectResources{}
 	result := getProjectResourcesCollection().Find()
@@ -273,20 +273,20 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		filters.WriteString("'")
 
 	}
-	if pStartDate != nil {
+	if pStartDate != "" {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
 		filters.WriteString("end_date >= '")
-		filters.WriteString(*pStartDate)
+		filters.WriteString(pStartDate)
 		filters.WriteString("'")
 	}
-	if pEndDate != nil {
+	if pEndDate != "" {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
 		filters.WriteString("start_date <= '")
-		filters.WriteString(*pEndDate)
+		filters.WriteString(pEndDate)
 		filters.WriteString("'")
 	}
 	if pLead != nil {

@@ -114,7 +114,7 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"ID": projectID,
+				"ProjectId": projectID,
 				"ProjectName": projectName
 			}
 		}
