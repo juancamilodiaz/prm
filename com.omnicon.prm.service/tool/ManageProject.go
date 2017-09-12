@@ -471,15 +471,15 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 		projectsResources = dao.GetAllProjectResources()
 	}
 
+	requestProjects := DOMAIN.GetProjectsRQ{}
+	responseProjects := GetProjects(&requestProjects)
+	response.Projects = responseProjects.Projects
+
+	requestResources := DOMAIN.GetResourcesRQ{}
+	responseResources := GetResources(&requestResources)
+	response.Resources = responseResources.Resources
+
 	if projectsResources != nil && len(projectsResources) > 0 {
-
-		requestProjects := DOMAIN.GetProjectsRQ{}
-		responseProjects := GetProjects(&requestProjects)
-		response.Projects = responseProjects.Projects
-
-		requestResources := DOMAIN.GetResourcesRQ{}
-		responseResources := GetResources(&requestResources)
-		response.Resources = responseResources.Resources
 
 		response.ResourcesToProjects = projectsResources
 		// Create response
