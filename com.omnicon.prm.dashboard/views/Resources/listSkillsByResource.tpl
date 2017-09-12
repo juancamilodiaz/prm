@@ -1,7 +1,11 @@
 <script>
 	$(document).ready(function(){
 		$('#viewSkillsInResource').DataTable({
-
+			"columns":[
+				null,
+				null,
+				{"searchable":false}
+			]
 		});
 		$('#titlePag').html("{{.Title}}")
 		$('#backButton').css("display", "inline-block");

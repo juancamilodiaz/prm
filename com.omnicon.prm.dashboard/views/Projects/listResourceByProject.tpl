@@ -1,7 +1,13 @@
 <script>
 	$(document).ready(function(){
 		$('#viewResourceInProject').DataTable({
-
+			"columns":[
+				null,
+				null,
+				null,
+				null,
+				{"searchable":false}
+			]
 		});
 		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");

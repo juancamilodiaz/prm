@@ -1,6 +1,10 @@
 <script>
 	$(document).ready(function(){
 		$('#viewSkills').DataTable({
+			"columns":[
+				null,
+				{"searchable":false}
+			]
 		});
 		$('#backButton').css("display", "none");
 		sendTitle("Skills");

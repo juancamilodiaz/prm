@@ -1,6 +1,15 @@
 <script>
 	$(document).ready(function(){
-		$('#viewResources').DataTable({});
+		$('#viewResources').DataTable({
+			"columns":[
+				null,
+				null,
+				null,
+				null,
+				null,
+				{"searchable":false}
+			]
+		});
 		$('#backButton').css("display", "none");
 		sendTitle("Resources");
 		$('#refreshButton').css("display", "inline-block");

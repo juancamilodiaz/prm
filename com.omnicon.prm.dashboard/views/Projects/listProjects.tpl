@@ -1,6 +1,13 @@
 <script>
 	$(document).ready(function(){
 		$('#viewProjects').DataTable({
+			"columns":[
+				null,
+				null,
+				null,
+				null,
+				{"searchable":false}
+			]
 		});
 		$('#backButton').css("display", "none");
 		$('#backButton').prop('onclick',null).off('click');
