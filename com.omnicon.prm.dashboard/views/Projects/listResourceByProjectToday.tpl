@@ -83,8 +83,9 @@ function drop(ev, projectID, obj) {
 	var data = ev.dataTransfer.getData("text");
 	
 	evento = obj;
-		
+	document.getElementById(data).innerHTML+="<a class='btn' onclick='unassignResource("+projectID+','+ ev.dataTransfer.getData("resourceID") +","+"this"+")'>x</a>";
 	$("#tempResource").html(document.getElementById(data));
+	
 	  
 	$("#setResourceModal").modal("show");
 	
