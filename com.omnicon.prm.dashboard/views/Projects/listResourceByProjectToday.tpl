@@ -19,7 +19,8 @@
 			{{end}}
 		{{end}}
 			+'</div>'+'</div>');
-		{{end}}	
+		{{end}}
+		
 	});
 	
 	unassignResource = function(projectID, resourceID, obj){
@@ -52,7 +53,7 @@ $( "btn" ).click(function() {
 
 <script>
 
-setResourceToProject = function(resourceId, projectId){
+setResourceToProject = function(resourceId, projectId, startDate, endDate){
 	var settings = {
 		method: 'POST',
 		url: '/projects/setresource',
@@ -62,8 +63,8 @@ setResourceToProject = function(resourceId, projectId){
 		data: { 
 			"ProjectId": parseInt(projectId),
 			"ResourceId": parseInt(resourceId),
-			"StartDate": "2017-09-12",
-			"EndDate": "2017-09-12"
+			"StartDate": startDate,
+			"EndDate": endDate
 		}
 	}
 	console.log(settings);
@@ -82,14 +83,21 @@ function drag(ev, resourceID) {
 }
 
 function drop(ev, projectID) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-	console.log(ev.dataTransfer.getData("resourceID"));
-	console.log(projectID);
-    ev.target.appendChild(document.getElementById(data));
+	ev.preventDefault();
+	var data = ev.dataTransfer.getData("text");
+	ev.target.appendChild(document.getElementById(data));
+	  
+	$("#setResourceModal").modal("show");
 	
-	setResourceToProject(ev.dataTransfer.getData("resourceID"), projectID);
+	$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
+	$("#projectIDInput").val(projectID);
 }
+
+function setResourceToProjectExc(){
+	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val());
+}
+
+
 
 function remove(projectID, resourceID){
 	console.log(projectID);
@@ -98,6 +106,8 @@ function remove(projectID, resourceID){
 
 </script>
 
+<var id="projectIDInput"></var>
+<var id="resourceIDInput"></var>
 
 	<div class="row">
 		<div class="col-sm-2">
@@ -114,3 +124,39 @@ function remove(projectID, resourceID){
 			</div>
 		</div>
 	</div>
+	
+<!-- Modal -->
+<div class="modal fade" id="setResourceModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modalTitle" class="modal-title">Assign dates to the resource</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row-box col-sm-12">
+        	<div class="form-group form-group-sm">
+        		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
+              <div class="col-sm-8">
+              	<input type="date" id="resourceStartDate">
+        		</div>
+          </div>
+        </div>
+        <div class="row-box col-sm-12">
+        	<div class="form-group form-group-sm">
+        		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
+              <div class="col-sm-8">
+              	<input type="date" id="resourceEndDate">
+        		</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc()" data-dismiss="modal">Create</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
