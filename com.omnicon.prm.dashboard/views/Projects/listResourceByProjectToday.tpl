@@ -10,7 +10,7 @@
 		{{range $key, $project := $projectsLoop}}
 		 	$("#projects").append('<div class="panel panel-default">'+
 			'<div id="project'+ {{$key}} + '" class="panel-heading">' + {{$project.Name}}+ '</div>'+
-			'<div class="panel-body" ondrop="drop(event,'+ {{$project.ID}} +')" ondragover="allowDrop(event)">'
+			'<div class="panel-body" ondrop="drop(event,'+ {{$project.ID}} +', this)" ondragover="allowDrop(event)">'
 		{{range $keyR, $resProj := $resourcesProject}}
 			{{if eq  $resProj.ProjectId $project.ID}}
 				+'<p id="res'  + {{$keyR}} + '">'+ {{$resProj.ResourceName}} 
@@ -46,12 +46,8 @@
 </script>
 
 <script>
-$( "btn" ).click(function() {
-		  $( "p" ).remove(":contains('Juan Torres')");
-		});
-</script>
 
-<script>
+var evento;
 
 setResourceToProject = function(resourceId, projectId, startDate, endDate){
 	var settings = {
@@ -82,10 +78,13 @@ function drag(ev, resourceID) {
 	ev.dataTransfer.setData("resourceID", resourceID);
 }
 
-function drop(ev, projectID) {
+function drop(ev, projectID, obj) {
 	ev.preventDefault();
 	var data = ev.dataTransfer.getData("text");
-	ev.target.appendChild(document.getElementById(data));
+	
+	evento = obj;
+		
+	$("#tempResource").html(document.getElementById(data));
 	  
 	$("#setResourceModal").modal("show");
 	
@@ -94,17 +93,16 @@ function drop(ev, projectID) {
 }
 
 function setResourceToProjectExc(){
+	$(evento).append($("#tempResource").html());
+	$("#tempResource").html("")	
 	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val());
 }
 
-
-
-function remove(projectID, resourceID){
-	console.log(projectID);
-	console.log(resourceID);
-}
-
 </script>
+
+<div id="tempResource" style="display:none">
+
+</div>
 
 <var id="projectIDInput"></var>
 <var id="resourceIDInput"></var>
