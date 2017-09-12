@@ -3,6 +3,12 @@
 		$('#viewProjects').DataTable({
 		});
 		$('#backButton').css("display", "none");
+		$('#backButton').prop('onclick',null).off('click');
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			reload('/projects',{});
+		});
 		sendTitle("Projects");
 	});
 	

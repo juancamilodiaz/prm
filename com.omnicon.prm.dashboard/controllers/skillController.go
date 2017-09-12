@@ -25,7 +25,12 @@ func (this *SkillController) ListSkills() {
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("Skills", message.Skills)
 		this.Data["Skills"] = message.Skills
-		this.TplName = "Skills/listSkills.tpl"
+		if this.GetString("Template") == "select" {
+			this.TplName = "Skills/listSkillToDropDown.tpl"
+		} else {
+			this.TplName = "Skills/listSkills.tpl"
+		}
+
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."

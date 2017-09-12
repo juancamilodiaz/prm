@@ -41,8 +41,7 @@
 		
 		app.config(['$qProvider', function ($qProvider) {
 		    $qProvider.errorOnUnhandledRejections(false);
-		}]);
-		
+		}]);	
 	</script>
 	<script>
 		function toNav() {
@@ -80,6 +79,11 @@
 	<script>
 		$(document).ready(function(){
 			getResourcesByProjectToday();
+			$('#refreshButton').prop('onclick',null).off('click');
+			$('#refreshButton').click(function(){
+				getResourcesByProjectToday();
+			});
+			sendTitle("Home");
 		});
 
 		getResourcesByProjectToday = function(){
@@ -142,6 +146,7 @@
 	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
+          <a ng-click="link('projects/resources/today')" onclick="toNav();sendTitle($(this).html())">Home</a>
 		  <a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 		  <a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
 		  <a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
@@ -152,8 +157,9 @@
 		</div>
 		<div class="content container-fluid">
 			<h1>
-				<div id="titlePag"></div>
+				<div id="titlePag">Home</div>
 				<button id="backButton" class="button button2" style="display: none;"></button>				
+				<button id="refreshButton" class="buttonImg button2" style="display: inline-block;"><img src="/img/progress-arrows.png"></button>				
 			</h1>
 			<div  id="content" ng-bind-html="content">
 			</div>

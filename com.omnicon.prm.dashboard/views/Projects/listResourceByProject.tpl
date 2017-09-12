@@ -10,6 +10,14 @@
 		$('#backButton').click(function(){
 			reload('/projects',{});
 		}); 
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			reload('/projects/resources',{
+				"ProjectId": {{.ProjectId}},
+				"ProjectName": "{{.Title}}"
+			});
+		}); 
 	});
 	
 	unassignResource = function(){
@@ -44,7 +52,18 @@
 		$("#resourceUpdate").css("display", "inline-block");
 	}
 	
-	setResourceToProject = function(resourceId, projectId, startDate, endDate){
+	configureShowUpdateModal = function(pStartDate, pEndDate, pLead){
+		
+		$("#resourceUpdateDateStartProject").val(pStartDate);
+		$("#resourceUpdateDateEndProject").val(pEndDate);
+		$("#resourceUpdateLead").prop('checked', pLead);
+		
+		$("#modalTitle").html("Update Assign Resource");
+		$("#resourceCreate").css("display", "none");
+		$("#resourceUpdate").css("display", "inline-block");
+	}
+	
+	setResourceToProject = function(resourceId, projectId, startDate, endDate, lead){
 		var settings = {
 			method: 'POST',
 			url: '/projects/setresource',
@@ -56,7 +75,7 @@
 				"ResourceId": resourceId,
 				"StartDate": startDate,
 				"EndDate": endDate,
-				"Lead": $('#resourceLead').is(":checked")
+				"Lead": lead
 			}
 		}
 		console.log(settings);
@@ -101,7 +120,7 @@
 			<td>{{$resourceToProject.Lead}}</td>
 			<td>
 				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceID').val({{$resourceToProject.ResourceId}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign of project</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceId}}');$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal" disabled>Update assign</button>
+				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Lead}})' data-dismiss="modal">Update assign</button>
 				<button data-toggle="modal" date-target="#showInfoResourceModal" class="buttonTable button2" onclick="configureShowModal({{$resourceToProject.ResourceId}}, '{{$resourceToProject.ResourceName}}');" data-dismiss="modal" disabled>More Info.</button>
 			</td>
 		</tr>
@@ -127,8 +146,6 @@
         					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
           					<div class="col-sm-8">
           						<select id="resourceNameProject">
-									<option value="">Please select an option</option>
-									<option value=23>Anderson</option>
 								</select>
     						</div>
           				</div>
@@ -159,7 +176,59 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val())" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceLead').is(':checked'))" data-dismiss="modal">Set</button>
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			    </div>
+    		</div>    
+  		</div>
+	</div>
+	
+	<div class="modal fade" id="resourceProjectUpdateModal" role="dialog">
+  		<div class="modal-dialog">
+    		<!-- Modal content-->
+    		<div class="modal-content">
+      			<div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 id="modalUpdateResourceProjectTitle" class="modal-title">Update Assign Resource</h4>
+			    </div>
+		    	<div class="modal-body">
+					<input type="hidden" id="resourceProjectUpdateId">
+        			<input type="hidden" id="projectUpdateId">
+					<div class="row-box col-sm-12">
+        				<div class="form-group form-group-sm">
+        					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
+          					<div class="col-sm-8">
+								<input type="text" id="resourceProjectUpdateName" readonly>
+    						</div>
+          				</div>
+        			</div>
+        			<div class="row-box col-sm-12">
+        				<div class="form-group form-group-sm">
+        					<label class="control-label col-sm-4 translatable" data-i18n="StartDate"> Start Date </label> 
+             				<div class="col-sm-8">
+              					<input type="date" id="resourceUpdateDateStartProject">
+        					</div>
+          				</div>
+        			</div>
+					<div class="row-box col-sm-12">
+        				<div class="form-group form-group-sm">
+        					<label class="control-label col-sm-4 translatable" data-i18n="EndDate"> End Date </label> 
+             				<div class="col-sm-8">
+              					<input type="date" id="resourceUpdateDateEndProject">
+        					</div>
+          				</div>
+        			</div>
+					<div class="row-box col-sm-12">
+			        	<div class="form-group form-group-sm">
+			        		<label class="control-label col-sm-4 translatable" data-i18n="Lead"> Lead </label> 
+			              <div class="col-sm-8">
+			              	<input type="checkbox" id="resourceUpdateLead"><br/>
+			              </div>    
+			          </div>
+			        </div>
+      			</div>
+      			<div class="modal-footer">
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateLead').is(':checked'))" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    

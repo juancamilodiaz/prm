@@ -229,6 +229,22 @@ a {
     transition-duration: 0.4s;
 }
 
+.buttonImg {
+    background-color: #005C8A;/*#4CAF50;  Green */
+    border-radius: 8px;
+    border: none;
+    color: white;
+    padding: 8px 6px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
 .buttonTable {
     background-color: #005C8A;/*#4CAF50;  Green */
     border-radius: 8px;

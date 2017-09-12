@@ -3,6 +3,12 @@
 		$('#viewSkills').DataTable({
 		});
 		$('#backButton').css("display", "none");
+		sendTitle("Skills");
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			reload('/skills',{});
+		});
 	});
 	
 	configureCreateModal = function(){

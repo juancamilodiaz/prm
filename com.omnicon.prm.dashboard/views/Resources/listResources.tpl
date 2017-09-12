@@ -3,6 +3,11 @@
 		$('#viewResources').DataTable({});
 		$('#backButton').css("display", "none");
 		sendTitle("Resources");
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			reload('/resources',{});
+		});
 	});
 	
 	configureCreateModal = function(){

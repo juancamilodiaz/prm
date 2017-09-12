@@ -10,6 +10,14 @@
 		$('#backButton').click(function(){
 			reload('/resources',{});
 		}); 
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			reload('/resources/skills',{
+				"ID": {{.ResourceId}},
+				"ResourceName": "{{.Title}}"
+			});
+		}); 
 	});
 	
 	configureUpdateSkillResourceModal = function(pSkillId, pName, pValue){
@@ -68,6 +76,23 @@
 		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}});
 		});
 	}
+	
+	getSkills = function(){
+		var settings = {
+			method: 'POST',
+			url: '/skills',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"Template": "select",				
+			}
+		}
+		console.log(settings);
+		$.ajax(settings).done(function (response) {
+		  $('#resourceNameSkill').html(response);
+		});
+	}
 </script>
 <table id="viewSkillsInResource" class="table table-striped table-bordered">
 	<thead>
@@ -91,7 +116,7 @@
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#resourceSkillModal" onclick="configureCreateModal()">Set New Skill</button>
+	<button class="button button2" data-toggle="modal" data-target="#resourceSkillModal" onclick="configureCreateModal();getSkills()">Set New Skill</button>
 </div>
 <!-- Modal -->
 	<div class="modal fade" id="resourceSkillModal" role="dialog">
@@ -109,8 +134,6 @@
         					<label class="control-label col-sm-4 translatable" data-i18n="Skill Name"> Skill Name </label>
           					<div class="col-sm-8">
           						<select id="resourceNameSkill">
-									<option value="">Please select an option</option>
-									<option value=50>Savigent</option>
 								</select>
     						</div>
           				</div>
