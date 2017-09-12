@@ -166,7 +166,6 @@ func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillT
 			resourceSkill.SkillId = pRequest.SkillId
 			resourceSkill.Name = skill.Name
 			resourceSkill.Value = pRequest.Value
-
 			resourceSkillExist := dao.GetResourceSkillsByResourceIdAndSkillId(pRequest.ResourceId, pRequest.SkillId)
 			if resourceSkillExist != nil {
 				resourceSkillExist.Value = pRequest.Value

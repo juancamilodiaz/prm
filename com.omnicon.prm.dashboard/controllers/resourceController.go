@@ -163,7 +163,7 @@ func (this *ResourceController) DeleteResource() {
 func (this *ResourceController) GetSkillsByResource() {
 	operation := "GetSkillsByResource"
 
-	input := domain.GetResourcesRQ{}
+	input := domain.GetSkillByResourceRQ{}
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -179,6 +179,7 @@ func (this *ResourceController) GetSkillsByResource() {
 		message := new(domain.GetSkillByResourceRS)
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("GetSkillsByResource", message.Skills)
+		this.Data["ResourceId"] = input.ID
 		this.Data["Skills"] = message.Skills
 		this.Data["Title"] = this.GetString("ResourceName")
 		this.TplName = "Resources/listSkillsByResource.tpl"
@@ -188,4 +189,65 @@ func (this *ResourceController) GetSkillsByResource() {
 		this.Data["Type"] = "Error"
 		this.TplName = "Common/message.tpl"
 	}
+}
+
+func (this *ResourceController) SetSkillsToResource() {
+	operation := "SetSkillToResource"
+
+	input := domain.SetSkillToResourceRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.SetSkillToResourceRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		fmt.Println("SetSkillsByResource", message.Resource)
+		this.Data["Skills"] = message.Resource.Skills
+		this.Data["Title"] = this.GetString("ResourceName")
+		this.TplName = "Resources/listSkillsByResource.tpl"
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
+
+func (this *ResourceController) DeleteSkillsToResource() {
+	operation := "DeleteSkillToResource"
+
+	input := domain.DeleteSkillToResourceRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	defer res.Body.Close()
+	message := new(domain.DeleteSkillToResourceRS)
+	err = json.NewDecoder(res.Body).Decode(&message)
+	if err == nil {
+		fmt.Println("DeleteSkillToResource", message.SkillName, message.ResourceName)
+		this.Data["SkillName"] = message.SkillName
+		this.Data["ResourceName"] = message.ResourceName
+		this.Data["Title"] = this.GetString("ResourceName")
+	} else {
+		log.Error(err.Error())
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+	}
+	this.TplName = "Common/message.tpl"
 }

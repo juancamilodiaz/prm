@@ -164,81 +164,81 @@
 </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="resourceModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTitle" class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
-		<input type="hidden" id="resourceID">
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-              <div class="col-sm-8">
-              	<input type="text" id="resourceName">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
-              <div class="col-sm-8">
-              	<input type="text" id="resourceLastName">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
-              <div class="col-sm-8">
-              	<input type="text" id="resourceEmail">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
-              <div class="col-sm-8">
-              	<select id="resourceRank"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option></select>
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-              <div class="col-sm-8">
-              	<input type="checkbox" id="resourceActive"><br/>
-              </div>    
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="resourceCreate" class="btn btn-default" onclick="createResource()" data-dismiss="modal">Create</button>
-        <button type="button" id="resourceUpdate" class="btn btn-default" onclick="updateResource()" data-dismiss="modal">Update</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>    
-  </div>
-</div>
-<div class="modal fase" id="confirmModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
-        Are you sure  yow want to remove <b id="nameDelete"></b> from resources?
-      </div>
-      <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-      </div>
-    </div>
-  </div>
+	<!-- Modal -->
+	<div class="modal fade" id="resourceModal" role="dialog">
+	  <div class="modal-dialog">
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 id="modalTitle" class="modal-title"></h4>
+	      </div>
+	      <div class="modal-body">
+			<input type="hidden" id="resourceID">
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
+	              <div class="col-sm-8">
+	              	<input type="text" id="resourceName">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
+	              <div class="col-sm-8">
+	              	<input type="text" id="resourceLastName">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
+	              <div class="col-sm-8">
+	              	<input type="text" id="resourceEmail">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
+	              <div class="col-sm-8">
+	              	<select id="resourceRank"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option></select>
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
+	              <div class="col-sm-8">
+	              	<input type="checkbox" id="resourceActive"><br/>
+	              </div>    
+	          </div>
+	        </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" id="resourceCreate" class="btn btn-default" onclick="createResource()" data-dismiss="modal">Create</button>
+	        <button type="button" id="resourceUpdate" class="btn btn-default" onclick="updateResource()" data-dismiss="modal">Update</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	      </div>
+	    </div>    
+	  </div>
+	</div>
+	<div class="modal fase" id="confirmModal" role="dialog">
+		<div class="modal-dialog">
+	    	<!-- Modal content-->
+		    <div class="modal-content">
+	     		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+	        		<h4 class="modal-title">Delete Confirmation</h4>
+	      		</div>
+	      	<div class="modal-body">
+	      		Are you sure  yow want to remove <b id="nameDelete"></b> from resources?
+	      	</div>
+	      	<div class="modal-footer" style="text-align:center;">
+		        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>
+		        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+	      	</div>
+	    </div>
+	</div>
 </div>

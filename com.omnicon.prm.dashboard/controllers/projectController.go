@@ -173,6 +173,7 @@ func (this *ProjectController) GetResourcesByProject() {
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+		this.Data["ProjectId"] = input.ProjectId
 		this.Data["Title"] = input.ProjectName
 		this.TplName = "Projects/listResourceByProject.tpl"
 	} else {
@@ -209,6 +210,38 @@ func (this *ProjectController) DeleteResourceToProject() {
 		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
 		this.Data["Title"] = this.GetString("ProjectName")
+		this.TplName = "Projects/listResourceByProject.tpl"
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+	//body, _ := ioutil.ReadAll(res.Body)
+}
+
+func (this *ProjectController) SetResourceToProject() {
+	operation := "SetResourceToProject"
+
+	input := domain.SetResourceToProjectRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.SetResourceToProjectRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		fmt.Println("ResourceToProject", message.Project)
+		this.Data["Project"] = message.Project
+		this.Data["ProjectId"] = input.ProjectId
+		this.Data["Title"] = message.Project.Name
 		this.TplName = "Projects/listResourceByProject.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
