@@ -35,7 +35,11 @@ func (this *ResourceController) ListResources() {
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("Resources", message.Resources)
 		this.Data["Resources"] = message.Resources
-		this.TplName = "Resources/listResources.tpl"
+		if this.GetString("Template") == "select" {
+			this.TplName = "Projects/listResourceToDropDown.tpl"
+		} else {
+			this.TplName = "Resources/listResources.tpl"
+		}
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."

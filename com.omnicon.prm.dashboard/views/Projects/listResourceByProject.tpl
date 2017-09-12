@@ -26,7 +26,7 @@
 		}
 		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/projects/resources', {"ID": $('#projectID').val(),"ProjectName": "{{.Title}}"})
+		  reload('/projects/resources', {"ProjectId": $('#projectID').val(),"ProjectName": "{{.Title}}"})
 		});
 	}
 	
@@ -64,6 +64,23 @@
 		  reload('/projects/resources', {"ProjectId": projectId,"ProjectName": "{{.Title}}"})
 		});
 	}
+	
+	getResources = function(){
+		var settings = {
+			method: 'POST',
+			url: '/resources',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"Template": "select",				
+			}
+		}
+		console.log(settings);
+		$.ajax(settings).done(function (response) {
+		  $('#resourceNameProject').html(response);
+		});
+	}
 </script>
 <table id="viewResourceInProject" class="table table-striped table-bordered">
 	<thead>
@@ -92,7 +109,7 @@
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#resourceProjectModal" onclick="configureCreateModal();$('#resourceProjectId').val({{.ProjectId}})">Set New Resource</button>
+	<button class="button button2" data-toggle="modal" data-target="#resourceProjectModal" onclick="configureCreateModal();$('#resourceProjectId').val({{.ProjectId}});getResources()">Set New Resource</button>
 </div>
 <!-- Modal -->
 	<div class="modal fade" id="resourceProjectModal" role="dialog">
@@ -101,7 +118,7 @@
     		<div class="modal-content">
       			<div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal">&times;</button>
-			        <h4 id="modalResourceProjectTitle" class="modal-title"></h4>
+			        <h4 id="modalResourceProjectTitle" class="modal-title">Set New Resource</h4>
 			    </div>
 		    	<div class="modal-body">
 					<input type="hidden" id="resourceProjectId">
