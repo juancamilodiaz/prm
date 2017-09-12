@@ -79,13 +79,8 @@
 	<script>
 		$(document).ready(function(){
 			getResourcesByProjectToday();
-			$('#refreshButton').prop('onclick',null).off('click');
-			$('#refreshButton').click(function(){
-				getResourcesByProjectToday();
-			});
-			sendTitle("Home");
 		});
-
+		
 		getResourcesByProjectToday = function(){
 			var time = new Date();
 			var mm = time.getMonth() + 1; // getMonth() is zero-based
@@ -146,7 +141,7 @@
 	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
-          <a ng-click="link('projects/resources/today')" onclick="toNav();sendTitle($(this).html())">Home</a>
+          <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">Home</a>
 		  <a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 		  <a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
 		  <a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>

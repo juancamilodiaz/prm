@@ -21,6 +21,24 @@
 			+'</div>'+'</div>');
 		{{end}}
 		
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			var time = new Date();
+			var mm = time.getMonth() + 1; // getMonth() is zero-based
+			var dd = time.getDate();
+	        var date =  [time.getFullYear(),
+		          (mm>9 ? '' : '0') + mm,
+		          (dd>9 ? '' : '0') + dd
+		         ].join('-');
+		  	data = { 
+					"StartDate": date,
+					"EndDate": date
+				}
+			reload('/projects/resources/today', data);
+		});
+		sendTitle("Home");
+		
 	});
 	
 	unassignResource = function(projectID, resourceID, obj){
