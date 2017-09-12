@@ -2,18 +2,27 @@
 	$(document).ready(function(){
 			
 		{{range $key, $resource := .Resources}}
-			$("#resources").append('<p id="drag' + {{$key}} + '" draggable="true" ondragstart="drag(event,'+{{$resource.ID}}+')">'+ {{$resource.Name}} + '</p>');
+			$("#resources").append('<p id="drag' + {{$key}} + '" draggable="true" ondragstart="drag(event,'+{{$resource.ID}}+')">'+ {{$resource.Name}} + ' '+ {{$resource.LastName}}+'</p>')
 		{{end}}	
 		
-		{{range $key, $project := .Projects}}
+		{{$projectsLoop := .Projects}}
+		{{$resourcesProject := .ResourcesToProjects}}
+		{{range $key, $project := $projectsLoop}}
 		 	$("#projects").append('<div class="panel panel-default">'+
 			'<div id="project'+ {{$key}} + '" class="panel-heading">' + {{$project.Name}}+ '</div>'+
-			'<div class="panel-body" ondrop="drop(event,'+ {{$project.ID}} +')" ondragover="allowDrop(event)"></div>'+
-			'</div>');
+			'<div class="panel-body" ondrop="drop(event,'+ {{$project.ID}} +')" ondragover="allowDrop(event)">'
+		{{range $keyR, $resProj := $resourcesProject}}
+			{{if eq  $resProj.ProjectId $project.ID}}
+				+'<p id="res'  + {{$keyR}} + '">'+ {{$resProj.ResourceName}} 
+				+'<a class="btn" onclick="unassignResource('+{{$resProj.ProjectId}}+','+ {{$resProj.ResourceId}}+', this)">x</a>'
+				+'</p>'
+			{{end}}
+		{{end}}
+			+'</div>'+'</div>');
 		{{end}}	
 	});
 	
-	unassignResource = function(){
+	unassignResource = function(projectID, resourceID, obj){
 		var settings = {
 			method: 'POST',
 			url: '/projects/resources/unassign',
@@ -21,17 +30,25 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"resourceID": $('#resourceID').val(),
-				"projectID": $('#projectID').val()
+				"resourceID": resourceID,
+				"projectID": projectID
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/projects/resources', {"ID": $('#projectID').val(),"ProjectName": "{{.Title}}"})
+			$(obj).parent().remove();
 		});
 	}
+	
+
+		
+
 </script>
 
+<script>
+$( "btn" ).click(function() {
+		  $( "p" ).remove(":contains('Juan Torres')");
+		});
+</script>
 
 <script>
 
@@ -45,8 +62,8 @@ setResourceToProject = function(resourceId, projectId){
 		data: { 
 			"ProjectId": parseInt(projectId),
 			"ResourceId": parseInt(resourceId),
-			"StartDate": "2017-09-17",
-			"EndDate": "2017-09-17"
+			"StartDate": "2017-09-12",
+			"EndDate": "2017-09-12"
 		}
 	}
 	console.log(settings);
@@ -74,17 +91,26 @@ function drop(ev, projectID) {
 	setResourceToProject(ev.dataTransfer.getData("resourceID"), projectID);
 }
 
+function remove(projectID, resourceID){
+	console.log(projectID);
+	console.log(resourceID);
+}
+
 </script>
 
 
 	<div class="row">
-		<div class="col-sm-4">
-			<div id="resources">
+		<div class="col-sm-2">
+			<div class="panel-group" >
+				<div class="panel panel-default">
+					<div class="panel-heading">Resources</div>
+					<div id="resources" class="panel-body"></div>
+				</div>
 			</div>
 		</div>
-		<div class="col-sm-4">
-	<div class="panel-group">
-	    <div id="projects" class="panel">
-	
-	    </div>
+		<div class="col-sm-3">
+			<div class="panel-group">
+	    		<div id="projects" class="panel"></div>
+			</div>
+		</div>
 	</div>
