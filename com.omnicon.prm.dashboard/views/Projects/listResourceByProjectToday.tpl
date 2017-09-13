@@ -58,7 +58,10 @@
 		});
 	}
 	
-
+	configureCreateModal = function(){
+		$("#resourceStartDate").val(null);
+		$("#resourceEndDate").val(null);
+	}
 		
 
 </script>
@@ -105,6 +108,7 @@ function drop(ev, projectID, obj) {
 	document.getElementById(data).innerHTML+="<a class='btn' onclick='unassignResource("+projectID+','+ ev.dataTransfer.getData("resourceID") +","+"this"+")'>x</a>";
 	$("#tempResource").html(document.getElementById(data));
 	
+	configureCreateModal(); 
 	$("#setResourceModal").modal("show");
 	$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
 	$("#projectIDInput").val(projectID);
@@ -172,7 +176,6 @@ function setResourceToProjectExc(){
         <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc()" data-dismiss="modal">Create</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
-    </div>
-    
+    </div>    
   </div>
 </div>
