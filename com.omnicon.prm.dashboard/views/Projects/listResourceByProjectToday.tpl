@@ -108,10 +108,10 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate){
 function allowDrop(ev) {
 	ev.preventDefault();
 	ev.dataTransfer.dropEffect = "copy";
-	//ev.stopPropagation();
 }
 
-function drag(ev, resourceID) {	
+function drag(ev, resourceID) {
+	
 	ev.dataTransfer.dropEffect = "copy";
     ev.dataTransfer.setData("text", ev.target.id);
 	ev.dataTransfer.setData("resourceID", resourceID);
@@ -119,20 +119,33 @@ function drag(ev, resourceID) {
 
 function drop(ev, projectID, obj) {
 	ev.preventDefault();
+	ev.dataTransfer.dropEffect = "copy";
 	
-	var data = ev.dataTransfer.getData("text");
-	data = document.getElementById(data).cloneNode(true);
 	
-	evento = obj;
-	data.setAttribute("draggable", "false");
-	data.innerHTML+='<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val("+projectID+"); $('#resourceID').val("+ev.dataTransfer.getData('resourceID')+");$('body').data('buttonX', this)" +'">x</a>';
-	//Mapped in temporal to show modal
-	$("#tempResource").html(data);
+	var rId = ev.dataTransfer.getData("resourceID");
+	var pId = projectID;
+	var isValid = true;
+	{{range $rindex, $resProj := .ResourcesToProjects}}
+		if (projectID == {{$resProj.ProjectId}} && rId == {{$resProj.ResourceId}}){
+			isValid = false;
+		}
+	{{end}}
 	
-	configureCreateModal(); 
-	$("#setResourceModal").modal("show");
-	$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
-	$("#projectIDInput").val(projectID);
+	if (isValid){
+		var data = ev.dataTransfer.getData("text");
+		data = document.getElementById(data).cloneNode(true);
+		
+		evento = obj;
+		data.setAttribute("draggable", "false");
+		data.innerHTML+='<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val("+projectID+"); $('#resourceID').val("+ev.dataTransfer.getData('resourceID')+");$('body').data('buttonX', this)" +'">x</a>';
+		//Mapped in temporal to show modal
+		$("#tempResource").html(data);
+	
+		configureCreateModal();
+		$("#setResourceModal").modal("show");
+		$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
+		$("#projectIDInput").val(projectID);
+	}
 }
 
 function setResourceToProjectExc(){
