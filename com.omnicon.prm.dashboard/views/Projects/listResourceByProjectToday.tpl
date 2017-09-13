@@ -1,24 +1,23 @@
 <script>
 	$(document).ready(function(){
-			
-		{{range $key, $resource := .Resources}}
-			$("#resources").append('<p id="drag' + {{$key}} + '" draggable="true" ondragstart="drag(event,'+{{$resource.ID}}+')">'+ {{$resource.Name}} + ' '+ {{$resource.LastName}}+'</p>')
-		{{end}}	
-		
+		$('#viewResourcesHome').DataTable({			
+			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+			scrollY: 370
+		});					
 		{{$projectsLoop := .Projects}}
 		{{$resourcesProject := .ResourcesToProjects}}
 		{{range $key, $project := $projectsLoop}}
-		 	$("#projects").append('<div class="panel panel-default">'+
+		 	$("#projects").append('<div class="col-sm-6" style="padding-bottom: 10px;"><div class="panel panel-default">'+
 			'<div id="project'+ {{$key}} + '" class="panel-heading">' + {{$project.Name}}+ '</div>'+
-			'<div class="panel-body" ondrop="drop(event,'+ {{$project.ID}} +', this)" ondragover="allowDrop(event)">'
+			'<div class="panel-body" style="height: 200px; overflow-y: auto;" ondrop="drop(event,'+ {{$project.ID}} +', this)" ondragover="allowDrop(event)">'
 		{{range $keyR, $resProj := $resourcesProject}}
 			{{if eq  $resProj.ProjectId $project.ID}}
-				+'<p id="res'  + {{$keyR}} + '">'+ {{$resProj.ResourceName}} 
+				+'<p id="res'  + {{$keyR}} + '" style="cursor:no-drop;">'+ {{$resProj.ResourceName}} 
 				+'<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this)" +'">x</a>'
 				+'</p>'
 			{{end}}
 		{{end}}
-			+'</div>'+'</div>');
+			+'</div>'+'</div>'+'</div>');
 		{{end}}
 		
 		$('#refreshButton').css("display", "inline-block");
@@ -172,15 +171,26 @@ $(document).ready(function() {
 <var id="resourceIDInput"></var>
 
 	<div class="row">
-		<div class="col-sm-2">
+		<div class="col-sm-5">
 			<div class="panel-group" >
 				<div class="panel panel-default">
 					<div class="panel-heading">Resources</div>
-					<div id="resources" class="panel-body"></div>
+					<div id="resources" class="panel-body">
+						<table id="viewResourcesHome" class="table table-striped table-bordered">
+							<thead>
+								<th>Name</th>
+							</thead>
+							<tbody>
+								{{range $key, $resource := .Resources}}
+									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab">{{$resource.Name}} {{$resource.LastName}}</td></tr>
+								{{end}}	
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-3">
+		<div class="col-sm-7" style="overflow-y: auto;">
 			<div class="panel-group">
 	    		<div id="projects" class="panel"></div>
 			</div>

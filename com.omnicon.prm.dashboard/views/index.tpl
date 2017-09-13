@@ -119,25 +119,6 @@
 		</div>
 	</div>
 	
-	<!--div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
-		<div class="sidebar collapsed" id="sidebar">
-			<ul>
-				<li><a ng-click="link('resources')">Resources</a></li>
-			</ul>
-			<ul>
-				<li><a ng-click="link('projects')">Projects</a></li>
-			</ul>			
-			<ul>
-				<li><a ng-click="link('skills')">Skills</a></li>
-			</ul>
-		</div>
-		<div class="content container-fluid" id="content" ng-bind-html="content">
-		</div>
-		<div id="ImagesHidden">
-			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px;" src="/img/loading.gif"></div>
-		</div>
-	</div-->
-	
 	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
@@ -160,7 +141,7 @@
 			</div>
 		</div>
 		<div id="ImagesHidden">
-			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px;" src="/img/loading.gif"></div>
+			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px; top: 0; right: 0; left: 0; bottom: 0; position: absolute; margin: auto;" src="/img/loading.gif"></div>
 		</div>
 	</div>
 	
