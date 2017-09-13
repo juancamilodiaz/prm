@@ -119,14 +119,15 @@ function drag(ev, resourceID) {
 
 function drop(ev, projectID, obj) {
 	ev.preventDefault();
-	ev.dataTransfer.dropEffect = "copy";
+	
 	var data = ev.dataTransfer.getData("text");
+	data = document.getElementById(data).cloneNode(true);
 	
 	evento = obj;
-	document.getElementById(data).setAttribute("draggable", "false");
-	document.getElementById(data).innerHTML+='<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val("+projectID+"); $('#resourceID').val("+ev.dataTransfer.getData('resourceID')+");$('body').data('buttonX', this)" +'">x</a>';
+	data.setAttribute("draggable", "false");
+	data.innerHTML+='<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val("+projectID+"); $('#resourceID').val("+ev.dataTransfer.getData('resourceID')+");$('body').data('buttonX', this)" +'">x</a>';
 	//Mapped in temporal to show modal
-	$("#tempResource").html(document.getElementById(data));
+	$("#tempResource").html(data);
 	
 	configureCreateModal(); 
 	$("#setResourceModal").modal("show");
