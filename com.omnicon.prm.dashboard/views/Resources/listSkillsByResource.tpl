@@ -193,7 +193,7 @@
     		</div>    
   		</div>
 	</div>
-	<div class="modal fase" id="confirmDeleteSkillResourceModal" role="dialog">
+	<div class="modal fade" id="confirmDeleteSkillResourceModal" role="dialog">
 		<div class="modal-dialog">
 	    	<!-- Modal content-->
 		    <div class="modal-content">

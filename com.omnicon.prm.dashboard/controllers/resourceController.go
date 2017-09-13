@@ -97,7 +97,6 @@ func (this *ResourceController) ReadResource() {
 		defer res.Body.Close()
 		message := new(domain.GetResourcesRS)
 		json.NewDecoder(res.Body).Decode(&message)
-
 		this.Data["Resources"] = message.Resources
 		this.TplName = "Resources/viewResources.tpl"
 	} else {

@@ -46,16 +46,14 @@
 	
 	configureShowModal = function(pID, pName){
 		
-		$("#resourceID").val(pID);
-		$("#resourceName").val(pName);
-		$("#resourceLastName").val(pLastName);
+		$("#showResourceID").val(pID);
+		$("#showResourceName").val(pName);
+		/*$("#resourceLastName").val(pLastName);
 		$("#resourceEmail").val(pEmail);
 		$("#resourceRank").val(pRank);
 		$("#resourceActive").prop('checked', pActive);
-		
-		$("#modalTitle").html("Update Resource");
-		$("#resourceCreate").css("display", "none");
-		$("#resourceUpdate").css("display", "inline-block");
+		*/
+		$("#modalTitle").html("Show Resource Information");
 	}
 	
 	configureShowUpdateModal = function(pStartDate, pEndDate, pLead){
@@ -106,6 +104,24 @@
 		  $('#resourceNameProject').html(response);
 		});
 	}
+	
+	getResource = function(pResourceId){
+		var settings = {
+			method: 'POST',
+			url: '/resources/read',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"ID": pResourceId,				
+			}
+		}
+		console.log(settings);
+		$.ajax(settings).done(function (response) {
+		  $('#resourceInfo').html(response);
+		  $('#showInfoResourceModal').modal("show");
+		});		
+	}
 </script>
 <table id="viewResourceInProject" class="table table-striped table-bordered">
 	<thead>
@@ -127,14 +143,14 @@
 			<td>
 				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceID').val({{$resourceToProject.ResourceId}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign of project</button>
 				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Lead}})' data-dismiss="modal">Update assign</button>
-				<button data-toggle="modal" date-target="#showInfoResourceModal" class="buttonTable button2" onclick="configureShowModal({{$resourceToProject.ResourceId}}, '{{$resourceToProject.ResourceName}}');" data-dismiss="modal" disabled>More Info.</button>
+				<button data-toggle="modal" class="buttonTable button2" onclick='configureShowModal({{$resourceToProject.ResourceId}}, "{{$resourceToProject.ResourceName}}");getResource({{$resourceToProject.ResourceId}})' data-dismiss="modal">Resource Info.</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#resourceProjectModal" onclick="configureCreateModal();$('#resourceProjectId').val({{.ProjectId}});getResources()">Set New Resource</button>
+	<button class="button button2" data-toggle="modal" data-target="#resourceProjectModal" onclick="$('#resourceProjectId').val({{.ProjectId}});getResources()">Set New Resource</button>
 </div>
 <!-- Modal -->
 	<div class="modal fade" id="resourceProjectModal" role="dialog">
@@ -241,7 +257,7 @@
   		</div>
 	</div>
 
-	<div class="modal fase" id="confirmUnassignModal" role="dialog">
+	<div class="modal fade" id="confirmUnassignModal" role="dialog">
 		<div class="modal-dialog">
 	    <!-- Modal content-->
 	    	<div class="modal-content">
@@ -254,69 +270,27 @@
 	        		<input type="hidden" id="projectID">
 						Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> project?
 	      		</div>
-	      	<div class="modal-footer" style="text-align:center;">
-	    	<button type="button" id="resourceUnassign" class="btn btn-default" onclick="unassignResource()" data-dismiss="modal">Yes</button>
-	    	<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-	    </div>
+				<div class="modal-footer" style="text-align:center;">
+					<button type="button" id="resourceUnassign" class="btn btn-default" onclick="unassignResource()" data-dismiss="modal">Yes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div class="modal fase" id="showInfoResourceModal" role="dialog">
-		<div class="modal-dialog">
-	    <!-- Modal content-->
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal">&times;</button>
-	        <h4 id="modalTitle" class="modal-title">Resource Information</h4>
-	      </div>
-	      <div class="modal-body">
-			<input type="hidden" id="resourceID">
-	        <div class="row-box col-sm-12">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-	              <div class="col-sm-8">
-	              	<input type="text" id="resourceName">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
-	              <div class="col-sm-8">
-	              	<input type="text" id="resourceLastName">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
-	              <div class="col-sm-8">
-	              	<input type="text" id="resourceEmail">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
-	              <div class="col-sm-8">
-	              	<select id="resourceRank"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option></select>
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-	              <div class="col-sm-8">
-	              	<input type="checkbox" id="resourceActive"><br/>
-	              </div>    
-	          </div>
-	        </div>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" id="resourceCreate" class="btn btn-default" onclick="createResource()" data-dismiss="modal">Create</button>
-	        <button type="button" id="resourceUpdate" class="btn btn-default" onclick="updateResource()" data-dismiss="modal">Update</button>
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	      </div>
-	    </div>    
-	  </div>
+	<div class="modal fade" id="showInfoResourceModal" role="dialog">
+	   <div class="modal-dialog">
+		  <!-- Modal content-->
+		  <div class="modal-content">
+			 <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 id="modalShowTitle" class="modal-title">Resource Information</h4>
+			 </div>
+			 <div class="modal-body" id="resourceInfo">
+				<input type="hidden" id="showResourceID">				
+			 </div>
+			 <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+			 </div>
+		  </div>
+	   </div>
 	</div>
-</div>
-</div>

@@ -224,7 +224,7 @@
   </div>
 </div>
 
-<div class="modal fase" id="confirmModal" role="dialog">
+<div class="modal fade" id="confirmModal" role="dialog">
 <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
