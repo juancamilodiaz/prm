@@ -14,7 +14,7 @@
 		{{range $keyR, $resProj := $resourcesProject}}
 			{{if eq  $resProj.ProjectId $project.ID}}
 				+'<p id="res'  + {{$keyR}} + '">'+ {{$resProj.ResourceName}} 
-				+'<a class="btn" onclick="unassignResource('+{{$resProj.ProjectId}}+','+ {{$resProj.ResourceId}}+', this)">x</a>'
+				+'<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this)" +'">x</a>'
 				+'</p>'
 			{{end}}
 		{{end}}
@@ -106,35 +106,25 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate){
 }
 
 function allowDrop(ev) {
-	console.log("allowDrop", ev)
 	ev.preventDefault();
 	ev.dataTransfer.dropEffect = "copy";
 	//ev.stopPropagation();
 }
 
-function drag(ev, resourceID) {
-	console.log("drag", ev)
-	
+function drag(ev, resourceID) {	
 	ev.dataTransfer.dropEffect = "copy";
     ev.dataTransfer.setData("text", ev.target.id);
 	ev.dataTransfer.setData("resourceID", resourceID);
 }
 
 function drop(ev, projectID, obj) {
-	console.log("drop", ev)
 	ev.preventDefault();
 	ev.dataTransfer.dropEffect = "copy";
-	//
-	//ev.dataTransfer.dropEffect = false;
-	//ev.stopPropagation();
-	//
 	var data = ev.dataTransfer.getData("text");
-	//ev.target.appendChild(obj);
-	//ev.target.appendChild(document.getElementById(data));
 	
 	evento = obj;
 	document.getElementById(data).setAttribute("draggable", "false");
-	document.getElementById(data).innerHTML+="<a class='btn' onclick='unassignResource("+projectID+','+ ev.dataTransfer.getData("resourceID") +","+"this"+")'>x</a>";
+	document.getElementById(data).innerHTML+='<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val("+projectID+"); $('#resourceID').val("+ev.dataTransfer.getData('resourceID')+");$('body').data('buttonX', this)" +'">x</a>';
 	//Mapped in temporal to show modal
 	$("#tempResource").html(document.getElementById(data));
 	
@@ -215,5 +205,26 @@ $(document).ready(function() {
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>    
+  </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" role="dialog">
+<div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete Confirmation</h4>
+      </div>
+      <div class="modal-body">
+		<input type="hidden" id="projectID">
+		<input type="hidden" id="resourceID">
+        Are you sure  yow want to remove <b id=""></b> from project <b id=""></b>?
+      </div>
+      <div class="modal-footer" style="text-align:center;">
+        <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'))" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
   </div>
 </div>
