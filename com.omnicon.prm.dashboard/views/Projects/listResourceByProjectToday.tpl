@@ -53,9 +53,24 @@
 				"projectID": projectID
 			}
 		}
+		// remove the resource before call the service. 
+		$(obj).parent().remove();
+		
+		//Call the service to delete resource in the project
 		$.ajax(settings).done(function (response) {
-			$(obj).parent().remove();
+			
 		});
+	}
+	
+	getDateToday = function(){	
+		var time = new Date();
+		var mm = time.getMonth() + 1; // getMonth() is zero-based
+		var dd = time.getDate();
+        var date =  [time.getFullYear(),
+	          (mm>9 ? '' : '0') + mm,
+	          (dd>9 ? '' : '0') + dd
+	         ].join('-');
+		return date;
 	}
 	
 	configureCreateModal = function(){
@@ -91,21 +106,36 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate){
 }
 
 function allowDrop(ev) {
-    ev.preventDefault();
+	console.log("allowDrop", ev)
+	ev.preventDefault();
+	ev.dataTransfer.dropEffect = "copy";
+	//ev.stopPropagation();
 }
 
 function drag(ev, resourceID) {
+	console.log("drag", ev)
+	
+	ev.dataTransfer.dropEffect = "copy";
     ev.dataTransfer.setData("text", ev.target.id);
 	ev.dataTransfer.setData("resourceID", resourceID);
 }
 
 function drop(ev, projectID, obj) {
+	console.log("drop", ev)
 	ev.preventDefault();
+	ev.dataTransfer.dropEffect = "copy";
+	//
+	//ev.dataTransfer.dropEffect = false;
+	//ev.stopPropagation();
+	//
 	var data = ev.dataTransfer.getData("text");
+	//ev.target.appendChild(obj);
+	//ev.target.appendChild(document.getElementById(data));
 	
 	evento = obj;
 	document.getElementById(data).setAttribute("draggable", "false");
 	document.getElementById(data).innerHTML+="<a class='btn' onclick='unassignResource("+projectID+','+ ev.dataTransfer.getData("resourceID") +","+"this"+")'>x</a>";
+	//Mapped in temporal to show modal
 	$("#tempResource").html(document.getElementById(data));
 	
 	configureCreateModal(); 
@@ -119,6 +149,14 @@ function setResourceToProjectExc(){
 	$("#tempResource").html("")	
 	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val());
 }
+
+</script>
+
+<script>
+$(document).ready(function() {
+    $("#resourceStartDate").attr('value', getDateToday());
+	$("#resourceEndDate").attr('value', getDateToday());
+  });
 
 </script>
 
