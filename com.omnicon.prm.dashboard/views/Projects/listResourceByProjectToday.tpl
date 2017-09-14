@@ -84,7 +84,7 @@
 				"StartDate": date,
 				"EndDate": date
 			}
-		sleep(300)
+		sleep(500)
 		reload('/projects/resources/today', data);
 	}
 	
@@ -96,7 +96,14 @@
 	    }
 	  }
 	}
-		
+	
+
+	$('#resourceEndDate').change(function(){
+    	var startDate = new Date($("#resourceStartDate").val());
+		var endDate = new Date($("#resourceEndDate").val());
+
+		$("#estimatedHours").val(workingHoursBetweenDates(startDate, endDate));
+	});
 
 </script>
 
@@ -104,7 +111,7 @@
 
 var evento;
 
-setResourceToProject = function(resourceId, projectId, startDate, endDate){
+setResourceToProject = function(resourceId, projectId, startDate, endDate, estimatedHours){
 	var settings = {
 		method: 'POST',
 		url: '/projects/setresource',
@@ -115,10 +122,10 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate){
 			"ProjectId": parseInt(projectId),
 			"ResourceId": parseInt(resourceId),
 			"StartDate": startDate,
-			"EndDate": endDate
+			"EndDate": endDate,
+			"Hours": estimatedHours
 		}
 	}
-	console.log(settings);
 	$.ajax(settings).done(function (response) {
 	  
 	});
@@ -185,7 +192,7 @@ function drop(ev, projectID, obj) {
 function setResourceToProjectExc(){
 	$(evento).append($("#tempResource").html());
 	$("#tempResource").html("")	
-	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val());
+	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val(), $("#estimatedHours").val());
 }
 
 </script>
@@ -234,6 +241,15 @@ function setResourceToProjectExc(){
         <h4 id="modalTitle" class="modal-title">Assign dates to the resource</h4>
       </div>
       <div class="modal-body">
+		<div class="row-box col-sm-12">
+        	<div class="form-group form-group-sm">
+        		<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
+              <div class="col-sm-6">
+              	<input type="number" id="estimatedHours" value="8">
+        		</div>
+         	</div>
+        </div>
+	
         <div class="row-box col-sm-12">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
