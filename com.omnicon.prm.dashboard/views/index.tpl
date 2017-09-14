@@ -5,24 +5,24 @@
 	<title>PRM</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   
-	<script src="/js/JQuery/jquery.js"></script>
-	<script src="/js/DataTables/datatables.min.js"></script>
-	<script src="/js/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"></script>
-	<script src="/js/JQueryUI/jquery-ui.min.js"></script>
-	<script src="/js/Bootstrap/js/popper.min.js"></script>
-	<script src="/js/Bootstrap/js/bootstrap.min.js"></script>
-	<script src="/js/moment-with-locales.js"></script>
-	<script src="/js/Angular/angular.min.js"></script>
-	<script src="/js/Angular/angular-sanitize.js"></script>
-	<script src="/js/Utils.js"></script>
+	<script src="/static/js/JQuery/jquery.js"></script>
+	<script src="/static/js/DataTables/datatables.min.js"></script>
+	<script src="/static/js/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"></script>
+	<script src="/static/js/JQueryUI/jquery-ui.min.js"></script>
+	<script src="/static/js/Bootstrap/js/popper.min.js"></script>
+	<script src="/static/js/Bootstrap/js/bootstrap.min.js"></script>
+	<script src="/static/js/moment-with-locales.js"></script>
+	<script src="/static/js/Angular/angular.min.js"></script>
+	<script src="/static/js/Angular/angular-sanitize.js"></script>
+	<script src="/static/js/Utils.js"></script>
 	
-	<link rel="stylesheet" type="text/css" href="/css/JQueryUI/jquery-ui.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	
-	<link rel="stylesheet" type="text/css" href="/js/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="/js/Bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="/js/Bootstrap/css/bootstrap-theme.min.css">
-	<link rel="stylesheet" type="text/css" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="/css/Site.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/Site.css">
 
 	<script>
 		var app = angular.module('index', ['ngSanitize']);
@@ -135,13 +135,13 @@
 			<h1>
 				<div id="titlePag">Home</div>
 				<button id="backButton" class="button button2" style="display: none;"></button>				
-				<button id="refreshButton" class="buttonImg button2" style="display: inline-block;"><img src="/img/progress-arrows.png"></button>				
+				<button id="refreshButton" class="buttonImg button2" style="display: inline-block;"><img src="/static/img/progress-arrows.png"></button>				
 			</h1>
 			<div  id="content" ng-bind-html="content">
 			</div>
 		</div>
 		<div id="ImagesHidden">
-			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px; top: 0; right: 0; left: 0; bottom: 0; position: absolute; margin: auto;" src="/img/loading.gif"></div>
+			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px; top: 0; right: 0; left: 0; bottom: 0; position: absolute; margin: auto;" src="/static/img/loading.gif"></div>
 		</div>
 	</div>
 	
