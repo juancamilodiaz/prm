@@ -4,22 +4,7 @@
 			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 			scrollY: 370
 		});					
-		{{$projectsLoop := .Projects}}
-		{{$resourcesProject := .ResourcesToProjects}}
-		{{range $key, $project := $projectsLoop}}
-		 	$("#projects").append('<div class="col-sm-6" style="padding-bottom: 10px;"><div class="panel panel-default">'+
-			'<div id="project'+ {{$key}} + '" class="panel-heading">' + {{$project.Name}}+ '</div>'+
-			'<div class="panel-body" style="height: 200px; overflow-y: auto;" ondrop="drop(event,'+ {{$project.ID}} +', this)" ondragover="allowDrop(event)">'
-		{{range $keyR, $resProj := $resourcesProject}}
-			{{if eq  $resProj.ProjectId $project.ID}}
-				+'<p id="res'  + {{$keyR}} + '" style="cursor:no-drop;margin:0 0 0px;">'+ {{$resProj.ResourceName}} 
-				+'<img data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="' + "$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')" +'">'
-				+'</p>'
-			{{end}}
-		{{end}}
-			+'</div>'+'</div>'+'</div>');
-		{{end}}
-		
+				
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
@@ -51,13 +36,10 @@
 				"resourceID": resourceID,
 				"projectID": projectID
 			}
-		}
-		// remove the resource before call the service. 
-		$(obj).parent().remove();
+		}		
 		
 		//Call the service to delete resource in the project
-		$.ajax(settings).done(function (response) {
-			
+		$.ajax(settings).done(function (response) {			
 		});
 	}
 	
@@ -151,6 +133,8 @@ function drop(ev, projectID, obj) {
 	var rId = ev.dataTransfer.getData("resourceID");
 	var pId = projectID;
 	var isValid = true;
+	var pName = "";
+	var rName = "";
 	{{range $rindex, $resProj := .ResourcesToProjects}}
 		if (projectID == {{$resProj.ProjectId}} && rId == {{$resProj.ResourceId}}){
 			isValid = false;
@@ -178,10 +162,10 @@ function drop(ev, projectID, obj) {
 		
 		evento = obj;
 		data.setAttribute("draggable", "false");
-		data.innerHTML+='<img data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="' + "$('#projectID').val("+projectID+"); $('#resourceID').val("+ev.dataTransfer.getData('resourceID')+");$('body').data('buttonX', this); $('#resourceName').html('" + resourceName + "'); $('#projectName').html('" + projectName + "')" +'">';
+		data.innerHTML='<tr><td id="res'+rId+'" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">'+resourceName+'</td><td style="font-size:11px;">10-12-2017</td><td style="font-size:11px;">11-12-2017</td><td style="font-size:11px;">8</td><td><img style="padding:0px" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="(\'#projectID\').val('+pId+');$(\'#resourceID\').val('+rId+'); $(\'body\').data(\'buttonX\', this); $(\'#resourceName\').html('+resourceName+');$(\'#projectName\').html('+projectName+')></td></tr>';
 		//Mapped in temporal to show modal
 		$("#tempResource").html(data);
-	
+		console.log(data);
 		configureCreateModal();
 		$("#setResourceModal").modal("show");
 		$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
@@ -198,7 +182,7 @@ function setResourceToProjectExc(){
 </script>
 
 
-<div id="tempResource" style="display:none">
+<tr id="tempResource" style="display:none"></tr>
 </div>
 
 <var id="projectIDInput"></var>
@@ -226,7 +210,43 @@ function setResourceToProjectExc(){
 		</div>
 		<div class="col-sm-7" style="overflow-y: auto;">
 			<div class="panel-group">
-	    		<div id="projects" class="panel"></div>
+	    		<div id="projects" class="panel">
+					{{$projectsLoop := .Projects}}
+					{{$resourcesProject := .ResourcesToProjects}}
+					{{range $key, $project := $projectsLoop}}	
+					 	<div class="col-sm-6" style="padding-bottom: 10px;">											
+							<div id="panel-df-project{{$key}}" class="panel panel-default">
+								<div id="project{{$key}}" class="panel-heading">
+									{{$project.Name}}
+								</div>
+								<div class="panel-body" style="padding:0;height: 200px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
+									<table id="viewResourcesPerProject{{$project.ID}}" class="table table-striped table-bordered">
+										<thead>
+											<th style="font-size:12px;">Name</th>
+											<th style="font-size:12px;">Start date</th>
+											<th style="font-size:12px;">End date</th>
+											<th style="font-size:12px;">Hrs</th>
+											<th style="font-size:12px;">Options</th>
+										</thead>
+										<tbody>
+											{{range $keyR, $resProj := $resourcesProject}}
+												{{if eq  $resProj.ProjectId $project.ID}}
+												<tr draggable ="false">
+													<td id="res{{$keyR}}" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
+													<td style="font-size:11px;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
+													<td style="font-size:11px;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
+													<td style="font-size:11px;">{{$resProj.Hours}}</td>
+													<td><img style="padding:0px" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
+												</tr>
+												{{end}}
+											{{end}}
+										</tbody>
+									</table>										
+								</div>
+							</div>														
+						</div>
+					{{end}}
+				</div>
 			</div>
 		</div>
 	</div>
