@@ -141,14 +141,16 @@ func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, err
 		"resource_name",
 		"start_date",
 		"end_date",
-		"lead").Values(
+		"lead",
+		"hours").Values(
 		pProjectResources.ProjectId,
 		pProjectResources.ResourceId,
 		pProjectResources.ProjectName,
 		pProjectResources.ResourceName,
 		pProjectResources.StartDate,
 		pProjectResources.EndDate,
-		pProjectResources.Lead).Exec()
+		pProjectResources.Lead,
+		0).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
