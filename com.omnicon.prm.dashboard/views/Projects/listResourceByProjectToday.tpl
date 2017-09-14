@@ -127,7 +127,6 @@ function drop(ev, projectID, obj) {
 	{{range $rindex, $resProj := .ResourcesToProjects}}
 		if (projectID == {{$resProj.ProjectId}} && rId == {{$resProj.ResourceId}}){
 			isValid = false;
-			break;
 		}
 	{{end}}
 	
@@ -137,7 +136,6 @@ function drop(ev, projectID, obj) {
 		{{range $index, $resource := .Resources}}
 			if (rId == {{$resource.ID}}){
 				resourceName = {{$resource.Name}} + " " + {{$resource.LastName}};
-				break;
 			}
 		{{end}}
 		
@@ -145,7 +143,6 @@ function drop(ev, projectID, obj) {
 		{{range $index, $project := .Projects}}
 			if (pId == {{$project.ID}}){
 				projectName = {{$project.Name}};
-				break;
 			}
 		{{end}}
 	
