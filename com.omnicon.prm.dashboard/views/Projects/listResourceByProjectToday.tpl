@@ -12,8 +12,8 @@
 			'<div class="panel-body" style="height: 200px; overflow-y: auto;" ondrop="drop(event,'+ {{$project.ID}} +', this)" ondragover="allowDrop(event)">'
 		{{range $keyR, $resProj := $resourcesProject}}
 			{{if eq  $resProj.ProjectId $project.ID}}
-				+'<p id="res'  + {{$keyR}} + '" style="cursor:no-drop;">'+ {{$resProj.ResourceName}} 
-				+'<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')" +'">x</a>'
+				+'<p id="res'  + {{$keyR}} + '" style="cursor:no-drop;margin:0 0 0px;">'+ {{$resProj.ResourceName}} 
+				+'<img data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="' + "$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')" +'">'
 				+'</p>'
 			{{end}}
 		{{end}}
@@ -75,6 +75,26 @@
 	configureCreateModal = function(){
 		$("#resourceStartDate").val(getDateToday());
 		$("#resourceEndDate").val(getDateToday());
+	}
+	
+	getResourcesByProjectToday = function(){
+		var date = getDateToday();
+		
+	  	data = { 
+				"StartDate": date,
+				"EndDate": date
+			}
+		sleep(300)
+		reload('/projects/resources/today', data);
+	}
+	
+	sleep = function(milliseconds) {
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
 	}
 		
 
@@ -151,7 +171,7 @@ function drop(ev, projectID, obj) {
 		
 		evento = obj;
 		data.setAttribute("draggable", "false");
-		data.innerHTML+='<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val("+projectID+"); $('#resourceID').val("+ev.dataTransfer.getData('resourceID')+");$('body').data('buttonX', this); $('#resourceName').html('" + resourceName + "'); $('#projectName').html('" + projectName + "')" +'">x</a>';
+		data.innerHTML+='<img data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="' + "$('#projectID').val("+projectID+"); $('#resourceID').val("+ev.dataTransfer.getData('resourceID')+");$('body').data('buttonX', this); $('#resourceName').html('" + resourceName + "'); $('#projectName').html('" + projectName + "')" +'">';
 		//Mapped in temporal to show modal
 		$("#tempResource").html(data);
 	
@@ -189,7 +209,7 @@ function setResourceToProjectExc(){
 							</thead>
 							<tbody>
 								{{range $key, $resource := .Resources}}
-									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab">{{$resource.Name}} {{$resource.LastName}}</td></tr>
+									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab" class="sorting_1 button3">{{$resource.Name}} {{$resource.LastName}}</td></tr>
 								{{end}}	
 							</tbody>
 						</table>
@@ -232,8 +252,8 @@ function setResourceToProjectExc(){
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc()" data-dismiss="modal">Create</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc();getResourcesByProjectToday();" data-dismiss="modal">Create</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getResourcesByProjectToday();">Cancel</button>
       </div>
     </div>    
   </div>
@@ -244,7 +264,7 @@ function setResourceToProjectExc(){
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-dismiss="modal" onclick="getResourcesByProjectToday();">&times;</button>
         <h4 class="modal-title">Delete Confirmation</h4>
       </div>
       <div class="modal-body">
@@ -253,8 +273,8 @@ function setResourceToProjectExc(){
         Are you sure  yow want to remove <b id="resourceName"></b> from project <b id="projectName"></b>?
       </div>
       <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'))" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'));getResourcesByProjectToday();" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getResourcesByProjectToday();">No</button>
       </div>
     </div>
   </div>

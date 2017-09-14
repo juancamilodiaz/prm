@@ -114,7 +114,7 @@
 		</div>
 		<div id="NavRight" class="NavItem">
 			<div id="login" class="NavItem">
-				<label>User:</label><input type="text" id="LogUser"><label>Password:</label> <input type="password" id="LogPassword"> <button class="buttonTable button2" disabled>Login</button>
+				<label style="padding-right: inherit; padding-left: inherit;">User:</label><input type="text" id="LogUser" style="border-radius: 8px;padding: 0.5%;"><label style="padding-right: inherit; padding-left: inherit;">Password:</label> <input type="password" id="LogPassword" style="border-radius: 8px;padding: 0.5%;"> <button class="buttonTable button2" disabled>Login</button>
 			</div>
 		</div>
 	</div>
