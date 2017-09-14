@@ -139,7 +139,7 @@
 			<td>{{$resourceToProject.ResourceName}}</td>
 			<td>{{dateformat $resourceToProject.StartDate "2006-01-02"}}</td>
 			<td>{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>
-			<td>{{$resourceToProject.Lead}}</td>
+			<td><input type="checkbox" checked="{{$resourceToProject.Lead}}" disabled ="true"></td>
 			<td>
 				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceID').val({{$resourceToProject.ResourceId}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign of project</button>
 				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Lead}})' data-dismiss="modal">Update assign</button>
