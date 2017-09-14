@@ -73,8 +73,8 @@
 	}
 	
 	configureCreateModal = function(){
-		$("#resourceStartDate").val(null);
-		$("#resourceEndDate").val(null);
+		$("#resourceStartDate").val(getDateToday());
+		$("#resourceEndDate").val(getDateToday());
 	}
 		
 
@@ -155,16 +155,8 @@ function setResourceToProjectExc(){
 
 </script>
 
-<script>
-$(document).ready(function() {
-    $("#resourceStartDate").attr('value', getDateToday());
-	$("#resourceEndDate").attr('value', getDateToday());
-  });
-
-</script>
 
 <div id="tempResource" style="display:none">
-
 </div>
 
 <var id="projectIDInput"></var>
