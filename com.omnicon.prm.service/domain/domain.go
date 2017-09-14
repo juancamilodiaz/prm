@@ -32,6 +32,7 @@ type ProjectResources struct {
 	StartDate    time.Time `db:"start_date"`
 	EndDate      time.Time `db:"end_date"`
 	Lead         bool      `db:"lead"`
+	Hours        float64   `db:"hours"`
 }
 
 type ResourceSkills struct {
@@ -52,4 +53,5 @@ type ResourceAssign struct {
 	StartDate time.Time
 	EndDate   time.Time
 	Lead      bool
+	Hours     float64
 }

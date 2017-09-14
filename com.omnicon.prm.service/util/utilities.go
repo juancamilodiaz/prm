@@ -296,6 +296,7 @@ func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*d
 		} else if pProject.Lead == resourceAssign.Resource.Name {
 			lead = ""
 		}
+		resourceAssign.Hours = projectResource.Hours
 		mapResources[projectResource.ID] = &resourceAssign
 	}
 	pProject.ResourceAssign = mapResources
@@ -417,6 +418,9 @@ func MappingFiltersProjectResource(pRequest *domain.GetResourcesToProjectsRQ) *d
 		}
 		if pRequest.Lead != nil {
 			filters.Lead = *pRequest.Lead
+		}
+		if pRequest.Hours != 0 {
+			filters.Hours = pRequest.Hours
 		}
 		return &filters
 	}

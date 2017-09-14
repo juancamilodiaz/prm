@@ -29,6 +29,7 @@ type SetResourceToProjectRQ struct {
 	StartDate  string
 	EndDate    string
 	Lead       bool
+	Hours      float64
 }
 
 type GetResourcesToProjectsRQ struct {
@@ -40,6 +41,7 @@ type GetResourcesToProjectsRQ struct {
 	StartDate    string
 	EndDate      string
 	Lead         *bool
+	Hours        float64
 }
 
 type DeleteResourceToProjectRQ struct {

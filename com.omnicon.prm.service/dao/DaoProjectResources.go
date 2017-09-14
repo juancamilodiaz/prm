@@ -150,7 +150,7 @@ func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, err
 		pProjectResources.StartDate,
 		pProjectResources.EndDate,
 		pProjectResources.Lead,
-		0).Exec()
+		pProjectResources.Hours).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -172,7 +172,7 @@ func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, 
 	// Close session when ends the method
 	defer session.Close()
 	// Update ProjectResources in DB
-	q := session.Update("ProjectResources").Set("project_id = ?, resource_id = ?, start_date = ?, end_date = ?, lead = ?", pProjectResources.ProjectId, pProjectResources.ResourceId, pProjectResources.StartDate, pProjectResources.EndDate, pProjectResources.Lead).Where("id = ?", int(pProjectResources.ID))
+	q := session.Update("ProjectResources").Set("project_id = ?, resource_id = ?, start_date = ?, end_date = ?, lead = ?, hours = ?", pProjectResources.ProjectId, pProjectResources.ResourceId, pProjectResources.StartDate, pProjectResources.EndDate, pProjectResources.Lead, pProjectResources.Hours).Where("id = ?", int(pProjectResources.ID))
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -298,6 +298,13 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		filters.WriteString("lead = '")
 		filters.WriteString(strconv.FormatBool(*pLead))
 		filters.WriteString("'")
+	}
+	if pProjectResourceFilters.Hours != 0 {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("hours = ")
+		filters.WriteString(strconv.FormatFloat(pProjectResourceFilters.Hours, 'f', -1, 64))
 	}
 
 	if filters.String() != "" {

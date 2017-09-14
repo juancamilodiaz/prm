@@ -222,6 +222,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			projectResources.StartDate = time.Unix(startDateInt, 0)
 			projectResources.EndDate = time.Unix(endDateInt, 0)
 			projectResources.Lead = pRequest.Lead
+			projectResources.Hours = pRequest.Hours
 
 			projectResourcesExist := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
 			if projectResourcesExist != nil {
@@ -238,6 +239,9 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					projectResourcesExist.EndDate = time.Unix(endDateInt, 0)
 				}
 				projectResourcesExist.Lead = pRequest.Lead
+				if pRequest.Hours != 0 {
+					projectResourcesExist.Hours = pRequest.Hours
+				}
 				// Call update projectResources operation
 				rowsUpdated, err := dao.UpdateProjectResources(projectResourcesExist)
 				if err != nil || rowsUpdated <= 0 {
