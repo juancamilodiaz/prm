@@ -13,7 +13,7 @@
 		{{range $keyR, $resProj := $resourcesProject}}
 			{{if eq  $resProj.ProjectId $project.ID}}
 				+'<p id="res'  + {{$keyR}} + '" style="cursor:no-drop;">'+ {{$resProj.ResourceName}} 
-				+'<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this)" +'">x</a>'
+				+'<a data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" onclick="' + "$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')" +'">x</a>'
 				+'</p>'
 			{{end}}
 		{{end}}
@@ -235,7 +235,7 @@ function setResourceToProjectExc(){
       <div class="modal-body">
 		<input type="hidden" id="projectID">
 		<input type="hidden" id="resourceID">
-        Are you sure  yow want to remove <b id=""></b> from project <b id=""></b>?
+        Are you sure  yow want to remove <b id="resourceName"></b> from project <b id="projectName"></b>?
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'))" data-dismiss="modal">Yes</button>
