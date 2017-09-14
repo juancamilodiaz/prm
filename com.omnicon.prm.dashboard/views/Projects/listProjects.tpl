@@ -155,7 +155,7 @@
 			<td>{{$project.Name}}</td>
 			<td>{{dateformat $project.StartDate "2006-01-02"}}</td>
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
-			<td><input type="checkbox" checked="{{$project.Enabled}}" disabled ="true"></td>
+			<td><input type="checkbox" {{if $project.Enabled}}checked{{end}} disabled></td>
 			
 			<td>
 				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>

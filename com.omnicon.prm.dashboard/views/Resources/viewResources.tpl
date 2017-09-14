@@ -35,7 +35,7 @@
 	   <div class="form-group form-group-sm">
 		  <label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
 		  <div class="col-sm-8">
-			 <input type="checkbox" id="showResourceActive" checked={{$resource.Enabled}} disabled><br/>
+			 <input type="checkbox" id="showResourceActive" {{if $resource.Enabled}}checked{{end}} disabled><br/>
 		  </div>
 	   </div>
 	</div>
