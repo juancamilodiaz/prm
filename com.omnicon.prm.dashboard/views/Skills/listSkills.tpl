@@ -48,7 +48,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/skills', {});
+			validationError(response);
+			reload('/skills', {});
 		});
 	}
 	
@@ -65,7 +66,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/skills', {});
+			validationError(response);
+			reload('/skills', {});
 		});
 	}
 	
@@ -96,7 +98,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/skills', {});
+			validationError(response);
+			reload('/skills', {});
 		});
 	}
 	
