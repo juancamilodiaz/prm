@@ -242,8 +242,11 @@ function setResourceToProjectExc(){
 					{{range $key, $project := $projectsLoop}}	
 					 	<div class="col-sm-6" style="padding-bottom: 10px;">											
 							<div id="panel-df-project{{$key}}" class="panel panel-default">
-								<div id="project{{$key}}" class="panel-heading" data-toggle="collapse" href="#collapse{{$key}}">
+								<div id="project{{$key}}" class="panel-heading">
 									{{$project.Name}}
+									<div class="pull-right">
+										<button id="collapseButton{{$key}}" class="btn" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
+									</div>
 								</div>
 								<div id="collapse{{$key}}" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
 									<table id="viewResourcesPerProject{{$project.ID}}" class="table table-striped table-bordered">

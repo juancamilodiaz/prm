@@ -301,3 +301,25 @@ a {
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
 } 
+
+button.btn{
+	display: inline-block;
+	background-color: transparent;
+    padding: 4px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+}
+button.btn.collapsed:before
+{
+    content:'+' ;
+	display:block;
+}
+button.btn:before
+{
+    content:'-' ;
+	display:block;
+}
