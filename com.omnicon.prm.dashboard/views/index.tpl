@@ -88,6 +88,7 @@
 			$("#errorMessage").hide();
 			getResourcesByProjectToday();
 			$('#datePicker').css("display", "inline-block");
+			$('#NavRight').css("display", "none");
 		});
 		
 		getResourcesByProjectToday = function(){
