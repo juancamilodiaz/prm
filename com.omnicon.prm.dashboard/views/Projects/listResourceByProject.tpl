@@ -103,7 +103,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/projects/resources', {"ProjectId": projectId,"ProjectName": "{{.Title}}"})
+			validationError(response);
+			reload('/projects/resources', {"ProjectId": projectId,"ProjectName": "{{.Title}}"})
 		});
 	}
 	
