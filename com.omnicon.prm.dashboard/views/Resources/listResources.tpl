@@ -65,7 +65,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/resources', {});
+			validationError(response);
+			reload('/resources', {});
 		});
 	}
 	
@@ -87,7 +88,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/resources', {});
+			validationError(response);
+			reload('/resources', {});
 		});
 	}
 	
@@ -118,7 +120,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/resources', {});
+			validationError(response);
+			reload('/resources', {});
 		});
 	}
 	

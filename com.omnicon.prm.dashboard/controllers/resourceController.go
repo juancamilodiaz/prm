@@ -75,7 +75,19 @@ func (this *ResourceController) CreateResource() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Common/message.tpl"
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
 }
 
 func (this *ResourceController) ReadResource() {
@@ -133,7 +145,19 @@ func (this *ResourceController) UpdateResource() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Common/message.tpl"
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
 }
 
 func (this *ResourceController) DeleteResource() {
@@ -160,7 +184,19 @@ func (this *ResourceController) DeleteResource() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Common/message.tpl"
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
 }
 
 func (this *ResourceController) GetSkillsByResource() {
