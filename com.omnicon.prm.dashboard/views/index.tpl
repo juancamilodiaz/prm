@@ -4,6 +4,7 @@
 <head>
 	<title>PRM</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="shortcut icon" src="/static/img/favicon.ico">
   
 	<script src="/static/js/JQuery/jquery.js"></script>
 	<script src="/static/js/DataTables/datatables.min.js"></script>
@@ -114,6 +115,7 @@
 			</div>
 		</div>
 		<div id="NavCenter" class="NavItem">
+			<img src="/static/img/logo_omnicon_sa_blanco-01.svg" width="200" height="50">
 		</div>
 		<div id="NavRight" class="NavItem" style="padding-right: 3%;">
 			<div id="login" class="NavItem">
@@ -129,7 +131,7 @@
 		  <a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 		  <a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
 		  <a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
-		  <a href="#">About</a>
+		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
 		</div>
 		<div id="sidebar">
 			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>

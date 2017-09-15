@@ -10,6 +10,7 @@ func init() {
 	beego.SetStaticPath("/js", "static/js")
 	beego.SetStaticPath("/img", "static/img")
 	beego.Router("/", &controllers.MainController{})
+	beego.Router("/about", &controllers.AboutController{}, "post:About")
 
 	// Resources
 	beego.Router("/resources", &controllers.ResourceController{}, "post:ListResources")
