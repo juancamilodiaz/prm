@@ -51,7 +51,7 @@ func ValidateDates(pStartDate, pEndDate *string, pIsCreate bool) (bool, string) 
 	if *pEndDate != "" {
 		endDate, err = time.Parse("2006-01-02", *pEndDate)
 		if err != nil {
-			message = "The start date is greater than the start date."
+			message = "The end date is incorrect, format should be YYYY-MM-DD."
 			log.Error(message)
 			return false, message
 		}
@@ -59,7 +59,7 @@ func ValidateDates(pStartDate, pEndDate *string, pIsCreate bool) (bool, string) 
 
 	if *pStartDate != "" && *pEndDate != "" {
 		if startDate.Unix() > endDate.Unix() {
-			message = "The start date is greater than the start date."
+			message = "The start date is greater than the end date."
 			log.Error(message)
 			return false, message
 		}
