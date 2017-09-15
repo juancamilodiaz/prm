@@ -124,9 +124,21 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate, estim
 		}
 	}
 	$.ajax(settings).done(function (response) {
-	  
+	  getResourcesByProjectWithFilterDate();
 	});
 }
+
+getResourcesByProjectWithFilterDate = function(){
+		dateFrom = $('#dateFrom').val();
+		dateTo = $('#dateTo').val();
+		
+	  	data = { 
+				"StartDate": dateFrom,
+				"EndDate": dateTo
+			}
+		sleep(500)
+		reload('/projects/resources/today', data);
+	}
 
 function allowDrop(ev) {
 	ev.preventDefault();
@@ -230,10 +242,10 @@ function setResourceToProjectExc(){
 					{{range $key, $project := $projectsLoop}}	
 					 	<div class="col-sm-6" style="padding-bottom: 10px;">											
 							<div id="panel-df-project{{$key}}" class="panel panel-default">
-								<div id="project{{$key}}" class="panel-heading">
+								<div id="project{{$key}}" class="panel-heading" data-toggle="collapse" href="#collapse{{$key}}">
 									{{$project.Name}}
 								</div>
-								<div class="panel-body" style="padding:0;height: 200px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
+								<div id="collapse{{$key}}" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
 									<table id="viewResourcesPerProject{{$project.ID}}" class="table table-striped table-bordered">
 										<thead>
 											<th style="font-size:12px;text-align: -webkit-center;">Name</th>
@@ -302,7 +314,7 @@ function setResourceToProjectExc(){
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc();getResourcesByProjectToday();" data-dismiss="modal">Create</button>
+        <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc();" data-dismiss="modal">Create</button>
         <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getResourcesByProjectToday();">Cancel</button>
       </div>
     </div>    
