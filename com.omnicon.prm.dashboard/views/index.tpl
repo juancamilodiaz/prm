@@ -140,14 +140,14 @@
 				<button id="backButton" class="button button2" style="display: none;"></button>				
 				<button id="refreshButton" class="buttonImg button2" style="display: inline-block;"><img src="/static/img/progress-arrows.png"></button>				
 				
-					<div id="datePicker" class="pull-right" style="padding-right: 1%;">
-						<h4>
+					<div id="datePicker" class="pull-right" style="padding-right: 0%;">
+						<h5>
 							<label for="dateFrom">Start Date:</label>
-							<input id=dateFrom type=date style="border-radius:8px;">
+							<input id=dateFrom type=date style="border-radius:8px;inline-size: 24%;">
 							<label for="dateTo">End Date:</label>
-							<input id=dateTo type=date style="border-radius:8px;">
+							<input id=dateTo type=date style="border-radius:8px;inline-size: 24%;">
 							<button id="filterByDateRange" class="buttonHeader button2">Filter</button>
-						</h4>
+						</h5>
 					</div>
 				
 			</h1>

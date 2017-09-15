@@ -25,6 +25,16 @@
 					"EndDate": date
 				}
 			reload('/projects/resources/today', data);
+			$('#dateFrom').val(date)
+			$('#dateTo').val(date)
+		});
+		$('#filterByDateRange').prop('onclick',null).off('click');
+		$('#filterByDateRange').click(function(){
+		  	data = { 
+					"StartDate": $('#dateFrom').val(),
+					"EndDate": $('#dateTo').val()
+				}
+			reload('/projects/resources/today', data);
 		});
 		sendTitle("Home");
 		
@@ -204,7 +214,7 @@ function setResourceToProjectExc(){
 							</thead>
 							<tbody>
 								{{range $key, $resource := .Resources}}
-									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab;text-align: -webkit-center;" class="sorting_1 button3">{{$resource.Name}} {{$resource.LastName}}</td></tr>
+									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab;" class="sorting_1 button3">{{$resource.Name}} {{$resource.LastName}}</td></tr>
 								{{end}}	
 							</tbody>
 						</table>
