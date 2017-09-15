@@ -64,7 +64,6 @@
 				"Enabled": $('#resourceActive').is(":checked")
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/resources', {});
 		});
@@ -87,7 +86,6 @@
 				"Enabled": $('#resourceActive').is(":checked")
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/resources', {});
 		});
@@ -105,7 +103,6 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
 		});
 	}
 	
@@ -120,7 +117,6 @@
 				"ID": $('#resourceID').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/resources', {});
 		});
@@ -139,7 +135,6 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-			console.log(response);
 		  $("#content").html(response);
 		});
 	}

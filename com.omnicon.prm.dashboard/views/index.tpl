@@ -74,11 +74,18 @@
 			  $("#content").html(response);
 			});
 		}
+		
+		validationError = function(response){
+			$("#errorMessage").html(response);
+		  	$("#errorMessage").show();
+			setTimeout(function(){ $("#errorMessage").hide(); }, 3000);
+		}
 	</script>
 	
 	
 	<script>
 		$(document).ready(function(){
+			$("#errorMessage").hide();
 			getResourcesByProjectToday();
 			$('#datePicker').css("display", "inline-block");
 		});
@@ -153,6 +160,8 @@
 					</div>
 				
 			</h1>
+			<div id="errorMessage">
+			</div>
 			<div  id="content" ng-bind-html="content">
 			</div>
 		</div>

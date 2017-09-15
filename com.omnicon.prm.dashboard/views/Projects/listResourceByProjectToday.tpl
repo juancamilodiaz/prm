@@ -124,6 +124,7 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate, estim
 		}
 	}
 	$.ajax(settings).done(function (response) {
+	  validationError(response);
 	  getResourcesByProjectWithFilterDate();
 	});
 }
@@ -192,7 +193,7 @@ function drop(ev, projectID, obj) {
 		data.innerHTML='<tr><td id="res'+rId+'" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">'+resourceName+'</td><td style="font-size:11px;">10-12-2017</td><td style="font-size:11px;">11-12-2017</td><td style="font-size:11px;">8</td><td><img style="padding:0px" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="(\'#projectID\').val('+pId+');$(\'#resourceID\').val('+rId+'); $(\'body\').data(\'buttonX\', this); $(\'#resourceName\').html('+resourceName+');$(\'#projectName\').html('+projectName+')></td></tr>';
 		//Mapped in temporal to show modal
 		$("#tempResource").html(data);
-		console.log(data);
+		
 		configureCreateModal();
 		$("#setResourceModal").modal("show");
 		$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));

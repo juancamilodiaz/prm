@@ -47,7 +47,6 @@
 				"Name": $('#skillName').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/skills', {});
 		});
@@ -65,7 +64,6 @@
 				"Name": $('#skillName').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/skills', {});
 		});
@@ -83,7 +81,6 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
 		});
 	}
 	
@@ -98,7 +95,6 @@
 				"ID": $('#skillID').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/skills', {});
 		});

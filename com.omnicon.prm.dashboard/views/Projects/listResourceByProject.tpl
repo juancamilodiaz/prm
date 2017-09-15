@@ -52,7 +52,6 @@
 				"projectID": $('#projectID').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/projects/resources', {"ProjectId": $('#projectID').val(),"ProjectName": "{{.Title}}"})
 		});
@@ -103,7 +102,6 @@
 				"Lead": lead
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/projects/resources', {"ProjectId": projectId,"ProjectName": "{{.Title}}"})
 		});
@@ -120,7 +118,6 @@
 				"Template": "select",				
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  $('#resourceNameProject').html(response);
 		});
@@ -137,7 +134,6 @@
 				"ID": pResourceId,				
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  $('#resourceInfo').html(response);
 		  $('#showInfoResourceModal').modal("show");

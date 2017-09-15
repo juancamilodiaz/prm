@@ -58,7 +58,6 @@
 				"Value": value
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}});
 		});
@@ -76,7 +75,6 @@
 				"SkillId": skillId
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}});
 		});
@@ -93,7 +91,6 @@
 				"Template": "select",				
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 		  $('#resourceNameSkill').html(response);
 		});

@@ -60,8 +60,8 @@
 				"Enabled": $('#projectActive').is(":checked")
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
+		  validationError(response);
 		  reload('/projects', {})
 		});
 	}
@@ -81,8 +81,8 @@
 				"Enabled": $('#projectActive').is(":checked")
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
+		  validationError(response);
 		  reload('/projects', {})
 		});
 	}
@@ -99,7 +99,6 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
 		});
 	}
 	
@@ -114,8 +113,8 @@
 				"ID": $('#projectID').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
+		  validationError(response);
 		  reload('/projects', {})
 		});
 	}
@@ -133,7 +132,6 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-			console.log(response);
 		  $("#content").html(response);
 		});
 	}
