@@ -41,7 +41,7 @@ $(document).ready(
 // the number of hours worked within that range
 function workingHoursBetweenDates(startDate, endDate) {  
     // Store minutes worked
-    var minutesWorked = 480;
+    var hoursWorked = 0;
 
     // Validate input
     if (endDate < startDate) { return 0; }
@@ -49,26 +49,24 @@ function workingHoursBetweenDates(startDate, endDate) {
     // Loop from your Start to End dates (by hour)
     var current = startDate;
 
-    // Define work range
-    var workHoursStart = 8;
-    var workHoursEnd = 16;
-    var includeWeekends = true;
-	console.log(current.getDay()+ "-" + endDate.getDay())
-
-    // Loop while currentDate is less than end Date (by minutes)
-    while(current <= endDate){          
-        // Is the current time within a work day (and if it 
-        // occurs on a weekend or not)          
-        if(current.getHours() >= workHoursStart && current.getHours() < workHoursEnd && 
-			((includeWeekends ? current.getDay() !== 6 && current.getDay() !== 5 : true)//0-6
-			&& (includeWeekends ? endDate.getDay() !== 6 && endDate.getDay() !== 5 : true))){
-              minutesWorked++;
-        }
-
-        // Increment current time
-        current.setTime(current.getTime() + 1000 * 60);
-    }
-
+    // Define work hours
+    var workHours = 8;
+	if (endDate.getDate() == startDate.getDate()) { return workHours; }
+	// Loop while currentDate is less than end Date (by minutes)
+    while(current <= endDate){
+		
+		if (current.getDay() !== 6 && current.getDay() !== 5) {
+			hoursWorked = hoursWorked + workHours;
+		}
+		current = addDays(current,1);
+	}
+	
     // Return the number of hours
-    return minutesWorked / 60;
+    return hoursWorked;
+}
+
+function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(date.getDate() + days);
+    return result;
 }
