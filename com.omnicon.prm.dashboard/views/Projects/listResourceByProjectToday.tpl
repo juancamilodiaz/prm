@@ -200,11 +200,11 @@ function setResourceToProjectExc(){
 					<div id="resources" class="panel-body">
 						<table id="viewResourcesHome" class="table table-striped table-bordered pull-left">
 							<thead>
-								<th>Resources</th>
+								<th style="text-align: -webkit-center;">Resources</th>
 							</thead>
 							<tbody>
 								{{range $key, $resource := .Resources}}
-									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab" class="sorting_1 button3">{{$resource.Name}} {{$resource.LastName}}</td></tr>
+									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab;text-align: -webkit-center;" class="sorting_1 button3">{{$resource.Name}} {{$resource.LastName}}</td></tr>
 								{{end}}	
 							</tbody>
 						</table>
@@ -226,21 +226,21 @@ function setResourceToProjectExc(){
 								<div class="panel-body" style="padding:0;height: 200px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
 									<table id="viewResourcesPerProject{{$project.ID}}" class="table table-striped table-bordered">
 										<thead>
-											<th style="font-size:12px;">Name</th>
-											<th style="font-size:12px;">Start date</th>
-											<th style="font-size:12px;">End date</th>
-											<th style="font-size:12px;">Hrs</th>
-											<th style="font-size:12px;">Options</th>
+											<th style="font-size:12px;text-align: -webkit-center;">Name</th>
+											<th style="font-size:12px;text-align: -webkit-center;">Start date</th>
+											<th style="font-size:12px;text-align: -webkit-center;">End date</th>
+											<th style="font-size:12px;text-align: -webkit-center;">Hours</th>
+											<th style="font-size:12px;text-align: -webkit-center;">Options</th>
 										</thead>
 										<tbody>
 											{{range $keyR, $resProj := $resourcesProject}}
 												{{if eq  $resProj.ProjectId $project.ID}}
 												<tr draggable ="false">
-													<td id="res{{$keyR}}" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
-													<td style="font-size:11px;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
-													<td style="font-size:11px;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
-													<td style="font-size:11px;">{{$resProj.Hours}}</td>
-													<td><img style="padding:0px" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
+													<td id="res{{$keyR}}" style="font-size:11px;text-align: -webkit-center;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
+													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
+													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
+													<td style="font-size:11px;text-align: -webkit-center;">{{$resProj.Hours}}</td>
+													<td style="text-align: -webkit-center;"><img style="padding:0px;" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn button3" src="/img/rubbish-bin.png" onclick="$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
 												</tr>
 												{{end}}
 											{{end}}
