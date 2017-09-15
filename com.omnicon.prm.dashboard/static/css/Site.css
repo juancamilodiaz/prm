@@ -302,7 +302,7 @@ a {
     cursor: -webkit-grabbing;
 } 
 
-button.btn{
+button.btnCollapse{
 	display: inline-block;
 	background-color: transparent;
     padding: 4px 12px;
@@ -313,12 +313,12 @@ button.btn{
     vertical-align: middle;
     cursor: pointer;
 }
-button.btn.collapsed:before
+button.btnCollapse.collapsed:before
 {
     content:'+' ;
 	display:block;
 }
-button.btn:before
+button.btnCollapse:before
 {
     content:'-' ;
 	display:block;

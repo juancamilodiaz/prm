@@ -246,7 +246,7 @@ function setResourceToProjectExc(){
 								<div id="project{{$key}}" class="panel-heading">
 									{{$project.Name}}
 									<div class="pull-right">
-										<button id="collapseButton{{$key}}" class="btn" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
+										<button id="collapseButton{{$key}}" class="btnCollapse" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
 									</div>
 								</div>
 								<div id="collapse{{$key}}" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
@@ -319,7 +319,7 @@ function setResourceToProjectExc(){
       </div>
       <div class="modal-footer">
         <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc();" data-dismiss="modal">Create</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getResourcesByProjectToday();">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>    
   </div>
@@ -340,7 +340,7 @@ function setResourceToProjectExc(){
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'));getResourcesByProjectToday();" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getResourcesByProjectToday();">No</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
       </div>
     </div>
   </div>
