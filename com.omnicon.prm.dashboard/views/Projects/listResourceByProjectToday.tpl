@@ -189,7 +189,7 @@ function setResourceToProjectExc(){
 <var id="resourceIDInput"></var>
 
 	<div class="row">
-		<div class="col-sm-5">
+		<div class="col-sm-3">
 			<div class="panel-group" >
 				<div class="panel panel-default">
 					<div class="panel-heading">Resources</div>
@@ -208,7 +208,7 @@ function setResourceToProjectExc(){
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-7" style="overflow-y: auto;">
+		<div class="col-sm-9" style="overflow-y: auto;">
 			<div class="panel-group">
 	    		<div id="projects" class="panel">
 					{{$projectsLoop := .Projects}}
@@ -232,7 +232,7 @@ function setResourceToProjectExc(){
 											{{range $keyR, $resProj := $resourcesProject}}
 												{{if eq  $resProj.ProjectId $project.ID}}
 												<tr draggable ="false">
-													<td id="res{{$keyR}}" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
+													<td id="res{{$keyR}}" style="font-size:11px;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
 													<td style="font-size:11px;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
 													<td style="font-size:11px;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
 													<td style="font-size:11px;">{{$resProj.Hours}}</td>
