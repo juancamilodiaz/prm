@@ -10,6 +10,7 @@
 				{"searchable":false}
 			]
 		});
+		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
 		sendTitle("Resources");
 		$('#refreshButton').css("display", "inline-block");

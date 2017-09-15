@@ -9,6 +9,7 @@
 				{"searchable":false}
 			]
 		});
+		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
 		$('#backButton').prop('onclick',null).off('click');
 		$('#refreshButton').css("display", "inline-block");

@@ -9,7 +9,7 @@
 			
 			
 		});					
-				
+		$('#datePicker').css("display", "inline-block");	
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
@@ -212,7 +212,7 @@ function setResourceToProjectExc(){
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-7" style="overflow-y: auto;">
+		<div class="col-sm-9" style="overflow-y: auto;">
 			<div class="panel-group">
 	    		<div id="projects" class="panel">
 					{{$projectsLoop := .Projects}}

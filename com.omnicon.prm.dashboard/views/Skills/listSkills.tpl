@@ -6,6 +6,7 @@
 				{"searchable":false}
 			]
 		});
+		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
 		sendTitle("Skills");
 		$('#refreshButton').css("display", "inline-block");

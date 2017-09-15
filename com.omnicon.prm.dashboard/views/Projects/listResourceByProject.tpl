@@ -17,6 +17,7 @@
 		$('#backButton').click(function(){
 			reload('/projects',{});
 		}); 
+		$('#datePicker').css("display", "none");
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){

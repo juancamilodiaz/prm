@@ -79,6 +79,7 @@
 	<script>
 		$(document).ready(function(){
 			getResourcesByProjectToday();
+			$('#datePicker').css("display", "inline-block");
 		});
 		
 		getResourcesByProjectToday = function(){
@@ -94,6 +95,8 @@
 					"EndDate": date
 				}
 			reload('/projects/resources/today', data);
+			$('#dateFrom').val(date)
+			$('#dateTo').val(date)
 		}
 	</script>
 
@@ -112,7 +115,7 @@
 		</div>
 		<div id="NavCenter" class="NavItem">
 		</div>
-		<div id="NavRight" class="NavItem">
+		<div id="NavRight" class="NavItem" style="padding-right: 3%;">
 			<div id="login" class="NavItem">
 				<label style="padding-right: inherit; padding-left: inherit;">User:</label><input type="text" id="LogUser" style="border-radius: 8px;padding: 0.5%;"><label style="padding-right: inherit; padding-left: inherit;">Password:</label> <input type="password" id="LogPassword" style="border-radius: 8px;padding: 0.5%;"> <button class="buttonTable button2" disabled>Login</button>
 			</div>
@@ -136,6 +139,17 @@
 				<div id="titlePag">Home</div>
 				<button id="backButton" class="button button2" style="display: none;"></button>				
 				<button id="refreshButton" class="buttonImg button2" style="display: inline-block;"><img src="/static/img/progress-arrows.png"></button>				
+				
+					<div id="datePicker" class="pull-right" style="padding-right: 1%;">
+						<h4>
+							<label for="dateFrom">Start Date:</label>
+							<input id=dateFrom type=date style="border-radius:8px;">
+							<label for="dateTo">End Date:</label>
+							<input id=dateTo type=date style="border-radius:8px;">
+							<button id="filterByDateRange" class="buttonHeader button2">Filter</button>
+						</h4>
+					</div>
+				
 			</h1>
 			<div  id="content" ng-bind-html="content">
 			</div>
