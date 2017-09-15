@@ -1,8 +1,13 @@
 <script>
 	$(document).ready(function(){
-		$('#viewResourcesHome').DataTable({			
-			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-			scrollY: 370
+		$('#viewResourcesHome').DataTable({
+			scrollY: 370,
+			responsive: true,
+			"pageLength": 50,
+			"searching": true,
+			"paging": false,
+			
+			
 		});					
 				
 		$('#refreshButton').css("display", "inline-block");
@@ -165,6 +170,7 @@ function drop(ev, projectID, obj) {
 		data.innerHTML='<tr><td id="res'+rId+'" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">'+resourceName+'</td><td style="font-size:11px;">10-12-2017</td><td style="font-size:11px;">11-12-2017</td><td style="font-size:11px;">8</td><td><img style="padding:0px" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="(\'#projectID\').val('+pId+');$(\'#resourceID\').val('+rId+'); $(\'body\').data(\'buttonX\', this); $(\'#resourceName\').html('+resourceName+');$(\'#projectName\').html('+projectName+')></td></tr>';
 		//Mapped in temporal to show modal
 		$("#tempResource").html(data);
+		console.log(data);
 		configureCreateModal();
 		$("#setResourceModal").modal("show");
 		$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
@@ -191,11 +197,10 @@ function setResourceToProjectExc(){
 		<div class="col-sm-3">
 			<div class="panel-group" >
 				<div class="panel panel-default">
-					<div class="panel-heading">Resources</div>
 					<div id="resources" class="panel-body">
-						<table id="viewResourcesHome" class="table table-striped table-bordered">
+						<table id="viewResourcesHome" class="table table-striped table-bordered pull-left">
 							<thead>
-								<th>Name</th>
+								<th>Resources</th>
 							</thead>
 							<tbody>
 								{{range $key, $resource := .Resources}}
@@ -207,7 +212,7 @@ function setResourceToProjectExc(){
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-9" style="overflow-y: auto;">
+		<div class="col-sm-7" style="overflow-y: auto;">
 			<div class="panel-group">
 	    		<div id="projects" class="panel">
 					{{$projectsLoop := .Projects}}
@@ -231,7 +236,7 @@ function setResourceToProjectExc(){
 											{{range $keyR, $resProj := $resourcesProject}}
 												{{if eq  $resProj.ProjectId $project.ID}}
 												<tr draggable ="false">
-													<td id="res{{$keyR}}" style="font-size:11px;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
+													<td id="res{{$keyR}}" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
 													<td style="font-size:11px;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
 													<td style="font-size:11px;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
 													<td style="font-size:11px;">{{$resProj.Hours}}</td>
