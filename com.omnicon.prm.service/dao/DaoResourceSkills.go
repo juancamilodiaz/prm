@@ -46,7 +46,7 @@ func GetResourceSkillsById(pId int64) *DOMAIN.ResourceSkills {
 	// ResourceSkills structure
 	resourceSkills := DOMAIN.ResourceSkills{}
 	// Add in resourceSkills variable, the resourceSkills where ID is the same that the param
-	res := getResourceSkillsCollection().Find(db.Cond{"id": pId})
+	res := getResourceSkillsCollection().Find(db.Cond{"resource_id": pId})
 	// Close session when ends the method
 	defer session.Close()
 	err := res.One(&resourceSkills)

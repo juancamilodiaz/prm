@@ -25,7 +25,12 @@ func (this *SkillController) ListSkills() {
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("Skills", message.Skills)
 		this.Data["Skills"] = message.Skills
-		this.TplName = "Skills/listSkills.tpl"
+		if this.GetString("Template") == "select" {
+			this.TplName = "Skills/listSkillToDropDown.tpl"
+		} else {
+			this.TplName = "Skills/listSkills.tpl"
+		}
+
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."
@@ -58,7 +63,19 @@ func (this *SkillController) CreateSkill() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Skills/listSkills.tpl"
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
 }
 
 func (this *SkillController) ReadSkill() {
@@ -116,7 +133,19 @@ func (this *SkillController) UpdateSkill() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Common/message.tpl"
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
 }
 
 func (this *SkillController) DeleteSkill() {
@@ -143,5 +172,17 @@ func (this *SkillController) DeleteSkill() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Common/message.tpl"
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
 }

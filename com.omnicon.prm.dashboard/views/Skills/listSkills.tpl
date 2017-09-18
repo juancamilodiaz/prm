@@ -1,6 +1,18 @@
 <script>
 	$(document).ready(function(){
 		$('#viewSkills').DataTable({
+			"columns":[
+				null,
+				{"searchable":false}
+			]
+		});
+		$('#datePicker').css("display", "none");
+		$('#backButton').css("display", "none");
+		sendTitle("Skills");
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			reload('/skills',{});
 		});
 	});
 	
@@ -35,9 +47,9 @@
 				"Name": $('#skillName').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/skills');
+			validationError(response);
+			reload('/skills', {});
 		});
 	}
 	
@@ -53,9 +65,9 @@
 				"Name": $('#skillName').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/skills');
+			validationError(response);
+			reload('/skills', {});
 		});
 	}
 	
@@ -71,7 +83,6 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
 		});
 	}
 	
@@ -86,9 +97,9 @@
 				"ID": $('#skillID').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/skills');
+			validationError(response);
+			reload('/skills', {});
 		});
 	}
 	
@@ -106,15 +117,15 @@
 		<tr>
 			<td>{{$skilll.Name}}</td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">Delete</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">Delete</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#skillModal" onclick="configureCreateModal()" >Create</button>
+	<button class="button button2" data-toggle="modal" data-target="#skillModal" onclick="configureCreateModal()" >Create</button>
 </div>
 </div>
 
@@ -147,7 +158,7 @@
     
   </div>
 </div>
-<div class="modal fase" id="confirmModal" role="dialog">
+<div class="modal fade" id="confirmModal" role="dialog">
 <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
@@ -156,7 +167,7 @@
         <h4 class="modal-title">Delete Confirmation</h4>
       </div>
       <div class="modal-body">
-        Are you sure  yow want to remove <b id="nameDelete"></b> from skills?
+        Are you sure you want to remove <b id="nameDelete"></b> from skills?
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="skillDelete" class="btn btn-default" onclick="deleteSkill()" data-dismiss="modal">Yes</button>

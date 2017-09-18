@@ -1,6 +1,27 @@
 <script>
 	$(document).ready(function(){
 		$('#viewProjects').DataTable({
+			"columns":[
+				null,
+				null,
+				null,
+				null,
+				{"searchable":false}
+			]
+		});
+		$('#datePicker').css("display", "none");
+		$('#backButton').css("display", "none");
+		$('#backButton').prop('onclick',null).off('click');
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			reload('/projects',{});
+		});
+		sendTitle("Projects");
+		
+		$('#projectStartDate').change(function(){
+			$('#projectEndDate').val($("#projectStartDate").val());
+			$('#projectEndDate').attr("min", $("#projectStartDate").val());
 		});
 	});
 	
@@ -12,7 +33,7 @@
 		$("#projectEndDate").val(null);
 		$("#projectActive").prop('checked', false);
 		
-		$("#modalTitle").html("Create Project");
+		$("#modalProjectTitle").html("Create Project");
 		$("#projectUpdate").css("display", "none");
 		$("#projectCreate").css("display", "inline-block");
 	}
@@ -23,9 +44,10 @@
 		$("#projectName").val(pName);
 		$("#projectStartDate").val(pStartDate);
 		$("#projectEndDate").val(pEndDate);
+		$("#projectEndDate").attr("min", pEndDate);
 		$("#projectActive").prop('checked', pActive);
 		
-		$("#modalTitle").html("Update Project");
+		$("#modalProjectTitle").html("Update Project");
 		$("#projectCreate").css("display", "none");
 		$("#projectUpdate").css("display", "inline-block");
 	}
@@ -44,9 +66,9 @@
 				"Enabled": $('#projectActive').is(":checked")
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/projects')
+		  validationError(response);
+		  reload('/projects', {})
 		});
 	}
 	
@@ -65,9 +87,9 @@
 				"Enabled": $('#projectActive').is(":checked")
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/projects')
+		  validationError(response);
+		  reload('/projects', {})
 		});
 	}
 	
@@ -83,7 +105,6 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
 		});
 	}
 	
@@ -98,9 +119,9 @@
 				"ID": $('#projectID').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/projects')
+		  validationError(response);
+		  reload('/projects', {})
 		});
 	}
 	
@@ -112,12 +133,11 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"ID": projectID,
+				"ProjectId": projectID,
 				"ProjectName": projectName
 			}
 		}
 		$.ajax(settings).done(function (response) {
-			console.log(response);
 		  $("#content").html(response);
 		});
 	}
@@ -140,18 +160,19 @@
 			<td>{{$project.Name}}</td>
 			<td>{{dateformat $project.StartDate "2006-01-02"}}</td>
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
-			<td>{{$project.Enabled}}</td>
+			<td><input type="checkbox" {{if $project.Enabled}}checked{{end}} disabled></td>
+			
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
-				<button class="BlueButton" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">More Info.</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
+				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">More Info.</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#projectModal" onclick='configureCreateModal()'>Create</button>
+	<button class="button button2" data-toggle="modal" data-target="#projectModal" onclick='configureCreateModal()'>New Project</button>
 </div>
 </div>
 
@@ -162,7 +183,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTitle" class="modal-title"></h4>
+        <h4 id="modalProjectTitle" class="modal-title"></h4>
       </div>
       <div class="modal-body">
         <input type="hidden" id="projectID">
@@ -209,7 +230,7 @@
   </div>
 </div>
 
-<div class="modal fase" id="confirmModal" role="dialog">
+<div class="modal fade" id="confirmModal" role="dialog">
 <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
@@ -218,7 +239,7 @@
         <h4 class="modal-title">Delete Confirmation</h4>
       </div>
       <div class="modal-body">
-        Are you sure  yow want to remove <b id="nameDelete"></b> from projects?
+        Are you sure you want to remove <b id="nameDelete"></b> from projects?
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="projectDelete" class="btn btn-default" onclick="deleteProject()" data-dismiss="modal">Yes</button>

@@ -14,8 +14,8 @@ type DeleteSkillToResourceRQ struct {
 }
 
 type GetSkillsRQ struct {
-	ID   *int64
-	Name *string
+	ID   int64
+	Name string
 }
 
 type SetSkillToResourceRQ struct {

@@ -35,7 +35,11 @@ func (this *ResourceController) ListResources() {
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("Resources", message.Resources)
 		this.Data["Resources"] = message.Resources
-		this.TplName = "Resources/listResources.tpl"
+		if this.GetString("Template") == "select" {
+			this.TplName = "Projects/listResourceToDropDown.tpl"
+		} else {
+			this.TplName = "Resources/listResources.tpl"
+		}
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."
@@ -71,7 +75,19 @@ func (this *ResourceController) CreateResource() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Common/message.tpl"
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
 }
 
 func (this *ResourceController) ReadResource() {
@@ -93,7 +109,6 @@ func (this *ResourceController) ReadResource() {
 		defer res.Body.Close()
 		message := new(domain.GetResourcesRS)
 		json.NewDecoder(res.Body).Decode(&message)
-
 		this.Data["Resources"] = message.Resources
 		this.TplName = "Resources/viewResources.tpl"
 	} else {
@@ -130,7 +145,19 @@ func (this *ResourceController) UpdateResource() {
 	if err != nil {
 		log.Error(err.Error())
 	}
-	this.TplName = "Common/message.tpl"
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
 }
 
 func (this *ResourceController) DeleteResource() {
@@ -156,6 +183,110 @@ func (this *ResourceController) DeleteResource() {
 	defer res.Body.Close()
 	if err != nil {
 		log.Error(err.Error())
+	}
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
+}
+
+func (this *ResourceController) GetSkillsByResource() {
+	operation := "GetSkillsByResource"
+
+	input := domain.GetSkillByResourceRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.GetSkillByResourceRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		fmt.Println("GetSkillsByResource", message.Skills)
+		this.Data["ResourceId"] = input.ID
+		this.Data["Skills"] = message.Skills
+		this.Data["Title"] = this.GetString("ResourceName")
+		this.TplName = "Resources/listSkillsByResource.tpl"
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
+
+func (this *ResourceController) SetSkillsToResource() {
+	operation := "SetSkillToResource"
+
+	input := domain.SetSkillToResourceRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.SetSkillToResourceRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		fmt.Println("SetSkillsByResource", message.Resource)
+		this.Data["Skills"] = message.Resource.Skills
+		this.Data["Title"] = this.GetString("ResourceName")
+		this.TplName = "Resources/listSkillsByResource.tpl"
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
+
+func (this *ResourceController) DeleteSkillsToResource() {
+	operation := "DeleteSkillToResource"
+
+	input := domain.DeleteSkillToResourceRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	fmt.Printf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	defer res.Body.Close()
+	message := new(domain.DeleteSkillToResourceRS)
+	err = json.NewDecoder(res.Body).Decode(&message)
+	if err == nil {
+		fmt.Println("DeleteSkillToResource", message.SkillName, message.ResourceName)
+		this.Data["SkillName"] = message.SkillName
+		this.Data["ResourceName"] = message.ResourceName
+		this.Data["Title"] = this.GetString("ResourceName")
+	} else {
+		log.Error(err.Error())
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
 	}
 	this.TplName = "Common/message.tpl"
 }

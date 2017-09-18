@@ -20,6 +20,26 @@ func (m *CreateSkillRS) GetHeader() *CreateSkillRS_Header {
 	return nil
 }
 
+//-------- Create Skill
+type GetSkillByResourceRS struct {
+	Header  *GetSkillbyResourceRS_Header
+	Skills  []*ResourceSkills
+	Status  string
+	Message string
+}
+
+type GetSkillbyResourceRS_Header struct {
+	ResponseTime string
+	RequestDate  string
+}
+
+func (m *GetSkillByResourceRS) GetHeader() *GetSkillbyResourceRS_Header {
+	if m != nil {
+		return m.Header
+	}
+	return nil
+}
+
 //-------- Delete Skill
 
 type DeleteSkillRS struct {

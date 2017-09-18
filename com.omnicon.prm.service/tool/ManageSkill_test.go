@@ -170,7 +170,7 @@ func TestGetSkills(t *testing.T) {
 func TestGetSkillsByName(t *testing.T) {
 	requestGetSkills := domain.GetSkillsRQ{}
 	name := "Skill Test"
-	requestGetSkills.Name = &name
+	requestGetSkills.Name = name
 
 	resultGetSkills := GetSkills(&requestGetSkills)
 

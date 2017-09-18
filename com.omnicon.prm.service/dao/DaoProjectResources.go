@@ -30,7 +30,7 @@ func GetAllProjectResources() []*DOMAIN.ProjectResources {
 	// Slice to keep all ProjectResources
 	var projectResources []*DOMAIN.ProjectResources
 	// Add all ProjectResources in projectResources variable
-	err := getProjectResourcesCollection().Find().All(projectResources)
+	err := getProjectResourcesCollection().Find().All(&projectResources)
 	// Close session when ends the method
 	defer session.Close()
 	if err != nil {
@@ -137,14 +137,20 @@ func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, err
 	res, err := session.InsertInto("ProjectResources").Columns(
 		"project_id",
 		"resource_id",
+		"project_name",
+		"resource_name",
 		"start_date",
 		"end_date",
-		"lead").Values(
+		"lead",
+		"hours").Values(
 		pProjectResources.ProjectId,
 		pProjectResources.ResourceId,
+		pProjectResources.ProjectName,
+		pProjectResources.ResourceName,
 		pProjectResources.StartDate,
 		pProjectResources.EndDate,
-		pProjectResources.Lead).Exec()
+		pProjectResources.Lead,
+		pProjectResources.Hours).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -166,7 +172,7 @@ func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, 
 	// Close session when ends the method
 	defer session.Close()
 	// Update ProjectResources in DB
-	q := session.Update("ProjectResources").Set("project_id = ?, resource_id = ?, start_date = ?, end_date = ?, lead = ?", pProjectResources.ProjectId, pProjectResources.ResourceId, pProjectResources.StartDate, pProjectResources.EndDate, pProjectResources.Lead).Where("id = ?", int(pProjectResources.ID))
+	q := session.Update("ProjectResources").Set("project_id = ?, resource_id = ?, start_date = ?, end_date = ?, lead = ?, hours = ?", pProjectResources.ProjectId, pProjectResources.ResourceId, pProjectResources.StartDate, pProjectResources.EndDate, pProjectResources.Lead, pProjectResources.Hours).Where("id = ?", int(pProjectResources.ID))
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -223,7 +229,7 @@ func DeleteProjectResourcesByProjectIdAndResourceId(pProjectId, pResourceId int6
 	return deleteCount, nil
 }
 
-func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResources, pStartDate, pEndDate *string, pLead *bool) ([]*DOMAIN.ProjectResources, string) {
+func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResources, pStartDate, pEndDate string, pLead *bool) ([]*DOMAIN.ProjectResources, string) {
 	// Slice to keep all resources
 	projectsResources := []*DOMAIN.ProjectResources{}
 	result := getProjectResourcesCollection().Find()
@@ -251,20 +257,38 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ResourceId, 10))
 
 	}
-	if pStartDate != nil {
+	if pProjectResourceFilters.ProjectName != "" {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
-		filters.WriteString("start_date >= '")
-		filters.WriteString(*pStartDate)
+		filters.WriteString("project_name = '")
+		filters.WriteString(pProjectResourceFilters.ProjectName)
+		filters.WriteString("'")
+
+	}
+	if pProjectResourceFilters.ResourceName != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("resource_name = '")
+		filters.WriteString(pProjectResourceFilters.ResourceName)
+		filters.WriteString("'")
+
+	}
+	if pStartDate != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("end_date >= '")
+		filters.WriteString(pStartDate)
 		filters.WriteString("'")
 	}
-	if pEndDate != nil {
+	if pEndDate != "" {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
-		filters.WriteString("end_date <= '")
-		filters.WriteString(*pEndDate)
+		filters.WriteString("start_date <= '")
+		filters.WriteString(pEndDate)
 		filters.WriteString("'")
 	}
 	if pLead != nil {
@@ -275,10 +299,20 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		filters.WriteString(strconv.FormatBool(*pLead))
 		filters.WriteString("'")
 	}
-	err := result.Where(filters.String()).All(&projectsResources)
+	if pProjectResourceFilters.Hours != 0 {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("hours = ")
+		filters.WriteString(strconv.FormatFloat(pProjectResourceFilters.Hours, 'f', -1, 64))
+	}
 
-	if err != nil {
-		log.Error(err)
+	if filters.String() != "" {
+		err := result.Where(filters.String()).All(&projectsResources)
+
+		if err != nil {
+			log.Error(err)
+		}
 	}
 
 	return projectsResources, filters.String()

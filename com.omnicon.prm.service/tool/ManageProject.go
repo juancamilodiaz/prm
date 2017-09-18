@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -148,6 +147,16 @@ func DeleteProject(pRequest *DOMAIN.DeleteProjectRQ) *DOMAIN.DeleteProjectRS {
 	response := DOMAIN.DeleteProjectRS{}
 	projectToDelete := dao.GetProjectById(pRequest.ID)
 	if projectToDelete != nil {
+
+		// Delete resources assignations for this project
+		resourcesProject := dao.GetProjectResourcesByProjectId(pRequest.ID)
+		for _, resource := range resourcesProject {
+			_, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(resource.ProjectId, resource.ResourceId)
+			if err != nil {
+				log.Error("Failed to delete project resource")
+			}
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteProject(pRequest.ID)
 		if err != nil || rowsDeleted <= 0 {
@@ -204,6 +213,8 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 		if resource != nil {
 			projectResources := DOMAIN.ProjectResources{}
 			projectResources.ResourceId = pRequest.ResourceId
+			projectResources.ProjectName = project.Name
+			projectResources.ResourceName = resource.Name + " " + resource.LastName
 			projectResources.ProjectId = pRequest.ProjectId
 			startDate := new(string)
 			startDate = &pRequest.StartDate
@@ -221,6 +232,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			projectResources.StartDate = time.Unix(startDateInt, 0)
 			projectResources.EndDate = time.Unix(endDateInt, 0)
 			projectResources.Lead = pRequest.Lead
+			projectResources.Hours = pRequest.Hours
 
 			projectResourcesExist := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
 			if projectResourcesExist != nil {
@@ -237,6 +249,9 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					projectResourcesExist.EndDate = time.Unix(endDateInt, 0)
 				}
 				projectResourcesExist.Lead = pRequest.Lead
+				if pRequest.Hours != 0 {
+					projectResourcesExist.Hours = pRequest.Hours
+				}
 				// Call update projectResources operation
 				rowsUpdated, err := dao.UpdateProjectResources(projectResourcesExist)
 				if err != nil || rowsUpdated <= 0 {
@@ -383,7 +398,7 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetProjectsRS{}
 
-	isValid, message := util.ValidateDates(pRequest.StartDate, pRequest.EndDate, false)
+	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
 	if !isValid {
 		response.Message = message
 		response.Status = "Error"
@@ -456,7 +471,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	timeResponse := time.Now()
 	response := DOMAIN.GetResourcesToProjectsRS{}
 
-	isValid, message := util.ValidateDates(pRequest.StartDate, pRequest.EndDate, false)
+	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
 	if !isValid {
 		response.Message = message
 		response.Status = "Error"
@@ -464,20 +479,25 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	}
 
 	filters := util.MappingFiltersProjectResource(pRequest)
-	fmt.Println("FILTROS", filters)
 	projectsResources, filterString := dao.GetProjectsResourcesByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Lead)
-	fmt.Println("FILTROS String", filterString)
 
 	if len(projectsResources) == 0 && filterString == "" {
 		projectsResources = dao.GetAllProjectResources()
 	}
 
-	if projectsResources != nil && len(projectsResources) > 0 {
+	requestProjects := DOMAIN.GetProjectsRQ{}
+	responseProjects := GetProjects(&requestProjects)
+	response.Projects = responseProjects.Projects
 
-		/*for _, projectResource := range projectsResources {
-			projectInformation := dao.GetProjectById(projectResource.ProjectId)
-			resourceInformation := dao.GetResourceById(projectResource.ResourceId)
-		}*/
+	requestResources := DOMAIN.GetResourcesRQ{}
+	responseResources := GetResources(&requestResources)
+	for _, resource := range responseResources.Resources {
+		// only return resources enabled
+		if resource.Enabled {
+			response.Resources = append(response.Resources, resource)
+		}
+	}
+	if projectsResources != nil && len(projectsResources) > 0 {
 
 		response.ResourcesToProjects = projectsResources
 		// Create response

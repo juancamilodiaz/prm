@@ -1,9 +1,54 @@
 <script>
 	$(document).ready(function(){
 		$('#viewResources').DataTable({
+			"columns":[
+				null,
+				null,
+				null,
+				null,
+				null,
+				{"searchable":false}
+			]
+		});
+		$('#datePicker').css("display", "none");
+		$('#backButton').css("display", "none");
+		sendTitle("Resources");
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			reload('/resources',{});
+		});
+		$("#resourceEmail").keyup(function(){
 
+	        var email = $("#resourceEmail").val();
+	
+	        if(email != 0)
+	        {
+	            if(isValidEmailAddress(email))
+	            {
+	               	$("#resourceEmail").css({
+						border-color: lightgreen;
+					})
+	            } else {
+	                $("#resourceEmail").css({
+						border-color: red;
+					})
+	            }
+	        } else {
+			 	console.log(" no hay nada")        
+	        }
+	
+	    });
+		$('#resourceEmail').verimail({
+		    messageElement: "p#status-message"
 		});
 	});
+	
+	function isValidEmailAddress(emailAddress) {
+	    var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+	    return pattern.test(emailAddress);
+	}
+
 	
 	configureCreateModal = function(){
 		
@@ -14,7 +59,7 @@
 		$("#resourceRank").val(null);
 		$("#resourceActive").prop('checked', false);
 		
-		$("#modalTitle").html("Create Resource");
+		$("#modalResourceTitle").html("Create Resource");
 		$("#resourceUpdate").css("display", "none");
 		$("#resourceCreate").css("display", "inline-block");
 	}
@@ -28,7 +73,7 @@
 		$("#resourceRank").val(pRank);
 		$("#resourceActive").prop('checked', pActive);
 		
-		$("#modalTitle").html("Update Resource");
+		$("#modalResourceTitle").html("Update Resource");
 		$("#resourceCreate").css("display", "none");
 		$("#resourceUpdate").css("display", "inline-block");
 	}
@@ -49,9 +94,9 @@
 				"Enabled": $('#resourceActive').is(":checked")
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/resources');
+			validationError(response);
+			reload('/resources', {});
 		});
 	}
 	
@@ -72,9 +117,9 @@
 				"Enabled": $('#resourceActive').is(":checked")
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/resources');
+			validationError(response);
+			reload('/resources', {});
 		});
 	}
 	
@@ -90,7 +135,6 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  console.log(response);
 		});
 	}
 	
@@ -105,9 +149,26 @@
 				"ID": $('#resourceID').val()
 			}
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
-		  reload('/resources');
+			validationError(response);
+			reload('/resources', {});
+		});
+	}
+	
+	getSkillsByResource = function(resourceID, resourceName){
+		var settings = {
+			method: 'POST',
+			url: '/resources/skills',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"ID": resourceID,
+				"ResourceName": resourceName
+			}
+		}
+		$.ajax(settings).done(function (response) {
+		  $("#content").html(response);
 		});
 	}
 		
@@ -131,96 +192,96 @@
 			<td>{{$resource.LastName}}</td>
 			<td>{{$resource.Email}}</td>
 			<td>{{$resource.EngineerRange}}</td>
-			<td>{{$resource.Enabled}}</td>
+			<td><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
 			<td>
-				<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="BlueButton" onclick="$('#resourceID').val({{$resource.ID}});" disabled>Skills</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
+				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
+				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Skills</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
 <div style="text-align:center;">
-	<button class="BlueButton" data-toggle="modal" data-target="#resourceModal" onclick="configureCreateModal()">Create</button>
+	<button class="button button2" data-toggle="modal" data-target="#resourceModal" onclick="configureCreateModal()">New Resource</button>
 </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="resourceModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTitle" class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
-		<input type="hidden" id="resourceID">
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-              <div class="col-sm-8">
-              	<input type="text" id="resourceName">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
-              <div class="col-sm-8">
-              	<input type="text" id="resourceLastName">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
-              <div class="col-sm-8">
-              	<input type="text" id="resourceEmail">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
-              <div class="col-sm-8">
-              	<select id="resourceRank"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option></select>
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-              <div class="col-sm-8">
-              	<input type="checkbox" id="resourceActive"><br/>
-              </div>    
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="resourceCreate" class="btn btn-default" onclick="createResource()" data-dismiss="modal">Create</button>
-        <button type="button" id="resourceUpdate" class="btn btn-default" onclick="updateResource()" data-dismiss="modal">Update</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>    
-  </div>
-</div>
-<div class="modal fase" id="confirmModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
-        Are you sure  yow want to remove <b id="nameDelete"></b> from resources?
-      </div>
-      <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-      </div>
-    </div>
-  </div>
+	<!-- Modal -->
+	<div class="modal fade" id="resourceModal" role="dialog">
+	  <div class="modal-dialog">
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 id="modalResourceTitle" class="modal-title"></h4>
+	      </div>
+	      <div class="modal-body">
+			<input type="hidden" id="resourceID">
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
+	              <div class="col-sm-8">
+	              	<input type="text" id="resourceName">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
+	              <div class="col-sm-8">
+	              	<input type="text" id="resourceLastName">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
+	              <div class="col-sm-8">
+	              	<input type="text" id="resourceEmail">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
+	              <div class="col-sm-8">
+	              	<select id="resourceRank"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option></select>
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
+	              <div class="col-sm-8">
+	              	<input type="checkbox" id="resourceActive"><br/>
+	              </div>    
+	          </div>
+	        </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" id="resourceCreate" class="btn btn-default" onclick="createResource()" data-dismiss="modal">Create</button>
+	        <button type="button" id="resourceUpdate" class="btn btn-default" onclick="updateResource()" data-dismiss="modal">Update</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	      </div>
+	    </div>    
+	  </div>
+	</div>
+	<div class="modal fade" id="confirmModal" role="dialog">
+		<div class="modal-dialog">
+	    	<!-- Modal content-->
+		    <div class="modal-content">
+	     		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+	        		<h4 class="modal-title">Delete Confirmation</h4>
+	      		</div>
+	      	<div class="modal-body">
+	      		Are you sure you want to remove <b id="nameDelete"></b> from resources?
+	      	</div>
+	      	<div class="modal-footer" style="text-align:center;">
+		        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>
+		        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+	      	</div>
+	    </div>
+	</div>
 </div>

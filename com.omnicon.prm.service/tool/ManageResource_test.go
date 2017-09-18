@@ -207,7 +207,7 @@ func TestGetResources(t *testing.T) {
 
 	requestGetResource := domain.GetResourcesRQ{}
 	name := "Test Name"
-	requestGetResource.Name = &name
+	requestGetResource.Name = name
 
 	resultGetResource := GetResources(&requestGetResource)
 
@@ -218,9 +218,9 @@ func TestGetResources(t *testing.T) {
 	assert.Equal(t, resultCreateResource.Resource.ID, resultGetResource.Resources[0].ID, "The resources list not has the number of resources correct.")
 	assert.Equal(t, "OK", resultGetResource.Status, "The status is not OK")
 
-	requestGetResource.Name = nil
+	requestGetResource.Name = ""
 	lastName := "Test LastName"
-	requestGetResource.LastName = &lastName
+	requestGetResource.LastName = lastName
 
 	resultGetResource = GetResources(&requestGetResource)
 
@@ -231,9 +231,9 @@ func TestGetResources(t *testing.T) {
 	assert.Equal(t, resultCreateResource.Resource.ID, resultGetResource.Resources[0].ID, "The resources list not has the number of resources correct.")
 	assert.Equal(t, "OK", resultGetResource.Status, "The status is not OK")
 
-	requestGetResource.LastName = nil
+	requestGetResource.LastName = ""
 	email := "email@test1.com"
-	requestGetResource.Email = &email
+	requestGetResource.Email = email
 
 	resultGetResource = GetResources(&requestGetResource)
 
@@ -244,9 +244,9 @@ func TestGetResources(t *testing.T) {
 	assert.Equal(t, resultCreateResource.Resource.ID, resultGetResource.Resources[0].ID, "The resources list not has the number of resources correct.")
 	assert.Equal(t, "OK", resultGetResource.Status, "The status is not OK")
 
-	requestGetResource.Email = nil
+	requestGetResource.Email = ""
 	engineerRange := "T1"
-	requestGetResource.EngineerRange = &engineerRange
+	requestGetResource.EngineerRange = engineerRange
 
 	resultGetResource = GetResources(&requestGetResource)
 
@@ -271,7 +271,7 @@ func TestGetResources(t *testing.T) {
 
 	enabled = false
 	requestGetResource.Enabled = &enabled
-	requestGetResource.EngineerRange = nil
+	requestGetResource.EngineerRange = ""
 
 	resultGetResource = GetResources(&requestGetResource)
 
@@ -281,6 +281,7 @@ func TestGetResources(t *testing.T) {
 	assert.Equal(t, 0, len(resultGetResource.Resources), "The resources list not has the number of resources correct.")
 	assert.Equal(t, "OK", resultGetResource.Status, "The status is not OK")
 
+	requestGetResource.Name = requestCreateResource.Name
 	enabled = true
 	requestGetResource.Enabled = &enabled
 	mapSkills := make(map[string]int)

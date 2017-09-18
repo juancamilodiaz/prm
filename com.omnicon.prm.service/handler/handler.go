@@ -39,6 +39,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/GetProjects", getProjects)
 	http.HandleFunc("/GetSkills", getSkills)
 	http.HandleFunc("/GetResourcesToProjects", getResourcesToProjects)
+	http.HandleFunc("/GetSkillsByResource", getSkillsToResources)
 }
 
 /*
@@ -729,6 +730,84 @@ func getResourcesToProjects(pResponse http.ResponseWriter, pRequest *http.Reques
 
 	log.Info("Process Get Resources To Projects", message)
 	response := controller.ProcessGetResourcesToProjects(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to get a skills to resource according to filters input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getSkillsToResources(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+	defer panics.CatchPanic("GetSkillsToResources")
+
+	message := new(domain.GetSkillByResourceRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get Skills  by Resource", message)
+	response := controller.ProcessGetSkillsToResources(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to set a skill to resource according to filters input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func setSkillsToResources(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+	defer panics.CatchPanic("SetSkillsToResources")
+
+	message := new(domain.SetSkillToResourceRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Set Skills  by Resource", message)
+	response := controller.ProcessSetSkillToResource(message)
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
