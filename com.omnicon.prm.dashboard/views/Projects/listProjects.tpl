@@ -44,6 +44,7 @@
 		$("#projectName").val(pName);
 		$("#projectStartDate").val(pStartDate);
 		$("#projectEndDate").val(pEndDate);
+		$("#projectEndDate").attr("min", pEndDate);
 		$("#projectActive").prop('checked', pActive);
 		
 		$("#modalTitle").html("Update Project");
