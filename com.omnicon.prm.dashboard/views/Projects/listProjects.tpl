@@ -18,6 +18,11 @@
 			reload('/projects',{});
 		});
 		sendTitle("Projects");
+		
+		$('#projectStartDate').change(function(){
+			$('#projectEndDate').val($("#projectStartDate").val());
+			$('#projectEndDate').attr("min", $("#projectStartDate").val());
+		});
 	});
 	
 	configureCreateModal = function(){

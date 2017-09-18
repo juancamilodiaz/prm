@@ -89,6 +89,11 @@
 			getResourcesByProjectToday();
 			$('#datePicker').css("display", "inline-block");
 			$('#NavRight').css("display", "none");
+			
+			$('#dateFrom').change(function(){
+				$('#dateTo').val($("#dateFrom").val());
+				$('#dateTo').attr("min", $("#dateFrom").val());
+			});
 		});
 		
 		getResourcesByProjectToday = function(){
@@ -148,7 +153,9 @@
 			<h1>
 				<div id="titlePag">Home</div>
 				<button id="backButton" class="button button2" style="display: none;"></button>				
-				<button id="refreshButton" class="buttonImg button2" style="display: inline-block;"><img src="/static/img/progress-arrows.png"></button>				
+				<button id="refreshButton" class="buttonImg button2" style="display: inline-block;">
+					<img src="/static/img/progress-arrows.png">
+				</button>				
 				
 					<div id="datePicker" class="pull-right" style="padding-right: 0%;">
 						<h5>
