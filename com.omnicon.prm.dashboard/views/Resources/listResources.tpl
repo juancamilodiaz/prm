@@ -18,7 +18,37 @@
 		$('#refreshButton').click(function(){
 			reload('/resources',{});
 		});
+		$("#resourceEmail").keyup(function(){
+
+	        var email = $("#resourceEmail").val();
+	
+	        if(email != 0)
+	        {
+	            if(isValidEmailAddress(email))
+	            {
+	               	$("#resourceEmail").css({
+						border-color: lightgreen;
+					})
+	            } else {
+	                $("#resourceEmail").css({
+						border-color: red;
+					})
+	            }
+	        } else {
+			 	console.log(" no hay nada")        
+	        }
+	
+	    });
+		$('#resourceEmail').verimail({
+		    messageElement: "p#status-message"
+		});
 	});
+	
+	function isValidEmailAddress(emailAddress) {
+	    var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+	    return pattern.test(emailAddress);
+	}
+
 	
 	configureCreateModal = function(){
 		
@@ -29,7 +59,7 @@
 		$("#resourceRank").val(null);
 		$("#resourceActive").prop('checked', false);
 		
-		$("#modalTitle").html("Create Resource");
+		$("#modalResourceTitle").html("Create Resource");
 		$("#resourceUpdate").css("display", "none");
 		$("#resourceCreate").css("display", "inline-block");
 	}
@@ -43,7 +73,7 @@
 		$("#resourceRank").val(pRank);
 		$("#resourceActive").prop('checked', pActive);
 		
-		$("#modalTitle").html("Update Resource");
+		$("#modalResourceTitle").html("Update Resource");
 		$("#resourceCreate").css("display", "none");
 		$("#resourceUpdate").css("display", "inline-block");
 	}
@@ -184,7 +214,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal">&times;</button>
-	        <h4 id="modalTitle" class="modal-title"></h4>
+	        <h4 id="modalResourceTitle" class="modal-title"></h4>
 	      </div>
 	      <div class="modal-body">
 			<input type="hidden" id="resourceID">
