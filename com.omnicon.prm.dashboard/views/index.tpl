@@ -79,7 +79,7 @@
 		validationError = function(response){
 			$("#errorMessage").html(response);
 		  	$("#errorMessage").show();
-			setTimeout(function(){ $("#errorMessage").hide(); }, 3000);
+			setTimeout(function(){ $("#errorMessage").hide(); }, 6000);
 		}
 	</script>
 	

@@ -229,6 +229,15 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 				log.Error(err)
 				return nil
 			}
+
+			// validate dates assignation resource
+			if project.StartDate.Unix() > startDateInt || project.EndDate.Unix() < endDateInt {
+				response.Message = "The resource is being allocated outside the project dates. " + project.StartDate.Format("2006-01-02") + " to " + project.EndDate.Format("2006-01-02")
+				response.Project = nil
+				response.Status = "Error"
+				return &response
+			}
+
 			projectResources.StartDate = time.Unix(startDateInt, 0)
 			projectResources.EndDate = time.Unix(endDateInt, 0)
 			projectResources.Lead = pRequest.Lead
