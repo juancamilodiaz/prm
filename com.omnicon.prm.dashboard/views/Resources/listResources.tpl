@@ -277,6 +277,9 @@
 	      		</div>
 	      	<div class="modal-body">
 	      		Are you sure you want to remove <b id="nameDelete"></b> from resources?
+				<br>
+				<li>The projects will lose this resource assignment.</li>
+				<li>The skills will lose this resource assignment.</li>
 	      	</div>
 	      	<div class="modal-footer" style="text-align:center;">
 		        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>

@@ -168,6 +168,8 @@
       </div>
       <div class="modal-body">
         Are you sure you want to remove <b id="nameDelete"></b> from skills?
+		<br>
+		<li>The resources will lose this skill assignment.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="skillDelete" class="btn btn-default" onclick="deleteSkill()" data-dismiss="modal">Yes</button>
