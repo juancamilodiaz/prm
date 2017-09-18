@@ -5,6 +5,7 @@
 	<title>PRM</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="shortcut icon" src="/static/img/favicon.ico">
+	<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   
 	<script src="/static/js/JQuery/jquery.js"></script>
 	<script src="/static/js/DataTables/datatables.min.js"></script>
@@ -119,6 +120,7 @@
 <body>
 	<div id="HeaderPlaceHolder">
 		<div id="NavLeft"  class="NavItem">
+			<img src="/static/img/logo_omnicon_sa_blanco-01.svg" onclick="getResourcesByProjectToday();" width="200" height="50" style="cursor: pointer;">
 			<!--div class="NavItem">
 				<div class="dropdown">
 					<button id="NavMenuButton" class="btn btn-primary btn-menu toggle" type="button"><span class="glyphicon glyphicon-th-list"></span></button>
@@ -128,10 +130,10 @@
 			</div>
 		</div>
 		<div id="NavCenter" class="NavItem">
-			<img src="/static/img/logo_omnicon_sa_blanco-01.svg" width="200" height="50">
+			<h1 class="title" style="padding-left: 170px;">Project Resource Management</h1>
 		</div>
 		<div id="NavRight" class="NavItem" style="padding-right: 3%;">
-			<div id="login" class="NavItem">
+			<div id="login" class="NavItem" style="display: none;">
 				<label style="padding-right: inherit; padding-left: inherit;">User:</label><input type="text" id="LogUser" style="border-radius: 8px;padding: 0.5%;"><label style="padding-right: inherit; padding-left: inherit;">Password:</label> <input type="password" id="LogPassword" style="border-radius: 8px;padding: 0.5%;"> <button class="buttonTable button2" disabled>Login</button>
 			</div>
 		</div>

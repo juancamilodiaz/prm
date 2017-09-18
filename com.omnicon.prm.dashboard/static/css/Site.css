@@ -323,3 +323,11 @@ button.btnCollapse:before
     content:'-' ;
 	display:block;
 }
+.title{
+	font-family: 'Lato', sans-serif;;
+	color: white;
+}
+@font-face {
+    font-family: 'PrmTitle'; /*a name to be used later*/
+    src: url('font-awesome-4.7.0/fonts/dekarangercond.ttf'); /*URL to font*/
+}
