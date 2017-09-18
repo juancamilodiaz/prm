@@ -336,7 +336,7 @@ function setResourceToProjectExc(){
       <div class="modal-body">
 		<input type="hidden" id="projectID">
 		<input type="hidden" id="resourceID">
-        Are you sure  yow want to remove <b id="resourceName"></b> from project <b id="projectName"></b>?
+        Are you sure you want to remove <b id="resourceName"></b> from project <b id="projectName"></b>?
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'));getResourcesByProjectToday();" data-dismiss="modal">Yes</button>

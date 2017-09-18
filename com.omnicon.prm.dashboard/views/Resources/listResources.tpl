@@ -276,7 +276,7 @@
 	        		<h4 class="modal-title">Delete Confirmation</h4>
 	      		</div>
 	      	<div class="modal-body">
-	      		Are you sure  yow want to remove <b id="nameDelete"></b> from resources?
+	      		Are you sure you want to remove <b id="nameDelete"></b> from resources?
 	      	</div>
 	      	<div class="modal-footer" style="text-align:center;">
 		        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>

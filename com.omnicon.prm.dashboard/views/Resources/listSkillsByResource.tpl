@@ -201,7 +201,7 @@
 	      		</div>
 	      	<div class="modal-body">
 				<input type="hidden" id="deleteResourceSkillId">
-	      		Are you sure  yow want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
+	      		Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
 	      	</div>
 	      	<div class="modal-footer" style="text-align:center;">
 		        <button type="button" id="resourceSkillDelete" class="btn btn-default" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val())" data-dismiss="modal">Yes</button>
