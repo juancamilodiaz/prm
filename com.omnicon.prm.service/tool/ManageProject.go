@@ -487,7 +487,12 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 	requestProjects := DOMAIN.GetProjectsRQ{}
 	responseProjects := GetProjects(&requestProjects)
-	response.Projects = responseProjects.Projects
+	for _, project := range responseProjects.Projects {
+		// only return projects enabled
+		if project.Enabled {
+			response.Projects = append(response.Projects, project)
+		}
+	}
 
 	requestResources := DOMAIN.GetResourcesRQ{}
 	responseResources := GetResources(&requestResources)
