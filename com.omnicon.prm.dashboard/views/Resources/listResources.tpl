@@ -17,37 +17,8 @@
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
 			reload('/resources',{});
-		});
-		$("#resourceEmail").keyup(function(){
-
-	        var email = $("#resourceEmail").val();
-	
-	        if(email != 0)
-	        {
-	            if(isValidEmailAddress(email))
-	            {
-	               	$("#resourceEmail").css({
-						border-color: lightgreen;
-					})
-	            } else {
-	                $("#resourceEmail").css({
-						border-color: red;
-					})
-	            }
-	        } else {
-			 	console.log(" no hay nada")        
-	        }
-	
-	    });
-		$('#resourceEmail').verimail({
-		    messageElement: "p#status-message"
-		});
+		});		
 	});
-	
-	function isValidEmailAddress(emailAddress) {
-	    var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
-	    return pattern.test(emailAddress);
-	}
 
 	
 	configureCreateModal = function(){
