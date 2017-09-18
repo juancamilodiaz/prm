@@ -31,12 +31,14 @@
 	    	var startDateCreate = new Date($("#resourceDateStartProject").val());
 			var endDateCreate = new Date($("#resourceDateEndProject").val());
 	
+			$("#resourceDateEndProject").attr("min", $("#resourceDateStartProject").val());
 			$("#resourceHoursProject").val(workingHoursBetweenDates(startDateCreate, endDateCreate));
 			
 			var startDateUpdate = new Date($("#resourceUpdateDateStartProject").val());
 			var endDateUpdate = new Date($("#resourceUpdateDateEndProject").val());
 	
 			$("#resourceUpdateDateHoursProject").val(workingHoursBetweenDates(startDateUpdate, endDateUpdate));
+			$('#resourceUpdateDateEndProject').attr("min", $("#resourceUpdateDateStartProject").val());
 		});
 	});
 	
@@ -72,15 +74,17 @@
 	configureShowCreateModal = function(){
 		$("#resourceDateStartProject").val(getDateToday());
 		$("#resourceDateEndProject").val(getDateToday());
+		$("#resourceDateEndProject").attr("min", $("#resourceDateStartProject").val());
 	}
 	
 	configureShowUpdateModal = function(pStartDate, pEndDate, pHours, pLead){
 		
 		$("#resourceUpdateDateStartProject").val(pStartDate);
 		$("#resourceUpdateDateEndProject").val(pEndDate);
-		$("#resourceUpdateDateHoursProject").val(pHours);
-		$("#resourceUpdateLead").prop('checked', pLead);
+		$("#resourceUpdateDateEndProject").attr("min", $("#resourceUpdateDateStartProject").val());
 		
+		$("#resourceUpdateDateHoursProject").val(pHours);		
+		$("#resourceUpdateLead").prop('checked', pLead);		
 		$("#modalTitle").html("Update Assign Resource");
 		$("#resourceCreate").css("display", "none");
 		$("#resourceUpdate").css("display", "inline-block");
