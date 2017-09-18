@@ -147,6 +147,16 @@ func DeleteProject(pRequest *DOMAIN.DeleteProjectRQ) *DOMAIN.DeleteProjectRS {
 	response := DOMAIN.DeleteProjectRS{}
 	projectToDelete := dao.GetProjectById(pRequest.ID)
 	if projectToDelete != nil {
+
+		// Delete resources assignations for this project
+		resourcesProject := dao.GetProjectResourcesByProjectId(pRequest.ID)
+		for _, resource := range resourcesProject {
+			_, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(resource.ProjectId, resource.ResourceId)
+			if err != nil {
+				log.Error("Failed to delete project resource")
+			}
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteProject(pRequest.ID)
 		if err != nil || rowsDeleted <= 0 {

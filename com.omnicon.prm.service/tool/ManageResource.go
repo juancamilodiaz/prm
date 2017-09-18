@@ -111,6 +111,25 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 	response := DOMAIN.DeleteResourceRS{}
 	resourceToDelete := dao.GetResourceById(pResource.ID)
 	if resourceToDelete != nil {
+
+		// Delete asignation to project
+		projectsResource := dao.GetProjectResourcesByResourceId(pResource.ID)
+		for _, project := range projectsResource {
+			_, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(project.ProjectId, project.ResourceId)
+			if err != nil {
+				log.Error("Failed to delete project resource")
+			}
+		}
+
+		// Delete skills assignation to resource
+		skillsResource := dao.GetResourceSkillsByResourceId(pResource.ID)
+		for _, skill := range skillsResource {
+			_, err := dao.DeleteResourceSkillsByResourceIdAndSkillId(skill.ResourceId, skill.SkillId)
+			if err != nil {
+				log.Error("Failed to delete skill resource")
+			}
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteResource(pResource.ID)
 		if err != nil || rowsDeleted <= 0 {
