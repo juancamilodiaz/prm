@@ -20,7 +20,6 @@
 		sendTitle("Projects");
 		
 		$('#projectStartDate').change(function(){
-			$('#projectEndDate').val($("#projectStartDate").val());
 			$('#projectEndDate').attr("min", $("#projectStartDate").val());
 		});
 	});
