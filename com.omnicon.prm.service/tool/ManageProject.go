@@ -1,7 +1,7 @@
 package tool
 
 import (
-	"fmt"
+	"strconv"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -239,6 +239,39 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 				return &response
 			}
 
+			// Validate hours available per day
+			assignations := dao.GetProjectResourcesByResourceId(pRequest.ResourceId)
+			for _, assignation := range assignations {
+				if assignation.StartDate.Unix() <= endDateInt && assignation.EndDate.Unix() >= startDateInt {
+
+					var days float64
+					for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
+						if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+							days++
+						}
+					}
+					hoursByDay := assignation.Hours / days
+
+					var daysNew float64
+					for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
+						if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+							daysNew++
+						}
+					}
+					hoursByDayNew := pRequest.Hours / daysNew
+
+					totalHoursDay := hoursByDay + hoursByDayNew
+
+					// If the hours exceed the allowed hours per day
+					if hoursByDay == 8 || totalHoursDay > 8 {
+						response.Message = "The allocation of hours exceeds the limit of 8 hours per day.(" + strconv.FormatFloat(totalHoursDay, 'f', -1, 64) + "Hrs)"
+						response.Project = nil
+						response.Status = "Error"
+						return &response
+					}
+				}
+			}
+
 			projectResources.StartDate = time.Unix(startDateInt, 0)
 			projectResources.EndDate = time.Unix(endDateInt, 0)
 			projectResources.Lead = pRequest.Lead
@@ -246,7 +279,6 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 
 			//find by resource and project
 			projectResourcesExist := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
-			fmt.Println("Is to create?", pRequest.IsToCreate)
 			if !pRequest.IsToCreate && projectResourcesExist != nil {
 
 				if pRequest.StartDate != "" {
@@ -276,7 +308,6 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					return response
 				}
 			} else {
-				fmt.Println("*****AddProjectResources")
 				id, err := dao.AddProjectResources(&projectResources)
 				if err != nil {
 					message := "No Set Resource To Project"
