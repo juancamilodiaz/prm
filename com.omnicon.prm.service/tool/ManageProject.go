@@ -263,7 +263,10 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 							days++
 						}
 					}
-					hoursByDay := assignation.Hours / days
+					var hoursByDay float64
+					if days != 0 {
+						hoursByDay = assignation.Hours / days
+					}
 
 					var daysNew float64
 					for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
@@ -271,13 +274,16 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 							daysNew++
 						}
 					}
-					hoursByDayNew := pRequest.Hours / daysNew
+					var hoursByDayNew float64
+					if daysNew != 0 {
+						hoursByDayNew = pRequest.Hours / daysNew
+					}
 
 					totalHoursDay := hoursByDay + hoursByDayNew
 
 					// If the hours exceed the allowed hours per day
 					if hoursByDay == 8 || totalHoursDay > 8 {
-						response.Message = "The allocation of hours exceeds the limit of 8 hours per day.(" + strconv.FormatFloat(totalHoursDay, 'f', -1, 64) + "Hrs)"
+						response.Message = util.Concatenate("The allocation of hours exceeds the limit of 8 hours per day. (", strconv.FormatFloat(totalHoursDay, 'f', -1, 64), "Hrs ", assignation.StartDate.Format("2006-01-02"), " to ", assignation.EndDate.Format("2006-01-02"), " in ", assignation.ProjectName, " project)")
 						response.Project = nil
 						response.Status = "Error"
 						return &response
