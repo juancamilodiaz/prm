@@ -102,6 +102,19 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			if pRequest.StartDate != "" {
 				oldProject.EndDate = time.Unix(endDateInt, 0)
 			}
+
+			// Validation for updating dates, these should not be outside the resource assignment range.
+			resourcesProject := dao.GetProjectResourcesByProjectId(pRequest.ID)
+			for _, resource := range resourcesProject {
+				if resource.StartDate.Unix() < oldProject.StartDate.Unix() || resource.EndDate.Unix() > oldProject.EndDate.Unix() {
+					message := "Can not update the project, there are resources allocated outside the new dates. (" + resource.StartDate.Format("2006-01-02") + " to " + resource.EndDate.Format("2006-01-02") + ")"
+					log.Error(message)
+					response.Message = message
+					response.Project = nil
+					response.Status = "Error"
+					return &response
+				}
+			}
 		}
 		oldProject.Enabled = pRequest.Enabled
 		// Save in DB
