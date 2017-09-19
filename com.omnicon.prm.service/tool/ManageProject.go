@@ -269,6 +269,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 						if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
 							if totalHours > 0 && totalHours <= HoursOfWork {
 								breakdown[day.String()] += totalHours
+								break
 							} else {
 								breakdown[day.String()] += HoursOfWork
 								totalHours = totalHours - HoursOfWork
@@ -287,6 +288,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
 					if totalHoursAssig > 0 && totalHoursAssig <= HoursOfWork {
 						breakdownAssig[day.String()] = totalHoursAssig
+						break
 					} else {
 						breakdownAssig[day.String()] = HoursOfWork
 						totalHoursAssig = totalHoursAssig - HoursOfWork
