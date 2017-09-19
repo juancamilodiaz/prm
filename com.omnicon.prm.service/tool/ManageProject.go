@@ -10,6 +10,8 @@ import (
 	"prm/com.omnicon.prm.service/util"
 )
 
+const HoursOfWork = 8
+
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 
 	timeResponse := time.Now()
@@ -254,41 +256,62 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 
 			// Validate hours available per day
 			assignations := dao.GetProjectResourcesByResourceId(pRequest.ResourceId)
+
+			// breakdown exist assignation map[day]hours
+			breakdown := make(map[string]float64)
+
 			for _, assignation := range assignations {
 				if assignation.StartDate.Unix() <= endDateInt && assignation.EndDate.Unix() >= startDateInt {
 
-					var days float64
+					totalHours := assignation.Hours
+
 					for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
 						if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
-							days++
+							if totalHours > 0 && totalHours <= HoursOfWork {
+								breakdown[day.String()] += totalHours
+							} else {
+								breakdown[day.String()] += HoursOfWork
+								totalHours = totalHours - HoursOfWork
+							}
 						}
-					}
-					var hoursByDay float64
-					if days != 0 {
-						hoursByDay = assignation.Hours / days
-					}
-
-					var daysNew float64
-					for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
-						if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
-							daysNew++
-						}
-					}
-					var hoursByDayNew float64
-					if daysNew != 0 {
-						hoursByDayNew = pRequest.Hours / daysNew
-					}
-
-					totalHoursDay := hoursByDay + hoursByDayNew
-
-					// If the hours exceed the allowed hours per day
-					if hoursByDay == 8 || totalHoursDay > 8 {
-						response.Message = util.Concatenate("The allocation of hours exceeds the limit of 8 hours per day. (", strconv.FormatFloat(totalHoursDay, 'f', -1, 64), "Hrs ", assignation.StartDate.Format("2006-01-02"), " to ", assignation.EndDate.Format("2006-01-02"), " in ", assignation.ProjectName, " project)")
-						response.Project = nil
-						response.Status = "Error"
-						return &response
 					}
 				}
+			}
+			log.Debug("breakdown", breakdown)
+
+			// breakdown new assignation map[day]hours
+			breakdownAssig := make(map[string]float64)
+			totalHoursAssig := pRequest.Hours
+
+			for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
+				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+					if totalHoursAssig > 0 && totalHoursAssig <= HoursOfWork {
+						breakdownAssig[day.String()] = totalHoursAssig
+					} else {
+						breakdownAssig[day.String()] = HoursOfWork
+						totalHoursAssig = totalHoursAssig - HoursOfWork
+					}
+				}
+			}
+			log.Debug("breakdownAssig", breakdownAssig)
+
+			isValidAssig := true
+			messageValidation := util.Concatenate("The allocation of hours exceeds the limit of ", strconv.Itoa(HoursOfWork), " hours per day. * ")
+			for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
+				totalHours := breakdown[day.String()] + breakdownAssig[day.String()]
+				if totalHours > HoursOfWork {
+					messageValidation = util.Concatenate(messageValidation, strconv.FormatFloat(totalHours, 'f', -1, 64), "Hrs ", day.Format("2006-01-02"), " * ")
+					isValidAssig = false
+				}
+			}
+
+			// If the hours exceed the allowed hours per day
+			if !isValidAssig {
+				log.Debug(messageValidation)
+				response.Message = messageValidation
+				response.Project = nil
+				response.Status = "Error"
+				return &response
 			}
 
 			projectResources.StartDate = time.Unix(startDateInt, 0)
