@@ -40,6 +40,14 @@
 			$("#resourceUpdateDateHoursProject").val(workingHoursBetweenDates(startDateUpdate, endDateUpdate));
 			$('#resourceUpdateDateEndProject').attr("min", $("#resourceUpdateDateStartProject").val());
 		});
+		
+				
+		$('#buttonOption').css("display", "inline-block");
+		$('#buttonOption').attr("style", "display: padding-right: 0%");
+		$('#buttonOption').html("Set New Resource");
+		$('#buttonOption').attr("data-toggle", "modal");
+		$('#buttonOption').attr("data-target", "#resourceProjectModal");
+		$('#buttonOption').attr("onclick","$('#resourceProjectId').val({{.ProjectId}});getResources();configureShowCreateModal()");
 	});
 	
 	unassignResource = function(){
@@ -90,7 +98,7 @@
 		$("#resourceUpdate").css("display", "inline-block");
 	}
 	
-	setResourceToProject = function(resourceId, projectId, startDate, endDate, hours, lead){
+	setResourceToProject = function(resourceId, projectId, startDate, endDate, hours, lead, isToCreate){
 		var settings = {
 			method: 'POST',
 			url: '/projects/setresource',
@@ -103,7 +111,8 @@
 				"StartDate": startDate,
 				"EndDate": endDate,
 				"Hours": hours,
-				"Lead": lead
+				"Lead": lead,
+				"IsToCreate": isToCreate
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -173,9 +182,7 @@
 		{{end}}	
 	</tbody>
 </table>
-<div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#resourceProjectModal" onclick="$('#resourceProjectId').val({{.ProjectId}});getResources();configureShowCreateModal()">Set New Resource</button>
-</div>
+
 <!-- Modal -->
 	<div class="modal fade" id="resourceProjectModal" role="dialog">
   		<div class="modal-dialog">
@@ -230,7 +237,7 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), $('#resourceLead').is(':checked'))" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), $('#resourceLead').is(':checked'), true)" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
@@ -290,7 +297,7 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), $('#resourceUpdateLead').is(':checked'))" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), $('#resourceUpdateLead').is(':checked'), false)" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
