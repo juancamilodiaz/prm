@@ -109,8 +109,8 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate, estim
 			"ResourceId": parseInt(resourceId),
 			"StartDate": startDate,
 			"EndDate": endDate,
-			"Hours": estimatedHours
-				"IsToCreate": true
+			"Hours": estimatedHours,
+			"IsToCreate": true
 		}
 	}
 	$.ajax(settings).done(function (response) {
