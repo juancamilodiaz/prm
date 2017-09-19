@@ -30,6 +30,7 @@ type SetResourceToProjectRQ struct {
 	EndDate    string
 	Lead       bool
 	Hours      float64
+	IsToCreate bool
 }
 
 type GetResourcesToProjectsRQ struct {

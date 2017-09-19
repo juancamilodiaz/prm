@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"fmt"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -243,14 +244,11 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			projectResources.Lead = pRequest.Lead
 			projectResources.Hours = pRequest.Hours
 
+			//find by resource and project
 			projectResourcesExist := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
-			if projectResourcesExist != nil {
-				if pRequest.ProjectId != 0 {
-					projectResourcesExist.ProjectId = pRequest.ProjectId
-				}
-				if pRequest.ResourceId != 0 {
-					projectResourcesExist.ResourceId = pRequest.ResourceId
-				}
+			fmt.Println("Is to create?", pRequest.IsToCreate)
+			if !pRequest.IsToCreate && projectResourcesExist != nil {
+
 				if pRequest.StartDate != "" {
 					projectResourcesExist.StartDate = time.Unix(startDateInt, 0)
 				}
@@ -271,27 +269,14 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					response.Status = "Error"
 					return &response
 				}
+
 				// Get ProjectResources inserted
-				projectResourceUpdated := dao.GetProjectResourcesById(projectResourcesExist.ID)
-				if projectResourceUpdated != nil {
-					// Get all resources to this project
-					resourcesOfProject := dao.GetProjectResourcesByProjectId(pRequest.ProjectId)
-					// Mapping resources in the project of the response
-					lead := util.MappingResourcesInAProject(project, resourcesOfProject)
-					project.Lead = lead
-					response.Project = project
-
-					header := new(DOMAIN.SetResourceToProjectRS_Header)
-					header.RequestDate = time.Now().String()
-					responseTime := time.Now().Sub(timeResponse)
-					header.ResponseTime = responseTime.String()
-					response.Header = header
-
-					response.Status = "OK"
-
-					return &response
+				response := getInsertedResource(projectResourcesExist.ID, project, timeResponse)
+				if response != nil {
+					return response
 				}
 			} else {
+				fmt.Println("*****AddProjectResources")
 				id, err := dao.AddProjectResources(&projectResources)
 				if err != nil {
 					message := "No Set Resource To Project"
@@ -302,24 +287,9 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					return &response
 				}
 				// Get ProjectResources inserted
-				projectResourceInserted := dao.GetProjectResourcesById(id)
-				if projectResourceInserted != nil {
-					// Get all resources to this project
-					resourcesOfProject := dao.GetProjectResourcesByProjectId(pRequest.ProjectId)
-					// Mapping resources in the project of the response
-					lead := util.MappingResourcesInAProject(project, resourcesOfProject)
-					project.Lead = lead
-					response.Project = project
-
-					header := new(DOMAIN.SetResourceToProjectRS_Header)
-					header.RequestDate = time.Now().String()
-					responseTime := time.Now().Sub(timeResponse)
-					header.ResponseTime = responseTime.String()
-					response.Header = header
-
-					response.Status = "OK"
-
-					return &response
+				response := getInsertedResource(id, project, timeResponse)
+				if response != nil {
+					return response
 				}
 			}
 
@@ -350,6 +320,31 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	response.Header = header
 
 	return &response
+}
+
+func getInsertedResource(pIdResProject int64, pProject *DOMAIN.Project, pTimeResponse time.Time) *DOMAIN.SetResourceToProjectRS {
+	response := DOMAIN.SetResourceToProjectRS{}
+	// Get ProjectResources inserted
+	projectResourceInserted := dao.GetProjectResourcesById(pIdResProject)
+	if projectResourceInserted != nil {
+		// Get all resources to this project
+		resourcesOfProject := dao.GetProjectResourcesByProjectId(pProject.ID)
+		// Mapping resources in the project of the response
+		lead := util.MappingResourcesInAProject(pProject, resourcesOfProject)
+		pProject.Lead = lead
+		response.Project = pProject
+
+		header := new(DOMAIN.SetResourceToProjectRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(pTimeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		response.Status = "OK"
+
+		return &response
+	}
+	return nil
 }
 
 func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN.DeleteResourceToProjectRS {
