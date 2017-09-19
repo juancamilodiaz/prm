@@ -17,6 +17,13 @@
 		$('#refreshButton').click(function(){
 			reload('/projects',{});
 		});
+		$('#buttonOption').css("display", "inline-block");
+		$('#buttonOption').attr("style", "display: padding-right: 0%");
+		$('#buttonOption').html("New Project");
+		$('#buttonOption').attr("data-toggle", "modal");
+		$('#buttonOption').attr("data-target", "#projectModal");
+		$('#buttonOption').attr("onclick","configureCreateModal()");
+		
 		sendTitle("Projects");
 		
 		$('#projectStartDate').change(function(){
@@ -142,7 +149,9 @@
 	}
 	
 </script>
+
 <div>
+
 <table id="viewProjects" class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -170,9 +179,7 @@
 		{{end}}	
 	</tbody>
 </table>
-<div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#projectModal" onclick='configureCreateModal()'>New Project</button>
-</div>
+
 </div>
 
 <!-- Modal -->

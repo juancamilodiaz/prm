@@ -17,7 +17,14 @@
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
 			reload('/resources',{});
-		});		
+		});
+		
+		$('#buttonOption').css("display", "inline-block");
+		$('#buttonOption').attr("style", "display: padding-right: 0%");
+		$('#buttonOption').html("New Resource");
+		$('#buttonOption').attr("data-toggle", "modal");
+		$('#buttonOption').attr("data-target", "#resourceModal");
+		$('#buttonOption').attr("onclick","configureCreateModal()");
 	});
 
 	
@@ -173,9 +180,7 @@
 		{{end}}	
 	</tbody>
 </table>
-<div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#resourceModal" onclick="configureCreateModal()">New Resource</button>
-</div>
+
 </div>
 
 	<!-- Modal -->
