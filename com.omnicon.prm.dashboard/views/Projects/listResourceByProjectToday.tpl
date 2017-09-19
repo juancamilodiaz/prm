@@ -70,19 +70,8 @@
 	}
 	
 	configureCreateModal = function(){
-		$("#resourceStartDate").val(getDateToday());
-		$("#resourceEndDate").val(getDateToday());
-	}
-	
-	getResourcesByProjectToday = function(){
-		var date = getDateToday();
-		
-	  	data = { 
-				"StartDate": date,
-				"EndDate": date
-			}
-		sleep(500)
-		reload('/projects/resources/today', data);
+		$("#resourceStartDate").val($('#dateFrom').val());
+		$("#resourceEndDate").val($('#dateTo').val());
 	}
 	
 	sleep = function(milliseconds) {
@@ -121,6 +110,7 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate, estim
 			"StartDate": startDate,
 			"EndDate": endDate,
 			"Hours": estimatedHours
+				"IsToCreate": true
 		}
 	}
 	$.ajax(settings).done(function (response) {
@@ -330,7 +320,7 @@ function setResourceToProjectExc(){
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" onclick="getResourcesByProjectToday();">&times;</button>
+        <button type="button" class="close" data-dismiss="modal" onclick="getResourcesByProjectWithFilterDate();">&times;</button>
         <h4 class="modal-title">Delete Confirmation</h4>
       </div>
       <div class="modal-body">
@@ -339,7 +329,7 @@ function setResourceToProjectExc(){
         Are you sure you want to remove <b id="resourceName"></b> from project <b id="projectName"></b>?
       </div>
       <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'));getResourcesByProjectToday();" data-dismiss="modal">Yes</button>
+        <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'));getResourcesByProjectWithFilterDate();" data-dismiss="modal">Yes</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
       </div>
     </div>
