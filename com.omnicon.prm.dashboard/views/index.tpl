@@ -92,7 +92,6 @@
 			$('#NavRight').css("display", "none");
 			
 			$('#dateFrom').change(function(){
-				$('#dateTo').val($("#dateFrom").val());
 				$('#dateTo').attr("min", $("#dateFrom").val());
 			});
 		});
