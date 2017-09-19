@@ -82,14 +82,13 @@
 			setTimeout(function(){ $("#errorMessage").hide(); }, 6000);
 		}
 	</script>
-	
-	
 	<script>
 		$(document).ready(function(){
 			$("#errorMessage").hide();
 			getResourcesByProjectToday();
 			$('#datePicker').css("display", "inline-block");
 			$('#NavRight').css("display", "none");
+			$('#buttonOption').css("display", "none");
 			
 			$('#dateFrom').change(function(){
 				$('#dateTo').attr("min", $("#dateFrom").val());
@@ -111,6 +110,7 @@
 			reload('/projects/resources/today', data);
 			$('#dateFrom').val(date)
 			$('#dateTo').val(date)
+			$('#buttonOption').css("display", "none");
 		}
 	</script>
 
@@ -138,12 +138,19 @@
 		</div>
 	</div>
 	
+	
+	
 	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
+			
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
           <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">Home</a>
-		  <a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
-		  <a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
+			<a class="accordion">Settings</a>
+			<div class="panel-accordion">
+				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
+				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
+			</div>
+			
 		  <a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
 		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
 		</div>
@@ -158,16 +165,17 @@
 					<img src="/static/img/progress-arrows.png">
 				</button>				
 				
-					<div id="datePicker" class="pull-right" style="padding-right: 0%;">
-						<h5>
-							<label for="dateFrom">Start Date:</label>
-							<input id=dateFrom type=date style="border-radius:8px;inline-size: 24%;">
-							<label for="dateTo">End Date:</label>
-							<input id=dateTo type=date style="border-radius:8px;inline-size: 24%;">
-							<button id="filterByDateRange" class="buttonHeader button2">Filter</button>
-						</h5>
-					</div>
+				<div id="datePicker" class="pull-right" style="padding-right: 0%;">
+					<h5>
+						<label for="dateFrom">Start Date:</label>
+						<input id=dateFrom type=date style="border-radius:8px;inline-size: 24%;">
+						<label for="dateTo">End Date:</label>
+						<input id=dateTo type=date style="border-radius:8px;inline-size: 24%;">
+						<button id="filterByDateRange" class="buttonHeader button2">Filter</button>
+					</h5>
+				</div>
 				
+				<button id="buttonOption" class="button button2" style="display: none;"></button>
 			</h1>
 			<div id="errorMessage">
 			</div>
@@ -183,6 +191,24 @@
 	</div>
 	<div id="mask" onclick="toNav()">
     
+	
 </div>
+
+	<script>
+		var acc = document.getElementsByClassName("accordion");
+		var i;
+		
+		for (i = 0; i < acc.length; i++) {
+		  acc[i].onclick = function() {
+		    this.classList.toggle("active");
+		    var panel = this.nextElementSibling;
+		    if (panel.style.maxHeight){
+		      panel.style.maxHeight = null;
+		    } else {
+		      panel.style.maxHeight = panel.scrollHeight + "px";
+		    } 
+		  }
+		}
+	</script>
 </body>
 </html>
