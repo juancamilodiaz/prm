@@ -563,6 +563,9 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	}
 
 	requestProjects := DOMAIN.GetProjectsRQ{}
+	requestProjects.StartDate = pRequest.StartDate
+	requestProjects.EndDate = pRequest.EndDate
+
 	responseProjects := GetProjects(&requestProjects)
 	for _, project := range responseProjects.Projects {
 		// only return projects enabled
