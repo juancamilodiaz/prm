@@ -425,10 +425,10 @@ func getInsertedResource(pIdResProject int64, pProject *DOMAIN.Project, pTimeRes
 func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN.DeleteResourceToProjectRS {
 	timeResponse := time.Now()
 	response := DOMAIN.DeleteResourceToProjectRS{}
-	projectResource := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
+	projectResource := dao.GetProjectResourcesById(pRequest.ID)
 	if projectResource != nil {
 		// Delete in DB
-		rowsDeleted, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
+		rowsDeleted, err := dao.DeleteProjectResources(projectResource.ID)
 		if err != nil || rowsDeleted <= 0 {
 			message := "ProjectResource wasn't delete"
 			log.Error(message)
@@ -438,17 +438,6 @@ func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN
 		}
 
 		response.ID = projectResource.ID
-		project := dao.GetProjectById(projectResource.ProjectId)
-		response.ProjectName = project.Name
-		resource := dao.GetResourceById(projectResource.ResourceId)
-		if resource == nil {
-			message := "Resource is not in DB"
-			log.Error(message)
-			response.Message = message
-			response.Status = "Error"
-			return &response
-		}
-		response.ResourceName = resource.Name
 		response.Status = "OK"
 
 		header := new(DOMAIN.DeleteResourceToProjectRS_Header)

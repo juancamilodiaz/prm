@@ -48,6 +48,7 @@ type GetResourcesToProjectsRQ struct {
 type DeleteResourceToProjectRQ struct {
 	ProjectId  int64
 	ResourceId int64
+	ID         int64
 }
 
 type UpdateResourceRQ struct {
