@@ -592,75 +592,76 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 			response.Resources = append(response.Resources, resource)
 		}
 	}
-	if projectsResources != nil && len(projectsResources) > 0 {
+	//if projectsResources != nil && len(projectsResources) > 0 {
 
-		startDate, _ := time.Parse("2006-01-02", pRequest.StartDate)
-		endDate, _ := time.Parse("2006-01-02", pRequest.EndDate)
+	startDate, _ := time.Parse("2006-01-02", pRequest.StartDate)
+	endDate, _ := time.Parse("2006-01-02", pRequest.EndDate)
 
-		// breakdown exist assignation map[resourceID]map[day]hours
-		breakdown := make(map[int64]map[string]float64)
+	// breakdown exist assignation map[resourceID]map[day]hours
+	breakdown := make(map[int64]map[string]float64)
 
-		for _, assignation := range projectsResources {
+	for _, assignation := range projectsResources {
 
-			if breakdown[assignation.ResourceId] == nil {
-				breakdown[assignation.ResourceId] = make(map[string]float64)
-			}
-			totalHours := assignation.Hours
+		if breakdown[assignation.ResourceId] == nil {
+			breakdown[assignation.ResourceId] = make(map[string]float64)
+		}
+		totalHours := assignation.Hours
 
-			for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
-				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
-					//if startDate.Unix() <= day.Unix() && endDate.Unix() >= day.Unix() {
-					if totalHours > 0 && totalHours <= HoursOfWork {
-						breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
-						break
-					} else {
-						breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
-						totalHours = totalHours - HoursOfWork
-					}
-					//}
+		for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				//if startDate.Unix() <= day.Unix() && endDate.Unix() >= day.Unix() {
+				if totalHours > 0 && totalHours <= HoursOfWork {
+					breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
+					break
+				} else {
+					breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
+					totalHours = totalHours - HoursOfWork
 				}
+				//}
 			}
 		}
-		log.Debug("breakdownGet", breakdown)
-
-		// Calculate the available hours according to hours assignation
-		availBreakdown := make(map[int64]map[string]float64)
-
-		for _, resource := range response.Resources {
-
-			availBreakdown[resource.ID] = make(map[string]float64)
-
-			for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
-				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
-					_, exist := breakdown[resource.ID]
-					if exist {
-						availHours := HoursOfWork - breakdown[resource.ID][day.Format("2006-01-02")]
-						if availHours > 0 {
-							availBreakdown[resource.ID][day.Format("2006-01-02")] = availHours
-						}
-					} else {
-						availBreakdown[resource.ID][day.Format("2006-01-02")] = HoursOfWork
-					}
-				}
-			}
-		}
-
-		log.Debug("availBreakdown", availBreakdown)
-		response.AvailBreakdown = availBreakdown
-		//
-
-		response.ResourcesToProjects = projectsResources
-		// Create response
-		response.Status = "OK"
-
-		header := new(DOMAIN.GetResourcesToProjectsRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
-
-		return &response
 	}
+	log.Debug("breakdownGet", breakdown)
+
+	// Calculate the available hours according to hours assignation
+	availBreakdown := make(map[int64]map[string]float64)
+
+	for _, resource := range response.Resources {
+
+		availBreakdown[resource.ID] = make(map[string]float64)
+
+		for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				_, exist := breakdown[resource.ID]
+				if exist {
+					availHours := HoursOfWork - breakdown[resource.ID][day.Format("2006-01-02")]
+					if availHours > 0 {
+						availBreakdown[resource.ID][day.Format("2006-01-02")] = availHours
+					}
+				} else {
+					availBreakdown[resource.ID][day.Format("2006-01-02")] = HoursOfWork
+				}
+			}
+		}
+	}
+
+	log.Debug("availBreakdown", availBreakdown)
+	response.AvailBreakdown = availBreakdown
+	//
+
+	response.ResourcesToProjects = projectsResources
+	// Create response
+	response.Status = "OK"
+
+	header := new(DOMAIN.GetResourcesToProjectsRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+	/*}
+
 	message = "Resources To Projects wasn't found in DB"
 	log.Error(message)
 	response.Message = message
@@ -673,4 +674,5 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	response.Header = header
 
 	return &response
+	*/
 }
