@@ -145,13 +145,12 @@
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
           <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">Home</a>
-			<a class="accordion">Settings</a>
+		  <a class="accordion">Settings</a>
 			<div class="panel-accordion">
 				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
-			</div>
-			
-		  <a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
+				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
+			</div>			
 		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
 		</div>
 		<div id="sidebar">
