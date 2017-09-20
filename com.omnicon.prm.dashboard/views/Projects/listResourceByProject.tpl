@@ -48,6 +48,11 @@
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#resourceProjectModal");
 		$('#buttonOption').attr("onclick","$('#resourceProjectId').val({{.ProjectId}});getResources();configureShowCreateModal()");
+		
+		
+		var prjStartDate = formatDate({{.StartDate}});
+		var prjEndDate = formatDate({{.EndDate}});
+		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);
 	});
 	
 	unassignResource = function(){
@@ -154,6 +159,8 @@
 		});		
 	}
 </script>
+
+<p class="pull-right" style="padding-right: 0%;"> <label type="text" id="dates"/></p>
 <table id="viewResourceInProject" class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -174,7 +181,7 @@
 			<td>{{$resourceToProject.Hours}}</td>
 			<td><input type="checkbox" {{if $resourceToProject.Lead}}checked{{end}} disabled></td>
 			<td>
-				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceID').val({{$resourceToProject.ResourceId}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign of project</button>
+				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceID').val({{$resourceToProject.ResourceId}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign</button>
 				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Hours}}, {{$resourceToProject.Lead}})' data-dismiss="modal">Update assign</button>
 				<button data-toggle="modal" class="buttonTable button2" onclick='configureShowModal({{$resourceToProject.ResourceId}}, "{{$resourceToProject.ResourceName}}");getResource({{$resourceToProject.ResourceId}})' data-dismiss="modal">Resource Info.</button>
 			</td>

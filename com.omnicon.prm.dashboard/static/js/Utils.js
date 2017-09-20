@@ -95,3 +95,22 @@ function isValidEmailAddress(emailAddress) {
     var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
     return pattern.test(emailAddress);
 }
+
+function formatDate(valDate) {
+  	var monthNames = [
+	    "January", "February", "March",
+	    "April", "May", "June", "July",
+	    "August", "September", "October",
+	    "November", "December"
+	  ];
+	
+	var dateFrom = valDate.split("T");
+	var from = dateFrom[0].split("-");
+	var f = new Date(from[0], from[1] - 1, from[2]);
+
+	var day = f.getDate();
+	var monthIndex = f.getMonth();
+	var year = f.getFullYear();
+	
+	return day + ' ' + monthNames[monthIndex] + ' ' + year;
+}

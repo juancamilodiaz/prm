@@ -204,8 +204,18 @@ func (this *ProjectController) GetResourcesByProject() {
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+
+		for _, rp := range message.Projects {
+			if input.ProjectId == rp.ID {
+
+				this.Data["Title"] = rp.Name
+				this.Data["StartDate"] = rp.StartDate
+				this.Data["EndDate"] = rp.EndDate
+				break
+			}
+		}
 		this.Data["ProjectId"] = input.ProjectId
-		this.Data["Title"] = input.ProjectName
+		//this.Data["Title"] = input.ProjectName
 		this.TplName = "Projects/listResourceByProject.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
