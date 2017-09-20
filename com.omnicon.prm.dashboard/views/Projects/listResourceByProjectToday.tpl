@@ -1,14 +1,15 @@
 <script>
 	$(document).ready(function(){
+		console.log("{{.Breakdown}}");
+		console.log({{.Breakdown}});		
 		$('#viewResourcesHome').DataTable({
 			scrollY: 370,
 			responsive: true,
 			"pageLength": 50,
 			"searching": true,
 			"paging": false,
-			
-			
-		});					
+		});		
+					
 		$('#datePicker').css("display", "inline-block");	
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
@@ -37,7 +38,6 @@
 			reload('/projects/resources/today', data);
 		});
 		sendTitle("Home");
-		
 	});
 	
 	unassignResource = function(ID, obj){
@@ -195,7 +195,6 @@ function setResourceToProjectExc(){
 	$("#tempResource").html("")	
 	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val(), $("#estimatedHours").val());
 }
-
 </script>
 
 
@@ -266,6 +265,29 @@ function setResourceToProjectExc(){
 							</div>														
 						</div>
 					{{end}}
+					<div class="col-sm-6" style="padding-bottom: 10px;">											
+						<div id="panel-df-projectUnassign" class="panel panel-default">
+							<div id="unassign" class="panel-heading">
+								Avail hours per resource
+								<div class="pull-right">
+									<button id="collapseButtonUnassign" class="btnCollapse" data-toggle="collapse" href="#collapseUnassign" style="border:none;border-radius:4px;"></button>
+								</div>
+							</div>
+							<div id="collapseUnassign" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;">
+								<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
+									<thead>
+										<th style="font-size:12px;text-align: -webkit-center;">Name</th>
+										<th style="font-size:12px;text-align: -webkit-center;">Start date</th>
+										<th style="font-size:12px;text-align: -webkit-center;">End date</th>
+										<th style="font-size:12px;text-align: -webkit-center;">Hours avail</th>
+									</thead>
+									<tbody id="unassignBody">
+																	
+									</tbody>
+								</table>										
+							</div>
+						</div>														
+					</div>
 				</div>
 			</div>
 		</div>

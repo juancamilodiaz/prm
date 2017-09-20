@@ -352,3 +352,11 @@ div.panel-accordion {
     overflow: hidden;
     transition: max-height 0.2s ease-out;
 }
+
+.style-input{
+	border-radius: 6px;
+}
+
+.error{
+	border:1px solid red;
+}
