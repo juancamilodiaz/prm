@@ -214,6 +214,13 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	timeResponse := time.Now()
 	response := DOMAIN.SetResourceToProjectRS{}
 
+	if pRequest.Hours <= 0 {
+		response.Message = "Assigned hours must be greater than zero."
+		response.Project = nil
+		response.Status = "Error"
+		return &response
+	}
+
 	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
 	if !isValid {
 		response.Message = message
@@ -288,6 +295,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
 					if totalHoursAssig > 0 && totalHoursAssig <= HoursOfWork {
 						breakdownAssig[day.String()] = totalHoursAssig
+						totalHoursAssig = totalHoursAssig - totalHoursAssig
 						break
 					} else {
 						breakdownAssig[day.String()] = HoursOfWork
@@ -295,6 +303,14 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					}
 				}
 			}
+			// If total hours assign is greater than zero it means that hours and the range is not met.
+			if totalHoursAssig > 0 {
+				response.Message = "Total hours does not meet range. (Saturdays and Sundays should not have hours, maximum hours per day is 8 hours, according to the number of days this value is the maximum allowable)"
+				response.Project = nil
+				response.Status = "Error"
+				return &response
+			}
+
 			log.Debug("breakdownAssig", breakdownAssig)
 
 			isValidAssig := true
