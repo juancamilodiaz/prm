@@ -40,18 +40,17 @@
 		
 	});
 	
-	unassignResource = function(projectID, resourceID, obj){
+	unassignResource = function(ID, obj){
 		var settings = {
 			method: 'POST',
 			url: '/projects/resources/unassign',
 			headers: {
 				'Content-Type': undefined
 			},
-			data: { 
-				"resourceID": resourceID,
-				"projectID": projectID
+			data: {
+				"ID": ID
 			}
-		}		
+		}
 		
 		//Call the service to delete resource in the project
 		$.ajax(settings).done(function (response) {			
@@ -256,7 +255,8 @@ function setResourceToProjectExc(){
 													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
 													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
 													<td style="font-size:11px;text-align: -webkit-center;">{{$resProj.Hours}}</td>
-													<td style="text-align: -webkit-center;"><img style="padding:0px;" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn button3" src="/img/rubbish-bin.png" onclick="$('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
+													
+													<td style="text-align: -webkit-center;"><img style="padding:0px;" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn button3" src="/img/rubbish-bin.png" onclick="$('#ID').val('{{$resProj.ID}}'); $('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
 												</tr>
 												{{end}}
 											{{end}}
@@ -324,12 +324,11 @@ function setResourceToProjectExc(){
         <h4 class="modal-title">Delete Confirmation</h4>
       </div>
       <div class="modal-body">
-		<input type="hidden" id="projectID">
-		<input type="hidden" id="resourceID">
+		<input type="hidden" id="ID">
         Are you sure you want to remove <b id="resourceName"></b> from project <b id="projectName"></b>?
       </div>
       <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#projectID').val(),$('#resourceID').val(), $('body').data('buttonX'));getResourcesByProjectWithFilterDate();" data-dismiss="modal">Yes</button>
+        <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#ID').val(), $('body').data('buttonX'));getResourcesByProjectWithFilterDate();" data-dismiss="modal">Yes</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
       </div>
     </div>

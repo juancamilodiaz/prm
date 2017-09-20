@@ -220,10 +220,9 @@ func (this *ProjectController) DeleteResourceToProject() {
 	operation := "DeleteResourceToProject"
 
 	input := domain.DeleteResourceToProjectRQ{}
-	resourceId, _ := this.GetInt64("resourceID")
-	projectId, _ := this.GetInt64("projectID")
-	input.ResourceId = resourceId
-	input.ProjectId = projectId
+	id, _ := this.GetInt64("ID")
+	input.ID = id
+
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
