@@ -24,6 +24,7 @@ type GetResourcesRQ struct {
 }
 
 type SetResourceToProjectRQ struct {
+	ID         int64
 	ProjectId  int64
 	ResourceId int64
 	StartDate  string

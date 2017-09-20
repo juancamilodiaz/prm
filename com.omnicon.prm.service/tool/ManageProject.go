@@ -338,7 +338,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			projectResources.Hours = pRequest.Hours
 
 			//find by resource and project
-			projectResourcesExist := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
+			projectResourcesExist := dao.GetProjectResourcesById(pRequest.ID)
 			if !pRequest.IsToCreate && projectResourcesExist != nil {
 
 				if pRequest.StartDate != "" {

@@ -103,7 +103,8 @@ func GetProjectResourcesByResourceId(pId int64) []*DOMAIN.ProjectResources {
 *	Return: *DOMAIN.ProjectResources
 *	Description: Get a projectResources by ProjectId and ResourceId in a ProjectResources table
  */
-func GetProjectResourcesByProjectIdAndResourceId(pProjectId, pResourceId int64) *DOMAIN.ProjectResources {
+// TODO this function return []*DOMAIN.ProjectResources refactor
+/*func GetProjectResourcesByProjectIdAndResourceId(pProjectId, pResourceId int64) *DOMAIN.ProjectResources {
 	// ProjectResources structure
 	projectResources := DOMAIN.ProjectResources{}
 	// Add in projectResources variable, the projectResources where ID is the same that the param
@@ -120,7 +121,7 @@ func GetProjectResourcesByProjectIdAndResourceId(pProjectId, pResourceId int64) 
 	}
 
 	return nil
-}
+}*/
 
 /**
 *	Name : AddProjectResources

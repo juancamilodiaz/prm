@@ -92,7 +92,7 @@
 	}
 	
 
-	$('#resourceEndDate').change(function(){
+	$('#resourceEndDate, #resourceStartDate').change(function(){
     	var startDate = new Date($("#resourceStartDate").val());
 		var endDate = new Date($("#resourceEndDate").val());
 
@@ -158,45 +158,45 @@ function drop(ev, projectID, obj) {
 	
 	var rId = ev.dataTransfer.getData("resourceID");
 	var pId = projectID;
-	var isValid = true;
+	//var isValid = true;
 	var pName = "";
 	var rName = "";
-	{{range $rindex, $resProj := .ResourcesToProjects}}
+	/*{{range $rindex, $resProj := .ResourcesToProjects}}
 		if (projectID == {{$resProj.ProjectId}} && rId == {{$resProj.ResourceId}}){
 			isValid = false;
 		}
+	{{end}}*/
+	
+	//if (isValid){
+		
+	var resourceName;
+	{{range $index, $resource := .Resources}}
+		if (rId == {{$resource.ID}}){
+			resourceName = {{$resource.Name}} + " " + {{$resource.LastName}};
+		}
 	{{end}}
 	
-	if (isValid){
-		
-		var resourceName;
-		{{range $index, $resource := .Resources}}
-			if (rId == {{$resource.ID}}){
-				resourceName = {{$resource.Name}} + " " + {{$resource.LastName}};
-			}
-		{{end}}
-		
-		var projectName;
-		{{range $index, $project := .Projects}}
-			if (pId == {{$project.ID}}){
-				projectName = {{$project.Name}};
-			}
-		{{end}}
+	var projectName;
+	{{range $index, $project := .Projects}}
+		if (pId == {{$project.ID}}){
+			projectName = {{$project.Name}};
+		}
+	{{end}}
+
+	var data = ev.dataTransfer.getData("text");
+	data = document.getElementById(data).cloneNode(true);
 	
-		var data = ev.dataTransfer.getData("text");
-		data = document.getElementById(data).cloneNode(true);
-		
-		evento = obj;
-		data.setAttribute("draggable", "false");
-		data.innerHTML='<tr><td id="res'+rId+'" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">'+resourceName+'</td><td style="font-size:11px;">10-12-2017</td><td style="font-size:11px;">11-12-2017</td><td style="font-size:11px;">8</td><td><img style="padding:0px" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="(\'#projectID\').val('+pId+');$(\'#resourceID\').val('+rId+'); $(\'body\').data(\'buttonX\', this); $(\'#resourceName\').html('+resourceName+');$(\'#projectName\').html('+projectName+')></td></tr>';
-		//Mapped in temporal to show modal
-		$("#tempResource").html(data);
-		
-		configureCreateModal();
-		$("#setResourceModal").modal("show");
-		$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
-		$("#projectIDInput").val(projectID);
-	}
+	evento = obj;
+	data.setAttribute("draggable", "false");
+	data.innerHTML='<tr><td id="res'+rId+'" style="font-size:11px;cursor:no-drop;margin:0 0 0px;">'+resourceName+'</td><td style="font-size:11px;">10-12-2017</td><td style="font-size:11px;">11-12-2017</td><td style="font-size:11px;">8</td><td><img style="padding:0px" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn" src="/img/rubbish-bin.png" onclick="(\'#projectID\').val('+pId+');$(\'#resourceID\').val('+rId+'); $(\'body\').data(\'buttonX\', this); $(\'#resourceName\').html('+resourceName+');$(\'#projectName\').html('+projectName+')></td></tr>';
+	//Mapped in temporal to show modal
+	$("#tempResource").html(data);
+	
+	configureCreateModal();
+	$("#setResourceModal").modal("show");
+	$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
+	$("#projectIDInput").val(projectID);
+	//}
 }
 
 function setResourceToProjectExc(){
