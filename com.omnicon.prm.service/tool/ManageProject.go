@@ -288,7 +288,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					}
 				}
 			}
-			log.Debug("breakdown", breakdown)
+			log.Debug("breakdownSet", breakdown)
 
 			// breakdown new assignation map[day]hours
 			breakdownAssig := make(map[string]float64)
@@ -609,19 +609,19 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 			for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
 				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
-					if startDate.Unix() <= day.Unix() && endDate.Unix() >= day.Unix() {
-						if totalHours > 0 && totalHours <= HoursOfWork {
-							breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
-							break
-						} else {
-							breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
-							totalHours = totalHours - HoursOfWork
-						}
+					//if startDate.Unix() <= day.Unix() && endDate.Unix() >= day.Unix() {
+					if totalHours > 0 && totalHours <= HoursOfWork {
+						breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
+						break
+					} else {
+						breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
+						totalHours = totalHours - HoursOfWork
 					}
+					//}
 				}
 			}
 		}
-		log.Debug("breakdown", breakdown)
+		log.Debug("breakdownGet", breakdown)
 
 		// Calculate the available hours according to hours assignation
 		availBreakdown := make(map[int64]map[string]float64)
