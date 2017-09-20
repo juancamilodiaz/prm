@@ -586,6 +586,30 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	}
 	if projectsResources != nil && len(projectsResources) > 0 {
 
+		// breakdown exist assignation map[resourceID]map[day]hours
+		breakdown := make(map[int64]map[string]float64)
+
+		for _, assignation := range projectsResources {
+
+			breakdown[assignation.ResourceId] = make(map[string]float64)
+			totalHours := assignation.Hours
+
+			for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
+				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+					if totalHours > 0 && totalHours <= HoursOfWork {
+						breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
+						break
+					} else {
+						breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
+						totalHours = totalHours - HoursOfWork
+					}
+				}
+			}
+		}
+		log.Debug("breakdown", breakdown)
+		response.Breakdown = breakdown
+		//
+
 		response.ResourcesToProjects = projectsResources
 		// Create response
 		response.Status = "OK"

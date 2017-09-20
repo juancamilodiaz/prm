@@ -88,6 +88,7 @@ type GetResourcesToProjectsRS struct {
 	ResourcesToProjects []*ProjectResources
 	Projects            []*Project
 	Resources           []*Resource
+	Breakdown           map[int64]map[string]float64
 	Status              string
 	Message             string
 }
