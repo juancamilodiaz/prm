@@ -184,7 +184,7 @@
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
              				<div class="col-sm-8">
-              					<input type="number" id="updateResourceValueSkill" min="1" max="100" value="1">
+              					<input type="number" id="updateResourceValueSkill" min="1" max="100">
         					</div>
           				</div>
         			</div>
