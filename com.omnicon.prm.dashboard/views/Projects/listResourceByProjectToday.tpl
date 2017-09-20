@@ -314,15 +314,6 @@ function setResourceToProjectExc(){
         <h4 id="modalTitle" class="modal-title">Assign dates to the resource</h4>
       </div>
       <div class="modal-body">
-		<div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
-              <div class="col-sm-6">
-              	<input type="number" id="estimatedHours" value="8">
-        		</div>
-         	</div>
-        </div>
-	
         <div class="row-box col-sm-12">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
@@ -339,7 +330,15 @@ function setResourceToProjectExc(){
         		</div>
           </div>
         </div>
-      </div>
+      		<div class="row-box col-sm-12">
+	       	<div class="form-group form-group-sm">
+	       		<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
+	             	<div class="col-sm-6">
+	             		<input type="number" id="estimatedHours" value="8">
+	       		</div>
+	       	</div>
+		</div>
+	</div>
       <div class="modal-footer">
         <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc();" data-dismiss="modal">Create</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
