@@ -246,7 +246,7 @@
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
 	              <div class="col-sm-8">
-	              	<select id="resourceRank"  class="style-input"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option></select>
+	              	<select id="resourceRank"  class="style-input"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option><option value="PM">PM</option></select>
 	        		</div>
 	          </div>
 	        </div>
