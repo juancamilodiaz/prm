@@ -268,18 +268,21 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			breakdown := make(map[string]float64)
 
 			for _, assignation := range assignations {
-				if assignation.StartDate.Unix() <= endDateInt && assignation.EndDate.Unix() >= startDateInt {
+				// Except the actual assignation, apply in update.
+				if assignation.ID != pRequest.ID {
+					if assignation.StartDate.Unix() <= endDateInt && assignation.EndDate.Unix() >= startDateInt {
 
-					totalHours := assignation.Hours
+						totalHours := assignation.Hours
 
-					for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
-						if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
-							if totalHours > 0 && totalHours <= HoursOfWork {
-								breakdown[day.String()] += totalHours
-								break
-							} else {
-								breakdown[day.String()] += HoursOfWork
-								totalHours = totalHours - HoursOfWork
+						for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
+							if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+								if totalHours > 0 && totalHours <= HoursOfWork {
+									breakdown[day.String()] += totalHours
+									break
+								} else {
+									breakdown[day.String()] += HoursOfWork
+									totalHours = totalHours - HoursOfWork
+								}
 							}
 						}
 					}
