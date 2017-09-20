@@ -305,7 +305,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			}
 			// If total hours assign is greater than zero it means that hours and the range is not met.
 			if totalHoursAssig > 0 {
-				response.Message = "Total hours does not meet range. (Saturdays and Sundays should not have hours, maximum hours per day is 8 hours, according to the number of days this value is the maximum allowable)"
+				response.Message = util.Concatenate("Total hours does not meet range. (Saturdays and Sundays should not have hours, maximum hours per day is " + strconv.Itoa(HoursOfWork) + " hours, according to the number of days this value is the maximum allowable)")
 				response.Project = nil
 				response.Status = "Error"
 				return &response
@@ -591,28 +591,59 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	}
 	if projectsResources != nil && len(projectsResources) > 0 {
 
+		startDate, _ := time.Parse("2006-01-02", pRequest.StartDate)
+		endDate, _ := time.Parse("2006-01-02", pRequest.EndDate)
+
 		// breakdown exist assignation map[resourceID]map[day]hours
 		breakdown := make(map[int64]map[string]float64)
 
 		for _, assignation := range projectsResources {
 
-			breakdown[assignation.ResourceId] = make(map[string]float64)
+			if breakdown[assignation.ResourceId] == nil {
+				breakdown[assignation.ResourceId] = make(map[string]float64)
+			}
 			totalHours := assignation.Hours
 
 			for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
 				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
-					if totalHours > 0 && totalHours <= HoursOfWork {
-						breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
-						break
-					} else {
-						breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
-						totalHours = totalHours - HoursOfWork
+					if startDate.Unix() <= day.Unix() && endDate.Unix() >= day.Unix() {
+						if totalHours > 0 && totalHours <= HoursOfWork {
+							breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
+							break
+						} else {
+							breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
+							totalHours = totalHours - HoursOfWork
+						}
 					}
 				}
 			}
 		}
 		log.Debug("breakdown", breakdown)
-		response.Breakdown = breakdown
+
+		// Calculate the available hours according to hours assignation
+		availBreakdown := make(map[int64]map[string]float64)
+
+		for _, resource := range response.Resources {
+
+			availBreakdown[resource.ID] = make(map[string]float64)
+
+			for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
+				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+					_, exist := breakdown[resource.ID]
+					if exist {
+						availHours := HoursOfWork - breakdown[resource.ID][day.Format("2006-01-02")]
+						if availHours > 0 {
+							availBreakdown[resource.ID][day.Format("2006-01-02")] = availHours
+						}
+					} else {
+						availBreakdown[resource.ID][day.Format("2006-01-02")] = HoursOfWork
+					}
+				}
+			}
+		}
+
+		log.Debug("availBreakdown", availBreakdown)
+		response.AvailBreakdown = availBreakdown
 		//
 
 		response.ResourcesToProjects = projectsResources

@@ -1,7 +1,16 @@
 <script>
 	$(document).ready(function(){
-		console.log("{{.Breakdown}}");
-		console.log({{.Breakdown}});		
+		
+		// Assign information of available resources
+		{{$availBreakdown := .AvailBreakdown}}
+		{{range $index, $resource := .Resources}}
+			console.log({{$avail := index $availBreakdown $resource.ID}});
+			{{range $day, $hours := $avail}}
+				$("#unassignBody").append('<tr draggable=false><td style="font-size:11px;text-align: -webkit-center;margin:0 0 0px;">'+{{$resource.Name}}+' '+ {{$resource.LastName}}+'</td><td style="font-size:11px;text-align: -webkit-center;">'+{{$day}}+'</td><td style="font-size:11px;text-align: -webkit-center;">'+{{$hours}}+'</td></tr>'); 
+			{{end}}
+		{{end}}
+
+		
 		$('#viewResourcesHome').DataTable({
 			scrollY: 370,
 			responsive: true,
@@ -223,7 +232,7 @@ function setResourceToProjectExc(){
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-9" style="overflow-y: auto;">
+		<div class="col-sm-9" style="overflow-y: auto;height: -webkit-fill-available;">
 			<div class="panel-group">
 	    		<div id="projects" class="panel">
 					{{$projectsLoop := .Projects}}
@@ -265,31 +274,33 @@ function setResourceToProjectExc(){
 							</div>														
 						</div>
 					{{end}}
-					<div class="col-sm-6" style="padding-bottom: 10px;">											
-						<div id="panel-df-projectUnassign" class="panel panel-default">
-							<div id="unassign" class="panel-heading">
-								Avail hours per resource
-								<div class="pull-right">
-									<button id="collapseButtonUnassign" class="btnCollapse" data-toggle="collapse" href="#collapseUnassign" style="border:none;border-radius:4px;"></button>
-								</div>
-							</div>
-							<div id="collapseUnassign" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;">
-								<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
-									<thead>
-										<th style="font-size:12px;text-align: -webkit-center;">Name</th>
-										<th style="font-size:12px;text-align: -webkit-center;">Start date</th>
-										<th style="font-size:12px;text-align: -webkit-center;">End date</th>
-										<th style="font-size:12px;text-align: -webkit-center;">Hours avail</th>
-									</thead>
-									<tbody id="unassignBody">
-																	
-									</tbody>
-								</table>										
-							</div>
-						</div>														
-					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-sm-12" style="padding-bottom: 10px;">											
+			<div id="panel-df-projectUnassign" class="panel panel-default">
+				<div id="unassign" class="panel-heading">
+					Avail hours per resource
+					<div class="pull-right">
+						<button id="collapseButtonUnassign" class="btnCollapse" data-toggle="collapse" href="#collapseUnassign" style="border:none;border-radius:4px;"></button>
+					</div>
+				</div>
+				<div id="collapseUnassign" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;">
+					<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
+						<thead>
+							<th style="font-size:12px;text-align: -webkit-center;">Name</th>
+							<th style="font-size:12px;text-align: -webkit-center;">Date</th>
+							<th style="font-size:12px;text-align: -webkit-center;">Hours avail</th>
+						</thead>
+						<tbody id="unassignBody">
+														
+						</tbody>
+					</table>										
+				</div>
+			</div>														
 		</div>
 	</div>
 	
