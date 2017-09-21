@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -23,7 +22,7 @@ func (this *SkillController) ListSkills() {
 		defer res.Body.Close()
 		message := new(domain.GetSkillsRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("Skills", message.Skills)
+
 		this.Data["Skills"] = message.Skills
 		if this.GetString("Template") == "select" {
 			this.TplName = "Skills/listSkillToDropDown.tpl"
@@ -47,7 +46,7 @@ func (this *SkillController) CreateSkill() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -58,7 +57,7 @@ func (this *SkillController) CreateSkill() {
 
 	message := new(domain.CreateSkillRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
+
 	defer res.Body.Close()
 	if err != nil {
 		log.Error(err.Error())
@@ -86,14 +85,13 @@ func (this *SkillController) ReadSkill() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
 	res, err := PostData(operation, inputBuffer)
 
 	if err == nil {
-		fmt.Println("Respuesta", res)
 		defer res.Body.Close()
 		message := new(domain.GetSkillsRS)
 		json.NewDecoder(res.Body).Decode(&message)
@@ -117,7 +115,7 @@ func (this *SkillController) UpdateSkill() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -129,7 +127,7 @@ func (this *SkillController) UpdateSkill() {
 	defer res.Body.Close()
 	message := new(domain.UpdateSkillRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
+
 	if err != nil {
 		log.Error(err.Error())
 	}
@@ -156,7 +154,7 @@ func (this *SkillController) DeleteSkill() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -167,7 +165,7 @@ func (this *SkillController) DeleteSkill() {
 
 	message := new(domain.DeleteSkillRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
+
 	defer res.Body.Close()
 	if err != nil {
 		log.Error(err.Error())

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -23,7 +22,6 @@ func (this *ProjectController) ListProjects() {
 		defer res.Body.Close()
 		message := new(domain.GetProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("Projects", message.Projects)
 		this.Data["Projects"] = message.Projects
 		this.TplName = "Projects/listProjects.tpl"
 	} else {
@@ -44,7 +42,7 @@ func (this *ProjectController) CreateProject() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -57,7 +55,6 @@ func (this *ProjectController) CreateProject() {
 	defer res.Body.Close()
 	message := new(domain.CreateProjectRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
 	if err != nil {
 		log.Error(err.Error())
 	}
@@ -83,14 +80,13 @@ func (this *ProjectController) ReadProject() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
 	res, err := PostData(operation, inputBuffer)
 
 	if err == nil {
-		fmt.Println("Respuesta", res)
 		defer res.Body.Close()
 		message := new(domain.GetProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
@@ -115,7 +111,7 @@ func (this *ProjectController) UpdateProject() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -127,7 +123,7 @@ func (this *ProjectController) UpdateProject() {
 	defer res.Body.Close()
 	message := new(domain.UpdateProjectRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
+
 	if err != nil {
 		log.Error(err.Error())
 	}
@@ -153,7 +149,7 @@ func (this *ProjectController) DeleteProject() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -164,7 +160,7 @@ func (this *ProjectController) DeleteProject() {
 
 	message := new(domain.DeleteProjectRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
+
 	defer res.Body.Close()
 	if err != nil {
 		log.Error(err.Error())
@@ -192,7 +188,7 @@ func (this *ProjectController) GetResourcesByProject() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -202,7 +198,6 @@ func (this *ProjectController) GetResourcesByProject() {
 		defer res.Body.Close()
 		message := new(domain.GetResourcesToProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
 
 		for _, rp := range message.Projects {
@@ -237,7 +232,7 @@ func (this *ProjectController) DeleteResourceToProject() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -247,7 +242,6 @@ func (this *ProjectController) DeleteResourceToProject() {
 		defer res.Body.Close()
 		message := new(domain.GetResourcesToProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
 		this.Data["Title"] = this.GetString("ProjectName")
 		this.TplName = "Projects/listResourceByProject.tpl"
@@ -268,7 +262,7 @@ func (this *ProjectController) SetResourceToProject() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -278,7 +272,6 @@ func (this *ProjectController) SetResourceToProject() {
 		defer res.Body.Close()
 		message := new(domain.SetResourceToProjectRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("ResourceToProject", message.Project)
 		this.Data["Project"] = message.Project
 		this.Data["ProjectId"] = input.ProjectId
 		if message.Project != nil {
@@ -309,7 +302,7 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -319,7 +312,6 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 		defer res.Body.Close()
 		message := new(domain.GetResourcesToProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
 		this.Data["Projects"] = message.Projects
 		this.Data["Resources"] = message.Resources
