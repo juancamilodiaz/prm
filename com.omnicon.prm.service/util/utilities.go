@@ -48,13 +48,13 @@ func StringToBool(pString string) bool {
 	return false
 }
 
-// Concadena los string enviados en un solo string
-func Concatenar(pCadenas ...string) string {
-	listCadenas := bytes.Buffer{}
-	for _, cadena := range pCadenas {
-		listCadenas.WriteString(cadena)
+// Concatenates the sent string in a single string
+func Concatenate(pStrings ...string) string {
+	listStrings := bytes.Buffer{}
+	for _, str := range pStrings {
+		listStrings.WriteString(str)
 	}
-	return listCadenas.String()
+	return listStrings.String()
 }
 
 // Convierte un entero a string

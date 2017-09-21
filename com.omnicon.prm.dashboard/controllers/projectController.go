@@ -204,8 +204,18 @@ func (this *ProjectController) GetResourcesByProject() {
 		json.NewDecoder(res.Body).Decode(&message)
 		fmt.Println("ResourcesToProjects", message.ResourcesToProjects)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+
+		for _, rp := range message.Projects {
+			if input.ProjectId == rp.ID {
+
+				this.Data["Title"] = rp.Name
+				this.Data["StartDate"] = rp.StartDate
+				this.Data["EndDate"] = rp.EndDate
+				break
+			}
+		}
 		this.Data["ProjectId"] = input.ProjectId
-		this.Data["Title"] = input.ProjectName
+		//this.Data["Title"] = input.ProjectName
 		this.TplName = "Projects/listResourceByProject.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
@@ -220,10 +230,9 @@ func (this *ProjectController) DeleteResourceToProject() {
 	operation := "DeleteResourceToProject"
 
 	input := domain.DeleteResourceToProjectRQ{}
-	resourceId, _ := this.GetInt64("resourceID")
-	projectId, _ := this.GetInt64("projectID")
-	input.ResourceId = resourceId
-	input.ProjectId = projectId
+	id, _ := this.GetInt64("ID")
+	input.ID = id
+
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -314,6 +323,7 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
 		this.Data["Projects"] = message.Projects
 		this.Data["Resources"] = message.Resources
+		this.Data["AvailBreakdown"] = message.AvailBreakdown
 		this.Data["Title"] = input.ProjectName
 		this.TplName = "Projects/listResourceByProjectToday.tpl"
 	} else {

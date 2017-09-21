@@ -331,3 +331,32 @@ button.btnCollapse:before
     font-family: 'PrmTitle'; /*a name to be used later*/
     src: url('font-awesome-4.7.0/fonts/dekarangercond.ttf'); /*URL to font*/
 }
+
+a.accordion {
+    color: #444;
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+
+a.accordion.active, a.accordion:hover {
+    background-color: #eee; 
+}
+
+div.panel-accordion {
+    padding: 0 18px;
+    background-color: white;
+	max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.style-input{
+	border-radius: 6px;
+}
+
+.error{
+	border:1px solid red;
+}

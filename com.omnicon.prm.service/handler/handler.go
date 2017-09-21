@@ -69,7 +69,7 @@ func createResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Se asigna tiempo de respuesta de todo el proceso.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -128,7 +128,7 @@ func updateResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Se asigna tiempo de respuesta de todo el proceso.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -175,7 +175,7 @@ func deleteResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Se asigna tiempo de respuesta de todo el proceso.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -215,7 +215,7 @@ func createProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Se asigna tiempo de respuesta de todo el proceso.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -254,7 +254,7 @@ func updateProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Se asigna tiempo de respuesta de todo el proceso.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -294,7 +294,7 @@ func deleteProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Se asigna tiempo de respuesta de todo el proceso.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -334,7 +334,7 @@ func createSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -373,7 +373,7 @@ func updateSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -413,7 +413,7 @@ func deleteSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -453,7 +453,7 @@ func setSkillToResource(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -493,7 +493,7 @@ func deleteSkillToResource(pResponse http.ResponseWriter, pRequest *http.Request
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -533,7 +533,7 @@ func setResourceToProject(pResponse http.ResponseWriter, pRequest *http.Request)
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -574,7 +574,7 @@ func deleteResourceToProject(pResponse http.ResponseWriter, pRequest *http.Reque
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -614,7 +614,7 @@ func getResources(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -655,7 +655,7 @@ func getProjects(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -694,7 +694,7 @@ func getSkills(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -733,7 +733,7 @@ func getResourcesToProjects(pResponse http.ResponseWriter, pRequest *http.Reques
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -772,7 +772,7 @@ func getSkillsToResources(pResponse http.ResponseWriter, pRequest *http.Request)
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)
@@ -811,7 +811,7 @@ func setSkillsToResources(pResponse http.ResponseWriter, pRequest *http.Request)
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
-		response.GetHeader().ResponseTime = util.Concatenar(response.GetHeader().ResponseTime)
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
 	}
 
 	value := marshalJson(accept, response)

@@ -17,7 +17,38 @@
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
 			reload('/resources',{});
-		});		
+		});
+		
+		$('#buttonOption').css("display", "inline-block");
+		$('#buttonOption').attr("style", "display: padding-right: 0%");
+		$('#buttonOption').html("New Resource");
+		$('#buttonOption').attr("data-toggle", "modal");
+		$('#buttonOption').attr("data-target", "#resourceModal");
+		$('#buttonOption').attr("onclick","configureCreateModal()");
+		
+		$("#resourceEmail").keyup(function(){
+
+	        var email = $("#resourceEmail").val();
+	
+	        if(email != 0)
+	        {
+	            if(isValidEmailAddress(email))
+	            {
+	                $("#resourceEmail").css({
+	                    "border-color": "lightgreen"
+	                });
+	            } else {
+	                $("#resourceEmail").css({
+	                    "border-color": "crimson"
+	                });
+	            }
+	        } else {
+	            $("#resourceEmail").css({
+	                "border-color": "crimson"
+	            });         
+	        }
+	
+	    });
 	});
 
 	
@@ -173,9 +204,7 @@
 		{{end}}	
 	</tbody>
 </table>
-<div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#resourceModal" onclick="configureCreateModal()">New Resource</button>
-</div>
+
 </div>
 
 	<!-- Modal -->
@@ -193,7 +222,7 @@
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
 	              <div class="col-sm-8">
-	              	<input type="text" id="resourceName">
+	              	<input type="text" id="resourceName" class="style-input">
 	        		</div>
 	          </div>
 	        </div>
@@ -201,7 +230,7 @@
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
 	              <div class="col-sm-8">
-	              	<input type="text" id="resourceLastName">
+	              	<input type="text" id="resourceLastName" class="style-input">
 	        		</div>
 	          </div>
 	        </div>
@@ -209,7 +238,7 @@
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
 	              <div class="col-sm-8">
-	              	<input type="text" id="resourceEmail">
+	              	<input type="text" id="resourceEmail" class="style-input">
 	        		</div>
 	          </div>
 	        </div>
@@ -217,7 +246,7 @@
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
 	              <div class="col-sm-8">
-	              	<select id="resourceRank"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option></select>
+	              	<select id="resourceRank"  class="style-input"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option><option value="PM">PM</option></select>
 	        		</div>
 	          </div>
 	        </div>
@@ -225,7 +254,7 @@
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
 	              <div class="col-sm-8">
-	              	<input type="checkbox" id="resourceActive"><br/>
+	              	<input type="checkbox" id="resourceActive" class="style-input"><br/>
 	              </div>    
 	          </div>
 	        </div>

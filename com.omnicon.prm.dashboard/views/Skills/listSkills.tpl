@@ -14,6 +14,13 @@
 		$('#refreshButton').click(function(){
 			reload('/skills',{});
 		});
+		
+		$('#buttonOption').css("display", "inline-block");
+		$('#buttonOption').attr("style", "display: padding-right: 0%");
+		$('#buttonOption').html("New Skill");
+		$('#buttonOption').attr("data-toggle", "modal");
+		$('#buttonOption').attr("data-target", "#skillModal");
+		$('#buttonOption').attr("onclick","configureCreateModal()");
 	});
 	
 	configureCreateModal = function(){
@@ -124,9 +131,7 @@
 		{{end}}	
 	</tbody>
 </table>
-<div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#skillModal" onclick="configureCreateModal()" >Create</button>
-</div>
+
 </div>
 
 <!-- Modal -->

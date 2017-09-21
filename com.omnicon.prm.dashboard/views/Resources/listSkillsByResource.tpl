@@ -22,7 +22,14 @@
 				"ID": {{.ResourceId}},
 				"ResourceName": "{{.Title}}"
 			});
-		}); 
+		});
+		
+		$('#buttonOption').css("display", "inline-block");
+		$('#buttonOption').attr("style", "display: padding-right: 0%");
+		$('#buttonOption').html("Set New Skill");
+		$('#buttonOption').attr("data-toggle", "modal");
+		$('#buttonOption').attr("data-target", "#resourceSkillModal");
+		$('#buttonOption').attr("onclick","configureCreateModal();getSkills()");
 	});
 	
 	configureUpdateSkillResourceModal = function(pSkillId, pName, pValue){
@@ -117,9 +124,7 @@
 		{{end}}	
 	</tbody>
 </table>
-<div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#resourceSkillModal" onclick="configureCreateModal();getSkills()">Set New Skill</button>
-</div>
+
 <!-- Modal -->
 	<div class="modal fade" id="resourceSkillModal" role="dialog">
   		<div class="modal-dialog">
@@ -144,7 +149,7 @@
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
              				<div class="col-sm-8">
-              					<input type="text" id="resourceValueSkill">
+              					<input type="number" id="resourceValueSkill" min="1" max="100" value="1">
         					</div>
           				</div>
         			</div>
@@ -179,7 +184,7 @@
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
              				<div class="col-sm-8">
-              					<input type="text" id="updateResourceValueSkill">
+              					<input type="number" id="updateResourceValueSkill" min="1" max="100">
         					</div>
           				</div>
         			</div>

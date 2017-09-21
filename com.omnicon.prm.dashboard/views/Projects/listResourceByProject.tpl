@@ -40,6 +40,19 @@
 			$("#resourceUpdateDateHoursProject").val(workingHoursBetweenDates(startDateUpdate, endDateUpdate));
 			$('#resourceUpdateDateEndProject').attr("min", $("#resourceUpdateDateStartProject").val());
 		});
+		
+				
+		$('#buttonOption').css("display", "inline-block");
+		$('#buttonOption').attr("style", "display: padding-right: 0%");
+		$('#buttonOption').html("Set New Resource");
+		$('#buttonOption').attr("data-toggle", "modal");
+		$('#buttonOption').attr("data-target", "#resourceProjectModal");
+		$('#buttonOption').attr("onclick","$('#resourceProjectId').val({{.ProjectId}});getResources();configureShowCreateModal()");
+		
+		
+		var prjStartDate = formatDate({{.StartDate}});
+		var prjEndDate = formatDate({{.EndDate}});
+		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);
 	});
 	
 	unassignResource = function(){
@@ -50,8 +63,7 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"resourceID": $('#resourceID').val(),
-				"projectID": $('#projectID').val()
+				"ID": $('#resourceProjectIDDelete').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -90,7 +102,7 @@
 		$("#resourceUpdate").css("display", "inline-block");
 	}
 	
-	setResourceToProject = function(resourceId, projectId, startDate, endDate, hours, lead){
+	setResourceToProject = function(ID, resourceId, projectId, startDate, endDate, hours, lead, isToCreate){
 		var settings = {
 			method: 'POST',
 			url: '/projects/setresource',
@@ -98,12 +110,14 @@
 				'Content-Type': undefined
 			},
 			data: { 
+				"ID": ID,
 				"ProjectId": projectId,
 				"ResourceId": resourceId,
 				"StartDate": startDate,
 				"EndDate": endDate,
 				"Hours": hours,
-				"Lead": lead
+				"Lead": lead,
+				"IsToCreate": isToCreate
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -145,6 +159,8 @@
 		});		
 	}
 </script>
+
+<p class="pull-right" style="padding-right: 0%;"> <label type="text" id="dates"/></p>
 <table id="viewResourceInProject" class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -165,17 +181,15 @@
 			<td>{{$resourceToProject.Hours}}</td>
 			<td><input type="checkbox" {{if $resourceToProject.Lead}}checked{{end}} disabled></td>
 			<td>
-				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceID').val({{$resourceToProject.ResourceId}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign of project</button>
-				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Hours}}, {{$resourceToProject.Lead}})' data-dismiss="modal">Update assign</button>
+				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceProjectIDDelete').val({{$resourceToProject.ID}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign</button>
+				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Hours}}, {{$resourceToProject.Lead}});$("#resourceProjectIDUpdate").val({{$resourceToProject.ID}});' data-dismiss="modal">Update assign</button>
 				<button data-toggle="modal" class="buttonTable button2" onclick='configureShowModal({{$resourceToProject.ResourceId}}, "{{$resourceToProject.ResourceName}}");getResource({{$resourceToProject.ResourceId}})' data-dismiss="modal">Resource Info.</button>
 			</td>
 		</tr>
 		{{end}}	
 	</tbody>
 </table>
-<div style="text-align:center;">
-	<button class="button button2" data-toggle="modal" data-target="#resourceProjectModal" onclick="$('#resourceProjectId').val({{.ProjectId}});getResources();configureShowCreateModal()">Set New Resource</button>
-</div>
+
 <!-- Modal -->
 	<div class="modal fade" id="resourceProjectModal" role="dialog">
   		<div class="modal-dialog">
@@ -230,7 +244,7 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), $('#resourceLead').is(':checked'))" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject(0, $('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), $('#resourceLead').is(':checked'), true)" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
@@ -248,6 +262,7 @@
 		    	<div class="modal-body">
 					<input type="hidden" id="resourceProjectUpdateId">
         			<input type="hidden" id="projectUpdateId">
+					<input type="hidden" id="resourceProjectIDUpdate">					
 					<div class="row-box col-sm-12">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
@@ -290,7 +305,7 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), $('#resourceUpdateLead').is(':checked'))" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), $('#resourceUpdateLead').is(':checked'), false)" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
@@ -306,7 +321,7 @@
 	        		<h4 class="modal-title">Unassign Confirmation</h4>
 	      		</div>
 	      		<div class="modal-body">
-					<input type="hidden" id="resourceID">
+					<input type="hidden" id="resourceProjectIDDelete">
 	        		<input type="hidden" id="projectID">
 						Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> project?
 	      		</div>

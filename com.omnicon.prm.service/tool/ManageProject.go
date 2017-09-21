@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"strconv"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -8,6 +9,8 @@ import (
 	"prm/com.omnicon.prm.service/log"
 	"prm/com.omnicon.prm.service/util"
 )
+
+const HoursOfWork = 8
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 
@@ -100,6 +103,19 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			}
 			if pRequest.StartDate != "" {
 				oldProject.EndDate = time.Unix(endDateInt, 0)
+			}
+
+			// Validation for updating dates, these should not be outside the resource assignment range.
+			resourcesProject := dao.GetProjectResourcesByProjectId(pRequest.ID)
+			for _, resource := range resourcesProject {
+				if resource.StartDate.Unix() < oldProject.StartDate.Unix() || resource.EndDate.Unix() > oldProject.EndDate.Unix() {
+					message := "Can not update the project, there are resources allocated outside the new dates. (" + resource.StartDate.Format("2006-01-02") + " to " + resource.EndDate.Format("2006-01-02") + ")"
+					log.Error(message)
+					response.Message = message
+					response.Project = nil
+					response.Status = "Error"
+					return &response
+				}
 			}
 		}
 		oldProject.Enabled = pRequest.Enabled
@@ -198,6 +214,13 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	timeResponse := time.Now()
 	response := DOMAIN.SetResourceToProjectRS{}
 
+	if pRequest.Hours <= 0 {
+		response.Message = "Assigned hours must be greater than zero."
+		response.Project = nil
+		response.Status = "Error"
+		return &response
+	}
+
 	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
 	if !isValid {
 		response.Message = message
@@ -229,19 +252,98 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 				log.Error(err)
 				return nil
 			}
+
+			// validate dates assignation resource
+			if project.StartDate.Unix() > startDateInt || project.EndDate.Unix() < endDateInt {
+				response.Message = "The resource is being allocated outside the project dates. " + project.StartDate.Format("2006-01-02") + " to " + project.EndDate.Format("2006-01-02")
+				response.Project = nil
+				response.Status = "Error"
+				return &response
+			}
+
+			// Validate hours available per day
+			assignations := dao.GetProjectResourcesByResourceId(pRequest.ResourceId)
+
+			// breakdown exist assignation map[day]hours
+			breakdown := make(map[string]float64)
+
+			for _, assignation := range assignations {
+				// Except the actual assignation, apply in update.
+				if assignation.ID != pRequest.ID {
+					if assignation.StartDate.Unix() <= endDateInt && assignation.EndDate.Unix() >= startDateInt {
+
+						totalHours := assignation.Hours
+
+						for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
+							if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+								if totalHours > 0 && totalHours <= HoursOfWork {
+									breakdown[day.String()] += totalHours
+									break
+								} else {
+									breakdown[day.String()] += HoursOfWork
+									totalHours = totalHours - HoursOfWork
+								}
+							}
+						}
+					}
+				}
+			}
+			log.Debug("breakdownSet", breakdown)
+
+			// breakdown new assignation map[day]hours
+			breakdownAssig := make(map[string]float64)
+			totalHoursAssig := pRequest.Hours
+
+			for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
+				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+					if totalHoursAssig > 0 && totalHoursAssig <= HoursOfWork {
+						breakdownAssig[day.String()] = totalHoursAssig
+						totalHoursAssig = totalHoursAssig - totalHoursAssig
+						break
+					} else {
+						breakdownAssig[day.String()] = HoursOfWork
+						totalHoursAssig = totalHoursAssig - HoursOfWork
+					}
+				}
+			}
+			// If total hours assign is greater than zero it means that hours and the range is not met.
+			if totalHoursAssig > 0 {
+				response.Message = util.Concatenate("Total hours does not meet range. (Saturdays and Sundays should not have hours, maximum hours per day is " + strconv.Itoa(HoursOfWork) + " hours, according to the number of days this value is the maximum allowable)")
+				response.Project = nil
+				response.Status = "Error"
+				return &response
+			}
+
+			log.Debug("breakdownAssig", breakdownAssig)
+
+			isValidAssig := true
+			messageValidation := util.Concatenate("The allocation of hours exceeds the limit of ", strconv.Itoa(HoursOfWork), " hours per day. * ")
+			for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
+				totalHours := breakdown[day.String()] + breakdownAssig[day.String()]
+				if totalHours > HoursOfWork {
+					messageValidation = util.Concatenate(messageValidation, strconv.FormatFloat(totalHours, 'f', -1, 64), "Hrs ", day.Format("2006-01-02"), " * ")
+					isValidAssig = false
+				}
+			}
+
+			// If the hours exceed the allowed hours per day
+			if !isValidAssig {
+				log.Debug(messageValidation)
+				response.Message = messageValidation
+				response.Project = nil
+				response.Status = "Error"
+				return &response
+			}
+
 			projectResources.StartDate = time.Unix(startDateInt, 0)
 			projectResources.EndDate = time.Unix(endDateInt, 0)
 			projectResources.Lead = pRequest.Lead
 			projectResources.Hours = pRequest.Hours
 
-			projectResourcesExist := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
-			if projectResourcesExist != nil {
-				if pRequest.ProjectId != 0 {
-					projectResourcesExist.ProjectId = pRequest.ProjectId
-				}
-				if pRequest.ResourceId != 0 {
-					projectResourcesExist.ResourceId = pRequest.ResourceId
-				}
+			//find by resource and project
+			projectResourcesExist := dao.GetProjectResourcesById(pRequest.ID)
+			if !pRequest.IsToCreate && projectResourcesExist != nil {
+
 				if pRequest.StartDate != "" {
 					projectResourcesExist.StartDate = time.Unix(startDateInt, 0)
 				}
@@ -262,25 +364,11 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					response.Status = "Error"
 					return &response
 				}
+
 				// Get ProjectResources inserted
-				projectResourceUpdated := dao.GetProjectResourcesById(projectResourcesExist.ID)
-				if projectResourceUpdated != nil {
-					// Get all resources to this project
-					resourcesOfProject := dao.GetProjectResourcesByProjectId(pRequest.ProjectId)
-					// Mapping resources in the project of the response
-					lead := util.MappingResourcesInAProject(project, resourcesOfProject)
-					project.Lead = lead
-					response.Project = project
-
-					header := new(DOMAIN.SetResourceToProjectRS_Header)
-					header.RequestDate = time.Now().String()
-					responseTime := time.Now().Sub(timeResponse)
-					header.ResponseTime = responseTime.String()
-					response.Header = header
-
-					response.Status = "OK"
-
-					return &response
+				response := getInsertedResource(projectResourcesExist.ID, project, timeResponse)
+				if response != nil {
+					return response
 				}
 			} else {
 				id, err := dao.AddProjectResources(&projectResources)
@@ -293,24 +381,9 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					return &response
 				}
 				// Get ProjectResources inserted
-				projectResourceInserted := dao.GetProjectResourcesById(id)
-				if projectResourceInserted != nil {
-					// Get all resources to this project
-					resourcesOfProject := dao.GetProjectResourcesByProjectId(pRequest.ProjectId)
-					// Mapping resources in the project of the response
-					lead := util.MappingResourcesInAProject(project, resourcesOfProject)
-					project.Lead = lead
-					response.Project = project
-
-					header := new(DOMAIN.SetResourceToProjectRS_Header)
-					header.RequestDate = time.Now().String()
-					responseTime := time.Now().Sub(timeResponse)
-					header.ResponseTime = responseTime.String()
-					response.Header = header
-
-					response.Status = "OK"
-
-					return &response
+				response := getInsertedResource(id, project, timeResponse)
+				if response != nil {
+					return response
 				}
 			}
 
@@ -343,13 +416,38 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	return &response
 }
 
+func getInsertedResource(pIdResProject int64, pProject *DOMAIN.Project, pTimeResponse time.Time) *DOMAIN.SetResourceToProjectRS {
+	response := DOMAIN.SetResourceToProjectRS{}
+	// Get ProjectResources inserted
+	projectResourceInserted := dao.GetProjectResourcesById(pIdResProject)
+	if projectResourceInserted != nil {
+		// Get all resources to this project
+		resourcesOfProject := dao.GetProjectResourcesByProjectId(pProject.ID)
+		// Mapping resources in the project of the response
+		lead := util.MappingResourcesInAProject(pProject, resourcesOfProject)
+		pProject.Lead = lead
+		response.Project = pProject
+
+		header := new(DOMAIN.SetResourceToProjectRS_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(pTimeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		response.Status = "OK"
+
+		return &response
+	}
+	return nil
+}
+
 func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN.DeleteResourceToProjectRS {
 	timeResponse := time.Now()
 	response := DOMAIN.DeleteResourceToProjectRS{}
-	projectResource := dao.GetProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
+	projectResource := dao.GetProjectResourcesById(pRequest.ID)
 	if projectResource != nil {
 		// Delete in DB
-		rowsDeleted, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(pRequest.ProjectId, pRequest.ResourceId)
+		rowsDeleted, err := dao.DeleteProjectResources(projectResource.ID)
 		if err != nil || rowsDeleted <= 0 {
 			message := "ProjectResource wasn't delete"
 			log.Error(message)
@@ -359,17 +457,6 @@ func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN
 		}
 
 		response.ID = projectResource.ID
-		project := dao.GetProjectById(projectResource.ProjectId)
-		response.ProjectName = project.Name
-		resource := dao.GetResourceById(projectResource.ResourceId)
-		if resource == nil {
-			message := "Resource is not in DB"
-			log.Error(message)
-			response.Message = message
-			response.Status = "Error"
-			return &response
-		}
-		response.ResourceName = resource.Name
 		response.Status = "OK"
 
 		header := new(DOMAIN.DeleteResourceToProjectRS_Header)
@@ -486,8 +573,16 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	}
 
 	requestProjects := DOMAIN.GetProjectsRQ{}
+	requestProjects.StartDate = pRequest.StartDate
+	requestProjects.EndDate = pRequest.EndDate
+
 	responseProjects := GetProjects(&requestProjects)
-	response.Projects = responseProjects.Projects
+	for _, project := range responseProjects.Projects {
+		// only return projects enabled
+		if project.Enabled {
+			response.Projects = append(response.Projects, project)
+		}
+	}
 
 	requestResources := DOMAIN.GetResourcesRQ{}
 	responseResources := GetResources(&requestResources)
@@ -497,20 +592,76 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 			response.Resources = append(response.Resources, resource)
 		}
 	}
-	if projectsResources != nil && len(projectsResources) > 0 {
+	//if projectsResources != nil && len(projectsResources) > 0 {
 
-		response.ResourcesToProjects = projectsResources
-		// Create response
-		response.Status = "OK"
+	startDate, _ := time.Parse("2006-01-02", pRequest.StartDate)
+	endDate, _ := time.Parse("2006-01-02", pRequest.EndDate)
 
-		header := new(DOMAIN.GetResourcesToProjectsRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+	// breakdown exist assignation map[resourceID]map[day]hours
+	breakdown := make(map[int64]map[string]float64)
 
-		return &response
+	for _, assignation := range projectsResources {
+
+		if breakdown[assignation.ResourceId] == nil {
+			breakdown[assignation.ResourceId] = make(map[string]float64)
+		}
+		totalHours := assignation.Hours
+
+		for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				//if startDate.Unix() <= day.Unix() && endDate.Unix() >= day.Unix() {
+				if totalHours > 0 && totalHours <= HoursOfWork {
+					breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
+					break
+				} else {
+					breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
+					totalHours = totalHours - HoursOfWork
+				}
+				//}
+			}
+		}
 	}
+	log.Debug("breakdownGet", breakdown)
+
+	// Calculate the available hours according to hours assignation
+	availBreakdown := make(map[int64]map[string]float64)
+
+	for _, resource := range response.Resources {
+
+		availBreakdown[resource.ID] = make(map[string]float64)
+
+		for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				_, exist := breakdown[resource.ID]
+				if exist {
+					availHours := HoursOfWork - breakdown[resource.ID][day.Format("2006-01-02")]
+					if availHours > 0 {
+						availBreakdown[resource.ID][day.Format("2006-01-02")] = availHours
+					}
+				} else {
+					availBreakdown[resource.ID][day.Format("2006-01-02")] = HoursOfWork
+				}
+			}
+		}
+	}
+
+	log.Debug("availBreakdown", availBreakdown)
+	response.AvailBreakdown = availBreakdown
+	//
+
+	response.ResourcesToProjects = projectsResources
+	// Create response
+	response.Status = "OK"
+
+	header := new(DOMAIN.GetResourcesToProjectsRS_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+	/*}
+
 	message = "Resources To Projects wasn't found in DB"
 	log.Error(message)
 	response.Message = message
@@ -523,4 +674,5 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	response.Header = header
 
 	return &response
+	*/
 }
