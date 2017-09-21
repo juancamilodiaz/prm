@@ -17,6 +17,11 @@
 			"pageLength": 50,
 			"searching": true,
 			"paging": false,
+		});
+		$('#viewResourcesPerProjectUnassign').DataTable({
+			responsive: true,
+			"searching": true,
+			"paging": true,
 		});		
 					
 		$('#datePicker').css("display", "inline-block");	
@@ -288,7 +293,7 @@ function setResourceToProjectExc(){
 						<button id="collapseButtonUnassign" class="btnCollapse" data-toggle="collapse" href="#collapseUnassign" style="border:none;border-radius:4px;"></button>
 					</div>
 				</div>
-				<div id="collapseUnassign" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;">
+				<div id="collapseUnassign" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px;">
 					<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
 						<thead>
 							<th style="font-size:12px;text-align: -webkit-center;">Name</th>
