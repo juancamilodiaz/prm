@@ -4,7 +4,7 @@
 		// Assign information of available resources
 		{{$availBreakdown := .AvailBreakdown}}
 		{{range $index, $resource := .Resources}}
-			console.log({{$avail := index $availBreakdown $resource.ID}});
+			{{$avail := index $availBreakdown $resource.ID}}
 			{{range $day, $hours := $avail}}
 				$("#unassignBody").append('<tr draggable=false><td style="font-size:11px;text-align: -webkit-center;margin:0 0 0px;">'+{{$resource.Name}}+' '+ {{$resource.LastName}}+'</td><td style="font-size:11px;text-align: -webkit-center;">'+{{$day}}+'</td><td style="font-size:11px;text-align: -webkit-center;">'+{{$hours}}+'</td></tr>'); 
 			{{end}}
