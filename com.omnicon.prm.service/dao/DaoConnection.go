@@ -14,8 +14,8 @@ var session sqlbuilder.Database
 var settings = mssql.ConnectionURL{
 	User:     "admin",
 	Password: "admin",
-	Host:     "OMNCND5035B21",
-	Database: "master",
+	Host:     "OMNINFPRM",
+	Database: "prm",
 }
 
 func GetSession() sqlbuilder.Database {
