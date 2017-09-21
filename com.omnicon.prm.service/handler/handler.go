@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -92,7 +91,7 @@ func marshalJson(pAccept string, pResourceRs interface{}) []byte {
 			value, err = json.Marshal(pResourceRs)
 		}
 		if err != nil {
-			fmt.Printf("Error Marshalling json: %v", err)
+			log.Debugf("Error Marshalling json: %v", err)
 		}
 	}
 	return value

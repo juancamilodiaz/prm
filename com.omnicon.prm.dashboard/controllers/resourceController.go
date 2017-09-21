@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -33,7 +32,7 @@ func (this *ResourceController) ListResources() {
 		defer res.Body.Close()
 		message := new(domain.GetResourcesRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("Resources", message.Resources)
+
 		this.Data["Resources"] = message.Resources
 		if this.GetString("Template") == "select" {
 			this.TplName = "Projects/listResourceToDropDown.tpl"
@@ -56,7 +55,7 @@ func (this *ResourceController) CreateResource() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -98,14 +97,13 @@ func (this *ResourceController) ReadResource() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
 	res, err := PostData(operation, inputBuffer)
 
 	if err == nil {
-		fmt.Println("Respuesta", res)
 		defer res.Body.Close()
 		message := new(domain.GetResourcesRS)
 		json.NewDecoder(res.Body).Decode(&message)
@@ -129,7 +127,7 @@ func (this *ResourceController) UpdateResource() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -140,7 +138,7 @@ func (this *ResourceController) UpdateResource() {
 
 	message := new(domain.UpdateResourceRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
+
 	defer res.Body.Close()
 	if err != nil {
 		log.Error(err.Error())
@@ -168,7 +166,7 @@ func (this *ResourceController) DeleteResource() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -179,7 +177,7 @@ func (this *ResourceController) DeleteResource() {
 
 	message := new(domain.DeleteResourceRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
-	fmt.Println(message)
+
 	defer res.Body.Close()
 	if err != nil {
 		log.Error(err.Error())
@@ -207,7 +205,7 @@ func (this *ResourceController) GetSkillsByResource() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -217,7 +215,7 @@ func (this *ResourceController) GetSkillsByResource() {
 		defer res.Body.Close()
 		message := new(domain.GetSkillByResourceRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("GetSkillsByResource", message.Skills)
+
 		this.Data["ResourceId"] = input.ID
 		this.Data["Skills"] = message.Skills
 		this.Data["Title"] = this.GetString("ResourceName")
@@ -238,7 +236,7 @@ func (this *ResourceController) SetSkillsToResource() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -248,7 +246,7 @@ func (this *ResourceController) SetSkillsToResource() {
 		defer res.Body.Close()
 		message := new(domain.SetSkillToResourceRS)
 		json.NewDecoder(res.Body).Decode(&message)
-		fmt.Println("SetSkillsByResource", message.Resource)
+
 		this.Data["Skills"] = message.Resource.Skills
 		this.Data["Title"] = this.GetString("ResourceName")
 		this.TplName = "Resources/listSkillsByResource.tpl"
@@ -268,7 +266,7 @@ func (this *ResourceController) DeleteSkillsToResource() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-	fmt.Printf("[ParseInput] Input: %+v \n", input)
+	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
 
@@ -278,7 +276,6 @@ func (this *ResourceController) DeleteSkillsToResource() {
 	message := new(domain.DeleteSkillToResourceRS)
 	err = json.NewDecoder(res.Body).Decode(&message)
 	if err == nil {
-		fmt.Println("DeleteSkillToResource", message.SkillName, message.ResourceName)
 		this.Data["SkillName"] = message.SkillName
 		this.Data["ResourceName"] = message.ResourceName
 		this.Data["Title"] = this.GetString("ResourceName")
