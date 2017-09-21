@@ -567,31 +567,49 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 	filters := util.MappingFiltersProjectResource(pRequest)
 	projectsResources, filterString := dao.GetProjectsResourcesByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Lead)
+	//responseTime := time.Now().Sub(timeResponse)
+	//fmt.Println("GetProjectsResourcesByFilters time:", responseTime.String())
 
 	if len(projectsResources) == 0 && filterString == "" {
 		projectsResources = dao.GetAllProjectResources()
 	}
 
-	requestProjects := DOMAIN.GetProjectsRQ{}
-	requestProjects.StartDate = pRequest.StartDate
-	requestProjects.EndDate = pRequest.EndDate
+	/*
+		requestProjects := DOMAIN.GetProjectsRQ{}
+		requestProjects.StartDate = pRequest.StartDate
+		requestProjects.EndDate = pRequest.EndDate
+		requestProjects.Enabled = newTrue()
 
-	responseProjects := GetProjects(&requestProjects)
-	for _, project := range responseProjects.Projects {
+		//TODO filter in query enabled projects.
+		responseProjects := GetProjects(&requestProjects)
+		response.Projects = responseProjects.Projects*/
+
+	response.Projects = getFilterProject(pRequest.StartDate, pRequest.EndDate)
+
+	/*for _, project := range responseProjects.Projects {
 		// only return projects enabled
 		if project.Enabled {
 			response.Projects = append(response.Projects, project)
 		}
-	}
+	}*/
+	//responseTime = time.Now().Sub(timeResponse)
+	//fmt.Println("GetProjects.enabled time:", responseTime.String())
 
-	requestResources := DOMAIN.GetResourcesRQ{}
+	/*requestResources := DOMAIN.GetResourcesRQ{}
+	requestResources.Enabled = newTrue()
 	responseResources := GetResources(&requestResources)
-	for _, resource := range responseResources.Resources {
+	response.Resources = responseResources.Resources
+	*/
+	response.Resources = getFilterResource()
+	/*for _, resource := range responseResources.Resources {
 		// only return resources enabled
 		if resource.Enabled {
 			response.Resources = append(response.Resources, resource)
 		}
-	}
+	}*/
+	//responseTime = time.Now().Sub(timeResponse)
+	//fmt.Println("GetResourcesRQ.enabled time:", responseTime.String())
+
 	//if projectsResources != nil && len(projectsResources) > 0 {
 
 	startDate, _ := time.Parse("2006-01-02", pRequest.StartDate)
@@ -621,6 +639,8 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 			}
 		}
 	}
+	//responseTime = time.Now().Sub(timeResponse)
+	//fmt.Println("projectsResources.breakdown time:", responseTime.String())
 	log.Debug("breakdownGet", breakdown)
 
 	// Calculate the available hours according to hours assignation
@@ -644,6 +664,8 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 			}
 		}
 	}
+	//responseTime = time.Now().Sub(timeResponse)
+	//fmt.Println("Response.loop time:", responseTime.String())
 
 	log.Debug("availBreakdown", availBreakdown)
 	response.AvailBreakdown = availBreakdown
@@ -656,6 +678,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	header := new(DOMAIN.GetResourcesToProjectsRS_Header)
 	header.RequestDate = time.Now().String()
 	responseTime := time.Now().Sub(timeResponse)
+	//fmt.Println("GetResourcesToProjects total:", responseTime.String())
 	header.ResponseTime = responseTime.String()
 	response.Header = header
 
@@ -675,4 +698,33 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 	return &response
 	*/
+}
+
+func newTrue() *bool {
+	b := true
+	return &b
+}
+
+func getFilterResource() []*DOMAIN.Resource {
+	requestResources := DOMAIN.GetResourcesRQ{}
+	requestResources.Enabled = newTrue()
+	if EnabledResources == nil || len(EnabledResources) == 0 {
+		responseResources := GetResources(&requestResources)
+		EnabledResources = responseResources.Resources
+		return responseResources.Resources
+	}
+	return EnabledResources
+}
+
+var EnabledResources = []*DOMAIN.Resource{}
+
+func getFilterProject(pStartDate, pEndDate string) []*DOMAIN.Project {
+	requestProjects := DOMAIN.GetProjectsRQ{}
+	requestProjects.StartDate = pStartDate
+	requestProjects.EndDate = pEndDate
+	requestProjects.Enabled = newTrue()
+
+	//TODO filter in query enabled projects.
+	responseProjects := GetProjects(&requestProjects)
+	return responseProjects.Projects
 }
