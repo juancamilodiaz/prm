@@ -30,6 +30,7 @@ func CreateResource(pRequest *DOMAIN.CreateResourceRQ) *DOMAIN.CreateResourceRS 
 	resource = dao.GetResourceById(id)
 	response.Resource = resource
 	response.Status = "OK"
+	EnabledResources = []*DOMAIN.Resource{}
 
 	header := new(DOMAIN.CreateResourceRS_Header)
 	header.RequestDate = time.Now().String()
@@ -78,6 +79,7 @@ func UpdateResource(pResource *DOMAIN.UpdateResourceRQ) *DOMAIN.UpdateResourceRS
 		resource := dao.GetResourceById(pResource.ID)
 		response.Resource = resource
 		response.Status = "OK"
+		EnabledResources = []*DOMAIN.Resource{}
 
 		header := new(DOMAIN.UpdateResourceRS_Header)
 		header.RequestDate = time.Now().String()
@@ -144,6 +146,7 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 		response.Name = resourceToDelete.Name
 		response.LastName = resourceToDelete.LastName
 		response.Status = "OK"
+		EnabledResources = []*DOMAIN.Resource{}
 
 		header := new(DOMAIN.DeleteResourceRS_Header)
 		header.RequestDate = time.Now().String()
