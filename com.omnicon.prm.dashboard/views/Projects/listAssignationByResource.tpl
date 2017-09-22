@@ -120,26 +120,8 @@
 		  $('#projectNames').html(response);
 		});
 	}
-	
-	getResource = function(pResourceId){
-		var settings = {
-			method: 'POST',
-			url: '/resources/read',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"ID": pResourceId,				
-			}
-		}
-		$.ajax(settings).done(function (response) {
-		  $('#resourceInfo').html(response);
-		  $('#showInfoResourceModal').modal("show");
-		});		
-	}
 </script>
 
-<p class="pull-right" style="padding-right: 0%;"> <label type="text" id="dates"/></p>
 <table id="viewResourceInProjects" class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -158,7 +140,7 @@
 			<td>{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>
 			<td>{{$resourceToProject.Hours}}</td>
 			<td>
-				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceProjectIDDelete').val({{$resourceToProject.ID}});$('#projectID').val({{$resourceToProject.ProjectId}});;$('#resourceID').val({{$resourceToProject.ResourceId}})" data-dismiss="modal">Unassign</button>
+				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ProjectName}}');$('#resourceProjectIDDelete').val({{$resourceToProject.ID}});$('#projectID').val({{$resourceToProject.ProjectId}});;$('#resourceID').val({{$resourceToProject.ResourceId}})" data-dismiss="modal">Unassign</button>
 				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Hours}}, {{$resourceToProject.Lead}});$("#resourceProjectIDUpdate").val({{$resourceToProject.ID}});' data-dismiss="modal">Update assign</button>
 			</td>
 		</tr>
@@ -300,7 +282,7 @@
 					<input type="hidden" id="resourceProjectIDDelete">
 	        		<input type="hidden" id="projectID">
 					<input type="hidden" id="resourceID">
-						Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> project?
+						Are you sure that you want to unassign <b>{{.Title}}</b> from <b id="nameDelete"></b> project?
 	      		</div>
 				<div class="modal-footer" style="text-align:center;">
 					<button type="button" id="resourceUnassign" class="btn btn-default" onclick="unassignResource()" data-dismiss="modal">Yes</button>
