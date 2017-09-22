@@ -288,7 +288,7 @@ function setResourceToProjectExc(){
 		<div class="col-sm-12" style="padding-bottom: 10px;">											
 			<div id="panel-df-projectUnassign" class="panel panel-default">
 				<div id="unassign" class="panel-heading">
-					Avail hours per resource
+					Available hours per resource
 					<div class="pull-right">
 						<button id="collapseButtonUnassign" class="btnCollapse" data-toggle="collapse" href="#collapseUnassign" style="border:none;border-radius:4px;"></button>
 					</div>
@@ -298,7 +298,7 @@ function setResourceToProjectExc(){
 						<thead>
 							<th style="font-size:12px;text-align: -webkit-center;">Name</th>
 							<th style="font-size:12px;text-align: -webkit-center;">Date</th>
-							<th style="font-size:12px;text-align: -webkit-center;">Hours avail</th>
+							<th style="font-size:12px;text-align: -webkit-center;">Available Hours</th>
 						</thead>
 						<tbody id="unassignBody">
 														
