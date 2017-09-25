@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -15,13 +16,19 @@ type ProjectController struct {
 /* Projects */
 func (this *ProjectController) ListProjects() {
 	operation := "GetProjects"
-
 	res, err := PostData(operation, nil)
 
 	if err == nil {
 		defer res.Body.Close()
 		message := new(domain.GetProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
+
+		operation = "GetTypes"
+		res, err = PostData(operation, nil)
+		messageTypes := new(domain.TypeRS)
+		json.NewDecoder(res.Body).Decode(&messageTypes)
+		this.Data["Types"] = messageTypes.Types
+
 		this.Data["Projects"] = message.Projects
 		this.TplName = "Projects/listProjects.tpl"
 	} else {
@@ -37,11 +44,18 @@ func (this *ProjectController) CreateProject() {
 
 	operation := "CreateProject"
 
+	fmt.Println("--Name--", this.GetString("Name"))
+	fmt.Println("--Types--", this.GetStrings("ProjectType"))
 	input := domain.CreateProjectRQ{}
+
 	err := this.ParseForm(&input)
+
+	input.ProjectType = this.GetStrings("ProjectType")
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
+
+	fmt.Println("----", input.ProjectType)
 	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
@@ -90,6 +104,16 @@ func (this *ProjectController) ReadProject() {
 		defer res.Body.Close()
 		message := new(domain.GetProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
+
+		fmt.Println("Service:", operation)
+
+		operation = "getTypes"
+		res, err = PostData(operation, nil)
+		messageTypes := new(domain.TypeRS)
+		json.NewDecoder(res.Body).Decode(&messageTypes)
+		fmt.Println("Service:", operation, " err ---", err)
+		this.Data["Types"] = messageTypes.Types
+		fmt.Println("******Types", messageTypes.Types)
 
 		this.Data["Projects"] = message.Projects
 		this.TplName = "Projects/viewProjects.tpl"
