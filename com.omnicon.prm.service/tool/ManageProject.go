@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -40,6 +41,17 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 			response.Status = "Error"
 			return &response
 		}
+
+		fmt.Println("****insert ProjectTypes", len(project.ProjectType))
+		for _, typesRow := range project.ProjectType {
+			projectTypes := new(DOMAIN.ProjectTypes)
+			fmt.Println("****typeId", typesRow.ID, "projectID", id)
+			projectTypes.TypeId = typesRow.ID
+			projectTypes.ProjectId = id
+			id, err := dao.AddTypeToProject(projectTypes)
+			fmt.Println("****id", id, "err", err)
+		}
+
 		// Get Project inserted
 		project = dao.GetProjectById(id)
 		response.Project = project
@@ -103,6 +115,9 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			}
 			if pRequest.StartDate != "" {
 				oldProject.EndDate = time.Unix(endDateInt, 0)
+			}
+			if pRequest.ProjectType != nil && len(pRequest.ProjectType) > 0 {
+				oldProject.ProjectType = pRequest.ProjectType
 			}
 
 			// Validation for updating dates, these should not be outside the resource assignment range.
@@ -494,10 +509,13 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 
 	filters := util.MappingFiltersProject(pRequest)
 	projects, filterString := dao.GetProjectsByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
+	fmt.Println("Projects...", len(projects))
 
 	if len(projects) == 0 && filterString == "" {
 		projects = dao.GetAllProjects()
 	}
+
+	fmt.Println("Projects...", projects[0].Name, projects[0].ProjectType)
 
 	if projects != nil && len(projects) > 0 {
 		/*

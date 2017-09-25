@@ -112,3 +112,7 @@ func ProcessGetSkillsToResources(pRequest *domain.GetSkillByResourceRQ) *domain.
 	// Return response
 	return response
 }
+
+func ProcessGetTypes(pRequest *domain.TypeRQ) *domain.TypeRS {
+	return tool.GetTypes(pRequest)
+}

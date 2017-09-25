@@ -253,8 +253,20 @@ func MappingCreateProject(pRequest *domain.CreateProjectRQ) *domain.Project {
 	project.StartDate = time.Unix(startDateInt, 0)
 	project.EndDate = time.Unix(endDateInt, 0)
 	project.Enabled = pRequest.Enabled
+	project.ProjectType = buildType(pRequest.ProjectType)
 
 	return project
+}
+
+func buildType(pTypes []string) []*domain.Type {
+	types := []*domain.Type{}
+	for _, rowType := range pTypes {
+		newType := new(domain.Type)
+		id, _ := strconv.Atoi(rowType)
+		newType.ID = id
+		types = append(types, newType)
+	}
+	return types
 }
 
 /**
@@ -365,6 +377,10 @@ func MappingFiltersProject(pRequest *domain.GetProjectsRQ) *domain.Project {
 		if pRequest.Enabled != nil {
 			filters.Enabled = *pRequest.Enabled
 		}
+		if pRequest.ProjectType != nil {
+			filters.ProjectType = pRequest.ProjectType
+		}
+
 		return &filters
 	}
 	return nil

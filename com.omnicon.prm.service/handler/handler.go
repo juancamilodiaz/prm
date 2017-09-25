@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -39,6 +40,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/GetSkills", getSkills)
 	http.HandleFunc("/GetResourcesToProjects", getResourcesToProjects)
 	http.HandleFunc("/GetSkillsByResource", getSkillsToResources)
+	http.HandleFunc("/GetTypes", getTypes)
 }
 
 /*
@@ -819,4 +821,39 @@ func setSkillsToResources(pResponse http.ResponseWriter, pRequest *http.Request)
 
 	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
+}
+
+func getTypes(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("GetTypes")
+
+	message := new(domain.TypeRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	fmt.Println("**getTypes***")
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get Types", message)
+	response := controller.ProcessGetTypes(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	fmt.Println("**getTypes*** - response", response)
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+	fmt.Println("**getTypes*** - response.write", response)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+
 }

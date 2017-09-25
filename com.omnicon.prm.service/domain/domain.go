@@ -21,8 +21,16 @@ type Project struct {
 	Enabled        bool      `db:"enabled"`
 	ResourceAssign map[int64]*ResourceAssign
 	Lead           string
+	ProjectType    []*Type
 }
-
+type Type struct {
+	ID   int    `db:"id"`
+	Name string `db:"value"`
+}
+type ProjectTypes struct {
+	ProjectId int64 `db:"project_id"`
+	TypeId    int   `db:"type_id"`
+}
 type ProjectResources struct {
 	ID           int64     `db:"id"`
 	ProjectId    int64     `db:"project_id"`

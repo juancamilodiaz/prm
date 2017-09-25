@@ -426,3 +426,37 @@ func GetSkillsToResources(pRequest *DOMAIN.GetSkillByResourceRQ) *DOMAIN.GetSkil
 
 	return &response
 }
+
+func GetTypes(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
+	timeResponse := time.Now()
+	response := DOMAIN.TypeRS{}
+
+	types := dao.GetAllTypes()
+
+	if types != nil && len(types) > 0 {
+		// Create response
+		response.Status = "OK"
+		response.Types = types
+
+		header := new(DOMAIN.Response_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "OK"
+
+	header := new(DOMAIN.Response_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}
