@@ -238,7 +238,7 @@ function setResourceToProjectExc(){
 					{{$projectsLoop := .Projects}}
 					{{$resourcesProject := .ResourcesToProjects}}
 					{{range $key, $project := $projectsLoop}}	
-					 	<!--div class="col-sm-6" style="padding-bottom: 10px;"-->	
+					 	<div class="col-sm-6" style="padding-bottom: 10px;">	
 							<div id="panel-df-project{{$key}}" class="panel panel-default">
 								<div id="project{{$key}}" class="panel-heading">
 									{{$project.Name}}
@@ -273,7 +273,7 @@ function setResourceToProjectExc(){
 									</table>										
 								</div>
 							</div>														
-						<!--/div-->
+						</div>
 					{{end}}
 				</div>
 			</div>
