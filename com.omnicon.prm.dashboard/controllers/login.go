@@ -3,12 +3,23 @@ package controllers
 import (
 	"html/template"
 	"net/smtp"
+	"strings"
 
 	"github.com/astaxie/beego"
 
 	"prm/com.omnicon.prm.dashboard/lib"
 	"prm/com.omnicon.prm.dashboard/models"
 )
+
+var validEmails = []string{
+	"Alejandro.Vizcaino@omnicon.cc",
+	"Anderson.Diaz@omnicon.cc",
+	"Carlos.Castaneda@omnicon.cc",
+	"Diego.Paz@omnicon.cc",
+	"Jose.Torres@omnicon.cc",
+	"Juan.Diaz@omnicon.cc",
+	"Juan.Torres@omnicon.cc",
+}
 
 type LoginController struct {
 	BaseController
@@ -74,6 +85,22 @@ func (c *LoginController) Signup() {
 		flash.Store(&c.Controller)
 		return
 	}
+
+	// Valid email in white list
+	isValidEmail := false
+	for _, validEmail := range validEmails {
+		if strings.EqualFold(validEmail, u.Email) {
+			isValidEmail = true
+			break
+		}
+	}
+
+	if !isValidEmail {
+		flash.Warning("Email is not allowed to be registered.")
+		flash.Store(&c.Controller)
+		return
+	}
+
 	if err = models.IsValid(u); err != nil {
 		flash.Error(err.Error())
 		flash.Store(&c.Controller)
