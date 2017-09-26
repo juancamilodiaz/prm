@@ -53,7 +53,8 @@ func (c *LoginController) Logout() {
 	flash.Success("Success logged out")
 	flash.Store(&c.Controller)
 
-	c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
+	c.Ctx.Redirect(302, "/")
+	//c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
 }
 
 func (c *LoginController) Signup() {
