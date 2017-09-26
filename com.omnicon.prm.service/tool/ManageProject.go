@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -42,14 +41,13 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 			return &response
 		}
 
-		fmt.Println("****insert ProjectTypes", len(project.ProjectType))
-		for _, typesRow := range project.ProjectType {
+		for _, typesRow := range pRequest.ProjectType {
 			projectTypes := new(DOMAIN.ProjectTypes)
-			fmt.Println("****typeId", typesRow.ID, "projectID", id)
-			projectTypes.TypeId = typesRow.ID
+
+			val, _ := strconv.Atoi(typesRow)
+			projectTypes.TypeId = val
 			projectTypes.ProjectId = id
-			id, err := dao.AddTypeToProject(projectTypes)
-			fmt.Println("****id", id, "err", err)
+			dao.AddTypeToProject(projectTypes)
 		}
 
 		// Get Project inserted
@@ -117,7 +115,16 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 				oldProject.EndDate = time.Unix(endDateInt, 0)
 			}
 			if pRequest.ProjectType != nil && len(pRequest.ProjectType) > 0 {
-				oldProject.ProjectType = pRequest.ProjectType
+				/*for _, typesRow := range pRequest.ProjectType {
+					projectTypes := new(DOMAIN.Type)
+
+					val, _ := strconv.Atoi(typesRow)
+					projectTypes.TypeId = val
+					projectTypes.ProjectId = pRequest.ID
+					oldProject.ProjectType = append(oldProject.ProjectType, projectTypes)
+				}*/
+				//TODO update projectType
+
 			}
 
 			// Validation for updating dates, these should not be outside the resource assignment range.
@@ -509,14 +516,10 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 
 	filters := util.MappingFiltersProject(pRequest)
 	projects, filterString := dao.GetProjectsByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
-	fmt.Println("Projects...", len(projects))
 
 	if len(projects) == 0 && filterString == "" {
 		projects = dao.GetAllProjects()
 	}
-
-	fmt.Println("Projects...", projects[0].Name, projects[0].ProjectType)
-
 	if projects != nil && len(projects) > 0 {
 		/*
 			for _, project := range projects {

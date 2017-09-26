@@ -27,5 +27,5 @@ type UpdateProjectRQ struct {
 	StartDate   string
 	EndDate     string
 	Enabled     bool
-	ProjectType []*Type
+	ProjectType []string
 }

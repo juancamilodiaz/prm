@@ -442,3 +442,21 @@ func MappingFiltersProjectResource(pRequest *domain.GetResourcesToProjectsRQ) *d
 	}
 	return nil
 }
+
+/**
+* Function to mapping Types request to business entity project.
+ */
+func MappingType(pRequest *domain.TypeRQ) *domain.Type {
+	types := new(domain.Type)
+	types.Name = pRequest.Name
+	return types
+}
+
+func BuildHeaderResponse(timeResponse time.Time) *domain.Response_Header {
+	header := new(domain.Response_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+
+	return header
+}

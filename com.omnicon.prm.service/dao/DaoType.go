@@ -37,12 +37,12 @@ func GetAllTypes() []*DOMAIN.Type {
 }
 
 /**
-*	Name : GetResourceSkillById
+*	Name : GetResourceTypeById
 *	Params: pId
 *	Return: *DOMAIN.Types
-*	Description: Get a resourceSkill by ID in a Types table
+*	Description: Get a resourceType by ID in a Types table
  */
-func GetTypesById(pId int64) *DOMAIN.Type {
+func GetTypesById(pId int) *DOMAIN.Type {
 	// Types structure
 	Types := DOMAIN.Type{}
 	// Add in Types variable, the Types where ID is the same that the param
@@ -54,4 +54,74 @@ func GetTypesById(pId int64) *DOMAIN.Type {
 		log.Error(err)
 	}
 	return &Types
+}
+
+/**
+*	Name : AddType
+*	Params: pType
+*	Return: int, error
+*	Description: Add skill in DB
+ */
+func AddType(pType *DOMAIN.Type) (int, error) {
+	// Get a session
+	session = GetSession()
+	// Close session when ends the method
+	defer session.Close()
+	// Insert skill in DB
+	res, err := session.InsertInto("Type").Columns(
+		"value").Values(
+		pType.Name).Exec()
+	if err != nil {
+		log.Error(err)
+		return 0, err
+	}
+	// Get rows inserted
+	insertId, err := res.LastInsertId()
+	return int(insertId), nil
+}
+
+/**
+*	Name : UpdateType
+*	Params: pType
+*	Return: int, error
+*	Description: Update skill in DB
+ */
+func UpdateType(pType *DOMAIN.Type) (int, error) {
+	// Get a session
+	session = GetSession()
+	// Close session when ends the method
+	defer session.Close()
+	// Update skill in DB
+	q := session.Update("Type").Set("value = ?", pType.Name).Where("id = ?", int(pType.ID))
+	res, err := q.Exec()
+	if err != nil {
+		log.Error(err)
+		return 0, err
+	}
+	// Get rows updated
+	updateCount, err := res.RowsAffected()
+	return int(updateCount), nil
+}
+
+/**
+*	Name : DeleteType
+*	Params: pTypeId
+*	Return: int, error
+*	Description: Delete skill in DB
+ */
+func DeleteType(pTypeId int) (int, error) {
+	// Get a session
+	session = GetSession()
+	// Close session when ends the method
+	defer session.Close()
+	// Delete skill in DB
+	q := session.DeleteFrom("Type").Where("id", int(pTypeId))
+	res, err := q.Exec()
+	if err != nil {
+		log.Error(err)
+		return 0, err
+	}
+	// Get rows deleted
+	deleteCount, err := res.RowsAffected()
+	return int(deleteCount), nil
 }

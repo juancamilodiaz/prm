@@ -116,3 +116,14 @@ func ProcessGetSkillsToResources(pRequest *domain.GetSkillByResourceRQ) *domain.
 func ProcessGetTypes(pRequest *domain.TypeRQ) *domain.TypeRS {
 	return tool.GetTypes(pRequest)
 }
+
+func ProcessCreateType(pRequest *domain.TypeRQ) *domain.TypeRS {
+	return tool.CreateType(pRequest)
+}
+
+func ProcessUpdateType(pRequest *domain.TypeRQ) *domain.TypeRS {
+	return tool.UpdateType(pRequest)
+}
+func ProcessDeleteType(pRequest *domain.TypeRQ) *domain.TypeRS {
+	return tool.DeleteType(pRequest)
+}
