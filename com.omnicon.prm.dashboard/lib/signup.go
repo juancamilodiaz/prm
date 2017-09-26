@@ -28,7 +28,7 @@ func SignupUser(u *models.User) (int64, error) {
 	return u.Id, err
 }
 
-func ResetPassword(pEmail string) (string, error) {
+func ResetPassword(pEmail, pNewPassword string) (string, error) {
 	var (
 		err error
 		msg string
@@ -48,7 +48,11 @@ func ResetPassword(pEmail string) (string, error) {
 		return "", errors.New(msg)
 	}
 
-	newPassword := convert.GetRandomString(6)
+	newPassword := pNewPassword
+	// If the password is empty then generate a new
+	if newPassword == "" {
+		newPassword = convert.GetRandomString(6)
+	}
 	user.Password = convert.StrTo(newPassword).Md5()
 
 	user.Update("password")

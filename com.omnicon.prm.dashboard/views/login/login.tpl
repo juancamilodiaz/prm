@@ -20,7 +20,7 @@
                      <label for="inputPassword" class="col-sm-3 control-label">Password</label>
                      <div class="col-sm-9">
                         <input class="form-control" placeholder="Enter the password" name="Password" type="password" value="" required 
-                           pattern=".{6,}" title="La contraseña debe tener al menos 6 caracteres" id="inputPassword"  />
+                           pattern=".{6,}" title="The password must be at least 6 characters" id="inputPassword"  />
                      </div>
                   </div>
                   <div class="form-group">
@@ -29,13 +29,20 @@
 							<span class="glyphicon glyphicon-log-in"></span> Sign in
 						</button>
                      </div>
+                  </div>
+					<div class="form-group">
                      <div class="col-sm-12">
 						<a class="pull-right" href='{{urlfor "LoginController.PasswordReset"}}'> 
                         Forgot your password »
                         </a>
                      </div>
-                  </div>
-               </form>
+					 <div class="col-sm-12">
+						<a class="pull-right" href='{{urlfor "LoginController.ChangePassword"}}'> 
+                        Change your password »
+                        </a>
+                     </div>
+					</div>
+			</form>
             </div>
             <div class="panel-footer text-center clearfix">If you do not have an account <a href='{{urlfor "LoginController.Signup"}}'>New register »</a></div>
          </div>
