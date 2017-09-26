@@ -150,6 +150,7 @@
 				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
 				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
+				<a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a>
 			</div>			
 		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
 		</div>

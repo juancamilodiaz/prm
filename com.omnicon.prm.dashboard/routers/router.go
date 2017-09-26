@@ -38,4 +38,10 @@ func init() {
 	beego.Router("/skills/update", &controllers.SkillController{}, "post:UpdateSkill")
 	beego.Router("/skills/delete", &controllers.SkillController{}, "post:DeleteSkill")
 
+	//Types
+	beego.Router("/types", &controllers.TypeController{}, "post:ListTypes")
+	beego.Router("/types/create", &controllers.TypeController{}, "post:CreateType")
+	beego.Router("/types/update", &controllers.TypeController{}, "post:UpdateType")
+	beego.Router("/types/delete", &controllers.TypeController{}, "post:DeleteType")
+
 }
