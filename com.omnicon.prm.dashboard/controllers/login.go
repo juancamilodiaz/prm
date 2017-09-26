@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"html/template"
+	"net/smtp"
 
 	"github.com/astaxie/beego"
 
@@ -91,4 +92,45 @@ func (c *LoginController) Signup() {
 	c.SetLogin(u)
 
 	c.Redirect(c.URLFor("UsersController.Index"), 303)
+}
+
+func (c *LoginController) PasswordReset() {
+	c.TplName = "login/passwordReset.tpl"
+	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
+
+	if !c.Ctx.Input.IsPost() {
+		return
+	}
+
+	var err error
+	flash := beego.NewFlash()
+
+	email := c.GetString("Email")
+	password, err := lib.ResetPassword(email)
+
+	if err != nil {
+		flash.Warning(err.Error())
+		flash.Store(&c.Controller)
+		return
+	}
+
+	// Set up authentication information.
+	auth := smtp.PlainAuth("", "prm.omnicon@gmail.com", "prm_omnicon", "smtp.gmail.com")
+
+	// Connect to the server, authenticate, set the sender and recipient,
+	// and send the email all in one step.
+	to := []string{email}
+	msg := []byte("To: " + email + "\r\n" +
+		"Subject: [PRM] Password Reset\r\n" +
+		"\r\n" +
+		"Your new password is: " + password + "\r\n")
+	err = smtp.SendMail("smtp.gmail.com:587", auth, "anderson.diaz@omnicon.cc", to, msg)
+	if err != nil {
+		flash.Error("Error sending email.")
+		flash.Store(&c.Controller)
+		return
+	}
+
+	flash.Success("Mail sent successfully.")
+	flash.Store(&c.Controller)
 }

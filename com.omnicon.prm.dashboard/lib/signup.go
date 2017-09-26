@@ -27,3 +27,33 @@ func SignupUser(u *models.User) (int64, error) {
 
 	return u.Id, err
 }
+
+func ResetPassword(pEmail string) (string, error) {
+	var (
+		err error
+		msg string
+	)
+	msg = "The email address is not registered."
+
+	user := new(models.User)
+	user.Email = pEmail
+
+	if err := user.Read("Email"); err != nil {
+		if err.Error() == "<QuerySeter> no row found" {
+			err = errors.New(msg)
+		}
+		return "", err
+	} else if user.Id < 1 {
+		// No user
+		return "", errors.New(msg)
+	}
+
+	newPassword := convert.GetRandomString(6)
+	user.Password = convert.StrTo(newPassword).Md5()
+
+	user.Update("password")
+	if err != nil {
+		return "", err
+	}
+	return newPassword, nil
+}
