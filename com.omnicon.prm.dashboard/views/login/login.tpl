@@ -1,5 +1,5 @@
 <div class="container">
-   <div class="row vertical-offset-75">
+   <div class="row vertical-offset-75" style="margin-top:5%">
       <div class="col-md-6 col-md-offset-3">
          <div class="panel panel-default">
             <div class="panel-heading text-center">
