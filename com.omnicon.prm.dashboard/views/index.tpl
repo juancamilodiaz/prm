@@ -87,7 +87,7 @@
 			$("#errorMessage").hide();
 			getResourcesByProjectToday();
 			$('#datePicker').css("display", "inline-block");
-			$('#NavRight').css("display", "none");
+			$('#NavRight').css("display", "inline-block");
 			$('#buttonOption').css("display", "none");
 			
 			$('#dateFrom').change(function(){
@@ -131,10 +131,10 @@
 		<div id="NavCenter" class="NavItem">
 			<h1 class="title" style="padding-left: 170px;">Project Resource Management</h1>
 		</div>
-		<div id="NavRight" class="NavItem" style="padding-right: 3%;">
-			<div id="login" class="NavItem" style="display: none;">
-				<label style="padding-right: inherit; padding-left: inherit;">User:</label><input type="text" id="LogUser" style="border-radius: 8px;padding: 0.5%;"><label style="padding-right: inherit; padding-left: inherit;">Password:</label> <input type="password" id="LogPassword" style="border-radius: 8px;padding: 0.5%;"> <button class="buttonTable button2" disabled>Login</button>
-			</div>
+		<div id="NavRight" class="NavItem" style="padding-right: 3%;padding-top: 1%;">
+			<a style="color: white;" itemprop="url" href='{{urlfor "LoginController.Logout"}}'>
+                 <span class='glyphicon glyphicon-log-out'></span> Sign out
+			</a>
 		</div>
 	</div>
 	

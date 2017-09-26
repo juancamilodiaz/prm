@@ -39,4 +39,9 @@ func init() {
 	beego.Router("/skills/update", &controllers.SkillController{}, "post:UpdateSkill")
 	beego.Router("/skills/delete", &controllers.SkillController{}, "post:DeleteSkill")
 
+	beego.Router("/login", &controllers.LoginController{}, "get,post:Login")
+	beego.Router("/logout", &controllers.LoginController{}, "get:Logout")
+	beego.Router("/signup", &controllers.LoginController{}, "get,post:Signup")
+	beego.Router("/passwordreset", &controllers.LoginController{}, "get,post:PasswordReset")
+	beego.Router("/changepassword", &controllers.LoginController{}, "get,post:ChangePassword")
 }
