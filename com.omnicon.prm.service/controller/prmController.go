@@ -127,3 +127,27 @@ func ProcessUpdateType(pRequest *domain.TypeRQ) *domain.TypeRS {
 func ProcessDeleteType(pRequest *domain.TypeRQ) *domain.TypeRS {
 	return tool.DeleteType(pRequest)
 }
+
+func ProcessGetSkillsByType(pRequest *domain.TypeRQ) *domain.TypeSkillsRS {
+	return tool.GetSkillsByType(pRequest)
+}
+
+func ProcessGetTypesByProject(pRequest *domain.GetProjectsRQ) *domain.ProjectTypesRS {
+	return tool.GetTypesByProject(pRequest)
+}
+
+func ProcessDeleteSkillsByType(pRequest *domain.TypeSkillsRQ) *domain.TypeSkillsRS {
+	return tool.DeleteSkillsByType(pRequest)
+}
+
+func ProcessDeleteTypesByProject(pRequest *domain.ProjectTypesRQ) *domain.ProjectTypesRS {
+	return tool.DeleteTypesByProject(pRequest)
+}
+
+func ProcessSetSkillsByType(pRequest *domain.TypeSkillsRQ) *domain.TypeSkillsRS {
+	return tool.SetSkillsByType(pRequest)
+}
+
+func ProcessSetTypesByProject(pRequest *domain.ProjectTypesRQ) *domain.ProjectTypesRS {
+	return tool.SetTypesByProject(pRequest)
+}

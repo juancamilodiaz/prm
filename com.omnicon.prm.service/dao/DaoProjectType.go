@@ -62,17 +62,17 @@ func GetProjectTypesById(pId int64) *DOMAIN.ProjectTypes {
 *	Return: *DOMAIN.ProjectTypes
 *	Description: Get a resourceSkill by ResourceId in a ProjectTypes table
  */
-func GetTypesByProjectId(pProjectId int64) []*DOMAIN.Type {
+func GetTypesByProjectId(pProjectId int64) []*DOMAIN.ProjectTypes {
 	// Slice to keep all ProjectTypes
-	var ProjectTypes []*DOMAIN.Type
+	var projectTypes []*DOMAIN.ProjectTypes
 	// Add all ProjectTypes in ProjectTypes variable
-	err := getProjectTypesCollection().Find(db.Cond{"project_id": pProjectId}).All(&ProjectTypes)
+	err := getProjectTypesCollection().Find(db.Cond{"project_id": pProjectId}).All(&projectTypes)
 	// Close session when ends the method
 	defer session.Close()
 	if err != nil {
 		log.Debug(err)
 	}
-	return ProjectTypes
+	return projectTypes
 }
 
 /**

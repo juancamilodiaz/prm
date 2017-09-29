@@ -28,8 +28,10 @@ type Type struct {
 	Name string `db:"value"`
 }
 type ProjectTypes struct {
-	ProjectId int64 `db:"project_id"`
-	TypeId    int   `db:"type_id"`
+	ID        int64  `db:"id"`
+	ProjectId int64  `db:"project_id"`
+	TypeId    int    `db:"type_id"`
+	Name      string `db:"type_name"`
 }
 type ProjectResources struct {
 	ID           int64     `db:"id"`
@@ -54,6 +56,13 @@ type ResourceSkills struct {
 type Skill struct {
 	ID   int64  `db:"id"`
 	Name string `db:"name"`
+}
+
+type TypeSkills struct {
+	ID      int    `db:"id"`
+	TypeId  int    `db:"type_id"`
+	SkillId int    `db:"skill_id"`
+	Name    string `db:"skill_name"`
 }
 
 type ResourceAssign struct {

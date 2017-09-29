@@ -114,18 +114,18 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			if pRequest.StartDate != "" {
 				oldProject.EndDate = time.Unix(endDateInt, 0)
 			}
-			if pRequest.ProjectType != nil && len(pRequest.ProjectType) > 0 {
-				/*for _, typesRow := range pRequest.ProjectType {
-					projectTypes := new(DOMAIN.Type)
+			//if pRequest.ProjectType != nil && len(pRequest.ProjectType) > 0 {
+			/*for _, typesRow := range pRequest.ProjectType {
+				projectTypes := new(DOMAIN.Type)
 
-					val, _ := strconv.Atoi(typesRow)
-					projectTypes.TypeId = val
-					projectTypes.ProjectId = pRequest.ID
-					oldProject.ProjectType = append(oldProject.ProjectType, projectTypes)
-				}*/
-				//TODO update projectType
+				val, _ := strconv.Atoi(typesRow)
+				projectTypes.TypeId = val
+				projectTypes.ProjectId = pRequest.ID
+				oldProject.ProjectType = append(oldProject.ProjectType, projectTypes)
+			}*/
+			//TODO update projectType
 
-			}
+			//}
 
 			// Validation for updating dates, these should not be outside the resource assignment range.
 			resourcesProject := dao.GetProjectResourcesByProjectId(pRequest.ID)

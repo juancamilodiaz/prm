@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"fmt"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -457,6 +458,146 @@ func GetTypes(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 	responseTime := time.Now().Sub(timeResponse)
 	header.ResponseTime = responseTime.String()
 	response.Header = header
+
+	return &response
+}
+
+func GetSkillsByType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeSkillsRS {
+	timeResponse := time.Now()
+	response := DOMAIN.TypeSkillsRS{}
+
+	response.Skills = dao.GetAllSkills()
+
+	typeSkills := dao.GetTypesSkillsByTypeId(pRequest.ID)
+
+	if typeSkills != nil && len(typeSkills) > 0 {
+		// Create response
+		response.Status = "OK"
+		response.TypeSkills = typeSkills
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
+
+func GetTypesByProject(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.ProjectTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ProjectTypesRS{}
+
+	types := dao.GetAllTypes()
+	response.Types = types
+
+	projectTypes := dao.GetTypesByProjectId(pRequest.ID)
+
+	if projectTypes != nil && len(projectTypes) > 0 {
+		// Create response
+		response.Status = "OK"
+		response.ProjectTypes = projectTypes
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+
+}
+
+func DeleteSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
+	timeResponse := time.Now()
+	response := DOMAIN.TypeSkillsRS{}
+
+	skillsTypes := dao.GetTypeSkillsById(pRequest.ID)
+
+	if skillsTypes != nil {
+
+		rowsDeleted, err := dao.DeleteTypeSkillsById(pRequest.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "TypeSkills wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Create response
+		response.Status = "OK"
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "TypeSkills wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
+func DeleteTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ProjectTypesRS{}
+
+	skillsTypes := dao.GetTypesSkillsByTypeIdAndSkillId(pRequest.TypeId, pRequest.ProjectId)
+
+	if skillsTypes != nil {
+
+		rowsDeleted, err := dao.DeleteTypeSkillsByTypeIdAndSkillId(pRequest.TypeId, pRequest.ProjectId)
+		if err != nil || rowsDeleted <= 0 {
+			message := "ProjectTypes wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Create response
+		response.Status = "OK"
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
+
+func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
+	timeResponse := time.Now()
+	request := DOMAIN.TypeSkills{}
+	request.SkillId = pRequest.SkillId
+	request.TypeId = pRequest.TypeId
+	request.Name = pRequest.Name
+	id, err := dao.AddSkillToType(request)
+
+	fmt.Println("Inserted SkillType with id:", id)
+	// Create response
+	response := DOMAIN.TypeSkillsRS{}
+	response.Header = util.BuildHeaderResponse(timeResponse)
+	if err != nil {
+		message := "Resource wasn't insert"
+		log.Error(message)
+		response.Message = message
+		response.Status = "Error"
+		return &response
+	}
+	// Get Resource inserted
+	typeSkills := dao.GetTypeSkillsById(id)
+	response.TypeSkills = append(response.TypeSkills, typeSkills)
+	response.Status = "OK"
 
 	return &response
 }

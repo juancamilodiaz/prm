@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -43,6 +44,12 @@ func SetUpHandlers() {
 	http.HandleFunc("/CreateType", createType)
 	http.HandleFunc("/UpdateType", updateType)
 	http.HandleFunc("/DeleteType", deleteType)
+	http.HandleFunc("/GetSkillsByType", getSkillsByType)
+	http.HandleFunc("/GetTypesByProject", getTypesByProject)
+	http.HandleFunc("/DeleteTypesByProject", deleteTypesByProject)
+	http.HandleFunc("/DeleteSkillsByType", deleteSkillsByType)
+	http.HandleFunc("/SetSkillsToType", setSkillsToType)
+	http.HandleFunc("/SetTypesToProject", setTypesToProject)
 }
 
 /*
@@ -945,9 +952,7 @@ Params :
 	  pRequest *http.Request :         Contain the user's request
 */
 func deleteType(pResponse http.ResponseWriter, pRequest *http.Request) {
-
 	startTime := time.Now()
-
 	defer panics.CatchPanic("DeleteType")
 
 	message := new(domain.TypeRQ)
@@ -975,4 +980,156 @@ func deleteType(pResponse http.ResponseWriter, pRequest *http.Request) {
 
 	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
+}
+
+func getSkillsByType(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("GetSkillsByType")
+
+	message := new(domain.TypeRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get Skills by Type", message)
+	response := controller.ProcessGetSkillsByType(message)
+
+	// Set response time to all process.
+	// TODO ?????????? why???
+	/*if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}*/
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+func getTypesByProject(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("GetTypesByProject")
+
+	message := new(domain.GetProjectsRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get Types by ProjectId", message)
+	response := controller.ProcessGetTypesByProject(message)
+
+	// Set response time to all process.
+	// TODO ?????????? why???
+	/*if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}*/
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+
+}
+
+func deleteSkillsByType(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("deleteSkillsByType")
+
+	message := new(domain.TypeSkillsRQ)
+	fmt.Println(">>", message)
+	getMessage(pRequest, message)
+	fmt.Println("<<", message)
+
+	response := controller.ProcessDeleteSkillsByType(message)
+	value := marshalJson(pRequest.Header.Get("Accept"), response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+
+}
+
+func deleteTypesByProject(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("deleteTypesByProject")
+
+	message := new(domain.ProjectTypesRQ)
+	fmt.Println(">>", message)
+	getMessage(pRequest, message)
+	fmt.Println("<<", message)
+
+	response := controller.ProcessDeleteTypesByProject(message)
+
+	value := marshalJson(pRequest.Header.Get("Accept"), response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+func getMessage(pRequest *http.Request, messageRQ interface{}) {
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&messageRQ)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+}
+
+func setSkillsToType(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("setSkillsToType")
+
+	message := new(domain.TypeSkillsRQ)
+	fmt.Println(">>", message)
+	getMessage(pRequest, message)
+	fmt.Println("<<", message)
+
+	response := controller.ProcessSetSkillsByType(message)
+	value := marshalJson(pRequest.Header.Get("Accept"), response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+func setTypesToProject(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("setTypesToProject")
+
+	message := new(domain.ProjectTypesRQ)
+	fmt.Println(">>", message)
+	getMessage(pRequest, message)
+	fmt.Println("<<", message)
+
+	response := controller.ProcessSetTypesByProject(message)
+	value := marshalJson(pRequest.Header.Get("Accept"), response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+
 }

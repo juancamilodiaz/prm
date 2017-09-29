@@ -52,7 +52,7 @@ func GetProjectById(pId int64) *DOMAIN.Project {
 	// Add in project variable, the project where ID is the same that the param
 	res := getProjectCollection().Find(db.Cond{"id": pId})
 
-	project.ProjectType = GetTypesByProjectId(pId)
+	//project.ProjectType = GetTypesByProjectId(pId)
 
 	// Close session when ends the method
 	defer session.Close()

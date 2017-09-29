@@ -37,10 +37,10 @@ func GetAllTypes() []*DOMAIN.Type {
 }
 
 /**
-*	Name : GetResourceTypeById
+*	Name : GetTypesById
 *	Params: pId
 *	Return: *DOMAIN.Types
-*	Description: Get a resourceType by ID in a Types table
+*	Description: Get a Types by ID in a Types table
  */
 func GetTypesById(pId int) *DOMAIN.Type {
 	// Types structure

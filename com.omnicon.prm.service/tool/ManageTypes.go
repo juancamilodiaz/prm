@@ -121,3 +121,30 @@ func DeleteType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 
 	return &response
 }
+
+func SetTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
+	timeResponse := time.Now()
+	request := new(DOMAIN.ProjectTypes)
+	request.ProjectId = int64(pRequest.ProjectId)
+	request.TypeId = pRequest.TypeId
+	request.Name = pRequest.Name
+	id, err := dao.AddTypeToProject(request)
+
+	// Create response
+	response := DOMAIN.ProjectTypesRS{}
+	response.Header = util.BuildHeaderResponse(timeResponse)
+	if err != nil {
+		message := "ProjectType wasn't insert"
+		log.Error(message)
+		response.Message = message
+		response.Status = "Error"
+		return &response
+	}
+	// Get ProjectType inserted
+	projectTypes := dao.GetProjectTypesById(id)
+	response.ProjectTypes = append(response.ProjectTypes, projectTypes)
+	response.Status = "OK"
+
+	return &response
+
+}
