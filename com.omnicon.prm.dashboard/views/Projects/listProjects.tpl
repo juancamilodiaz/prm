@@ -57,6 +57,7 @@
 		$("#modalProjectTitle").html("Update Project");
 		$("#projectCreate").css("display", "none");
 		$("#projectUpdate").css("display", "inline-block");
+		$("#divProjectType").css("display", "none");
 	}
 	
 	createProject = function(){
@@ -183,7 +184,8 @@
 			<td>
 				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
-				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">More Info.</button>
+				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Resources</button>
+				<button class="buttonTable button2" onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Types</button>
 			</td>
 		</tr>
 		{{end}}	
@@ -236,7 +238,7 @@
           </div>
         </div>
 		<div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
+        	<div id="divProjectType" class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
              	<div class="col-sm-8">
 	             	<select  id="projectType" multiple>

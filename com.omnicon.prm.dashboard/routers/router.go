@@ -31,6 +31,10 @@ func init() {
 	beego.Router("/projects/resources/unassign", &controllers.ProjectController{}, "post:DeleteResourceToProject")
 	beego.Router("/projects/setresource", &controllers.ProjectController{}, "post:SetResourceToProject")
 	beego.Router("/projects/resources/today", &controllers.ProjectController{}, "post:GetResourcesByProjectToday")
+	beego.Router("/projects/types", &controllers.ProjectController{}, "post:GetTypesByProject")
+	beego.Router("/projects/types/unassign", &controllers.ProjectController{}, "post:DeleteTypesByProject")
+	beego.Router("/projects/settype", &controllers.ProjectController{}, "post:SetTypesToProject")
+
 	// Skills
 	beego.Router("/skills", &controllers.SkillController{}, "post:ListSkills")
 	beego.Router("/skills/create", &controllers.SkillController{}, "post:CreateSkill")
@@ -43,5 +47,8 @@ func init() {
 	beego.Router("/types/create", &controllers.TypeController{}, "post:CreateType")
 	beego.Router("/types/update", &controllers.TypeController{}, "post:UpdateType")
 	beego.Router("/types/delete", &controllers.TypeController{}, "post:DeleteType")
+	beego.Router("/types/skills", &controllers.TypeController{}, "post:GetSkillsByType")
+	beego.Router("/types/skills/unassign", &controllers.TypeController{}, "post:DeleteSkillsByType")
+	beego.Router("/types/setskill", &controllers.TypeController{}, "post:SetSkillToType")
 
 }

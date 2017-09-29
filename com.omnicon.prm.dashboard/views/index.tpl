@@ -17,6 +17,7 @@
 	<script src="/static/js/Angular/angular.min.js"></script>
 	<script src="/static/js/Angular/angular-sanitize.js"></script>
 	<script src="/static/js/Utils.js"></script>
+	<script src="/static/js/functions.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	

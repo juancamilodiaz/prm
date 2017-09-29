@@ -126,6 +126,7 @@
 			<td>
 				<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="configureUpdateModal({{$types.ID}},'{{$types.Name}}')" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$types.Name}}');$('#typeID').val({{$types.ID}});" data-dismiss="modal">Delete</button>
+				<button class="buttonTable button2" onclick="getSkillsByType({{$types.ID}}, '{{$types.Name}}');" data-dismiss="modal">Skills</button>
 			</td>
 		</tr>
 		{{end}}	
