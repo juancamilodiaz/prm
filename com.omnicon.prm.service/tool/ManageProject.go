@@ -749,3 +749,34 @@ func getFilterProject(pStartDate, pEndDate string) []*DOMAIN.Project {
 	responseProjects := GetProjects(&requestProjects)
 	return responseProjects.Projects
 }
+
+func DeleteTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ProjectTypesRS{}
+
+	projectTypes := dao.GetProjectTypesByProjectIdAndTypeId(pRequest.ProjectId, pRequest.TypeId)
+
+	if projectTypes != nil {
+
+		rowsDeleted, err := dao.DeleteProjectTypes(projectTypes.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "ProjectTypes wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Create response
+		response.Status = "OK"
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "ProjectTypes wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
