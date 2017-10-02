@@ -28,7 +28,7 @@
 	<tbody>
 	 	{{range $key, $projectType := .ProjectTypes}}
 		<tr>
-			<td>{{$projectType.TypeId}}</td>
+			<td>{{$projectType.Name}}</td>
 			<td>
 				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="unassignProjectType({{$projectType.ProjectId}},{{$projectType.TypeId}})" data-dismiss="modal">Unassign</button>
 			</td>
@@ -53,7 +53,7 @@
            	<div class="col-sm-8">
             	<select  id="typeID">
 				{{range $key, $type := .Types}}
-					<option value="{{$type.ID}}-{{$type.Name}}">{{$type.Name}}</option>
+					<option value="{{$type.ID}}">{{$type.Name}}</option>
 				{{end}}
 			</select>
              </div>    
