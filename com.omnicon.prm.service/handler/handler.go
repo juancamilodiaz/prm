@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -1052,9 +1051,7 @@ func deleteSkillsByType(pResponse http.ResponseWriter, pRequest *http.Request) {
 	defer panics.CatchPanic("deleteSkillsByType")
 
 	message := new(domain.TypeSkillsRQ)
-	fmt.Println(">>", message)
 	getMessage(pRequest, message)
-	fmt.Println("<<", message)
 
 	response := controller.ProcessDeleteSkillsByType(message)
 	value := marshalJson(pRequest.Header.Get("Accept"), response)
@@ -1071,9 +1068,7 @@ func deleteTypesByProject(pResponse http.ResponseWriter, pRequest *http.Request)
 	defer panics.CatchPanic("deleteTypesByProject")
 
 	message := new(domain.ProjectTypesRQ)
-	fmt.Println(">>", message)
 	getMessage(pRequest, message)
-	fmt.Println("<<", message)
 
 	response := controller.ProcessDeleteTypesByProject(message)
 
@@ -1102,9 +1097,7 @@ func setSkillsToType(pResponse http.ResponseWriter, pRequest *http.Request) {
 	defer panics.CatchPanic("setSkillsToType")
 
 	message := new(domain.TypeSkillsRQ)
-	fmt.Println(">>", message)
 	getMessage(pRequest, message)
-	fmt.Println("<<", message)
 
 	response := controller.ProcessSetSkillsByType(message)
 	value := marshalJson(pRequest.Header.Get("Accept"), response)
@@ -1120,9 +1113,7 @@ func setTypesToProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 	defer panics.CatchPanic("setTypesToProject")
 
 	message := new(domain.ProjectTypesRQ)
-	fmt.Println(">>", message)
 	getMessage(pRequest, message)
-	fmt.Println("<<", message)
 
 	response := controller.ProcessSetTypesByProject(message)
 	value := marshalJson(pRequest.Header.Get("Accept"), response)
