@@ -72,7 +72,7 @@ func GetTypesSkillsByTypeIdAndSkillId(pTypeId, pSkillId int) *DOMAIN.TypeSkills 
 	// Types structure
 	typeSkills := DOMAIN.TypeSkills{}
 	// Add in Types variable, the Types where ID is the same that the param
-	res := getTypeSkillsCollection().Find(db.Cond{"type_id": pTypeId, "skill_id": pSkillId})
+	res := getTypeSkillsCollection().Find(db.Cond{"type_id": pTypeId}).And(db.Cond{"skill_id": pSkillId})
 	// Close session when ends the method
 	defer session.Close()
 
