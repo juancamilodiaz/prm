@@ -127,7 +127,12 @@ func SetTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
 	request := new(DOMAIN.ProjectTypes)
 	request.ProjectId = int64(pRequest.ProjectId)
 	request.TypeId = pRequest.TypeId
-	request.Name = pRequest.Name
+
+	typeValue := dao.GetTypesById(pRequest.TypeId)
+	if typeValue != nil {
+		request.Name = typeValue.Name
+	}
+
 	id, err := dao.AddTypeToProject(request)
 
 	// Create response
