@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -541,63 +540,6 @@ func DeleteSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 	response.Message = message
 	response.Status = "Error"
 	response.Header = util.BuildHeaderResponse(timeResponse)
-
-	return &response
-}
-func DeleteTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
-	timeResponse := time.Now()
-	response := DOMAIN.ProjectTypesRS{}
-
-	skillsTypes := dao.GetTypesSkillsByTypeIdAndSkillId(pRequest.TypeId, pRequest.ProjectId)
-
-	if skillsTypes != nil {
-
-		rowsDeleted, err := dao.DeleteTypeSkillsByTypeIdAndSkillId(pRequest.TypeId, pRequest.ProjectId)
-		if err != nil || rowsDeleted <= 0 {
-			message := "ProjectTypes wasn't delete"
-			log.Error(message)
-			response.Message = message
-			response.Status = "Error"
-			return &response
-		}
-		// Create response
-		response.Status = "OK"
-		response.Header = util.BuildHeaderResponse(timeResponse)
-		return &response
-	}
-
-	message := "Resources wasn't found in DB"
-	log.Error(message)
-	response.Message = message
-	response.Status = "Error"
-	response.Header = util.BuildHeaderResponse(timeResponse)
-
-	return &response
-}
-
-func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
-	timeResponse := time.Now()
-	request := DOMAIN.TypeSkills{}
-	request.SkillId = pRequest.SkillId
-	request.TypeId = pRequest.TypeId
-	request.Name = pRequest.Name
-	id, err := dao.AddSkillToType(request)
-
-	fmt.Println("Inserted SkillType with id:", id)
-	// Create response
-	response := DOMAIN.TypeSkillsRS{}
-	response.Header = util.BuildHeaderResponse(timeResponse)
-	if err != nil {
-		message := "Resource wasn't insert"
-		log.Error(message)
-		response.Message = message
-		response.Status = "Error"
-		return &response
-	}
-	// Get Resource inserted
-	typeSkills := dao.GetTypeSkillsById(id)
-	response.TypeSkills = append(response.TypeSkills, typeSkills)
-	response.Status = "OK"
 
 	return &response
 }
