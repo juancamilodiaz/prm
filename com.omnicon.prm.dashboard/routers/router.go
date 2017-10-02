@@ -28,6 +28,7 @@ func init() {
 	beego.Router("/projects/update", &controllers.ProjectController{}, "post:UpdateProject")
 	beego.Router("/projects/delete", &controllers.ProjectController{}, "post:DeleteProject")
 	beego.Router("/projects/resources", &controllers.ProjectController{}, "post:GetResourcesByProject")
+	beego.Router("/projects/resources/assignation", &controllers.ProjectController{}, "post:GetAssignationByResource")
 	beego.Router("/projects/resources/unassign", &controllers.ProjectController{}, "post:DeleteResourceToProject")
 	beego.Router("/projects/setresource", &controllers.ProjectController{}, "post:SetResourceToProject")
 	beego.Router("/projects/resources/today", &controllers.ProjectController{}, "post:GetResourcesByProjectToday")
@@ -42,6 +43,12 @@ func init() {
 	beego.Router("/skills/read", &controllers.SkillController{}, "post:ReadSkill")
 	beego.Router("/skills/update", &controllers.SkillController{}, "post:UpdateSkill")
 	beego.Router("/skills/delete", &controllers.SkillController{}, "post:DeleteSkill")
+
+	beego.Router("/login", &controllers.LoginController{}, "get,post:Login")
+	beego.Router("/logout", &controllers.LoginController{}, "get:Logout")
+	beego.Router("/signup", &controllers.LoginController{}, "get,post:Signup")
+	beego.Router("/passwordreset", &controllers.LoginController{}, "get,post:PasswordReset")
+	beego.Router("/changepassword", &controllers.LoginController{}, "get,post:ChangePassword")
 
 	//Types
 	beego.Router("/types", &controllers.TypeController{}, "post:ListTypes")

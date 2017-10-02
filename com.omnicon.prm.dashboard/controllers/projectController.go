@@ -30,7 +30,12 @@ func (this *ProjectController) ListProjects() {
 		this.Data["Types"] = messageTypes.Types
 
 		this.Data["Projects"] = message.Projects
-		this.TplName = "Projects/listProjects.tpl"
+
+		if this.GetString("Template") == "select" {
+			this.TplName = "Projects/listProjectsToDropDown.tpl"
+		} else {
+			this.TplName = "Projects/listProjects.tpl"
+		}
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."
@@ -477,5 +482,38 @@ func (this *ProjectController) SetTypesToProject() {
 		this.TplName = "Common/message.tpl"
 	} else {
 		this.TplName = "Common/empty.tpl"
+	}
+}
+
+func (this *ProjectController) GetAssignationByResource() {
+	operation := "GetResourcesToProjects"
+
+	input := domain.GetResourcesToProjectsRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.GetResourcesToProjectsRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+		this.Data["ResourceId"] = input.ResourceId
+		for _, assig := range message.ResourcesToProjects {
+			this.Data["Title"] = assig.ResourceName
+			break
+		}
+		this.TplName = "Projects/listAssignationByResource.tpl"
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
 	}
 }
