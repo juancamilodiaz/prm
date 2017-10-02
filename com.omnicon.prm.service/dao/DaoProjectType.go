@@ -95,6 +95,26 @@ func GetProjectTypesByTypeId(pId int64) []*DOMAIN.ProjectTypes {
 }
 
 /**
+*	Name : GetProjectTypesByProjectIdAndTypeId
+*	Params: pProjectId, pTypeId
+*	Return: *DOMAIN.ProjectTypes
+*	Description: Get a resourceSkill by SkillId in a ProjectTypes table
+ */
+func GetProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) *DOMAIN.ProjectTypes {
+	// keep  ProjectTypes
+	var projectTypes *DOMAIN.ProjectTypes
+	// Add all ProjectTypes in ProjectTypes variable
+	res := getProjectTypesCollection().Find(db.Cond{"project_id": pProjectId}).And(db.Cond{"type_id": pTypeId})
+	// Close session when ends the method
+	defer session.Close()
+	err := res.One(&projectTypes)
+	if err != nil {
+		log.Error(err)
+	}
+	return projectTypes
+}
+
+/**
 *	Name : AddProjectTypes
 *	Params: pProjectTypes
 *	Return: int, error
@@ -108,9 +128,11 @@ func AddTypeToProject(pProjectTypes *DOMAIN.ProjectTypes) (int64, error) {
 	// Insert in DB
 	res, err := session.InsertInto("ProjectTypes").Columns(
 		"project_id",
-		"type_id").Values(
+		"type_id",
+		"type_name").Values(
 		pProjectTypes.ProjectId,
-		pProjectTypes.TypeId).Exec()
+		pProjectTypes.TypeId,
+		pProjectTypes.Name).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -141,4 +163,27 @@ func DeleteProjectTypes(pProjectTypesId int64) (int64, error) {
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
 	return deleteCount, nil
+}
+
+/**
+*	Name : DeleteProjectTypesByProjectIdAndTypeId
+*	Params: pProjectId, pTypeId
+*	Return: int, error
+*	Description: Delete ProjectTypes in DB
+ */
+func DeleteProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) (int, error) {
+	// Get a session
+	session = GetSession()
+	// Close session when ends the method
+	defer session.Close()
+	// Delete ProjectTypes in DB
+	q := session.DeleteFrom("ProjectTypes").Where("project_id", pProjectId).And("type_id", pTypeId)
+	res, err := q.Exec()
+	if err != nil {
+		log.Error(err)
+		return 0, err
+	}
+	// Get rows deleted
+	deleteCount, err := res.RowsAffected()
+	return int(deleteCount), nil
 }
