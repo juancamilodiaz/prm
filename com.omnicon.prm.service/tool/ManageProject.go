@@ -667,8 +667,55 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	//responseTime = time.Now().Sub(timeResponse)
 	//fmt.Println("Response.loop time:", responseTime.String())
 
-	log.Debug("availBreakdown", availBreakdown)
 	response.AvailBreakdown = availBreakdown
+	//
+	availBreakdownPerRange := make(map[int64]*DOMAIN.ResourceAvailabilityInformation)
+	for resourceId, mapHourPerDate := range response.AvailBreakdown {
+
+		resourceAvailabilityInformation := DOMAIN.ResourceAvailabilityInformation{}
+		var totalHours float64
+		rangesPerDay := []*DOMAIN.RangeDatesAvailability{}
+		rangePerDay := new(DOMAIN.RangeDatesAvailability)
+
+		for day := startDate; day.Unix() <= endDate.AddDate(0, 0, 1).Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				if rangePerDay.StartDate == "" {
+					rangePerDay.StartDate = day.Format("2006-01-02")
+				}
+				if rangePerDay.EndDate == "" {
+					rangePerDay.EndDate = day.Format("2006-01-02")
+				}
+				availHours, exist := mapHourPerDate[day.Format("2006-01-02")]
+				if exist {
+					if availHours > 0 {
+						rangePerDay.EndDate = day.Format("2006-01-02")
+						rangePerDay.Hours += availHours
+					}
+				} else {
+					if rangePerDay.Hours > 0 {
+						copyRangePerDay := *rangePerDay
+						totalHours += copyRangePerDay.Hours
+						rangesPerDay = append(rangesPerDay, &copyRangePerDay)
+						rangePerDay = new(DOMAIN.RangeDatesAvailability)
+					} else {
+						rangePerDay = new(DOMAIN.RangeDatesAvailability)
+					}
+				}
+			} else if day.Unix() > endDate.Unix() {
+				copyRangePerDay := *rangePerDay
+				totalHours += copyRangePerDay.Hours
+				rangesPerDay = append(rangesPerDay, &copyRangePerDay)
+				rangePerDay = new(DOMAIN.RangeDatesAvailability)
+			}
+		}
+
+		resourceAvailabilityInformation.ListOfRange = rangesPerDay
+		resourceAvailabilityInformation.TotalHours = totalHours
+		availBreakdownPerRange[resourceId] = &resourceAvailabilityInformation
+	}
+
+	log.Debug("AvailBreakdownPerRange", availBreakdownPerRange)
+	response.AvailBreakdownPerRange = availBreakdownPerRange
 	//
 
 	response.ResourcesToProjects = projectsResources

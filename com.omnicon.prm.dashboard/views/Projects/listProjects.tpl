@@ -197,7 +197,7 @@
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
               <div class="col-sm-8">
-              	<input type="text" id="projectName">
+              	<input type="text" id="projectName" style="border-radius: 8px;">
         		</div>
           </div>
         </div>
@@ -205,7 +205,7 @@
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
               <div class="col-sm-8">
-              	<input type="date" id="projectStartDate">
+              	<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
@@ -213,7 +213,7 @@
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
               <div class="col-sm-8">
-              	<input type="date" id="projectEndDate">
+              	<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>

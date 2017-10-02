@@ -318,6 +318,41 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
 		this.Data["Title"] = input.ProjectName
 		this.TplName = "Projects/listResourceByProjectToday.tpl"
+
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
+
+func (this *ProjectController) GetRecommendationResourcesByProject() {
+	operation := "GetResourcesToProjects"
+
+	input := domain.GetResourcesToProjectsRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.GetResourcesToProjectsRS)
+		json.NewDecoder(res.Body).Decode(&message)
+
+		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+		this.Data["Projects"] = message.Projects
+		this.Data["Resources"] = message.Resources
+		this.Data["AvailBreakdown"] = message.AvailBreakdown
+		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+		this.TplName = "Projects/listRecommendResources.tpl"
+
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."

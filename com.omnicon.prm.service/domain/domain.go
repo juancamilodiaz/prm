@@ -55,3 +55,14 @@ type ResourceAssign struct {
 	Lead      bool
 	Hours     float64
 }
+
+type RangeDatesAvailability struct {
+	StartDate string
+	EndDate   string
+	Hours     float64
+}
+
+type ResourceAvailabilityInformation struct {
+	ListOfRange []*RangeDatesAvailability
+	TotalHours  float64
+}

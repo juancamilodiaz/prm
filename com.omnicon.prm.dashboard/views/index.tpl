@@ -112,6 +112,34 @@
 			$('#dateTo').val(date)
 			$('#buttonOption').css("display", "none");
 		}
+		
+		getResourcesByProjectAvail = function(){
+			dateFrom = $('#projectStartDate').val();
+			dateTo = $('#projectEndDate').val();
+			var settings = {
+				method: 'POST',
+			url: '/projects/recommendation',
+			headers: {
+				'Content-Type': undefined
+			},		
+		  	data : { 
+					"StartDate": dateFrom,
+					"EndDate": dateTo,
+					"Template": "recommendation",
+				}
+			}
+			$.ajax(settings).done(function (response) {
+			  $("#content").html(response);		
+			});
+		}
+		
+		configureSimulatorModal = function(){		
+			$("#projectID").val(null);
+			$("#projectName").val(null);
+			$("#projectStartDate").val(null);
+			$("#projectEndDate").val(null);
+			$("#projectActive").prop('checked', false);	
+		}
 	</script>
 
 </head>
@@ -150,7 +178,8 @@
 				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
 				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
-			</div>			
+			</div>		
+		  <a  data-toggle="modal" data-target="#simulatorModal" onclick="toNav();configureSimulatorModal();">Simulator</a>
 		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
 		</div>
 		<div id="sidebar">
@@ -184,6 +213,59 @@
 		<div id="ImagesHidden">
 			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px; top: 0; right: 0; left: 0; bottom: 0; position: absolute; margin: auto;" src="/static/img/loading.gif"></div>
 		</div>
+	</div>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="simulatorModal" role="dialog">
+	  <div class="modal-dialog">
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 id="modalSimulatorTitle" class="modal-title">Simulator</h4>
+	      </div>
+	      <div class="modal-body">
+	        <input type="hidden" id="projectID">
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
+	              <div class="col-sm-8">
+	              	<input type="text" id="projectName" style="border-radius: 8px;">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
+	              <div class="col-sm-8">
+	              	<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
+	              <div class="col-sm-8">
+	              	<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
+	              <div class="col-sm-8">
+	              	<input type="checkbox" id="projectActive"><br/>
+	              </div>    
+	          </div>
+	        </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" id="projectCreate" class="btn btn-default" ng-click="link('/projects/recommendation')" onclick="getResourcesByProjectAvail();sendTitle($('#projectName').val());" data-dismiss="modal">Simulate</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="configureCreateModal();">Cancel</button>
+	      </div>
+	    </div>
+	    
+	  </div>
 	</div>
 	
 	<div id ="FooterPlaceHolder">

@@ -360,3 +360,22 @@ div.panel-accordion {
 .error{
 	border:1px solid red;
 }
+
+button.btnCollapseR.collapsed:before
+{
+    content:'+' ;
+	display:block;
+}
+button.btnCollapseR:before
+{
+    content:'-' ;
+	display:block;
+}
+/*Table*/
+td.details-control {
+    background: url('../img/plus.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../img/minus.png') no-repeat center center;
+}

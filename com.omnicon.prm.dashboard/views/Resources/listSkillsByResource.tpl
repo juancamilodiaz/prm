@@ -8,7 +8,7 @@
 			]
 		});
 		$('#datePicker').css("display", "none");
-		$('#titlePag').html("{{.Title}}")
+		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
 		$('#backButton').html("Resources");
 		$('#backButton').prop('onclick',null).off('click');
