@@ -40,6 +40,16 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 			response.Status = "Error"
 			return &response
 		}
+
+		for _, typesRow := range pRequest.ProjectType {
+			projectTypes := new(DOMAIN.ProjectTypes)
+
+			val, _ := strconv.Atoi(typesRow)
+			projectTypes.TypeId = val
+			projectTypes.ProjectId = id
+			dao.AddTypeToProject(projectTypes)
+		}
+
 		// Get Project inserted
 		project = dao.GetProjectById(id)
 		response.Project = project
@@ -104,6 +114,18 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			if pRequest.StartDate != "" {
 				oldProject.EndDate = time.Unix(endDateInt, 0)
 			}
+			//if pRequest.ProjectType != nil && len(pRequest.ProjectType) > 0 {
+			/*for _, typesRow := range pRequest.ProjectType {
+				projectTypes := new(DOMAIN.Type)
+
+				val, _ := strconv.Atoi(typesRow)
+				projectTypes.TypeId = val
+				projectTypes.ProjectId = pRequest.ID
+				oldProject.ProjectType = append(oldProject.ProjectType, projectTypes)
+			}*/
+			//TODO update projectType
+
+			//}
 
 			// Validation for updating dates, these should not be outside the resource assignment range.
 			resourcesProject := dao.GetProjectResourcesByProjectId(pRequest.ID)
@@ -498,7 +520,6 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	if len(projects) == 0 && filterString == "" {
 		projects = dao.GetAllProjects()
 	}
-
 	if projects != nil && len(projects) > 0 {
 		/*
 			for _, project := range projects {
@@ -774,4 +795,35 @@ func getFilterProject(pStartDate, pEndDate string) []*DOMAIN.Project {
 	//TODO filter in query enabled projects.
 	responseProjects := GetProjects(&requestProjects)
 	return responseProjects.Projects
+}
+
+func DeleteTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ProjectTypesRS{}
+
+	projectTypes := dao.GetProjectTypesByProjectIdAndTypeId(pRequest.ProjectId, pRequest.TypeId)
+
+	if projectTypes != nil {
+
+		rowsDeleted, err := dao.DeleteProjectTypes(projectTypes.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "ProjectTypes wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Create response
+		response.Status = "OK"
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "ProjectTypes wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
 }

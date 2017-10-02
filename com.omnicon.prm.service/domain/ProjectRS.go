@@ -64,10 +64,11 @@ func (m *UpdateProjectRS) GetHeader() *UpdateProjectRS_Header {
 
 //--------- Get Project
 type GetProjectsRS struct {
-	Header   *GetProjectsRS_Header
-	Projects []*Project
-	Status   string
-	Message  string
+	Header      *GetProjectsRS_Header
+	Projects    []*Project
+	Status      string
+	Message     string
+	ProjectType string
 }
 
 type GetProjectsRS_Header struct {

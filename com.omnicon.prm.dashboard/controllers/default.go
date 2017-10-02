@@ -22,5 +22,5 @@ type AboutController struct {
 func (this *AboutController) About() {
 
 	this.TplName = "about.tpl"
-	//this.TplName = "Resources/resourceform.tpl"
+	this.TplName = "Resources/resourceform.tpl"
 }

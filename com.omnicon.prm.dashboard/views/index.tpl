@@ -17,6 +17,7 @@
 	<script src="/static/js/Angular/angular.min.js"></script>
 	<script src="/static/js/Angular/angular-sanitize.js"></script>
 	<script src="/static/js/Utils.js"></script>
+	<script src="/static/js/functions.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	
@@ -178,6 +179,7 @@
 				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
 				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
+				<a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a>
 			</div>		
 		  <a  data-toggle="modal" data-target="#simulatorModal" onclick="toNav();configureSimulatorModal();">Simulator</a>
 		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>

@@ -182,3 +182,29 @@ func GetSkills(pRequest *DOMAIN.GetSkillsRQ) *DOMAIN.GetSkillsRS {
 
 	return &response
 }
+
+func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
+	timeResponse := time.Now()
+	request := DOMAIN.TypeSkills{}
+	request.SkillId = pRequest.SkillId
+	request.TypeId = pRequest.TypeId
+	request.Name = pRequest.Name
+	id, err := dao.AddSkillToType(request)
+
+	// Create response
+	response := DOMAIN.TypeSkillsRS{}
+	response.Header = util.BuildHeaderResponse(timeResponse)
+	if err != nil {
+		message := "Resource wasn't insert"
+		log.Error(message)
+		response.Message = message
+		response.Status = "Error"
+		return &response
+	}
+	// Get Resource inserted
+	typeSkills := dao.GetTypeSkillsById(id)
+	response.TypeSkills = append(response.TypeSkills, typeSkills)
+	response.Status = "OK"
+
+	return &response
+}

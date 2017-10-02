@@ -1,10 +1,11 @@
 package domain
 
 type CreateProjectRQ struct {
-	Name      string
-	StartDate string
-	EndDate   string
-	Enabled   bool
+	Name        string
+	StartDate   string
+	EndDate     string
+	Enabled     bool
+	ProjectType []string
 }
 
 type DeleteProjectRQ struct {
@@ -12,11 +13,12 @@ type DeleteProjectRQ struct {
 }
 
 type GetProjectsRQ struct {
-	ID        int64
-	Name      string
-	StartDate string
-	EndDate   string
-	Enabled   *bool
+	ID          int64
+	Name        string
+	StartDate   string
+	EndDate     string
+	Enabled     *bool
+	ProjectType []*Type
 }
 
 type UpdateProjectRQ struct {
@@ -25,4 +27,5 @@ type UpdateProjectRQ struct {
 	StartDate string
 	EndDate   string
 	Enabled   bool
+	//ProjectType []string
 }

@@ -35,7 +35,7 @@
 		
 		$("#projectID").val(null);
 		$("#projectName").val(null);
-		$("#projectStartDate").val(null);
+		$("#projectStartDate").val(null);		
 		$("#projectEndDate").val(null);
 		$("#projectActive").prop('checked', false);
 		
@@ -48,6 +48,7 @@
 		
 		$("#projectID").val(pID);
 		$("#projectName").val(pName);
+		
 		$("#projectStartDate").val(pStartDate);
 		$("#projectEndDate").val(pEndDate);
 		$("#projectEndDate").attr("min", pStartDate);
@@ -56,9 +57,17 @@
 		$("#modalProjectTitle").html("Update Project");
 		$("#projectCreate").css("display", "none");
 		$("#projectUpdate").css("display", "inline-block");
+		$("#divProjectType").css("display", "none");
 	}
 	
 	createProject = function(){
+		var values = "";
+		for (i =0; i<$('#projectType').val().length; i++){
+			if (values != ""){
+				values = values + ",";
+			}	
+			values = values + $('#projectType').val()[i];
+		}
 		var settings = {
 			method: 'POST',
 			url: '/projects/create',
@@ -67,6 +76,7 @@
 			},
 			data: { 
 				"Name": $('#projectName').val(),
+				"ProjectType": values,
 				"StartDate": $('#projectStartDate').val(),
 				"EndDate": $('#projectEndDate').val(),
 				"Enabled": $('#projectActive').is(":checked")
@@ -88,6 +98,7 @@
 			data: { 
 				"ID": $('#projectID').val(),
 				"Name": $('#projectName').val(),
+				"ProjectType": $('#projectType').val(),
 				"StartDate": $('#projectStartDate').val(),
 				"EndDate": $('#projectEndDate').val(),
 				"Enabled": $('#projectActive').is(":checked")
@@ -158,8 +169,8 @@
 			<th>Name</th>
 			<th>Start Date</th>
 			<th>End Date</th>
-			<th>Enabled</th>
-			<th>Options</th>
+			<th>Enabled</th>			
+			<th>Options</th>			
 		</tr>
 	</thead>
 	<tbody>
@@ -173,7 +184,8 @@
 			<td>
 				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
-				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">More Info.</button>
+				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Resources</button>
+				<button class="buttonTable button2" onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Types</button>
 			</td>
 		</tr>
 		{{end}}	
@@ -222,6 +234,18 @@
         		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
               <div class="col-sm-8">
               	<input type="checkbox" id="projectActive"><br/>
+              </div>    
+          </div>
+        </div>
+		<div class="row-box col-sm-12">
+        	<div id="divProjectType" class="form-group form-group-sm">
+        		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
+             	<div class="col-sm-8">
+	             	<select  id="projectType" multiple>
+					{{range $key, $types := .Types}}
+						<option value="{{$types.ID}}">{{$types.ID}}-{{$types.Name}}</option>
+					{{end}}
+					</select>
               </div>    
           </div>
         </div>

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -15,13 +16,19 @@ type ProjectController struct {
 /* Projects */
 func (this *ProjectController) ListProjects() {
 	operation := "GetProjects"
-
 	res, err := PostData(operation, nil)
 
 	if err == nil {
 		defer res.Body.Close()
 		message := new(domain.GetProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
+
+		operation = "GetTypes"
+		res, err = PostData(operation, nil)
+		messageTypes := new(domain.TypeRS)
+		json.NewDecoder(res.Body).Decode(&messageTypes)
+		this.Data["Types"] = messageTypes.Types
+
 		this.Data["Projects"] = message.Projects
 		this.TplName = "Projects/listProjects.tpl"
 	} else {
@@ -36,16 +43,20 @@ func (this *ProjectController) ListProjects() {
 func (this *ProjectController) CreateProject() {
 
 	operation := "CreateProject"
-
 	input := domain.CreateProjectRQ{}
+
 	err := this.ParseForm(&input)
+
+	idstrg := this.GetString("ProjectType")
+	ids := strings.Split(idstrg, ",")
+	input.ProjectType = ids
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
+
 	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
-
 	res, err := PostData(operation, inputBuffer)
 
 	if err != nil {
@@ -83,7 +94,6 @@ func (this *ProjectController) ReadProject() {
 	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
-
 	res, err := PostData(operation, inputBuffer)
 
 	if err == nil {
@@ -91,6 +101,12 @@ func (this *ProjectController) ReadProject() {
 		message := new(domain.GetProjectsRS)
 		json.NewDecoder(res.Body).Decode(&message)
 
+		operation = "getTypes"
+		res, err = PostData(operation, nil)
+
+		messageTypes := new(domain.TypeRS)
+		json.NewDecoder(res.Body).Decode(&messageTypes)
+		this.Data["Types"] = messageTypes.Types
 		this.Data["Projects"] = message.Projects
 		this.TplName = "Projects/viewProjects.tpl"
 	} else {
@@ -358,5 +374,108 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		this.Data["Message"] = "Please contact with the system manager."
 		this.Data["Type"] = "Error"
 		this.TplName = "Common/message.tpl"
+	}
+}
+func (this *ProjectController) GetTypesByProject() {
+	operation := "GetTypesByProject"
+
+	input := domain.GetProjectsRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.ProjectTypesRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		this.Data["ProjectTypes"] = message.ProjectTypes
+		this.Data["Types"] = message.Types
+		this.Data["ProjectID"] = input.ID
+		this.Data["Title"] = "Types " + this.GetString("Description")
+		this.TplName = "Projects/listProjectTypes.tpl"
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
+
+func (this *ProjectController) DeleteTypesByProject() {
+	operation := "DeleteTypesByProject"
+
+	input := domain.ProjectTypesRQ{}
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+	res, err := PostData(operation, inputBuffer)
+
+	message := new(domain.ProjectTypesRS)
+	err = json.NewDecoder(res.Body).Decode(&message)
+
+	defer res.Body.Close()
+	if err != nil {
+		log.Error(err.Error())
+	}
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
+	}
+}
+
+func (this *ProjectController) SetTypesToProject() {
+	operation := "SetTypesToProject"
+	input := domain.ProjectTypesRQ{}
+
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+
+	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+	res, err := PostData(operation, inputBuffer)
+	if err != nil {
+		log.Error(err.Error())
+	}
+
+	message := new(domain.ProjectTypesRS)
+	err = json.NewDecoder(res.Body).Decode(&message)
+	defer res.Body.Close()
+	if err != nil {
+		log.Error(err.Error())
+	}
+
+	if message.Status == "Error" {
+		this.Data["Type"] = message.Status
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = message.Message
+		this.TplName = "Common/message.tpl"
+	} else if message.Status == "OK" {
+		this.Data["Type"] = "Success"
+		this.Data["Title"] = "Operation Success"
+		this.TplName = "Common/message.tpl"
+	} else {
+		this.TplName = "Common/empty.tpl"
 	}
 }
