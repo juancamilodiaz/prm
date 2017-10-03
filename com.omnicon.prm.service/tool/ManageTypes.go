@@ -163,6 +163,31 @@ func SetTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
 
 }
 
+func GetTypeById(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
+	timeResponse := time.Now()
+	response := DOMAIN.TypeRS{}
+
+	types := dao.GetTypesById(pRequest.ID)
+
+	if types != nil {
+		// Create response
+		response.Status = "OK"
+		response.Types = append(response.Types, types)
+
+		response.Header = util.BuildHeaderResponse(timeResponse)
+
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "OK"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
+
 func GetTypes(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 	timeResponse := time.Now()
 	response := DOMAIN.TypeRS{}
