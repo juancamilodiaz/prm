@@ -48,13 +48,6 @@
 		var prjStartDate = formatDate({{.StartDate}});
 		var prjEndDate = formatDate({{.EndDate}});
 		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);
-		
-		$('#projectID').val(null);
-		$('#projectName').val(null);
-		$('#projectStartDate').val(null);
-		$('#projectEndDate').val(null);
-		$('#projectActive').prop('checked', false);	
-		$('#projectTypeSimulator').val(null);
 	});
 	
 	function showDetails(pObjBody, pListOfRange) {
