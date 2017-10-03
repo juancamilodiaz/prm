@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
