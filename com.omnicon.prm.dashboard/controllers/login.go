@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"html/template"
+	"io/ioutil"
 	"net/smtp"
+	"os"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -11,15 +13,9 @@ import (
 	"prm/com.omnicon.prm.dashboard/models"
 )
 
-var validEmails = []string{
-	"Alejandro.Vizcaino@omnicon.cc",
-	"Anderson.Diaz@omnicon.cc",
-	"Carlos.Castaneda@omnicon.cc",
-	"Diego.Paz@omnicon.cc",
-	"Jose.Torres@omnicon.cc",
-	"Juan.Diaz@omnicon.cc",
-	"Juan.Torres@omnicon.cc",
-}
+const fileNameValidEmails = "conf/validEmails"
+
+var superusers = beego.AppConfig.String("superusers")
 
 type LoginController struct {
 	BaseController
@@ -87,15 +83,7 @@ func (c *LoginController) Signup() {
 	}
 
 	// Valid email in white list
-	isValidEmail := false
-	for _, validEmail := range validEmails {
-		if strings.EqualFold(validEmail, u.Email) {
-			isValidEmail = true
-			break
-		}
-	}
-
-	if !isValidEmail {
+	if !existEmail(u.Email) {
 		flash.Warning("Email is not allowed to be registered.")
 		flash.Store(&c.Controller)
 		return
@@ -223,4 +211,77 @@ func sendMail(pEmail, pPassword string) error {
 		"\r\n" +
 		"Your new password is: " + pPassword + "\r\n")
 	return smtp.SendMail("smtp.gmail.com:587", auth, "prm.omnicon@gmail.com", to, msg)
+}
+
+func (c *LoginController) GrantAccess() {
+	c.TplName = "login/grantAccess.tpl"
+	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
+
+	if !c.Ctx.Input.IsPost() {
+		return
+	}
+
+	//var err error
+	flash := beego.NewFlash()
+
+	email := c.GetString("Email")
+	password := c.GetString("Password")
+
+	isSuperUser := false
+	for _, superuser := range strings.Split(superusers, ";") {
+		if strings.EqualFold(superuser, email) {
+			isSuperUser = true
+		}
+	}
+	if !isSuperUser {
+		flash.Warning("The email is not superuser.")
+		flash.Store(&c.Controller)
+		return
+	}
+
+	user, err := lib.Authenticate(email, password)
+	if err != nil || user.Id < 1 {
+		flash.Warning(err.Error())
+		flash.Store(&c.Controller)
+		return
+	}
+
+	emailEnable := c.GetString("EmailEnable")
+	if existEmail(emailEnable) {
+		flash.Warning("The email is already enabled.")
+		flash.Store(&c.Controller)
+		return
+	}
+
+	file, err := os.OpenFile(fileNameValidEmails, os.O_RDWR|os.O_APPEND, 0660)
+	if err != nil {
+		file, err = os.Create(fileNameValidEmails)
+		if err != nil {
+			flash.Error("Internal Error reading Valid Emails.")
+			flash.Store(&c.Controller)
+		}
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(emailEnable + "\n")
+	if err != nil {
+		flash.Error("Internal Error writing Valid Emails.")
+		flash.Store(&c.Controller)
+	}
+
+	flash.Success("Grant Successful.")
+	flash.Store(&c.Controller)
+}
+
+// Validate if email already exist
+func existEmail(pEmail string) bool {
+
+	content, _ := ioutil.ReadFile(fileNameValidEmails)
+	emails := string(content)
+	for _, email := range strings.Split(emails, "\n") {
+		if strings.EqualFold(email, pEmail) {
+			return true
+		}
+	}
+	return false
 }

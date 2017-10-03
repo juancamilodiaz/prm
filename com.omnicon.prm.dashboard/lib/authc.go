@@ -2,6 +2,7 @@ package lib
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"prm/com.omnicon.prm.dashboard/convert"
@@ -13,6 +14,7 @@ import (
 */
 func Authenticate(email string, password string) (user *models.User, err error) {
 	msg := "invalid email or password."
+	email = strings.ToLower(email)
 	user = &models.User{Email: email}
 
 	if err := user.Read("Email"); err != nil {

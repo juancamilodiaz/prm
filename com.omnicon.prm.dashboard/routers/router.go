@@ -49,6 +49,7 @@ func init() {
 	beego.Router("/signup", &controllers.LoginController{}, "get,post:Signup")
 	beego.Router("/passwordreset", &controllers.LoginController{}, "get,post:PasswordReset")
 	beego.Router("/changepassword", &controllers.LoginController{}, "get,post:ChangePassword")
+	beego.Router("/grantAccess", &controllers.LoginController{}, "get,post:GrantAccess")
 
 	//Types
 	beego.Router("/types", &controllers.TypeController{}, "post:ListTypes")
