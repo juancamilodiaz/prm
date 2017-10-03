@@ -87,7 +87,7 @@ function unassignTypeSkills(typeId, typeSkillId){
 }
 
 
-function addSkillToType(typeId, skillId){
+function addSkillToType(typeId, skillId, value){
 	var settings = {
 		method: 'POST',
 		url: '/types/setskill',
@@ -97,7 +97,8 @@ function addSkillToType(typeId, skillId){
 		data: { 
 			"TypeId": typeId,
 			"SkillId": skillId.split("-")[0],
-			"Name": skillId.split("-")[1]
+			"Name": skillId.split("-")[1],
+			"Value": value
 		}
 	}
 	$.ajax(settings).done(function (response) {

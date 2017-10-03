@@ -46,6 +46,7 @@ type TypeSkillsRQ struct {
 	TypeId  int
 	SkillId int
 	Name    string
+	Value   int
 }
 
 //--------- Get ProjectTypes

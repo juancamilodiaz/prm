@@ -148,7 +148,8 @@ func AddSkillToType(pTypeSkillId DOMAIN.TypeSkills) (int, error) {
 	res, err := session.InsertInto("TypeSkills").Columns(
 		"type_id",
 		"skill_id",
-		"skill_name").Values(pTypeSkillId.TypeId, pTypeSkillId.SkillId, pTypeSkillId.Name).Exec()
+		"skill_name",
+		"value").Values(pTypeSkillId.TypeId, pTypeSkillId.SkillId, pTypeSkillId.Name, pTypeSkillId.Value).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err

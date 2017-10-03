@@ -188,6 +188,7 @@ func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 	request := DOMAIN.TypeSkills{}
 	request.SkillId = pRequest.SkillId
 	request.TypeId = pRequest.TypeId
+	request.Value = pRequest.Value
 	request.Name = pRequest.Name
 	id, err := dao.AddSkillToType(request)
 

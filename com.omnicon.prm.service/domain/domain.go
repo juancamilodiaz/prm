@@ -63,6 +63,7 @@ type TypeSkills struct {
 	TypeId  int    `db:"type_id"`
 	SkillId int    `db:"skill_id"`
 	Name    string `db:"skill_name"`
+	Value   int    `db:"value"`
 }
 
 type ResourceAssign struct {
