@@ -1,6 +1,6 @@
 <script>
 	var MyProject = {};
-	$(document).ready(function(){
+	$(document).ready(function(){	
 		MyProject.table = $('#availabilityTable').DataTable({
 			"columns": [
 				{"className":'details-control',"searchable":true},
@@ -25,10 +25,11 @@
 		$('#backButton').prop('onclick',null).off('click');
 		$('#backButton').click(function(){
 			reload('/projects',{});
+			configureSimulatorModal();
 		}); 
 		$('#titlePag').html($('#projectName').val());
 		$('#datePicker').css("display", "none");
-		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').css("display", "none");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
 			reload('/projects/recommendation',{
@@ -41,13 +42,19 @@
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
 		$('#buttonOption').html("Save Project");
 		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("onclick","createProject();configureCreateModal();");
+		$('#buttonOption').attr("onclick","createProject();configureSimulatorModal();");
 		
 		
 		var prjStartDate = formatDate({{.StartDate}});
 		var prjEndDate = formatDate({{.EndDate}});
 		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);
 		
+		$('#projectID').val(null);
+		$('#projectName').val(null);
+		$('#projectStartDate').val(null);
+		$('#projectEndDate').val(null);
+		$('#projectActive').prop('checked', false);	
+		$('#projectTypeSimulator').val(null);
 	});
 	
 	function showDetails(pObjBody, pListOfRange) {
@@ -180,6 +187,7 @@
 		$("#projectStartDate").val(null);
 		$("#projectEndDate").val(null);
 		$("#projectActive").prop('checked', false);	
+		$("#projectTypeSimulator").val(null);
 	}
 </script>
 <div class="col-sm-2">
@@ -192,12 +200,17 @@
 		</thead>
 		<tbody id="availabilityTableBody">	
 			{{$availBreakdownPerRange := .AvailBreakdownPerRange}}
+			{{$ableResource := .AbleResource}}
 			{{range $index, $resource := .Resources}}
-				{{$resourceAvailabilityInfo := index $availBreakdownPerRange $resource.ID}}
-				<tr>
-					<td class="col-sm-10" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
-					<td id="totalHours" class="col-sm-2" style="font-size:11px;text-align: -webkit-center; background-color: aliceblue;">{{$resourceAvailabilityInfo.TotalHours}}</td>
-				</tr>
+				{{range $indexAble, $resourceAble := $ableResource}}
+					{{if eq  $resource.ID $resourceAble}}
+						{{$resourceAvailabilityInfo := index $availBreakdownPerRange $resource.ID}}
+						<tr>
+							<td class="col-sm-10" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+							<td id="totalHours" class="col-sm-2" style="font-size:11px;text-align: -webkit-center; background-color: aliceblue;">{{$resourceAvailabilityInfo.TotalHours}}</td>
+						</tr>
+					{{end}}
+				{{end}}
 			{{end}}
 		</tbody>
 	</table>

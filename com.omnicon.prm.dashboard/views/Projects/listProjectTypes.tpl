@@ -52,9 +52,10 @@
       		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
            	<div class="col-sm-8">
             	<select  id="typeID">
-				{{range $key, $type := .Types}}
-					<option value="{{$type.ID}}">{{$type.Name}}</option>
-				{{end}}
+					<option value="">Please select an option</option>
+					{{range $key, $type := .Types}}
+						<option value="{{$type.ID}}">{{$type.Name}}</option>
+					{{end}}
 			</select>
              </div>    
          </div>

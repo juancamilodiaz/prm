@@ -94,6 +94,13 @@
 			$('#dateFrom').change(function(){
 				$('#dateTo').attr("min", $("#dateFrom").val());
 			});
+			
+			$('#projectID').val(null);
+			$('#projectName').val(null);
+			$('#projectStartDate').val(null);
+			$('#projectEndDate').val(null);
+			$('#projectActive').prop('checked', false);	
+			$('#projectTypeSimulator').val(null);
 		});
 		
 		getResourcesByProjectToday = function(){
@@ -117,20 +124,45 @@
 		getResourcesByProjectAvail = function(){
 			dateFrom = $('#projectStartDate').val();
 			dateTo = $('#projectEndDate').val();
+			var values = "";
+			for (i =0; i<$('#projectTypeSimulator').val().length; i++){
+				if (values != ""){
+					values = values + ",";
+				}	
+				values = values + $('#projectTypeSimulator').val()[i];
+			}
+
 			var settings = {
 				method: 'POST',
 			url: '/projects/recommendation',
 			headers: {
 				'Content-Type': undefined
-			},		
+			},
 		  	data : { 
+		
 					"StartDate": dateFrom,
 					"EndDate": dateTo,
-					"Template": "recommendation",
+					"Types": values,
 				}
 			}
 			$.ajax(settings).done(function (response) {
 			  $("#content").html(response);		
+			});
+		}
+		
+		getTypes = function(){
+			var settings = {
+				method: 'POST',
+			url: '/types',
+			headers: {
+				'Content-Type': undefined
+			},		
+		  	data : { 
+					"Template": "types",
+				}
+			}
+			$.ajax(settings).done(function (response) {
+			  $('#projectTypeSimulator').html(response);		
 			});
 		}
 		
@@ -181,7 +213,7 @@
 				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
 				<a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a>
 			</div>		
-		  <a  data-toggle="modal" data-target="#simulatorModal" onclick="toNav();configureSimulatorModal();">Simulator</a>
+		  <a  data-toggle="modal" data-target="#simulatorModal" onclick="toNav();configureSimulatorModal();getTypes();">Simulator</a>
 		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
 		</div>
 		<div id="sidebar">
@@ -228,7 +260,7 @@
 	      </div>
 	      <div class="modal-body">
 	        <input type="hidden" id="projectID">
-	        <div class="row-box col-sm-12">
+	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
 	              <div class="col-sm-8">
@@ -236,7 +268,7 @@
 	        		</div>
 	          </div>
 	        </div>
-	        <div class="row-box col-sm-12">
+	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
 	              <div class="col-sm-8">
@@ -244,7 +276,7 @@
 	        		</div>
 	          </div>
 	        </div>
-	        <div class="row-box col-sm-12">
+	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
 	              <div class="col-sm-8">
@@ -252,7 +284,16 @@
 	        		</div>
 	          </div>
 	        </div>
-	        <div class="row-box col-sm-12">
+			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+	        	<div id="divProjectType" class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
+	             	<div class="col-sm-8">
+		             	<select  id="projectTypeSimulator" multiple style="width: 174px; border-radius: 8px;">
+						</select>
+	              	</div>    
+	          	</div>
+	        </div>
+	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
 	              <div class="col-sm-8">
@@ -262,7 +303,7 @@
 	        </div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" id="projectCreate" class="btn btn-default" ng-click="link('/projects/recommendation')" onclick="getResourcesByProjectAvail();sendTitle($('#projectName').val());" data-dismiss="modal">Simulate</button>
+	        <button type="button" id="btnSimulate" class="btn btn-default" ng-click="link('/projects/recommendation')" onclick="getResourcesByProjectAvail();sendTitle($('#projectName').val());" data-dismiss="modal">Simulate</button>
 	        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="configureCreateModal();">Cancel</button>
 	      </div>
 	    </div>

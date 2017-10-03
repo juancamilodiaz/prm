@@ -22,7 +22,11 @@ func (this *TypeController) ListTypes() {
 		message := new(domain.TypeRS)
 		json.NewDecoder(res.Body).Decode(&message)
 		this.Data["Types"] = message.Types
-		this.TplName = "Types/listTypes.tpl"
+		if this.GetString("Template") == "types" {
+			this.TplName = "Projects/listTypesDropDown.tpl"
+		} else {
+			this.TplName = "Types/listTypes.tpl"
+		}
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."

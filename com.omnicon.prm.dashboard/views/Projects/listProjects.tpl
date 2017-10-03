@@ -205,7 +205,7 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="projectID">
-        <div class="row-box col-sm-12">
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
               <div class="col-sm-8">
@@ -213,7 +213,7 @@
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12">
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
               <div class="col-sm-8">
@@ -221,7 +221,7 @@
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12">
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
               <div class="col-sm-8">
@@ -229,23 +229,23 @@
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-              <div class="col-sm-8">
-              	<input type="checkbox" id="projectActive"><br/>
-              </div>    
-          </div>
-        </div>
-		<div class="row-box col-sm-12">
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div id="divProjectType" class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
              	<div class="col-sm-8">
-	             	<select  id="projectType" multiple>
+	             	<select  id="projectType" multiple style="width: 174px; border-radius: 8px;">
 					{{range $key, $types := .Types}}
 						<option value="{{$types.ID}}">{{$types.ID}}-{{$types.Name}}</option>
 					{{end}}
 					</select>
+              	</div>    
+          	</div>
+        </div>
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        	<div class="form-group form-group-sm">
+        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
+              <div class="col-sm-8">
+              	<input type="checkbox" id="projectActive"><br/>
               </div>    
           </div>
         </div>

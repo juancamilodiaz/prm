@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -352,6 +353,8 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	idTypesString := this.GetString("Types")
+
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -359,6 +362,8 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
+
+	idsType := strings.Split(idTypesString, ",")
 
 	res, err := PostData(operation, inputBuffer)
 
@@ -372,8 +377,74 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		this.Data["Resources"] = message.Resources
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
 		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
-		this.TplName = "Projects/listRecommendResources.tpl"
 
+		var listSkillsPerProject []int
+
+		for _, value := range idsType {
+			skillsByTypeInput := domain.TypeRQ{}
+			typeID, _ := strconv.Atoi(value)
+			skillsByTypeInput.ID = typeID
+			skillsByTypeInputBuffer := EncoderInput(skillsByTypeInput)
+
+			resSkillsByType, errSkillsByType := PostData("GetSkillsByType", skillsByTypeInputBuffer)
+			if errSkillsByType == nil {
+				defer resSkillsByType.Body.Close()
+				messageSkillsByType := new(domain.TypeSkillsRS)
+				json.NewDecoder(resSkillsByType.Body).Decode(&messageSkillsByType)
+
+				for _, skill := range messageSkillsByType.TypeSkills {
+					listSkillsPerProject = append(listSkillsPerProject, skill.SkillId)
+				}
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		}
+
+		var listAbleResource []int64
+
+		for _, resource := range message.Resources {
+			resourceSkillsInput := domain.GetSkillByResourceRQ{}
+			resourceSkillsInput.ID = resource.ID
+			resourceSkillsInputBuffer := EncoderInput(resourceSkillsInput)
+
+			resResourceSkills, errResourceSkills := PostData("GetSkillsByResource", resourceSkillsInputBuffer)
+
+			if errResourceSkills == nil {
+				defer resResourceSkills.Body.Close()
+				messageResourceSkills := new(domain.GetSkillByResourceRS)
+				json.NewDecoder(resResourceSkills.Body).Decode(&messageResourceSkills)
+				isAble := true
+				for _, skillsByResource := range messageResourceSkills.Skills {
+					hasSkill := false
+					for _, skillID := range listSkillsPerProject {
+						if skillID == int(skillsByResource.SkillId) {
+							hasSkill = true
+							break
+						}
+					}
+					if !hasSkill {
+						isAble = false
+						break
+					}
+				}
+				if isAble {
+					listAbleResource = append(listAbleResource, resource.ID)
+				}
+
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+
+		}
+
+		this.Data["AbleResource"] = listAbleResource
+		this.TplName = "Projects/listRecommendResources.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."
