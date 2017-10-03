@@ -178,3 +178,26 @@ func AddSkillToType(pTypeSkillId DOMAIN.TypeSkills) (int, error) {
 	insertId, err := res.LastInsertId()
 	return int(insertId), nil
 }
+
+/**
+*	Name : UpdateTypeSkills
+*	Params: pTypeSkills
+*	Return: int, error
+*	Description: Update TypeSkills in DB
+ */
+func UpdateTypeSkills(pTypeSkills *DOMAIN.TypeSkills) (int64, error) {
+	// Get a session
+	session = GetSession()
+	// Close session when ends the method
+	defer session.Close()
+	// Update TypeSkills in DB
+	q := session.Update("TypeSkills").Set("skill_name = ?, value = ?", pTypeSkills.Name, pTypeSkills.Value).Where("id = ?", int(pTypeSkills.ID))
+	res, err := q.Exec()
+	if err != nil {
+		log.Error(err)
+		return 0, err
+	}
+	// Get rows updated
+	updateCount, err := res.RowsAffected()
+	return updateCount, nil
+}

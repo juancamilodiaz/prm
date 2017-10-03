@@ -194,27 +194,54 @@ func GetSkills(pRequest *DOMAIN.GetSkillsRQ) *DOMAIN.GetSkillsRS {
 
 func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 	timeResponse := time.Now()
-	request := DOMAIN.TypeSkills{}
-	request.SkillId = pRequest.SkillId
-	request.TypeId = pRequest.TypeId
-	request.Value = pRequest.Value
-	request.Name = pRequest.Name
-	id, err := dao.AddSkillToType(request)
 
-	// Create response
-	response := DOMAIN.TypeSkillsRS{}
-	response.Header = util.BuildHeaderResponse(timeResponse)
-	if err != nil {
-		message := "Resource wasn't insert"
-		log.Error(message)
-		response.Message = message
-		response.Status = "Error"
+	skillType := dao.GetTypesSkillsByTypeIdAndSkillId(pRequest.TypeId, pRequest.SkillId)
+	if skillType == nil {
+		request := DOMAIN.TypeSkills{}
+		request.SkillId = pRequest.SkillId
+		request.TypeId = pRequest.TypeId
+		request.Value = pRequest.Value
+		request.Name = pRequest.Name
+
+		id, err := dao.AddSkillToType(request)
+
+		// Create response
+		response := DOMAIN.TypeSkillsRS{}
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		if err != nil {
+			message := "Resource wasn't insert"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Get Resource inserted
+		typeSkills := dao.GetTypeSkillsById(id)
+		response.TypeSkills = append(response.TypeSkills, typeSkills)
+		response.Status = "OK"
+
+		return &response
+
+	} else {
+		skillType.Name = pRequest.Name
+		skillType.Value = pRequest.Value
+		id, err := dao.UpdateTypeSkills(skillType)
+
+		// Create response
+		response := DOMAIN.TypeSkillsRS{}
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		if err != nil {
+			message := "Resource wasn't insert"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Get Resource inserted
+		typeSkills := dao.GetTypeSkillsById(int(id))
+		response.TypeSkills = append(response.TypeSkills, typeSkills)
+		response.Status = "OK"
+
 		return &response
 	}
-	// Get Resource inserted
-	typeSkills := dao.GetTypeSkillsById(id)
-	response.TypeSkills = append(response.TypeSkills, typeSkills)
-	response.Status = "OK"
-
-	return &response
 }
