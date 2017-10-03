@@ -36,6 +36,7 @@
                     </form>
 			    </div>
 
+				<div class="panel-footer text-center clearfix"><a href='{{urlfor "LoginController.GrantAccess"}}'>Grant access to »</a></div>
                 <div class="panel-footer text-center clearfix">If you have an account <a href='{{urlfor "LoginController.Login"}}'>Sign in »</a></div>
 
 			</div>

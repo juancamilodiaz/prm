@@ -2,6 +2,7 @@ package lib
 
 import (
 	"errors"
+	"strings"
 
 	"prm/com.omnicon.prm.dashboard/convert"
 	"prm/com.omnicon.prm.dashboard/models"
@@ -13,6 +14,7 @@ func SignupUser(u *models.User) (int64, error) {
 		msg string
 	)
 
+	u.Email = strings.ToLower(u.Email)
 	if models.Users().Filter("email", u.Email).Exist() {
 		msg = "was already regsitered input email address."
 		return 0, errors.New(msg)
