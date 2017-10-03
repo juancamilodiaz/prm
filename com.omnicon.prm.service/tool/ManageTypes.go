@@ -153,3 +153,120 @@ func SetTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
 	return &response
 
 }
+
+func GetTypes(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
+	timeResponse := time.Now()
+	response := DOMAIN.TypeRS{}
+
+	types := dao.GetAllTypes()
+
+	if types != nil && len(types) > 0 {
+		// Create response
+		response.Status = "OK"
+		response.Types = types
+
+		header := new(DOMAIN.Response_Header)
+		header.RequestDate = time.Now().String()
+		responseTime := time.Now().Sub(timeResponse)
+		header.ResponseTime = responseTime.String()
+		response.Header = header
+
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "OK"
+
+	header := new(DOMAIN.Response_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+	response.Header = header
+
+	return &response
+}
+
+func GetSkillsByType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeSkillsRS {
+	timeResponse := time.Now()
+	response := DOMAIN.TypeSkillsRS{}
+
+	response.Skills = dao.GetAllSkills()
+
+	typeSkills := dao.GetTypesSkillsByTypeId(pRequest.ID)
+
+	if typeSkills != nil && len(typeSkills) > 0 {
+		// Create response
+		response.Status = "OK"
+		response.TypeSkills = typeSkills
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
+
+func GetTypesByProject(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.ProjectTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ProjectTypesRS{}
+
+	types := dao.GetAllTypes()
+	response.Types = types
+
+	projectTypes := dao.GetTypesByProjectId(pRequest.ID)
+
+	if projectTypes != nil && len(projectTypes) > 0 {
+		// Create response
+		response.Status = "OK"
+		response.ProjectTypes = projectTypes
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "Resources wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+
+}
+
+func DeleteSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
+	timeResponse := time.Now()
+	response := DOMAIN.TypeSkillsRS{}
+
+	skillsTypes := dao.GetTypeSkillsById(pRequest.ID)
+
+	if skillsTypes != nil {
+
+		rowsDeleted, err := dao.DeleteTypeSkillsById(pRequest.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "TypeSkills wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Create response
+		response.Status = "OK"
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "TypeSkills wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
