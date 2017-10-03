@@ -175,7 +175,8 @@
       <div class="modal-body">
         Are you sure you want to remove <b id="nameDelete"></b> from types?
 		<br>
-		<li>The resources will lose this type assignment.</li>
+		<li>The projects will lose this type assignment.</li>
+		<li>The skills will lose this type assignment.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="typeDelete" class="btn btn-default" onclick="deleteType()" data-dismiss="modal">Yes</button>

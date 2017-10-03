@@ -272,6 +272,7 @@
         Are you sure you want to remove <b id="nameDelete"></b> from projects?
 		<br>
 		<li>The resources will lose this project assignment.</li>
+		<li>The types will lose this project assignment.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="projectDelete" class="btn btn-default" onclick="deleteProject()" data-dismiss="modal">Yes</button>

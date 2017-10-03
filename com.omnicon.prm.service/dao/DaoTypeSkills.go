@@ -63,6 +63,26 @@ func GetTypesSkillsByTypeId(pTypeId int) []*DOMAIN.TypeSkills {
 }
 
 /**
+*	Name : GetTypesSkillsBySkillId
+*	Params: pId
+*	Return: *DOMAIN.Types
+*	Description: Get a Skills by SkillId in a TypeSkills table
+ */
+func GetTypesSkillsBySkillId(pSkillId int) []*DOMAIN.TypeSkills {
+	// Types structure
+	var typeSkills []*DOMAIN.TypeSkills
+	// Add in Types variable, the Types where ID is the same that the param
+	err := getTypeSkillsCollection().Find(db.Cond{"skill_id": pSkillId}).All(&typeSkills)
+	// Close session when ends the method
+	defer session.Close()
+	if err != nil {
+		log.Debug(err)
+	}
+
+	return typeSkills
+}
+
+/**
 *	Name : GetTypesSkillsByTypeId
 *	Params: pId
 *	Return: *DOMAIN.Types

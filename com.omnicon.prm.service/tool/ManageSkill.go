@@ -108,6 +108,15 @@ func DeleteSkill(pRequest *DOMAIN.DeleteSkillRQ) *DOMAIN.DeleteSkillRS {
 			}
 		}
 
+		// Delete skills associations
+		typeSkill := dao.GetTypesSkillsBySkillId(int(pRequest.ID))
+		for _, skill := range typeSkill {
+			_, err := dao.DeleteTypeSkillsByTypeIdAndSkillId(skill.TypeId, skill.SkillId)
+			if err != nil {
+				log.Error("Failed to delete skill type")
+			}
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteSkill(pRequest.ID)
 		if err != nil || rowsDeleted <= 0 {

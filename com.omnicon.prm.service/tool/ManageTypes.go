@@ -87,14 +87,23 @@ func DeleteType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 	typeToDelete := dao.GetTypesById(pRequest.ID)
 	if typeToDelete != nil {
 
-		//TODO Delete Types associations
-		/*resourcesSkill := dao.GetProjectTypesByTypeId(pRequest.ID)
-		for _, skill := range resourcesSkill {
-			_, err := dao.DeleteResourceSkillsByResourceIdAndSkillId(skill.ResourceId, skill.SkillId)
+		// Delete asignation to project
+		projectsType := dao.GetProjectTypesByTypeId(int64(pRequest.ID))
+		for _, project := range projectsType {
+			_, err := dao.DeleteProjectTypesByProjectIdAndTypeId(int(project.ProjectId), project.TypeId)
+			if err != nil {
+				log.Error("Failed to delete project resource")
+			}
+		}
+
+		// Delete skills assignation to type
+		skillsType := dao.GetTypesSkillsByTypeId(pRequest.ID)
+		for _, skill := range skillsType {
+			_, err := dao.DeleteTypeSkillsByTypeIdAndSkillId(skill.TypeId, skill.SkillId)
 			if err != nil {
 				log.Error("Failed to delete skill resource")
 			}
-		}*/
+		}
 
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteType(pRequest.ID)
@@ -220,7 +229,7 @@ func GetTypesByProject(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.ProjectTypesRS {
 	types := dao.GetAllTypes()
 	response.Types = types
 
-	projectTypes := dao.GetTypesByProjectId(pRequest.ID)
+	projectTypes := dao.GetProjectTypesByProjectId(pRequest.ID)
 
 	if projectTypes != nil && len(projectTypes) > 0 {
 		// Create response

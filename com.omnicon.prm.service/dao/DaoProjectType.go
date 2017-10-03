@@ -37,10 +37,10 @@ func GetAllProjectTypes() []*DOMAIN.ProjectTypes {
 }
 
 /**
-*	Name : GetResourceSkillById
+*	Name : GetProjectTypesById
 *	Params: pId
 *	Return: *DOMAIN.ProjectTypes
-*	Description: Get a resourceSkill by ID in a ProjectTypes table
+*	Description: Get a resourceTypes by ID in a ProjectTypes table
  */
 func GetProjectTypesById(pId int64) *DOMAIN.ProjectTypes {
 	// ProjectTypes structure
@@ -57,12 +57,12 @@ func GetProjectTypesById(pId int64) *DOMAIN.ProjectTypes {
 }
 
 /**
-*	Name : GetProjectTypesByResourceId
+*	Name : GetProjectTypesByProjectId
 *	Params: pId
 *	Return: *DOMAIN.ProjectTypes
-*	Description: Get a resourceSkill by ResourceId in a ProjectTypes table
+*	Description: Get a resourceType by ProjectId in a ProjectTypes table
  */
-func GetTypesByProjectId(pProjectId int64) []*DOMAIN.ProjectTypes {
+func GetProjectTypesByProjectId(pProjectId int64) []*DOMAIN.ProjectTypes {
 	// Slice to keep all ProjectTypes
 	var projectTypes []*DOMAIN.ProjectTypes
 	// Add all ProjectTypes in ProjectTypes variable

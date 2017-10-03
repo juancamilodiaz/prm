@@ -195,6 +195,15 @@ func DeleteProject(pRequest *DOMAIN.DeleteProjectRQ) *DOMAIN.DeleteProjectRS {
 			}
 		}
 
+		// Delete types assignations for this project
+		typesProject := dao.GetProjectTypesByProjectId(pRequest.ID)
+		for _, typeP := range typesProject {
+			_, err := dao.DeleteProjectTypesByProjectIdAndTypeId(int(typeP.ProjectId), typeP.TypeId)
+			if err != nil {
+				log.Error("Failed to delete project type")
+			}
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteProject(pRequest.ID)
 		if err != nil || rowsDeleted <= 0 {
