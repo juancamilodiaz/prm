@@ -162,15 +162,11 @@ func (this *TypeController) GetSkillsByType() {
 	inputBuffer := EncoderInput(input)
 
 	res, err := PostData(operation, inputBuffer)
-	fmt.Println("err", err)
 
 	if err == nil {
 		defer res.Body.Close()
 		message := new(domain.TypeSkillsRS)
 		json.NewDecoder(res.Body).Decode(&message)
-
-		fmt.Println("lennnn", len(message.TypeSkills))
-		fmt.Println("lennnnSkill", len(message.Skills))
 
 		this.Data["TypeID"] = input.ID
 		this.Data["TypeSkills"] = message.TypeSkills
