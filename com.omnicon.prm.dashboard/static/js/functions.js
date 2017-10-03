@@ -13,7 +13,7 @@ function getSkills(){
 	});
 }
 
-function getSkillsByType(TypeId, projectName){
+function getSkillsByType(TypeId, typeName){
 	var settings = {
 		method: 'POST',
 		url: '/types/skills',
@@ -22,7 +22,7 @@ function getSkillsByType(TypeId, projectName){
 		},
 		data: { 
 			"ID": TypeId,
-			"Description": projectName
+			"Name": typeName
 		}
 	}
 	$.ajax(settings).done(function (response) {

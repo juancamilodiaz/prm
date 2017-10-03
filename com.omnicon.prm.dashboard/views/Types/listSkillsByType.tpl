@@ -8,6 +8,7 @@
 			]
 		});
 		
+		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
 		$('#backButton').html("Types");
 		$('#backButton').prop('onclick',null).off('click');
