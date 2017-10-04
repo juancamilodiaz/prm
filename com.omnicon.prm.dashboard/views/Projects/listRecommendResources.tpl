@@ -1,5 +1,8 @@
 <script>
 	$(document).ready(function(){
+		$("#projectStartDate").val(getDateToday());
+		$("#projectEndDate").val(getDateToday());
+			
 		$('#backButton').css("display", "inline-block");
 		$('#backButton').html("Go to projects");
 		$('#backButton').prop('onclick',null).off('click');

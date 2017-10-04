@@ -59,7 +59,13 @@ func (this *ProjectController) CreateProject() {
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
-
+	if input.Name == "" {
+		this.Data["Type"] = "Error"
+		this.Data["Title"] = "Error in operation."
+		this.Data["Message"] = "The name is empty."
+		this.TplName = "Common/message.tpl"
+		return
+	}
 	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
