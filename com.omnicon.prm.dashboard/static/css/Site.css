@@ -284,7 +284,7 @@ a {
 
 .button3:hover {
 	border-radius: 2px;
-    box-shadow: 0 12px 10px 0 rgba(0,0,0,0.5),10px 17px 50px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.4),1px 1px 1px 1px rgba(0,0,0,0.3);
 }
 
 /*Cursor*/
@@ -361,16 +361,6 @@ div.panel-accordion {
 	border:1px solid red;
 }
 
-button.btnCollapseR.collapsed:before
-{
-    content:'+' ;
-	display:block;
-}
-button.btnCollapseR:before
-{
-    content:'-' ;
-	display:block;
-}
 /*Table*/
 td.details-control {
     background: url('../img/plus.png') no-repeat center center;

@@ -79,79 +79,10 @@
 	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
 	}
 			
-	configureShowModal = function(pID, pName){
-		
-		$("#showResourceID").val(pID);
-		$("#showResourceName").val(pName);
-		/*$("#resourceLastName").val(pLastName);
-		$("#resourceEmail").val(pEmail);
-		$("#resourceRank").val(pRank);
-		$("#resourceActive").prop('checked', pActive);
-		*/
-		$("#modalTitle").html("Show Resource Information");
-	}
-	
 	configureShowCreateModal = function(){
 		$("#resourceDateStartProject").val(getDateToday());
 		$("#resourceDateEndProject").val(getDateToday());
 		$("#resourceDateEndProject").attr("min", $("#resourceDateStartProject").val());
-	}
-	
-	setResourceToProject = function(ID, resourceId, projectId, startDate, endDate, hours, lead, isToCreate){
-		var settings = {
-			method: 'POST',
-			url: '/projects/setresource',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"ID": ID,
-				"ProjectId": projectId,
-				"ResourceId": resourceId,
-				"StartDate": startDate,
-				"EndDate": endDate,
-				"Hours": hours,
-				"Lead": lead,
-				"IsToCreate": isToCreate
-			}
-		}
-		$.ajax(settings).done(function (response) {
-			validationError(response);
-			reload('/projects/resources', {"ProjectId": projectId,"ProjectName": "{{.Title}}"})
-		});
-	}
-	
-	getResources = function(){
-		var settings = {
-			method: 'POST',
-			url: '/resources',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"Template": "select",				
-			}
-		}
-		$.ajax(settings).done(function (response) {
-		  $('#resourceNameProject').html(response);
-		});
-	}
-	
-	getResource = function(pResourceId){
-		var settings = {
-			method: 'POST',
-			url: '/resources/read',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"ID": pResourceId,				
-			}
-		}
-		$.ajax(settings).done(function (response) {
-		  $('#resourceInfo').html(response);
-		  $('#showInfoResourceModal').modal("show");
-		});		
 	}
 	
 	createProject = function(){
@@ -198,10 +129,13 @@
 				{{range $indexAble, $resourceAble := $ableResource}}
 					{{if eq  $resource.ID $resourceAble}}
 						{{$resourceAvailabilityInfo := index $availBreakdownPerRange $resource.ID}}
-						<tr>
-							<td class="col-sm-10" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
-							<td id="totalHours" class="col-sm-2" style="font-size:11px;text-align: -webkit-center; background-color: aliceblue;">{{$resourceAvailabilityInfo.TotalHours}}</td>
-						</tr>
+						{{if ne $resourceAvailabilityInfo.TotalHours 0.0}}
+							<tr>
+								<td class="col-sm-10" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+								<td id="totalHours" class="col-sm-2" style="font-size:11px;text-align: -webkit-center; background-color: aliceblue;">{{$resourceAvailabilityInfo.TotalHours}}</td>
+							
+							</tr>
+						{{end}}
 					{{end}}
 				{{end}}
 			{{end}}
