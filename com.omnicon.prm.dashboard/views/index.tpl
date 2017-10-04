@@ -142,9 +142,9 @@
 </head>
 
 <body>
-	<div id="HeaderPlaceHolder">
-		<div id="NavLeft"  class="NavItem">
-			<img src="/static/img/logo_omnicon_sa_blanco-01.svg" onclick="getResourcesByProjectToday();" width="200" height="50" style="cursor: pointer;">
+	<div id="HeaderPlaceHolder" style="height: 60px;">
+		<div id="NavLeft"  class="NavItem col-sm-2" style="text-align: left;">
+			<img src="/static/img/PRM.svg" onclick="getResourcesByProjectToday();" width="200" height="50" style="cursor: pointer;margin: 3%;">
 			<!--div class="NavItem">
 				<div class="dropdown">
 					<button id="NavMenuButton" class="btn btn-primary btn-menu toggle" type="button"><span class="glyphicon glyphicon-th-list"></span></button>
@@ -153,10 +153,10 @@
 			<div class="NavItem">
 			</div>
 		</div>
-		<div id="NavCenter" class="NavItem">
-			<h1 class="title" style="padding-left: 170px;">Project Resource Management</h1>
+		<div id="NavCenter" class="NavItem col-sm-8" style="text-align: center;">
+			<img src="/static/img/PRM_WORD.svg" style="padding: 1%"/>
 		</div>
-		<div id="NavRight" class="NavItem" style="padding-right: 3%;padding-top: 1%;">
+		<div id="NavRight" class="NavItem col-sm-2" style="padding-right: 3%;padding-top: 1%;text-align: right;">
 			<a style="color: white;" itemprop="url" href='{{urlfor "LoginController.Logout"}}'>
                  <span class='glyphicon glyphicon-log-out'></span> Sign out
 			</a>
