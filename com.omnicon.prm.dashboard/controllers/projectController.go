@@ -473,7 +473,7 @@ func (this *ProjectController) GetTypesByProject() {
 		this.Data["ProjectTypes"] = message.ProjectTypes
 		this.Data["Types"] = message.Types
 		this.Data["ProjectID"] = input.ID
-		this.Data["Title"] = "Types " + this.GetString("Description")
+		this.Data["Title"] = this.GetString("Description")
 		this.TplName = "Projects/listProjectTypes.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."

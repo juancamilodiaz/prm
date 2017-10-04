@@ -47,7 +47,7 @@ function getTypesByProject(projectId, description){
 	});
 }
 
-function unassignProjectType(projectId, typeId){
+function unassignProjectType(projectId, typeId, description){
 	var settings = {
 		method: 'POST',
 		url: '/projects/types/unassign',
@@ -62,7 +62,8 @@ function unassignProjectType(projectId, typeId){
 	$.ajax(settings).done(function (response) {
 	  $("#content").html(response);
 		reload('/projects/types', {
-			"ID": projectId
+			"ID": projectId,
+			"Description": description
 		});
 	});
 }
@@ -110,7 +111,7 @@ function addSkillToType(typeId, skillId, value, typeName){
 	});
 }
 
-function addTypeToProject(projectId, typeId){
+function addTypeToProject(projectId, typeId, description){
 	var settings = {
 		method: 'POST',
 		url: '/projects/settype',
@@ -125,7 +126,8 @@ function addTypeToProject(projectId, typeId){
 	$.ajax(settings).done(function (response) {
 		validationError(response);
 		reload('/projects/types', {
-			"ID": projectId
+			"ID": projectId,
+			"Description": description
 		});
 	});
 }

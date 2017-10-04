@@ -10,6 +10,12 @@
 			reload('/projects',{});
 		});
 		
+		$('#refreshButton').css("display", "inline-block");
+		$('#refreshButton').prop('onclick',null).off('click');
+		$('#refreshButton').click(function(){
+			getTypesByProject({{.ProjectID}}, '{{.Title}}');
+		}); 
+		
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').html("Set Type");
 		$('#buttonOption').attr("data-toggle", "modal");
@@ -30,7 +36,7 @@
 		<tr>
 			<td>{{$projectType.Name}}</td>
 			<td>
-				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="unassignProjectType({{$projectType.ProjectId}},{{$projectType.TypeId}})" data-dismiss="modal">Unassign</button>
+				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#projectIDToDelete').val({{$projectType.ProjectId}});$('#typeIDToDelete').val({{$projectType.TypeId}});$('#nameDelete').html({{$projectType.Name}});" data-dismiss="modal">Unassign</button>
 			</td>
 		</tr>
 		{{end}}
@@ -61,10 +67,31 @@
          </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="typeCreate" class="btn btn-default" onclick="addTypeToProject({{.ProjectID}}, $('#typeID').val())" data-dismiss="modal">Add</button>
+        <button type="button" id="typeCreate" class="btn btn-default" onclick="addTypeToProject({{.ProjectID}}, $('#typeID').val(), {{.Title}})" data-dismiss="modal">Add</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>
     
   </div>
+</div>
+
+<div class="modal fade" id="confirmUnassignModal" role="dialog">
+	<div class="modal-dialog">
+    <!-- Modal content-->
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+        		<h4 class="modal-title">Unassign Confirmation</h4>
+      		</div>
+      		<div class="modal-body">
+				<input type="hidden" id="projectIDToDelete">
+				<input type="hidden" id="typeIDToDelete">        		
+					Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> project?
+      		</div>
+			<div class="modal-footer" style="text-align:center;">
+				<button type="button" id="resourceUnassign" class="btn btn-default" onclick="unassignProjectType($('#projectIDToDelete').val(),$('#typeIDToDelete').val(),{{.Title}})" data-dismiss="modal">Yes</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+			</div>
+		</div>
+	</div>
 </div>
