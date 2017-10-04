@@ -1,5 +1,11 @@
 <script>
 	$(document).ready(function(){
+		$('#viewSkillsByType').DataTable({
+			"columns":[
+				null,
+				{"searchable":false}
+			]
+		});
 		$('#refreshButton').css("display", "none");
 
 		$('#titlePag').html("{{.Title}}");
@@ -23,7 +29,6 @@
 	});
 </script>
 
-<p class="pull-right" style="padding-right: 0%;"> <label type="text" id="dates"/></p>
 <table id="viewSkillsByType" class="table table-striped table-bordered">
 	<thead>
 		<tr>
