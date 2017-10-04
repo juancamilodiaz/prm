@@ -195,6 +195,18 @@ func GetSkills(pRequest *DOMAIN.GetSkillsRQ) *DOMAIN.GetSkillsRS {
 func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 	timeResponse := time.Now()
 
+	// Create response
+	response := DOMAIN.TypeSkillsRS{}
+
+	if pRequest.Value < 1 || pRequest.Value > 100 {
+		message := "Set the percentage between 1 and 100"
+		log.Error(message)
+		response.Message = message
+		response.Skills = nil
+		response.Status = "Error"
+		return &response
+	}
+
 	skillType := dao.GetTypesSkillsByTypeIdAndSkillId(pRequest.TypeId, pRequest.SkillId)
 	if skillType == nil {
 		request := DOMAIN.TypeSkills{}
@@ -205,8 +217,6 @@ func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 
 		id, err := dao.AddSkillToType(request)
 
-		// Create response
-		response := DOMAIN.TypeSkillsRS{}
 		response.Header = util.BuildHeaderResponse(timeResponse)
 		if err != nil {
 			message := "Resource wasn't insert"

@@ -178,6 +178,16 @@ func ValidateRQ(pResource *DOMAIN.Resource) bool {
 func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillToResourceRS {
 	timeResponse := time.Now()
 	response := DOMAIN.SetSkillToResourceRS{}
+
+	if pRequest.Value < 1 || pRequest.Value > 100 {
+		message := "Set the percentage between 1 and 100"
+		log.Error(message)
+		response.Message = message
+		response.Resource = nil
+		response.Status = "Error"
+		return &response
+	}
+
 	resource := dao.GetResourceById(pRequest.ResourceId)
 	if resource != nil {
 		// Get Skill in DB
