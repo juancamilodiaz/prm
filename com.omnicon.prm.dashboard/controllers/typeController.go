@@ -23,7 +23,13 @@ func (this *TypeController) ListTypes() {
 		json.NewDecoder(res.Body).Decode(&message)
 		this.Data["Types"] = message.Types
 		if this.GetString("Template") == "types" {
-			this.TplName = "Projects/listTypesDropDown.tpl"
+			this.Data["ResourcesToProjects"] = nil
+			this.Data["Projects"] = nil
+			this.Data["Resources"] = nil
+			this.Data["AvailBreakdown"] = nil
+			this.Data["AvailBreakdownPerRange"] = nil
+			this.Data["AbleResource"] = nil
+			this.TplName = "Projects/listRecommendResources.tpl"
 		} else {
 			this.TplName = "Types/listTypes.tpl"
 		}

@@ -444,7 +444,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		}
 
 		this.Data["AbleResource"] = listAbleResource
-		this.TplName = "Projects/listRecommendResources.tpl"
+		this.TplName = "Projects/listRecommendResourcesTable.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."

@@ -23,7 +23,8 @@
 			"searching": true,
 			"paging": true,
 		});		
-					
+				
+		$('#backButton').css("display", "none");	
 		$('#datePicker').css("display", "inline-block");	
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');

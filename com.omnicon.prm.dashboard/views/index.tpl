@@ -90,6 +90,7 @@
 			$('#datePicker').css("display", "inline-block");
 			$('#NavRight').css("display", "inline-block");
 			$('#buttonOption').css("display", "none");
+			$('#backButton').css("display", "none");
 			
 			$('#dateFrom').change(function(){
 				$('#dateTo').attr("min", $("#dateFrom").val());
@@ -121,36 +122,7 @@
 			$('#buttonOption').css("display", "none");
 		}
 		
-		getResourcesByProjectAvail = function(){
-			dateFrom = $('#projectStartDate').val();
-			dateTo = $('#projectEndDate').val();
-			var values = "";
-			for (i =0; i<$('#projectTypeSimulator').val().length; i++){
-				if (values != ""){
-					values = values + ",";
-				}	
-				values = values + $('#projectTypeSimulator').val()[i];
-			}
-
-			var settings = {
-				method: 'POST',
-			url: '/projects/recommendation',
-			headers: {
-				'Content-Type': undefined
-			},
-		  	data : { 
-		
-					"StartDate": dateFrom,
-					"EndDate": dateTo,
-					"Types": values,
-				}
-			}
-			$.ajax(settings).done(function (response) {
-			  $("#content").html(response);		
-			});
-		}
-		
-		getTypes = function(){
+		getTypes = function() {
 			var settings = {
 				method: 'POST',
 			url: '/types',
@@ -162,16 +134,8 @@
 				}
 			}
 			$.ajax(settings).done(function (response) {
-			  $('#projectTypeSimulator').html(response);		
+			  $('#content').html(response);		
 			});
-		}
-		
-		configureSimulatorModal = function(){		
-			$("#projectID").val(null);
-			$("#projectName").val(null);
-			$("#projectStartDate").val(null);
-			$("#projectEndDate").val(null);
-			$("#projectActive").prop('checked', false);	
 		}
 	</script>
 
@@ -213,7 +177,7 @@
 				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
 				<a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a>
 			</div>		
-		  <a  data-toggle="modal" data-target="#simulatorModal" onclick="toNav();configureSimulatorModal();getTypes();">Simulator</a>
+		  <a  onclick="toNav();getTypes();">Simulator</a>
 		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
 		</div>
 		<div id="sidebar">
@@ -247,68 +211,6 @@
 		<div id="ImagesHidden">
 			<div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px; top: 0; right: 0; left: 0; bottom: 0; position: absolute; margin: auto;" src="/static/img/loading.gif"></div>
 		</div>
-	</div>
-	
-	<!-- Modal -->
-	<div class="modal fade" id="simulatorModal" role="dialog">
-	  <div class="modal-dialog">
-	    <!-- Modal content-->
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal">&times;</button>
-	        <h4 id="modalSimulatorTitle" class="modal-title">Simulator</h4>
-	      </div>
-	      <div class="modal-body">
-	        <input type="hidden" id="projectID">
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-	              <div class="col-sm-8">
-	              	<input type="text" id="projectName" style="border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
-	              <div class="col-sm-8">
-	              	<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
-	              <div class="col-sm-8">
-	              	<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div id="divProjectType" class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
-	             	<div class="col-sm-8">
-		             	<select  id="projectTypeSimulator" multiple style="width: 174px; border-radius: 8px;">
-						</select>
-	              	</div>    
-	          	</div>
-	        </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-	              <div class="col-sm-8">
-	              	<input type="checkbox" id="projectActive"><br/>
-	              </div>    
-	          </div>
-	        </div>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" id="btnSimulate" class="btn btn-default" ng-click="link('/projects/recommendation')" onclick="getResourcesByProjectAvail();sendTitle($('#projectName').val());" data-dismiss="modal">Simulate</button>
-	        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="configureCreateModal();">Cancel</button>
-	      </div>
-	    </div>
-	    
-	  </div>
 	</div>
 	
 	<div id ="FooterPlaceHolder">
