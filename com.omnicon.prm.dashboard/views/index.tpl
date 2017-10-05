@@ -178,8 +178,8 @@
 				<a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a>
 			</div>		
 		  <a  onclick="toNav();getTypes();">Simulator</a>
-		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
 		  <a  ng-click="link('reports')" onclick="toNav();sendTitle($(this).html())">Reports</a>
+		  <!--a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a-->
 		</div>
 		<div id="sidebar">
 			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>
