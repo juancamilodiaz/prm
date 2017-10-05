@@ -1,7 +1,6 @@
 package report
 
 import (
-	"fmt"
 	"strconv"
 
 	"encoding/json"
@@ -20,7 +19,7 @@ func ProjectAssign() string {
 	resourceToProjects := getProjectAssign()
 	template := buildTemplate("Project Assign", pdf)
 
-	wTable := []float64{90, 30, 30, 20}
+	wTable := []float64{90, 35, 35, 25}
 	wSum := 0.0
 	for _, v := range wTable {
 		wSum += v
@@ -72,10 +71,8 @@ func ProjectAssign() string {
 
 func ResourceAssign() string {
 	pdf := gofpdf.New("P", "mm", "letter", "")
-
 	resourceToProjects := getResourceAsssign()
 	template := buildTemplate("Resource Assign", pdf)
-	fmt.Println(pdf.GetY())
 
 	wTable := []float64{90, 35, 35, 25}
 	wSum := 0.0
@@ -84,19 +81,15 @@ func ResourceAssign() string {
 	}
 
 	projectTable := func() {
-
 		pdf.AddPage()
 		pdf.UseTemplate(template)
 		pdf.SetY(pdf.GetY() + 30)
-		fmt.Println(pdf.GetY())
 
 		for resourceName, project := range resourceToProjects {
 			fill := false
-
 			createHeader(pdf, "Resource Name: "+resourceName, wTable)
 
 			// Color and font restoration
-
 			pdf.SetFillColor(222, 225, 229)
 			pdf.SetTextColor(0, 0, 0)
 			pdf.SetFont("", "", 0)
@@ -115,7 +108,6 @@ func ResourceAssign() string {
 	}
 
 	pdf.SetFont("Arial", "", 14)
-
 	projectTable()
 
 	filePDF := "ResourceAssign.pdf"
@@ -184,9 +176,7 @@ func getProjectAssign() map[string][]*domain.ProjectResources {
 			pResources = append(pResources, rpr)
 			mapPR[rpr.ProjectName] = pResources
 		}
-
 	}
-
 	return mapPR
 }
 
@@ -208,8 +198,6 @@ func getResourceAsssign() map[string][]*domain.ProjectResources {
 			pResources = append(pResources, rpr)
 			mapPR[rpr.ResourceName] = pResources
 		}
-
 	}
-
 	return mapPR
 }
