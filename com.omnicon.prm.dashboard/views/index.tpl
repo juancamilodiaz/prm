@@ -172,8 +172,8 @@
           <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">Home</a>
 		  <a class="accordion">Manage</a>
 			<div class="panel-accordion">
-				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
+				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
 				<a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a>
 			</div>		
