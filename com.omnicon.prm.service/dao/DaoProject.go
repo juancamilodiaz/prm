@@ -51,6 +51,9 @@ func GetProjectById(pId int64) *DOMAIN.Project {
 	project := DOMAIN.Project{}
 	// Add in project variable, the project where ID is the same that the param
 	res := getProjectCollection().Find(db.Cond{"id": pId})
+
+	//project.ProjectType = GetTypesByProjectId(pId)
+
 	// Close session when ends the method
 	defer session.Close()
 	err := res.One(&project)
@@ -58,6 +61,7 @@ func GetProjectById(pId int64) *DOMAIN.Project {
 		log.Error(err)
 		return nil
 	}
+
 	return &project
 }
 
@@ -111,6 +115,7 @@ func AddProject(pProject *DOMAIN.Project) (int64, error) {
 	}
 	// Get rows inserted
 	insertId, err := res.LastInsertId()
+
 	return insertId, nil
 }
 
@@ -127,6 +132,7 @@ func UpdateProject(pProject *DOMAIN.Project) (int64, error) {
 	defer session.Close()
 	// Update project in DB
 	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?", pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled).Where("id = ?", int(pProject.ID))
+
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -182,6 +188,16 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		filters.WriteString(pProjectFilters.Name)
 		filters.WriteString("'")
 	}
+	/*
+		if pProjectFilters.ProjectType != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("type = '")
+			filters.WriteString(pProjectFilters.ProjectType)
+			filters.WriteString("'")
+		}
+	*/
 	if pStartDate != "" {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
@@ -206,6 +222,7 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		filters.WriteString(strconv.FormatBool(*pEnabled))
 		filters.WriteString("'")
 	}
+
 	if filters.String() != "" {
 		err := result.Where(filters.String()).All(&projects)
 

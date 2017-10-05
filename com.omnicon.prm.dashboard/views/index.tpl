@@ -17,6 +17,7 @@
 	<script src="/static/js/Angular/angular.min.js"></script>
 	<script src="/static/js/Angular/angular-sanitize.js"></script>
 	<script src="/static/js/Utils.js"></script>
+	<script src="/static/js/functions.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	
@@ -87,12 +88,20 @@
 			$("#errorMessage").hide();
 			getResourcesByProjectToday();
 			$('#datePicker').css("display", "inline-block");
-			$('#NavRight').css("display", "none");
+			$('#NavRight').css("display", "inline-block");
 			$('#buttonOption').css("display", "none");
+			$('#backButton').css("display", "none");
 			
 			$('#dateFrom').change(function(){
 				$('#dateTo').attr("min", $("#dateFrom").val());
 			});
+			
+			$('#projectID').val(null);
+			$('#projectName').val(null);
+			$('#projectStartDate').val(null);
+			$('#projectEndDate').val(null);
+			$('#projectActive').prop('checked', false);	
+			$('#projectTypeSimulator').val(null);
 		});
 		
 		getResourcesByProjectToday = function(){
@@ -112,14 +121,30 @@
 			$('#dateTo').val(date)
 			$('#buttonOption').css("display", "none");
 		}
+		
+		getTypes = function() {
+			var settings = {
+				method: 'POST',
+			url: '/types',
+			headers: {
+				'Content-Type': undefined
+			},		
+		  	data : { 
+					"Template": "types",
+				}
+			}
+			$.ajax(settings).done(function (response) {
+			  $('#content').html(response);		
+			});
+		}
 	</script>
 
 </head>
 
 <body>
-	<div id="HeaderPlaceHolder">
-		<div id="NavLeft"  class="NavItem">
-			<img src="/static/img/logo_omnicon_sa_blanco-01.svg" onclick="getResourcesByProjectToday();" width="200" height="50" style="cursor: pointer;">
+	<div id="HeaderPlaceHolder" style="height: 60px;">
+		<div id="NavLeft"  class="NavItem col-sm-2" style="text-align: left;">
+			<img src="/static/img/PRM-LOGO.svg" onclick="getResourcesByProjectToday();" width="200" height="50" style="cursor: pointer;margin: 3%;">
 			<!--div class="NavItem">
 				<div class="dropdown">
 					<button id="NavMenuButton" class="btn btn-primary btn-menu toggle" type="button"><span class="glyphicon glyphicon-th-list"></span></button>
@@ -128,13 +153,13 @@
 			<div class="NavItem">
 			</div>
 		</div>
-		<div id="NavCenter" class="NavItem">
-			<h1 class="title" style="padding-left: 170px;">Project Resource Management</h1>
+		<div id="NavCenter" class="NavItem col-sm-8" style="text-align: center;">
+			<img src="/static/img/PRM_WORD.svg" style="padding: 1%"/>
 		</div>
-		<div id="NavRight" class="NavItem" style="padding-right: 3%;">
-			<div id="login" class="NavItem" style="display: none;">
-				<label style="padding-right: inherit; padding-left: inherit;">User:</label><input type="text" id="LogUser" style="border-radius: 8px;padding: 0.5%;"><label style="padding-right: inherit; padding-left: inherit;">Password:</label> <input type="password" id="LogPassword" style="border-radius: 8px;padding: 0.5%;"> <button class="buttonTable button2" disabled>Login</button>
-			</div>
+		<div id="NavRight" class="NavItem col-sm-2" style="padding-right: 3%;padding-top: 20px;text-align: right;">
+			<a style="color: white;" itemprop="url" href='{{urlfor "LoginController.Logout"}}'>
+                 <span class='glyphicon glyphicon-log-out'></span> Sign out
+			</a>
 		</div>
 	</div>
 	
@@ -145,13 +170,16 @@
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
           <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">Home</a>
-		  <a class="accordion">Settings</a>
+		  <a class="accordion">Manage</a>
 			<div class="panel-accordion">
-				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
+				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
-			</div>			
+				<a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a>
+			</div>		
+		  <a  onclick="toNav();getTypes();">Simulator</a>
 		  <a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a>
+		  <a  ng-click="link('reports')" onclick="toNav();sendTitle($(this).html())">Reports</a>
 		</div>
 		<div id="sidebar">
 			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>

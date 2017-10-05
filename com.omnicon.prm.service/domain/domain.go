@@ -21,8 +21,18 @@ type Project struct {
 	Enabled        bool      `db:"enabled"`
 	ResourceAssign map[int64]*ResourceAssign
 	Lead           string
+	ProjectType    []*Type
 }
-
+type Type struct {
+	ID   int    `db:"id"`
+	Name string `db:"value"`
+}
+type ProjectTypes struct {
+	ID        int64  `db:"id"`
+	ProjectId int64  `db:"project_id"`
+	TypeId    int    `db:"type_id"`
+	Name      string `db:"type_name"`
+}
 type ProjectResources struct {
 	ID           int64     `db:"id"`
 	ProjectId    int64     `db:"project_id"`
@@ -48,10 +58,29 @@ type Skill struct {
 	Name string `db:"name"`
 }
 
+type TypeSkills struct {
+	ID      int    `db:"id"`
+	TypeId  int    `db:"type_id"`
+	SkillId int    `db:"skill_id"`
+	Name    string `db:"skill_name"`
+	Value   int    `db:"value"`
+}
+
 type ResourceAssign struct {
 	Resource  *Resource
 	StartDate time.Time
 	EndDate   time.Time
 	Lead      bool
 	Hours     float64
+}
+
+type RangeDatesAvailability struct {
+	StartDate string
+	EndDate   string
+	Hours     float64
+}
+
+type ResourceAvailabilityInformation struct {
+	ListOfRange []*RangeDatesAvailability
+	TotalHours  float64
 }

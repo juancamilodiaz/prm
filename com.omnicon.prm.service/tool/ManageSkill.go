@@ -108,6 +108,15 @@ func DeleteSkill(pRequest *DOMAIN.DeleteSkillRQ) *DOMAIN.DeleteSkillRS {
 			}
 		}
 
+		// Delete skills associations
+		typeSkill := dao.GetTypesSkillsBySkillId(int(pRequest.ID))
+		for _, skill := range typeSkill {
+			_, err := dao.DeleteTypeSkillsByTypeIdAndSkillId(skill.TypeId, skill.SkillId)
+			if err != nil {
+				log.Error("Failed to delete skill type")
+			}
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteSkill(pRequest.ID)
 		if err != nil || rowsDeleted <= 0 {
@@ -181,4 +190,68 @@ func GetSkills(pRequest *DOMAIN.GetSkillsRQ) *DOMAIN.GetSkillsRS {
 	response.Header = header
 
 	return &response
+}
+
+func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
+	timeResponse := time.Now()
+
+	// Create response
+	response := DOMAIN.TypeSkillsRS{}
+
+	if pRequest.Value < 1 || pRequest.Value > 100 {
+		message := "Set the percentage between 1 and 100"
+		log.Error(message)
+		response.Message = message
+		response.Skills = nil
+		response.Status = "Error"
+		return &response
+	}
+
+	skillType := dao.GetTypesSkillsByTypeIdAndSkillId(pRequest.TypeId, pRequest.SkillId)
+	if skillType == nil {
+		request := DOMAIN.TypeSkills{}
+		request.SkillId = pRequest.SkillId
+		request.TypeId = pRequest.TypeId
+		request.Value = pRequest.Value
+		request.Name = pRequest.Name
+
+		id, err := dao.AddSkillToType(request)
+
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		if err != nil {
+			message := "Resource wasn't insert"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Get Resource inserted
+		typeSkills := dao.GetTypeSkillsById(id)
+		response.TypeSkills = append(response.TypeSkills, typeSkills)
+		response.Status = "OK"
+
+		return &response
+
+	} else {
+		skillType.Name = pRequest.Name
+		skillType.Value = pRequest.Value
+		id, err := dao.UpdateTypeSkills(skillType)
+
+		// Create response
+		response := DOMAIN.TypeSkillsRS{}
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		if err != nil {
+			message := "Resource wasn't insert"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Get Resource inserted
+		typeSkills := dao.GetTypeSkillsById(int(id))
+		response.TypeSkills = append(response.TypeSkills, typeSkills)
+		response.Status = "OK"
+
+		return &response
+	}
 }

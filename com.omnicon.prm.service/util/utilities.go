@@ -253,8 +253,20 @@ func MappingCreateProject(pRequest *domain.CreateProjectRQ) *domain.Project {
 	project.StartDate = time.Unix(startDateInt, 0)
 	project.EndDate = time.Unix(endDateInt, 0)
 	project.Enabled = pRequest.Enabled
+	project.ProjectType = buildType(pRequest.ProjectType)
 
 	return project
+}
+
+func buildType(pTypes []string) []*domain.Type {
+	types := []*domain.Type{}
+	for _, rowType := range pTypes {
+		newType := new(domain.Type)
+		id, _ := strconv.Atoi(rowType)
+		newType.ID = id
+		types = append(types, newType)
+	}
+	return types
 }
 
 /**
@@ -365,6 +377,10 @@ func MappingFiltersProject(pRequest *domain.GetProjectsRQ) *domain.Project {
 		if pRequest.Enabled != nil {
 			filters.Enabled = *pRequest.Enabled
 		}
+		if pRequest.ProjectType != nil {
+			filters.ProjectType = pRequest.ProjectType
+		}
+
 		return &filters
 	}
 	return nil
@@ -425,4 +441,22 @@ func MappingFiltersProjectResource(pRequest *domain.GetResourcesToProjectsRQ) *d
 		return &filters
 	}
 	return nil
+}
+
+/**
+* Function to mapping Types request to business entity project.
+ */
+func MappingType(pRequest *domain.TypeRQ) *domain.Type {
+	types := new(domain.Type)
+	types.Name = pRequest.Name
+	return types
+}
+
+func BuildHeaderResponse(timeResponse time.Time) *domain.Response_Header {
+	header := new(domain.Response_Header)
+	header.RequestDate = time.Now().String()
+	responseTime := time.Now().Sub(timeResponse)
+	header.ResponseTime = responseTime.String()
+
+	return header
 }

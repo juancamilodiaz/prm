@@ -5,7 +5,14 @@ import (
 )
 
 type MainController struct {
-	beego.Controller
+	BaseController
+}
+
+func (c *MainController) NestPrepare() {
+	if !c.IsLogin {
+		c.Ctx.Redirect(302, c.LoginPath())
+		return
+	}
 }
 
 /*Index*/
@@ -22,5 +29,5 @@ type AboutController struct {
 func (this *AboutController) About() {
 
 	this.TplName = "about.tpl"
-	//this.TplName = "Resources/resourceform.tpl"
+	this.TplName = "Resources/resourceform.tpl"
 }

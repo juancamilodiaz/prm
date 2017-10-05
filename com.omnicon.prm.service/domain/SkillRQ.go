@@ -28,3 +28,8 @@ type UpdateSkillRQ struct {
 	ID   int64
 	Name string
 }
+
+type GetTypesRQ struct {
+	ID   int64
+	Name string
+}

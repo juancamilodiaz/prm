@@ -23,7 +23,8 @@
 			"searching": true,
 			"paging": true,
 		});		
-					
+				
+		$('#backButton').css("display", "none");	
 		$('#datePicker').css("display", "inline-block");	
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
@@ -243,11 +244,12 @@ function setResourceToProjectExc(){
 					{{$projectsLoop := .Projects}}
 					{{$resourcesProject := .ResourcesToProjects}}
 					{{range $key, $project := $projectsLoop}}	
-					 	<div class="col-sm-6" style="padding-bottom: 10px;">											
+					 	<div class="col-sm-6" style="padding-bottom: 10px;">	
 							<div id="panel-df-project{{$key}}" class="panel panel-default">
 								<div id="project{{$key}}" class="panel-heading">
 									{{$project.Name}}
 									<div class="pull-right">
+										{{dateformat $project.StartDate "2006-01-02"}} to {{dateformat $project.EndDate "2006-01-02"}} 
 										<button id="collapseButton{{$key}}" class="btnCollapse" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
 									</div>
 								</div>

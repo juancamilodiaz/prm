@@ -173,6 +173,22 @@
 		  $("#content").html(response);
 		});
 	}
+	
+	getAssignationsByResource = function(resourceID){
+		var settings = {
+			method: 'POST',
+			url: '/projects/resources/assignation',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"ResourceId": resourceID
+			}
+		}
+		$.ajax(settings).done(function (response) {
+		  $("#content").html(response);
+		});
+	}
 		
 </script>
 <div>
@@ -199,6 +215,7 @@
 				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
 				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Skills</button>
+				<button class="buttonTable button2" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}});" data-dismiss="modal">Assignations</button>
 			</td>
 		</tr>
 		{{end}}	

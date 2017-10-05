@@ -40,6 +40,23 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 			response.Status = "Error"
 			return &response
 		}
+
+		for _, typesRow := range pRequest.ProjectType {
+			projectTypes := new(DOMAIN.ProjectTypes)
+
+			val, _ := strconv.Atoi(typesRow)
+			typeRq := new(DOMAIN.TypeRQ)
+			typeRq.ID = val
+			typeRS := GetTypeById(typeRq)
+			if typeRS != nil && len(typeRS.Types) > 0 {
+				projectTypes.TypeId = val
+				projectTypes.ProjectId = id
+				projectTypes.Name = typeRS.Types[0].Name
+				dao.AddTypeToProject(projectTypes)
+			}
+
+		}
+
 		// Get Project inserted
 		project = dao.GetProjectById(id)
 		response.Project = project
@@ -104,6 +121,18 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			if pRequest.StartDate != "" {
 				oldProject.EndDate = time.Unix(endDateInt, 0)
 			}
+			//if pRequest.ProjectType != nil && len(pRequest.ProjectType) > 0 {
+			/*for _, typesRow := range pRequest.ProjectType {
+				projectTypes := new(DOMAIN.Type)
+
+				val, _ := strconv.Atoi(typesRow)
+				projectTypes.TypeId = val
+				projectTypes.ProjectId = pRequest.ID
+				oldProject.ProjectType = append(oldProject.ProjectType, projectTypes)
+			}*/
+			//TODO update projectType
+
+			//}
 
 			// Validation for updating dates, these should not be outside the resource assignment range.
 			resourcesProject := dao.GetProjectResourcesByProjectId(pRequest.ID)
@@ -170,6 +199,15 @@ func DeleteProject(pRequest *DOMAIN.DeleteProjectRQ) *DOMAIN.DeleteProjectRS {
 			_, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(resource.ProjectId, resource.ResourceId)
 			if err != nil {
 				log.Error("Failed to delete project resource")
+			}
+		}
+
+		// Delete types assignations for this project
+		typesProject := dao.GetProjectTypesByProjectId(pRequest.ID)
+		for _, typeP := range typesProject {
+			_, err := dao.DeleteProjectTypesByProjectIdAndTypeId(int(typeP.ProjectId), typeP.TypeId)
+			if err != nil {
+				log.Error("Failed to delete project type")
 			}
 		}
 
@@ -498,7 +536,6 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	if len(projects) == 0 && filterString == "" {
 		projects = dao.GetAllProjects()
 	}
-
 	if projects != nil && len(projects) > 0 {
 		/*
 			for _, project := range projects {
@@ -667,8 +704,55 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	//responseTime = time.Now().Sub(timeResponse)
 	//fmt.Println("Response.loop time:", responseTime.String())
 
-	log.Debug("availBreakdown", availBreakdown)
 	response.AvailBreakdown = availBreakdown
+	//
+	availBreakdownPerRange := make(map[int64]*DOMAIN.ResourceAvailabilityInformation)
+	for resourceId, mapHourPerDate := range response.AvailBreakdown {
+
+		resourceAvailabilityInformation := DOMAIN.ResourceAvailabilityInformation{}
+		var totalHours float64
+		rangesPerDay := []*DOMAIN.RangeDatesAvailability{}
+		rangePerDay := new(DOMAIN.RangeDatesAvailability)
+
+		for day := startDate; day.Unix() <= endDate.AddDate(0, 0, 1).Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				if rangePerDay.StartDate == "" {
+					rangePerDay.StartDate = day.Format("2006-01-02")
+				}
+				if rangePerDay.EndDate == "" {
+					rangePerDay.EndDate = day.Format("2006-01-02")
+				}
+				availHours, exist := mapHourPerDate[day.Format("2006-01-02")]
+				if exist {
+					if availHours > 0 {
+						rangePerDay.EndDate = day.Format("2006-01-02")
+						rangePerDay.Hours += availHours
+					}
+				} else {
+					if rangePerDay.Hours > 0 {
+						copyRangePerDay := *rangePerDay
+						totalHours += copyRangePerDay.Hours
+						rangesPerDay = append(rangesPerDay, &copyRangePerDay)
+						rangePerDay = new(DOMAIN.RangeDatesAvailability)
+					} else {
+						rangePerDay = new(DOMAIN.RangeDatesAvailability)
+					}
+				}
+			} else if day.Unix() > endDate.Unix() {
+				copyRangePerDay := *rangePerDay
+				totalHours += copyRangePerDay.Hours
+				rangesPerDay = append(rangesPerDay, &copyRangePerDay)
+				rangePerDay = new(DOMAIN.RangeDatesAvailability)
+			}
+		}
+
+		resourceAvailabilityInformation.ListOfRange = rangesPerDay
+		resourceAvailabilityInformation.TotalHours = totalHours
+		availBreakdownPerRange[resourceId] = &resourceAvailabilityInformation
+	}
+
+	log.Debug("AvailBreakdownPerRange", availBreakdownPerRange)
+	response.AvailBreakdownPerRange = availBreakdownPerRange
 	//
 
 	response.ResourcesToProjects = projectsResources
@@ -727,4 +811,35 @@ func getFilterProject(pStartDate, pEndDate string) []*DOMAIN.Project {
 	//TODO filter in query enabled projects.
 	responseProjects := GetProjects(&requestProjects)
 	return responseProjects.Projects
+}
+
+func DeleteTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ProjectTypesRS{}
+
+	projectTypes := dao.GetProjectTypesByProjectIdAndTypeId(pRequest.ProjectId, pRequest.TypeId)
+
+	if projectTypes != nil {
+
+		rowsDeleted, err := dao.DeleteProjectTypes(projectTypes.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "ProjectTypes wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Create response
+		response.Status = "OK"
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "ProjectTypes wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
 }

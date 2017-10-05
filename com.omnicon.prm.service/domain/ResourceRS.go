@@ -84,13 +84,14 @@ func (m *SetResourceToProjectRS) GetHeader() *SetResourceToProjectRS_Header {
 
 //-------- Get Resources to Project
 type GetResourcesToProjectsRS struct {
-	Header              *GetResourcesToProjectsRS_Header
-	ResourcesToProjects []*ProjectResources
-	Projects            []*Project
-	Resources           []*Resource
-	AvailBreakdown      map[int64]map[string]float64
-	Status              string
-	Message             string
+	Header                 *GetResourcesToProjectsRS_Header
+	ResourcesToProjects    []*ProjectResources
+	Projects               []*Project
+	Resources              []*Resource
+	AvailBreakdown         map[int64]map[string]float64
+	AvailBreakdownPerRange map[int64]*ResourceAvailabilityInformation
+	Status                 string
+	Message                string
 }
 
 type GetResourcesToProjectsRS_Header struct {
