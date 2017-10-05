@@ -263,7 +263,7 @@ func (c *LoginController) GrantAccess() {
 	}
 	defer file.Close()
 
-	_, err = file.WriteString(emailEnable + "\n")
+	_, err = file.WriteString(";" + emailEnable)
 	if err != nil {
 		flash.Error("Internal Error writing Valid Emails.")
 		flash.Store(&c.Controller)
@@ -278,7 +278,7 @@ func existEmail(pEmail string) bool {
 
 	content, _ := ioutil.ReadFile(fileNameValidEmails)
 	emails := string(content)
-	for _, email := range strings.Split(emails, "\n") {
+	for _, email := range strings.Split(emails, ";") {
 		if strings.EqualFold(email, pEmail) {
 			return true
 		}
