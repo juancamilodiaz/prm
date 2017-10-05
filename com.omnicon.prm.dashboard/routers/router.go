@@ -9,6 +9,7 @@ func init() {
 	beego.SetStaticPath("/css", "static/css")
 	beego.SetStaticPath("/js", "static/js")
 	beego.SetStaticPath("/img", "static/img")
+	beego.SetStaticPath("/pdf", "static/pdf")
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/about", &controllers.AboutController{}, "post:About")
 
@@ -59,5 +60,9 @@ func init() {
 	beego.Router("/types/skills", &controllers.TypeController{}, "post:GetSkillsByType")
 	beego.Router("/types/skills/unassign", &controllers.TypeController{}, "post:DeleteSkillsByType")
 	beego.Router("/types/setskill", &controllers.TypeController{}, "post:SetSkillToType")
+
+	beego.Router("/reports", &controllers.ReportController{}, "post:Reports")
+	beego.Router("/reports/projectassign", &controllers.ReportController{}, "post:ProjectAssign")
+	beego.Router("/reports/resourceassign", &controllers.ReportController{}, "post:ResourceAssign")
 
 }
