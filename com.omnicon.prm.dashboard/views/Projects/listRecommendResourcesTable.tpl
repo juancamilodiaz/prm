@@ -50,10 +50,7 @@
 	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
 	}
 </script>
-
-<div class="col-sm-2">
-</div>
-<div class="col-sm-8">
+<div class="col-sm-12" style="padding: 1%;">
 	<table id="availabilityTable" class="table table-striped table-bordered">
 		<thead id="availabilityTableHead">
 			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-10">Resource Name</th>
@@ -63,14 +60,27 @@
 			{{$availBreakdownPerRange := .AvailBreakdownPerRange}}
 			{{$ableResource := .AbleResource}}
 			{{range $index, $resource := .Resources}}
-				{{range $indexAble, $resourceAble := $ableResource}}
+				{{range $resourceAble, $resourceSkillValue := $ableResource}}
 					{{if eq  $resource.ID $resourceAble}}
 						{{$resourceAvailabilityInfo := index $availBreakdownPerRange $resource.ID}}
 						{{if ne $resourceAvailabilityInfo.TotalHours 0.0}}
 							<tr>
-								<td class="col-sm-10" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+								<td class="col-sm-10" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
+									{{if gt $resourceSkillValue 3.0}}
+										<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
+									{{end}}
+									{{if and (le $resourceSkillValue 3.0) (gt $resourceSkillValue 2.0)}}
+										<img src="/static/img/skillUsers/user-orange.png" class="pull-right"/>
+									{{end}}
+									{{if and (le $resourceSkillValue 2.0) (gt $resourceSkillValue 1.0)}}
+										<img src="/static/img/skillUsers/user-yellow.png" class="pull-right"/>
+									{{end}}
+									{{if and (le $resourceSkillValue 1.0) (gt $resourceSkillValue 0.0)}}
+										<img src="/static/img/skillUsers/user-red.png" class="pull-right"/>
+									{{end}}
+									{{$resource.Name}} {{$resource.LastName}}
+								</td>
 								<td id="totalHours" class="col-sm-2" style="font-size:11px;text-align: -webkit-center; background-color: aliceblue;">{{$resourceAvailabilityInfo.TotalHours}}</td>
-							
 							</tr>
 						{{end}}
 					{{end}}
@@ -78,6 +88,4 @@
 			{{end}}
 		</tbody>
 	</table>
-</div>
-<div class="col-sm-2">
 </div>

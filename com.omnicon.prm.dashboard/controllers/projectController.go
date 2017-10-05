@@ -361,6 +361,9 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 	input := domain.GetResourcesToProjectsRQ{}
 	idTypesString := this.GetString("Types")
 
+	var epsilonValue float64
+	epsilonValue = 10
+
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -409,7 +412,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 			}
 		}
 
-		var listAbleResource []int64
+		listAbleResource := make(map[int64]float64)
 
 		for _, resource := range message.Resources {
 			resourceSkillsInput := domain.GetSkillByResourceRQ{}
@@ -423,12 +426,33 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 				messageResourceSkills := new(domain.GetSkillByResourceRS)
 				json.NewDecoder(resResourceSkills.Body).Decode(&messageResourceSkills)
 				isAble := true
+				average := 0.0
+				count := 0
 				for skillID, skillValue := range listSkillsPerProject {
+					stars := 0
 					hasSkill := false
 					for _, skillsByResource := range messageResourceSkills.Skills {
-						if skillID == int(skillsByResource.SkillId) && skillsByResource.Value >= skillValue {
-							hasSkill = true
-							break
+						if skillID == int(skillsByResource.SkillId) {
+							if skillsByResource.Value >= skillValue {
+								hasSkill = true
+								stars = 4
+								break
+							}
+							if skillsByResource.Value < skillValue && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.25) {
+								hasSkill = true
+								stars = 3
+								break
+							}
+							if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.25) && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.5) {
+								hasSkill = true
+								stars = 2
+								break
+							}
+							if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.5) && float64(skillsByResource.Value) >= float64(skillValue)-epsilonValue {
+								hasSkill = true
+								stars = 1
+								break
+							}
 						} else {
 							hasSkill = false
 						}
@@ -436,10 +460,13 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 					if !hasSkill {
 						isAble = false
 						break
+					} else {
+						count += stars
 					}
 				}
 				if isAble {
-					listAbleResource = append(listAbleResource, resource.ID)
+					average = float64(count / len(listSkillsPerProject))
+					listAbleResource[resource.ID] = average
 				}
 
 			} else {

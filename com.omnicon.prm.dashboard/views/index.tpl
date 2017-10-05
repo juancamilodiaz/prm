@@ -156,7 +156,7 @@
 		<div id="NavCenter" class="NavItem col-sm-8" style="text-align: center;">
 			<img src="/static/img/PRM_WORD.svg" style="padding: 1%"/>
 		</div>
-		<div id="NavRight" class="NavItem col-sm-2" style="padding-right: 3%;padding-top: 1%;text-align: right;">
+		<div id="NavRight" class="NavItem col-sm-2" style="padding-right: 3%;padding-top: 20px;text-align: right;">
 			<a style="color: white;" itemprop="url" href='{{urlfor "LoginController.Logout"}}'>
                  <span class='glyphicon glyphicon-log-out'></span> Sign out
 			</a>
