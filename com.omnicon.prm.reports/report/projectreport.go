@@ -12,17 +12,20 @@ import (
 )
 
 func ProjectAssign() string {
-	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf := gofpdf.New("P", "mm", "letter", "")
 
 	resourceToProjects := getProjectAssign()
 	w := []float64{45, 30, 30, 20}
 
 	projectTable := func() {
 
+		pdf.AddPage()
+
 		for nameProject, project := range resourceToProjects {
 			fill := false
 
-			pdf.Text(80, 10, nameProject)
+			pdf.Write(10, "\n")
+			pdf.Text(100, pdf.GetY(), nameProject)
 			pdf.Write(10, "\n")
 
 			createHeader(pdf)
@@ -40,14 +43,12 @@ func ProjectAssign() string {
 				pdf.Ln(-1)
 				fill = !fill
 			}
-			pdf.AddPage()
 		}
 		//pdf.CellFormat(wSum, 0, "", "T", 0, "", false, 0, "")
 	}
 
 	pdf.SetFont("Arial", "", 14)
 
-	pdf.AddPage()
 	projectTable()
 
 	filePDF := "ProjectAssign.pdf"
@@ -56,17 +57,20 @@ func ProjectAssign() string {
 }
 
 func ResourceAssign() string {
-	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf := gofpdf.New("P", "mm", "letter", "")
 
 	resourceToProjects := getResourceAsssign()
 	w := []float64{45, 30, 30, 20}
 
 	projectTable := func() {
 
+		pdf.AddPage()
+
 		for resourceName, project := range resourceToProjects {
 			fill := false
 
-			pdf.Text(80, 10, resourceName)
+			pdf.Write(10, "\n")
+			pdf.Text(100, pdf.GetY(), resourceName)
 			pdf.Write(10, "\n")
 
 			createHeader(pdf)
@@ -84,14 +88,13 @@ func ResourceAssign() string {
 				pdf.Ln(-1)
 				fill = !fill
 			}
-			pdf.AddPage()
+
 		}
 		//pdf.CellFormat(wSum, 0, "", "T", 0, "", false, 0, "")
 	}
 
 	pdf.SetFont("Arial", "", 14)
 
-	pdf.AddPage()
 	projectTable()
 
 	filePDF := "ResourceAssign.pdf"
@@ -102,7 +105,7 @@ func ResourceAssign() string {
 func createHeader(pdf *gofpdf.Fpdf) {
 	header := []string{"Name", "Start Date", "End Date", "Hours"}
 	// Colors, line width and bold font
-	pdf.SetFillColor(0, 0, 255)
+	pdf.SetFillColor(47, 67, 80) // 0, 92, 138
 	pdf.SetTextColor(255, 255, 255)
 	pdf.SetDrawColor(0, 0, 0)
 	pdf.SetLineWidth(.3)
