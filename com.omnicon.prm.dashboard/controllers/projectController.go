@@ -384,7 +384,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
 		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
 
-		var listSkillsPerProject []int
+		listSkillsPerProject := make(map[int]int)
 
 		for _, value := range idsType {
 			skillsByTypeInput := domain.TypeRQ{}
@@ -399,7 +399,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 				json.NewDecoder(resSkillsByType.Body).Decode(&messageSkillsByType)
 
 				for _, skill := range messageSkillsByType.TypeSkills {
-					listSkillsPerProject = append(listSkillsPerProject, skill.SkillId)
+					listSkillsPerProject[skill.SkillId] = skill.Value
 				}
 			} else {
 				this.Data["Title"] = "The Service is down."
@@ -423,12 +423,14 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 				messageResourceSkills := new(domain.GetSkillByResourceRS)
 				json.NewDecoder(resResourceSkills.Body).Decode(&messageResourceSkills)
 				isAble := true
-				for _, skillsByResource := range messageResourceSkills.Skills {
+				for skillID, skillValue := range listSkillsPerProject {
 					hasSkill := false
-					for _, skillID := range listSkillsPerProject {
-						if skillID == int(skillsByResource.SkillId) {
+					for _, skillsByResource := range messageResourceSkills.Skills {
+						if skillID == int(skillsByResource.SkillId) && skillsByResource.Value >= skillValue {
 							hasSkill = true
 							break
+						} else {
+							hasSkill = false
 						}
 					}
 					if !hasSkill {
