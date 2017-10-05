@@ -1,39 +1,37 @@
 <script>
-		$(document).ready(function(){
-			$('#datePicker').css("display", "none");
-			$('#refreshButton').css("display", "none");
-			$('#optionButton').css("display", "none");
+	$(document).ready(function () {
+		$('#datePicker').css("display", "none");
+		$('#refreshButton').css("display", "none");
+		$('#optionButton').css("display", "none");
+	});
+	
+	reportProjectAssign = function () {
+		var settings = {
+			method: 'POST',
+			url: '/reports/projectassign',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: {}
+		}
+		$.ajax(settings).done(function (response) {
+			$('#reports').html(response);
 		});
-		
-		reportProjectAssign = function(){
-			var settings = {
-				method: 'POST',
-				url: '/reports/projectassign',
-				headers: {
-					'Content-Type': undefined
-				},
-				data: { 
-				}
-			}
-			$.ajax(settings).done(function (response) {
-				$('#reports').html(response);
-			});
+	}
+	
+	reportResourceAssign = function () {
+		var settings = {
+			method: 'POST',
+			url: '/reports/resourceassign',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: {}
 		}
-		
-		reportResourceAssign = function(){
-			var settings = {
-				method: 'POST',
-				url: '/reports/resourceassign',
-				headers: {
-					'Content-Type': undefined
-				},
-				data: { 
-				}
-			}
-			$.ajax(settings).done(function (response) {
-				$('#reports').html(response);
-			});
-		}
+		$.ajax(settings).done(function (response) {
+			$('#reports').html(response);
+		});
+	}
 </script>
 
 <div>
