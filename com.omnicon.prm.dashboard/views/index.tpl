@@ -144,7 +144,7 @@
 <body>
 	<div id="HeaderPlaceHolder" style="height: 60px;">
 		<div id="NavLeft"  class="NavItem col-sm-2" style="text-align: left;">
-			<img src="/static/img/PRM.svg" onclick="getResourcesByProjectToday();" width="200" height="50" style="cursor: pointer;margin: 3%;">
+			<img src="/static/img/PRM-LOGO.svg" onclick="getResourcesByProjectToday();" width="200" height="50" style="cursor: pointer;margin: 3%;">
 			<!--div class="NavItem">
 				<div class="dropdown">
 					<button id="NavMenuButton" class="btn btn-primary btn-menu toggle" type="button"><span class="glyphicon glyphicon-th-list"></span></button>
