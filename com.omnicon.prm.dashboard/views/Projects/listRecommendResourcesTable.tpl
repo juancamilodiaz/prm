@@ -70,10 +70,10 @@
 										<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
 									{{end}}
 									{{if and (le $resourceSkillValue 3.0) (gt $resourceSkillValue 2.0)}}
-										<img src="/static/img/skillUsers/user-orange.png" class="pull-right"/>
+										<img src="/static/img/skillUsers/user-yellow.png" class="pull-right"/>
 									{{end}}
 									{{if and (le $resourceSkillValue 2.0) (gt $resourceSkillValue 1.0)}}
-										<img src="/static/img/skillUsers/user-yellow.png" class="pull-right"/>
+										<img src="/static/img/skillUsers/user-orange.png" class="pull-right"/>
 									{{end}}
 									{{if and (le $resourceSkillValue 1.0) (gt $resourceSkillValue 0.0)}}
 										<img src="/static/img/skillUsers/user-red.png" class="pull-right"/>
