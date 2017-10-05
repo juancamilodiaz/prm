@@ -5,6 +5,8 @@ import (
 
 	"encoding/json"
 
+	"os"
+
 	"github.com/jung-kurt/gofpdf"
 	utilr "prm/com.omnicon.prm.reports/util"
 	"prm/com.omnicon.prm.service/domain"
@@ -52,6 +54,10 @@ func ProjectAssign() string {
 	projectTable()
 
 	filePDF := "ProjectAssign.pdf"
+	_, err := os.Stat("static/pdf")
+	if os.IsNotExist(err) {
+		os.Mkdir("static/pdf", os.ModePerm)
+	}
 	pdf.OutputFileAndClose("static/pdf/" + filePDF)
 	return filePDF
 }
