@@ -15,7 +15,7 @@ func ProjectAssign() string {
 	pdf := gofpdf.New("P", "mm", "letter", "")
 
 	resourceToProjects := getProjectAssign()
-	w := []float64{45, 30, 30, 20}
+	w := []float64{80, 30, 30, 20}
 
 	projectTable := func() {
 
@@ -60,7 +60,7 @@ func ResourceAssign() string {
 	pdf := gofpdf.New("P", "mm", "letter", "")
 
 	resourceToProjects := getResourceAsssign()
-	w := []float64{45, 30, 30, 20}
+	w := []float64{80, 30, 30, 20}
 
 	projectTable := func() {
 
@@ -110,7 +110,7 @@ func createHeader(pdf *gofpdf.Fpdf) {
 	pdf.SetDrawColor(0, 0, 0)
 	pdf.SetLineWidth(.3)
 	pdf.SetFont("", "B", 0)
-	w := []float64{45, 30, 30, 20}
+	w := []float64{80, 30, 30, 20}
 	wSum := 0.0
 	for _, v := range w {
 		wSum += v
