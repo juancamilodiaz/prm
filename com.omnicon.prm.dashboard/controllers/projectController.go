@@ -465,8 +465,10 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 					}
 				}
 				if isAble {
-					average = float64(count / len(listSkillsPerProject))
-					listAbleResource[resource.ID] = average
+					if len(listSkillsPerProject) != 0 {
+						average = float64(count / len(listSkillsPerProject))
+						listAbleResource[resource.ID] = average
+					}
 				}
 
 			} else {
