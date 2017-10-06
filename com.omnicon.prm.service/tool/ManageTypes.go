@@ -210,11 +210,7 @@ func GetTypes(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 		response.Status = "OK"
 		response.Types = types
 
-		header := new(DOMAIN.Response_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -224,11 +220,7 @@ func GetTypes(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 	response.Message = message
 	response.Status = "OK"
 
-	header := new(DOMAIN.Response_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }

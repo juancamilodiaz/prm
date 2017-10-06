@@ -31,11 +31,7 @@ func CreateSkill(pRequest *DOMAIN.CreateSkillRQ) *DOMAIN.CreateSkillRS {
 	response.Skill = skill
 	response.Status = "OK"
 
-	header := new(DOMAIN.CreateSkillRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -66,11 +62,7 @@ func UpdateSkill(pRequest *DOMAIN.UpdateSkillRQ) *DOMAIN.UpdateSkillRS {
 		response.Skill = skill
 		response.Status = "OK"
 
-		header := new(DOMAIN.UpdateSkillRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -81,11 +73,7 @@ func UpdateSkill(pRequest *DOMAIN.UpdateSkillRQ) *DOMAIN.UpdateSkillRS {
 	response.Skill = nil
 	response.Status = "Error"
 
-	header := new(DOMAIN.UpdateSkillRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -131,11 +119,7 @@ func DeleteSkill(pRequest *DOMAIN.DeleteSkillRQ) *DOMAIN.DeleteSkillRS {
 		response.Name = skillToDelete.Name
 		response.Status = "OK"
 
-		header := new(DOMAIN.DeleteSkillRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -144,11 +128,7 @@ func DeleteSkill(pRequest *DOMAIN.DeleteSkillRQ) *DOMAIN.DeleteSkillRS {
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.DeleteSkillRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -169,11 +149,7 @@ func GetSkills(pRequest *DOMAIN.GetSkillsRQ) *DOMAIN.GetSkillsRS {
 		// Create response
 		response.Status = "OK"
 
-		header := new(DOMAIN.GetSkillsRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -183,11 +159,7 @@ func GetSkills(pRequest *DOMAIN.GetSkillsRQ) *DOMAIN.GetSkillsRS {
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.GetSkillsRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }

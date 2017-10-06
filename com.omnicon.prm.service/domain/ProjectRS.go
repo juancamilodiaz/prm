@@ -2,18 +2,13 @@ package domain
 
 //--------- Create Project
 type CreateProjectRS struct {
-	Header  *CreateProjectRS_Header
+	Header  *Response_Header
 	Project *Project
 	Status  string
 	Message string
 }
 
-type CreateProjectRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *CreateProjectRS) GetHeader() *CreateProjectRS_Header {
+func (m *CreateProjectRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -23,19 +18,14 @@ func (m *CreateProjectRS) GetHeader() *CreateProjectRS_Header {
 //--------- Delete Project
 
 type DeleteProjectRS struct {
-	Header  *DeleteProjectRS_Header
+	Header  *Response_Header
 	ID      int64
 	Name    string
 	Status  string
 	Message string
 }
 
-type DeleteProjectRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *DeleteProjectRS) GetHeader() *DeleteProjectRS_Header {
+func (m *DeleteProjectRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -44,18 +34,13 @@ func (m *DeleteProjectRS) GetHeader() *DeleteProjectRS_Header {
 
 //--------- Update Project
 type UpdateProjectRS struct {
-	Header  *UpdateProjectRS_Header
+	Header  *Response_Header
 	Project *Project
 	Status  string
 	Message string
 }
 
-type UpdateProjectRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *UpdateProjectRS) GetHeader() *UpdateProjectRS_Header {
+func (m *UpdateProjectRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -64,19 +49,14 @@ func (m *UpdateProjectRS) GetHeader() *UpdateProjectRS_Header {
 
 //--------- Get Project
 type GetProjectsRS struct {
-	Header      *GetProjectsRS_Header
+	Header      *Response_Header
 	Projects    []*Project
 	Status      string
 	Message     string
 	ProjectType string
 }
 
-type GetProjectsRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *GetProjectsRS) GetHeader() *GetProjectsRS_Header {
+func (m *GetProjectsRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}

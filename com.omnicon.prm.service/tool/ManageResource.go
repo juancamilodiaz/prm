@@ -32,11 +32,7 @@ func CreateResource(pRequest *DOMAIN.CreateResourceRQ) *DOMAIN.CreateResourceRS 
 	response.Status = "OK"
 	EnabledResources = []*DOMAIN.Resource{}
 
-	header := new(DOMAIN.CreateResourceRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -81,11 +77,7 @@ func UpdateResource(pResource *DOMAIN.UpdateResourceRQ) *DOMAIN.UpdateResourceRS
 		response.Status = "OK"
 		EnabledResources = []*DOMAIN.Resource{}
 
-		header := new(DOMAIN.UpdateResourceRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -96,11 +88,7 @@ func UpdateResource(pResource *DOMAIN.UpdateResourceRQ) *DOMAIN.UpdateResourceRS
 	response.Resource = nil
 	response.Status = "Error"
 
-	header := new(DOMAIN.UpdateResourceRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -148,11 +136,7 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 		response.Status = "OK"
 		EnabledResources = []*DOMAIN.Resource{}
 
-		header := new(DOMAIN.DeleteResourceRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -161,11 +145,7 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.DeleteResourceRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -220,11 +200,7 @@ func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillT
 					// Mapping skills in the resource of the response
 					util.MappingSkillsInAResource(response.Resource, skillsOfResource)
 
-					header := new(DOMAIN.SetSkillToResourceRS_Header)
-					header.RequestDate = time.Now().String()
-					responseTime := time.Now().Sub(timeResponse)
-					header.ResponseTime = responseTime.String()
-					response.Header = header
+					response.Header = util.BuildHeaderResponse(timeResponse)
 
 					response.Status = "OK"
 
@@ -249,11 +225,7 @@ func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillT
 					// Mapping skills in the resource of the response
 					util.MappingSkillsInAResource(response.Resource, skillsOfResource)
 
-					header := new(DOMAIN.SetSkillToResourceRS_Header)
-					header.RequestDate = time.Now().String()
-					responseTime := time.Now().Sub(timeResponse)
-					header.ResponseTime = responseTime.String()
-					response.Header = header
+					response.Header = util.BuildHeaderResponse(timeResponse)
 
 					response.Status = "OK"
 
@@ -265,11 +237,8 @@ func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillT
 			message := "Skill doesn't exist, plese create it"
 			log.Error(message)
 			response.Message = message
-			header := new(DOMAIN.SetSkillToResourceRS_Header)
-			header.RequestDate = time.Now().String()
-			responseTime := time.Now().Sub(timeResponse)
-			header.ResponseTime = responseTime.String()
-			response.Header = header
+
+			response.Header = util.BuildHeaderResponse(timeResponse)
 			response.Status = "Error"
 			return &response
 		}
@@ -279,11 +248,7 @@ func SetSkillToResource(pRequest *DOMAIN.SetSkillToResourceRQ) *DOMAIN.SetSkillT
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.SetSkillToResourceRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -309,11 +274,7 @@ func DeleteSkillToResource(pRequest *DOMAIN.DeleteSkillToResourceRQ) *DOMAIN.Del
 		response.SkillName = resourceSkill.Name
 		response.Status = "OK"
 
-		header := new(DOMAIN.DeleteSkillToResourceRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -322,11 +283,7 @@ func DeleteSkillToResource(pRequest *DOMAIN.DeleteSkillToResourceRQ) *DOMAIN.Del
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.DeleteSkillToResourceRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -383,11 +340,7 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 		response.Status = "OK"
 		response.Resources = resources
 
-		header := new(DOMAIN.GetResourcesRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -397,11 +350,7 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	response.Message = message
 	response.Status = "OK"
 
-	header := new(DOMAIN.GetResourcesRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -417,11 +366,7 @@ func GetSkillsToResources(pRequest *DOMAIN.GetSkillByResourceRQ) *DOMAIN.GetSkil
 		response.Status = "OK"
 		response.Skills = resourcesSkills
 
-		header := new(DOMAIN.GetSkillbyResourceRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -431,11 +376,7 @@ func GetSkillsToResources(pRequest *DOMAIN.GetSkillByResourceRQ) *DOMAIN.GetSkil
 	response.Message = message
 	response.Status = "OK"
 
-	header := new(DOMAIN.GetSkillbyResourceRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }

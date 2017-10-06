@@ -62,11 +62,13 @@
 	
 	createProject = function(){
 		var values = "";
-		for (i =0; i<$('#projectType').val().length; i++){
-			if (values != ""){
-				values = values + ",";
-			}	
-			values = values + $('#projectType').val()[i];
+		if ($('#projectType').val() != null) {
+			for (i =0; i<$('#projectType').val().length; i++){
+				if (values != ""){
+					values = values + ",";
+				}	
+				values = values + $('#projectType').val()[i];
+			}
 		}
 		var settings = {
 			method: 'POST',
