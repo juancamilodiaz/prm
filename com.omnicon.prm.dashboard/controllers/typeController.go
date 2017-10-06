@@ -180,7 +180,7 @@ func (this *TypeController) GetSkillsByType() {
 		this.Data["TypeID"] = input.ID
 		this.Data["TypeSkills"] = message.TypeSkills
 		this.Data["Skills"] = message.Skills
-		this.Data["Title"] = input.Name
+		this.Data["Title"] = this.GetString("Description")
 		this.TplName = "Types/listSkillsByType.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."

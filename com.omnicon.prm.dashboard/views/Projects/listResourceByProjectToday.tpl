@@ -12,6 +12,9 @@
 
 		
 		$('#viewResourcesHome').DataTable({
+			"columns": [
+				{"width": "100%"}
+	        ],
 			scrollY: 370,
 			responsive: true,
 			"pageLength": 50,

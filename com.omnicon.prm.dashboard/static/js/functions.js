@@ -22,7 +22,8 @@ function getSkillsByType(TypeId, typeName){
 		},
 		data: { 
 			"ID": TypeId,
-			"Name": typeName
+			"Name": typeName,
+			"Description": typeName
 		}
 	}
 	$.ajax(settings).done(function (response) {
@@ -60,7 +61,7 @@ function unassignProjectType(projectId, typeId, description){
 		}
 	}
 	$.ajax(settings).done(function (response) {
-	  $("#content").html(response);
+		validationError(response);
 		reload('/projects/types', {
 			"ID": projectId,
 			"Description": description
@@ -68,7 +69,7 @@ function unassignProjectType(projectId, typeId, description){
 	});
 }
 
-function unassignTypeSkills(typeId, typeSkillId){
+function unassignTypeSkills(typeId, typeSkillId, description){
 	var settings = {
 		method: 'POST',
 		url: '/types/skills/unassign',
@@ -80,9 +81,10 @@ function unassignTypeSkills(typeId, typeSkillId){
 		}
 	}
 	$.ajax(settings).done(function (response) {
-	  $("#content").html(response);
+	  	validationError(response);
 		reload('/types/skills', {
-			"ID": typeId
+			"ID": typeId,
+			"Description": description
 		});
 	});
 }
@@ -106,7 +108,8 @@ function addSkillToType(typeId, skillId, value, typeName){
 		validationError(response);
 		reload('/types/skills', {
 			"ID": typeId,
-			"Name": typeName
+			"Name": typeName,
+			"Description" : typeName
 		});
 	});
 }
