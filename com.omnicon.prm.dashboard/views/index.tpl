@@ -74,6 +74,7 @@
 			}
 			$.ajax(settings).done(function (response) {
 			  $("#content").html(response);
+			  $('.modal-backdrop').remove();
 			});
 		}
 		
@@ -135,6 +136,7 @@
 			}
 			$.ajax(settings).done(function (response) {
 			  $('#content').html(response);		
+			  $('.modal-backdrop').remove();
 			});
 		}
 	</script>
@@ -219,7 +221,7 @@
 	<div id="mask" onclick="toNav()">
     
 	
-</div>
+	</div>
 
 	<script>
 		var acc = document.getElementsByClassName("accordion");

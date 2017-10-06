@@ -156,6 +156,7 @@
 		}
 		$.ajax(settings).done(function (response) {
 		  $("#content").html(response);
+		  $('.modal-backdrop').remove();
 		});
 	}
 	

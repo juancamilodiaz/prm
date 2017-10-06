@@ -88,7 +88,7 @@
 					Are you sure that you want to unassign <b id="nameDelete"></b> from Types?
       		</div>
 			<div class="modal-footer" style="text-align:center;">
-				<button type="button" id="resourceUnassign" class="btn btn-default" onclick="unassignTypeSkills({{.TypeID}}, $('#typeSkillId').val())" data-dismiss="modal">Yes</button>
+				<button type="button" id="resourceUnassign" class="btn btn-default" onclick="unassignTypeSkills({{.TypeID}}, $('#typeSkillId').val(), {{.Title}})" data-dismiss="modal">Yes</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
 			</div>
 		</div>
