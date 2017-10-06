@@ -235,7 +235,7 @@
              	<div class="col-sm-8">
 	             	<select  id="projectType" multiple style="width: 174px; border-radius: 8px;">
 					{{range $key, $types := .Types}}
-						<option value="{{$types.ID}}">{{$types.ID}}-{{$types.Name}}</option>
+						<option value="{{$types.ID}}">{{$types.Name}}</option>
 					{{end}}
 					</select>
               	</div>    
