@@ -2,18 +2,13 @@ package domain
 
 //-------- Create Skill
 type CreateSkillRS struct {
-	Header  *CreateSkillRS_Header
+	Header  *Response_Header
 	Skill   *Skill
 	Status  string
 	Message string
 }
 
-type CreateSkillRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *CreateSkillRS) GetHeader() *CreateSkillRS_Header {
+func (m *CreateSkillRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -22,18 +17,13 @@ func (m *CreateSkillRS) GetHeader() *CreateSkillRS_Header {
 
 //-------- Create Skill
 type GetSkillByResourceRS struct {
-	Header  *GetSkillbyResourceRS_Header
+	Header  *Response_Header
 	Skills  []*ResourceSkills
 	Status  string
 	Message string
 }
 
-type GetSkillbyResourceRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *GetSkillByResourceRS) GetHeader() *GetSkillbyResourceRS_Header {
+func (m *GetSkillByResourceRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -43,19 +33,14 @@ func (m *GetSkillByResourceRS) GetHeader() *GetSkillbyResourceRS_Header {
 //-------- Delete Skill
 
 type DeleteSkillRS struct {
-	Header  *DeleteSkillRS_Header
+	Header  *Response_Header
 	ID      int64
 	Name    string
 	Status  string
 	Message string
 }
 
-type DeleteSkillRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *DeleteSkillRS) GetHeader() *DeleteSkillRS_Header {
+func (m *DeleteSkillRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -64,7 +49,7 @@ func (m *DeleteSkillRS) GetHeader() *DeleteSkillRS_Header {
 
 //-------- Delete Skill to Resource
 type DeleteSkillToResourceRS struct {
-	Header       *DeleteSkillToResourceRS_Header
+	Header       *Response_Header
 	ID           int64
 	SkillName    string
 	ResourceName string
@@ -72,12 +57,7 @@ type DeleteSkillToResourceRS struct {
 	Message      string
 }
 
-type DeleteSkillToResourceRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *DeleteSkillToResourceRS) GetHeader() *DeleteSkillToResourceRS_Header {
+func (m *DeleteSkillToResourceRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -86,18 +66,13 @@ func (m *DeleteSkillToResourceRS) GetHeader() *DeleteSkillToResourceRS_Header {
 
 //-------- Get Skill
 type GetSkillsRS struct {
-	Header  *GetSkillsRS_Header
+	Header  *Response_Header
 	Skills  []*Skill
 	Status  string
 	Message string
 }
 
-type GetSkillsRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *GetSkillsRS) GetHeader() *GetSkillsRS_Header {
+func (m *GetSkillsRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -106,18 +81,13 @@ func (m *GetSkillsRS) GetHeader() *GetSkillsRS_Header {
 
 //-------- Set Skills to Resource
 type SetSkillToResourceRS struct {
-	Header   *SetSkillToResourceRS_Header
+	Header   *Response_Header
 	Resource *Resource
 	Status   string
 	Message  string
 }
 
-type SetSkillToResourceRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *SetSkillToResourceRS) GetHeader() *SetSkillToResourceRS_Header {
+func (m *SetSkillToResourceRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -127,18 +97,13 @@ func (m *SetSkillToResourceRS) GetHeader() *SetSkillToResourceRS_Header {
 //-------- Update Skill
 
 type UpdateSkillRS struct {
-	Header  *UpdateSkillRS_Header
+	Header  *Response_Header
 	Skill   *Skill
 	Status  string
 	Message string
 }
 
-type UpdateSkillRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *UpdateSkillRS) GetHeader() *UpdateSkillRS_Header {
+func (m *UpdateSkillRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}

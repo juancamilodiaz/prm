@@ -62,11 +62,7 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 		response.Project = project
 		response.Status = "OK"
 
-		header := new(DOMAIN.CreateProjectRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 		return &response
 	}
 	response.Project = nil
@@ -76,11 +72,7 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 	log.Error(message)
 	response.Message = message
 
-	header := new(DOMAIN.CreateProjectRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 	return &response
 }
 
@@ -163,11 +155,7 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 		response.Project = project
 		response.Status = "OK"
 
-		header := new(DOMAIN.UpdateProjectRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -178,11 +166,7 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 	response.Project = nil
 	response.Status = "Error"
 
-	header := new(DOMAIN.UpdateProjectRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -225,11 +209,7 @@ func DeleteProject(pRequest *DOMAIN.DeleteProjectRQ) *DOMAIN.DeleteProjectRS {
 		response.Name = projectToDelete.Name
 		response.Status = "OK"
 
-		header := new(DOMAIN.DeleteProjectRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -239,11 +219,7 @@ func DeleteProject(pRequest *DOMAIN.DeleteProjectRQ) *DOMAIN.DeleteProjectRS {
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.DeleteProjectRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -431,11 +407,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			response.Message = message
 			response.Status = "Error"
 
-			header := new(DOMAIN.SetResourceToProjectRS_Header)
-			header.RequestDate = time.Now().String()
-			responseTime := time.Now().Sub(timeResponse)
-			header.ResponseTime = responseTime.String()
-			response.Header = header
+			response.Header = util.BuildHeaderResponse(timeResponse)
 
 			return &response
 		}
@@ -445,11 +417,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.SetResourceToProjectRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -466,11 +434,7 @@ func getInsertedResource(pIdResProject int64, pProject *DOMAIN.Project, pTimeRes
 		pProject.Lead = lead
 		response.Project = pProject
 
-		header := new(DOMAIN.SetResourceToProjectRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(pTimeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(pTimeResponse)
 
 		response.Status = "OK"
 
@@ -497,11 +461,7 @@ func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN
 		response.ID = projectResource.ID
 		response.Status = "OK"
 
-		header := new(DOMAIN.DeleteResourceToProjectRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -510,11 +470,7 @@ func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.DeleteResourceToProjectRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -569,11 +525,7 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 		// Create response
 		response.Status = "OK"
 
-		header := new(DOMAIN.GetProjectsRS_Header)
-		header.RequestDate = time.Now().String()
-		responseTime := time.Now().Sub(timeResponse)
-		header.ResponseTime = responseTime.String()
-		response.Header = header
+		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response
 	}
@@ -582,11 +534,7 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.GetProjectsRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 }
@@ -759,12 +707,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	// Create response
 	response.Status = "OK"
 
-	header := new(DOMAIN.GetResourcesToProjectsRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	//fmt.Println("GetResourcesToProjects total:", responseTime.String())
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
 	/*}
@@ -774,11 +717,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	response.Message = message
 	response.Status = "Error"
 
-	header := new(DOMAIN.GetResourcesToProjectsRS_Header)
-	header.RequestDate = time.Now().String()
-	responseTime := time.Now().Sub(timeResponse)
-	header.ResponseTime = responseTime.String()
-	response.Header = header
+	response.Header =  util.BuildHeaderResponse(timeResponse)
 
 	return &response
 	*/

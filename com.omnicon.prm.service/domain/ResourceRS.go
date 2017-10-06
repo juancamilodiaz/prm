@@ -2,18 +2,13 @@ package domain
 
 //-------- Create Resource
 type CreateResourceRS struct {
-	Header   *CreateResourceRS_Header
+	Header   *Response_Header
 	Resource *Resource
 	Status   string
 	Message  string
 }
 
-type CreateResourceRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *CreateResourceRS) GetHeader() *CreateResourceRS_Header {
+func (m *CreateResourceRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -22,7 +17,7 @@ func (m *CreateResourceRS) GetHeader() *CreateResourceRS_Header {
 
 //-------- Delete Resource
 type DeleteResourceRS struct {
-	Header   *DeleteResourceRS_Header
+	Header   *Response_Header
 	ID       int64
 	Name     string
 	LastName string
@@ -30,12 +25,7 @@ type DeleteResourceRS struct {
 	Message  string
 }
 
-type DeleteResourceRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *DeleteResourceRS) GetHeader() *DeleteResourceRS_Header {
+func (m *DeleteResourceRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -44,18 +34,13 @@ func (m *DeleteResourceRS) GetHeader() *DeleteResourceRS_Header {
 
 //-------- Get Resource
 type GetResourcesRS struct {
-	Header    *GetResourcesRS_Header
+	Header    *Response_Header
 	Resources []*Resource
 	Status    string
 	Message   string
 }
 
-type GetResourcesRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *GetResourcesRS) GetHeader() *GetResourcesRS_Header {
+func (m *GetResourcesRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -64,18 +49,13 @@ func (m *GetResourcesRS) GetHeader() *GetResourcesRS_Header {
 
 //-------- Set Resource to Project
 type SetResourceToProjectRS struct {
-	Header  *SetResourceToProjectRS_Header
+	Header  *Response_Header
 	Project *Project
 	Status  string
 	Message string
 }
 
-type SetResourceToProjectRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *SetResourceToProjectRS) GetHeader() *SetResourceToProjectRS_Header {
+func (m *SetResourceToProjectRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -84,7 +64,7 @@ func (m *SetResourceToProjectRS) GetHeader() *SetResourceToProjectRS_Header {
 
 //-------- Get Resources to Project
 type GetResourcesToProjectsRS struct {
-	Header                 *GetResourcesToProjectsRS_Header
+	Header                 *Response_Header
 	ResourcesToProjects    []*ProjectResources
 	Projects               []*Project
 	Resources              []*Resource
@@ -94,12 +74,7 @@ type GetResourcesToProjectsRS struct {
 	Message                string
 }
 
-type GetResourcesToProjectsRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *GetResourcesToProjectsRS) GetHeader() *GetResourcesToProjectsRS_Header {
+func (m *GetResourcesToProjectsRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -108,7 +83,7 @@ func (m *GetResourcesToProjectsRS) GetHeader() *GetResourcesToProjectsRS_Header 
 
 //-------- Delete Resource to Project
 type DeleteResourceToProjectRS struct {
-	Header       *DeleteResourceToProjectRS_Header
+	Header       *Response_Header
 	ID           int64
 	ResourceName string
 	ProjectName  string
@@ -116,12 +91,7 @@ type DeleteResourceToProjectRS struct {
 	Message      string
 }
 
-type DeleteResourceToProjectRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *DeleteResourceToProjectRS) GetHeader() *DeleteResourceToProjectRS_Header {
+func (m *DeleteResourceToProjectRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
@@ -130,18 +100,13 @@ func (m *DeleteResourceToProjectRS) GetHeader() *DeleteResourceToProjectRS_Heade
 
 //-------- Update Resource
 type UpdateResourceRS struct {
-	Header   *UpdateResourceRS_Header
+	Header   *Response_Header
 	Resource *Resource
 	Status   string
 	Message  string
 }
 
-type UpdateResourceRS_Header struct {
-	ResponseTime string
-	RequestDate  string
-}
-
-func (m *UpdateResourceRS) GetHeader() *UpdateResourceRS_Header {
+func (m *UpdateResourceRS) GetHeader() *Response_Header {
 	if m != nil {
 		return m.Header
 	}
