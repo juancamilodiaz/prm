@@ -55,11 +55,13 @@
 		dateFrom = $('#projectStartDate').val();
 		dateTo = $('#projectEndDate').val();
 		var values = "";
-		for (i =0; i<$('#projectTypeSimulator').val().length; i++){
-			if (values != ""){
-				values = values + ",";
-			}	
-			values = values + $('#projectTypeSimulator').val()[i];
+		if ($('#projectTypeSimulator').val() != null) {
+			for (i =0; i<$('#projectTypeSimulator').val().length; i++){
+				if (values != ""){
+					values = values + ",";
+				}	
+				values = values + $('#projectTypeSimulator').val()[i];
+			}
 		}
 
 		var settings = {
