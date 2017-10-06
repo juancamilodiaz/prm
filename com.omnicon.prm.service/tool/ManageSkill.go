@@ -219,7 +219,7 @@ func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 
 		response.Header = util.BuildHeaderResponse(timeResponse)
 		if err != nil {
-			message := "Resource wasn't insert"
+			message := "Skill wasn't assigned"
 			log.Error(message)
 			response.Message = message
 			response.Status = "Error"
@@ -241,7 +241,7 @@ func SetSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 		response := DOMAIN.TypeSkillsRS{}
 		response.Header = util.BuildHeaderResponse(timeResponse)
 		if err != nil {
-			message := "Resource wasn't insert"
+			message := "Skill wasn't updated"
 			log.Error(message)
 			response.Message = message
 			response.Status = "Error"
