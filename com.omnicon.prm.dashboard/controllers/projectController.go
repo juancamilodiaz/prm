@@ -344,6 +344,7 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 		this.Data["Projects"] = message.Projects
 		this.Data["Resources"] = message.Resources
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
+		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
 		this.Data["Title"] = input.ProjectName
 		this.TplName = "Projects/listResourceByProjectToday.tpl"
 

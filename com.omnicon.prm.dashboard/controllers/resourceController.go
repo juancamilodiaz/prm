@@ -244,10 +244,7 @@ func (this *ResourceController) SetSkillsToResource() {
 
 	if err == nil {
 		defer res.Body.Close()
-		message := new(domain.SetSkillToResourceRS)
-		json.NewDecoder(res.Body).Decode(&message)
 
-		this.Data["Skills"] = message.Resource.Skills
 		this.Data["Title"] = this.GetString("ResourceName")
 		this.TplName = "Resources/listSkillsByResource.tpl"
 	} else {

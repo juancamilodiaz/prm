@@ -2,7 +2,8 @@
 	$(document).ready(function () {
 		$('#datePicker').css("display", "none");
 		$('#refreshButton').css("display", "none");
-		$('#optionButton').css("display", "none");
+		$('#backButton').css("display", "none");
+		$('#buttonOption').css("display", "none");
 	});
 	
 	reportProjectAssign = function () {
