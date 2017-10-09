@@ -1,15 +1,26 @@
 <script>
+	var MyProject = {};
 	$(document).ready(function(){
+		MyProject.table = $('#viewResourcesPerProjectUnassign').DataTable({
+			"columns": [
+				{"className":'details-control',"searchable":true},
+				null
+	        ],
+			"columnDefs": [ {
+			      "targets": [1],
+			      "orderable": true
+			    } ],
+			responsive: true,
+			"pageLength": 50,
+			"searching": true,
+			"paging": true,
+		});
 		
-		// Assign information of available resources
-		{{$availBreakdown := .AvailBreakdown}}
-		{{range $index, $resource := .Resources}}
-			{{$avail := index $availBreakdown $resource.ID}}
-			{{range $day, $hours := $avail}}
-				$("#unassignBody").append('<tr draggable=false><td style="font-size:11px;text-align: -webkit-center;margin:0 0 0px;">'+{{$resource.Name}}+' '+ {{$resource.LastName}}+'</td><td style="font-size:11px;text-align: -webkit-center;">'+{{$day}}+'</td><td style="font-size:11px;text-align: -webkit-center;">'+{{$hours}}+'</td></tr>'); 
-			{{end}}
-		{{end}}
-
+		
+		
+		$('#viewResourcesPerProjectUnassign tbody').on('click', 'td.details-control', function(){
+			
+		});
 		
 		$('#viewResourcesHome').DataTable({
 			"columns": [
@@ -20,12 +31,7 @@
 			"pageLength": 50,
 			"searching": true,
 			"paging": false,
-		});
-		$('#viewResourcesPerProjectUnassign').DataTable({
-			responsive: true,
-			"searching": true,
-			"paging": true,
-		});		
+		});	
 				
 		$('#backButton').css("display", "none");	
 		$('#datePicker').css("display", "inline-block");	
@@ -100,6 +106,34 @@
 	  }
 	}
 	
+	function showDetails(pObjBody, pListOfRange) {
+        var tr = pObjBody.closest('tr');
+        var row = MyProject.table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(pListOfRange) ).show();
+            tr.addClass('shown');
+        }
+    }
+	
+	/* Formatting function for row details - modify as you need */
+	function format ( d ) {
+	    // `d` is the original data object for the row
+		var insert = '';
+		for (index = 0; index < d.length; index++) {
+			insert += '<td class="col-sm-5" style="font-size:12px;text-align: -webkit-center;">'+d[index].StartDate+'</td>'+
+	            '<td class="col-sm-5" style="font-size:12px;text-align: -webkit-center;">'+d[index].EndDate+'</td>'+
+				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].Hours+'</td>'+	            
+	        '</tr>';
+		}
+	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
+	}
 
 	$('#resourceEndDate, #resourceStartDate').change(function(){
     	var startDate = new Date($("#resourceStartDate").val());
@@ -300,13 +334,23 @@ function setResourceToProjectExc(){
 				</div>
 				<div id="collapseUnassign" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px;">
 					<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
-						<thead>
-							<th style="font-size:12px;text-align: -webkit-center;">Name</th>
-							<th style="font-size:12px;text-align: -webkit-center;">Date</th>
-							<th style="font-size:12px;text-align: -webkit-center;">Available Hours</th>
+						<thead id="availabilityTableHead">
+							<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-10">Resource Name</th>
+							<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-1">Hours</th>
 						</thead>
 						<tbody id="unassignBody">
-														
+							{{$availBreakdown := .AvailBreakdownPerRange}}
+							{{range $index, $resource := .Resources}}
+								{{if $availBreakdown}}
+									{{$avail := index $availBreakdown $resource.ID}}
+									{{if gt $avail.TotalHours 0.0}}
+										<tr draggable=false>
+											<td style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+											<td style="font-size:11px;text-align: -webkit-center;">{{$avail.TotalHours}}</td>
+										</tr>
+									{{end}}
+								{{end}}
+							{{end}}
 						</tbody>
 					</table>										
 				</div>
