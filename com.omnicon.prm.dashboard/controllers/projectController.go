@@ -614,9 +614,12 @@ func (this *ProjectController) GetAssignationByResource() {
 		json.NewDecoder(res.Body).Decode(&message)
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
 		this.Data["ResourceId"] = input.ResourceId
-		for _, assig := range message.ResourcesToProjects {
-			this.Data["Title"] = assig.ResourceName
-			break
+		this.Data["Title"] = input.ResourceName
+		if input.ResourceName == "" {
+			for _, assig := range message.ResourcesToProjects {
+				this.Data["Title"] = assig.ResourceName
+				break
+			}
 		}
 		this.TplName = "Projects/listAssignationByResource.tpl"
 	} else {

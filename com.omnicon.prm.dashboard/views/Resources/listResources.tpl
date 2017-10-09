@@ -174,7 +174,7 @@
 		});
 	}
 	
-	getAssignationsByResource = function(resourceID){
+	getAssignationsByResource = function(resourceID, resourceName){
 		var settings = {
 			method: 'POST',
 			url: '/projects/resources/assignation',
@@ -182,7 +182,8 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"ResourceId": resourceID
+				"ResourceId": resourceID,
+				"ResourceName": resourceName
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -215,7 +216,7 @@
 				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
 				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Skills</button>
-				<button class="buttonTable button2" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}});" data-dismiss="modal">Assignations</button>
+				<button class="buttonTable button2" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}},'{{$resource.Name}}'+' '+'{{$resource.LastName}}');" data-dismiss="modal">Assignations</button>
 			</td>
 		</tr>
 		{{end}}	

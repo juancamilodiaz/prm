@@ -58,7 +58,7 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/projects/resources/assignation', {"ResourceId": $('#resourceID').val()});
+		  reload('/projects/resources/assignation', {"ResourceId": $('#resourceID').val(), "ResourceName": "{{.Title}}"});
 		});
 	}
 	
