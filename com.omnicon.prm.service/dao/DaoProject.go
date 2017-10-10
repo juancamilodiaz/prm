@@ -104,11 +104,15 @@ func AddProject(pProject *DOMAIN.Project) (int64, error) {
 		"name",
 		"start_date",
 		"end_date",
-		"enabled").Values(
+		"enabled",
+		"operation_center",
+		"work_order").Values(
 		pProject.Name,
 		pProject.StartDate,
 		pProject.EndDate,
-		pProject.Enabled).Exec()
+		pProject.Enabled,
+		pProject.OperationCenter,
+		pProject.WorkOrder).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -131,7 +135,7 @@ func UpdateProject(pProject *DOMAIN.Project) (int64, error) {
 	// Close session when ends the method
 	defer session.Close()
 	// Update project in DB
-	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?", pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled).Where("id = ?", int(pProject.ID))
+	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?", pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder).Where("id = ?", int(pProject.ID))
 
 	res, err := q.Exec()
 	if err != nil {
@@ -220,6 +224,19 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		}
 		filters.WriteString("enabled = '")
 		filters.WriteString(strconv.FormatBool(*pEnabled))
+		filters.WriteString("'")
+	}
+	if pProjectFilters.OperationCenter != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("operation_center = '")
+		filters.WriteString(pProjectFilters.OperationCenter)
+		filters.WriteString("'")
+	}
+	if pProjectFilters.WorkOrder != 0 {
+		filters.WriteString("work_order = '")
+		filters.WriteString(strconv.Itoa(pProjectFilters.WorkOrder))
 		filters.WriteString("'")
 	}
 

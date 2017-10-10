@@ -237,6 +237,8 @@ func MappingCreateResource(pRequest *domain.CreateResourceRQ) *domain.Resource {
 func MappingCreateProject(pRequest *domain.CreateProjectRQ) *domain.Project {
 	project := new(domain.Project)
 	project.Name = pRequest.Name
+	project.OperationCenter = pRequest.OperationCenter
+	project.WorkOrder = pRequest.WorkOrder
 	startDate := new(string)
 	startDate = &pRequest.StartDate
 	endDate := new(string)
@@ -379,6 +381,12 @@ func MappingFiltersProject(pRequest *domain.GetProjectsRQ) *domain.Project {
 		}
 		if pRequest.ProjectType != nil {
 			filters.ProjectType = pRequest.ProjectType
+		}
+		if pRequest.OperationCenter != "" {
+			filters.OperationCenter = pRequest.OperationCenter
+		}
+		if pRequest.WorkOrder != 0 {
+			filters.WorkOrder = pRequest.WorkOrder
 		}
 
 		return &filters

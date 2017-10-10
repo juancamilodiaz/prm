@@ -93,6 +93,12 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 		if pRequest.Name != "" {
 			oldProject.Name = pRequest.Name
 		}
+		if pRequest.OperationCenter != "" {
+			oldProject.OperationCenter = pRequest.OperationCenter
+		}
+		if pRequest.WorkOrder != 0 {
+			oldProject.WorkOrder = pRequest.WorkOrder
+		}
 		if pRequest.StartDate != "" || pRequest.EndDate != "" {
 			startDate := new(string)
 			startDate = &pRequest.StartDate

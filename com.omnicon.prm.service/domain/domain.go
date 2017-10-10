@@ -14,14 +14,16 @@ type Resource struct {
 }
 
 type Project struct {
-	ID             int64     `db:"id"`
-	Name           string    `db:"name"`
-	StartDate      time.Time `db:"start_date"`
-	EndDate        time.Time `db:"end_date"`
-	Enabled        bool      `db:"enabled"`
-	ResourceAssign map[int64]*ResourceAssign
-	Lead           string
-	ProjectType    []*Type
+	ID              int64     `db:"id"`
+	Name            string    `db:"name"`
+	StartDate       time.Time `db:"start_date"`
+	EndDate         time.Time `db:"end_date"`
+	Enabled         bool      `db:"enabled"`
+	ResourceAssign  map[int64]*ResourceAssign
+	Lead            string
+	ProjectType     []*Type
+	OperationCenter string `db:"operation_center"`
+	WorkOrder       int    `db:"work_order"`
 }
 
 type Type struct {
