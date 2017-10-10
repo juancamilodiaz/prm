@@ -33,6 +33,20 @@
 			$('#reports').html(response);
 		});
 	}
+	
+	reportMatrixAssign = function () {
+		var settings = {
+			method: 'POST',
+			url: '/reports/matrixassign',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: {}
+		}
+		$.ajax(settings).done(function (response) {
+			$('#reports').html(response);
+		});
+	}
 </script>
 
 <div>
@@ -53,6 +67,10 @@
          <tr>
             <td>Resource Assign</td>
             <td><button data-toggle="modal" data-target="#viewReport" class="buttonTable button2" id="resourceAssign" onclick="reportResourceAssign();$('#titleReport').html('Report Resources Assign');" data-dismiss="modal">Generate</button></td>
+         </tr>
+		<tr>
+            <td>Matrix Assign</td>
+            <td><button data-toggle="modal" data-target="#viewReport" class="buttonTable button2" id="matrixAssign" onclick="reportMatrixAssign();$('#titleReport').html('Report Matrix Assign');" data-dismiss="modal">Generate</button></td>
          </tr>
       </tbody>
    </table>

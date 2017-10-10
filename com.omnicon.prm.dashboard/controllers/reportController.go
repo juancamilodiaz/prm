@@ -31,3 +31,9 @@ func (this *ReportController) ResourceAssign() {
 	this.Data["PDF"] = "/static/pdf/" + fileName
 	this.TplName = "Reports/report.tpl"
 }
+
+func (this *ReportController) MatrixOfAssign() {
+	fileName := report.MatrixOfAssign()
+	this.Data["PDF"] = "/static/pdf/" + fileName
+	this.TplName = "Reports/report.tpl"
+}
