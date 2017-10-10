@@ -369,3 +369,10 @@ td.details-control {
 tr.shown td.details-control {
     background: url('../img/minus.png') no-repeat center center;
 }
+
+.chart-container {
+  position: relative;
+  margin: auto;
+  height: 350px;
+  width: 350px;
+}

@@ -1,3 +1,8 @@
+<html>
+<head>
+	<script src="/static/js/chartjs/Chart.min.js" > </script>
+
+
 <script>
 	$(document).ready(function(){
 		$('#viewSkillsInResource').DataTable({
@@ -102,7 +107,50 @@
 		  $('#resourceNameSkill').html(response);
 		});
 	}
+
 </script>
+
+</head>
+
+<body>
+
+<p>
+	   <div class="chart-container" id="chartjs-wrapper">
+			<canvas id="chartjs-3" >
+			</canvas>
+			
+			
+			<script>new Chart(document.getElementById("chartjs-3"),
+				{"type":"radar",
+					"data": {
+						"labels": {{.SkillsName}},
+							"datasets":[
+								{"label":"{{.Title}}","data":{{.SkillsValue}},"fill":true,"backgroundColor":"rgba(54, 162, 235, 0.2)","borderColor":"rgb(54, 162, 235)","pointBackgroundColor":"rgb(54, 162, 235)","pointBorderColor":"#fff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},
+							]
+						},
+					"options": {
+						"elements": {
+							"line":{"tension":0,"borderWidth":3}
+						},
+						"scale": {
+					        "display": true,
+							"ticks": {
+								"max": 100,
+								"min": 0,
+								"beginAtZero":true,
+								"stepSize": 20	
+							}				
+					    },
+						legend: {
+							display:false
+						}
+					}
+				
+				});
+			</script>
+		</div>
+	</p>
+
 <table id="viewSkillsInResource" class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -214,3 +262,4 @@
 	      	</div>
 	    </div>
 	</div>
+</body>

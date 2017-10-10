@@ -215,10 +215,13 @@ func (this *ResourceController) GetSkillsByResource() {
 		defer res.Body.Close()
 		message := new(domain.GetSkillByResourceRS)
 		json.NewDecoder(res.Body).Decode(&message)
+		data := buildChartMessage(message)
 
 		this.Data["ResourceId"] = input.ID
 		this.Data["Skills"] = message.Skills
 		this.Data["Title"] = this.GetString("ResourceName")
+		this.Data["SkillsName"] = data.SkillsName
+		this.Data["SkillsValue"] = data.SkillsValue
 		this.TplName = "Resources/listSkillsByResource.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
@@ -226,6 +229,22 @@ func (this *ResourceController) GetSkillsByResource() {
 		this.Data["Type"] = "Error"
 		this.TplName = "Common/message.tpl"
 	}
+}
+
+type Datasets struct {
+	SkillsName  []string
+	SkillsValue []int
+}
+
+func buildChartMessage(pMessage *domain.GetSkillByResourceRS) Datasets {
+
+	dataset := Datasets{}
+	for _, skill := range pMessage.Skills {
+		dataset.SkillsName = append(dataset.SkillsName, skill.Name)
+		dataset.SkillsValue = append(dataset.SkillsValue, skill.Value)
+	}
+
+	return dataset
 }
 
 func (this *ResourceController) SetSkillsToResource() {
