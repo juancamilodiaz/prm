@@ -66,20 +66,6 @@ func (this *ProjectController) CreateProject() {
 		this.TplName = "Common/message.tpl"
 		return
 	}
-	if input.OperationCenter == "" {
-		this.Data["Type"] = "Error"
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = "The operation center is empty."
-		this.TplName = "Common/message.tpl"
-		return
-	}
-	if input.WorkOrder <= 0 {
-		this.Data["Type"] = "Error"
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = "The work order is zero."
-		this.TplName = "Common/message.tpl"
-		return
-	}
 	log.Debugf("[ParseInput] Input: %+v \n", input)
 
 	inputBuffer := EncoderInput(input)
