@@ -284,7 +284,7 @@ function setResourceToProjectExc(){
 					 	<div class="col-sm-6" style="padding-bottom: 10px;">	
 							<div id="panel-df-project{{$key}}" class="panel panel-default">
 								<div id="project{{$key}}" class="panel-heading">
-									{{$project.Name}}
+									{{$project.OperationCenter}}-{{$project.WorkOrder}} {{$project.Name}}
 									<div class="pull-right">
 										{{dateformat $project.StartDate "2006-01-02"}} to {{dateformat $project.EndDate "2006-01-02"}} 
 										<button id="collapseButton{{$key}}" class="btnCollapse" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>

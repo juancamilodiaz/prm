@@ -39,6 +39,8 @@
 				'Content-Type': undefined
 			},
 			data: { 
+				"OperationCenter": $('#projectOperationCenter').val(),
+				"WorkOrder": $('#projectWorkOrder').val(),
 				"Name": $('#projectName').val(),
 				"StartDate": $('#projectStartDate').val(),
 				"EndDate": $('#projectEndDate').val(),
@@ -88,6 +90,22 @@
 		    <!-- Modal content-->
 		      <div>
 		        <input type="hidden" id="projectID">
+		        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+		        	<div class="form-group form-group-sm">
+		        		<label class="col-sm-4 translatable" data-i18n="Operation Center" style="padding:1px"> Operation Center </label>
+		              <div class="col-sm-8" style="padding-right:1px;">
+		              	<input type="text" id="projectOperationCenter" style="border-radius: 8px;">
+		        		</div>
+		          </div>
+		        </div>
+		        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+		        	<div class="form-group form-group-sm">
+		        		<label class="col-sm-4 translatable" data-i18n="Work Order" style="padding:1px"> Work Order </label>
+		              <div class="col-sm-8" style="padding-right:1px;">
+		              	<input type="number" id="projectWorkOrder" style="border-radius: 8px;">
+		        		</div>
+		          </div>
+		        </div>
 		        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
 		        	<div class="form-group form-group-sm">
 		        		<label class="col-sm-4 translatable" data-i18n="Name" style="padding:1px"> Name </label>
