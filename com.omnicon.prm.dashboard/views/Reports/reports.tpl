@@ -13,7 +13,12 @@
 			headers: {
 				'Content-Type': undefined
 			},
-			data: {}
+			data: { 
+				"ProjectId": $('#projectsValue option:selected').attr("id"),
+				"ResourceId": $('#resourcesValue option:selected').attr("id"),
+				"StartDate": $('#dateFromValue').val(),
+				"EndDate": $('#dateToValue').val()
+			}
 		}
 		$.ajax(settings).done(function (response) {
 			$('#reports').html(response);
@@ -27,7 +32,12 @@
 			headers: {
 				'Content-Type': undefined
 			},
-			data: {}
+			data: {
+				"ProjectId": $('#projectsValue option:selected').attr("id"),
+				"ResourceId": $('#resourcesValue option:selected').attr("id"),
+				"StartDate": $('#dateFromValue').val(),
+				"EndDate": $('#dateToValue').val()
+			}
 		}
 		$.ajax(settings).done(function (response) {
 			$('#reports').html(response);
@@ -41,13 +51,52 @@
 			headers: {
 				'Content-Type': undefined
 			},
-			data: {}
+			data: {
+				"ProjectId": $('#projectsValue option:selected').attr("id"),
+				"ResourceId": $('#resourcesValue option:selected').attr("id"),
+				"StartDate": $('#dateFromValue').val(),
+				"EndDate": $('#dateToValue').val()
+			}
 		}
 		$.ajax(settings).done(function (response) {
 			$('#reports').html(response);
 		});
 	}
 </script>
+
+<button class="buttonHeader button2" data-toggle="collapse" data-target="#filters">Filters</button>
+<div id="filters" class="collapse">
+	<div class="row">
+	   <div class="col-md-3">
+	      <div class="form-group">
+	         <label for="projects">Projects list:</label>
+	         <select class="form-control" id="projectsValue">
+				<option id="">All projects</option>
+				{{range $index, $project := .Projects}}
+	            <option id="{{$project.ID}}">{{$project.OperationCenter}}-{{$project.WorkOrder}} {{$project.Name}}</option>
+				{{end}}
+	         </select>
+	      </div>
+	      <div class="form-group">
+	         <label for="resources">Resources list:</label>
+	         <select class="form-control" id="resourcesValue">
+				<option id="">All resources</option>
+				{{range $index, $resource := .Resources}}
+	            <option id="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
+				{{end}}
+	         </select>
+	      </div>
+	      <div class="form-group">
+	         <label for="dateFrom">Date From:</label>
+	         <input type="date" class="form-control" id="dateFromValue">
+	      </div>
+	      <div class="form-group">
+	         <label for="dateTo">Date To:</label>
+	         <input type="date" class="form-control" id="dateToValue">
+	      </div>
+		</div>
+   </div>
+</div>
 
 <div>
    <br>
