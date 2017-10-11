@@ -2,6 +2,7 @@ package report
 
 import (
 	"strconv"
+	"time"
 
 	"encoding/json"
 
@@ -13,10 +14,19 @@ import (
 	"prm/com.omnicon.prm.service/util"
 )
 
-func ProjectAssign() string {
+func init() {
+	createFolder()
+	time.Local = time.UTC
+}
+
+func ProjectAssign(pInput domain.GetResourcesToProjectsRQ) string {
+
+	filePDF := "ProjectAssign.pdf"
+	deleteFile(filePDF)
+
 	pdf := gofpdf.New("P", "mm", "letter", "")
 
-	resourceToProjects := getProjectAssign()
+	resourceToProjects := getProjectAssign(pInput)
 	template := buildTemplate("Project Assign", pdf)
 
 	wTable := []float64{90, 35, 35, 25}
@@ -60,18 +70,17 @@ func ProjectAssign() string {
 
 	projectTable()
 
-	filePDF := "ProjectAssign.pdf"
-	_, err := os.Stat("static/pdf")
-	if os.IsNotExist(err) {
-		os.Mkdir("static/pdf", os.ModePerm)
-	}
 	pdf.OutputFileAndClose("static/pdf/" + filePDF)
 	return filePDF
 }
 
-func ResourceAssign() string {
+func ResourceAssign(pInput domain.GetResourcesToProjectsRQ) string {
+
+	filePDF := "ResourceAssign.pdf"
+	deleteFile(filePDF)
+
 	pdf := gofpdf.New("P", "mm", "letter", "")
-	resourceToProjects := getResourceAsssign()
+	resourceToProjects := getResourceAsssign(pInput)
 	template := buildTemplate("Resource Assign", pdf)
 
 	wTable := []float64{90, 35, 35, 25}
@@ -110,14 +119,17 @@ func ResourceAssign() string {
 	pdf.SetFont("Arial", "", 14)
 	projectTable()
 
-	filePDF := "ResourceAssign.pdf"
 	pdf.OutputFileAndClose("static/pdf/" + filePDF)
 	return filePDF
 }
 
-func MatrixOfAssign() string {
+func MatrixOfAssign(pInput domain.GetResourcesToProjectsRQ) string {
+
+	filePDF := "MatrixOfAssign.pdf"
+	deleteFile(filePDF)
+
 	pdf := gofpdf.New("P", "mm", "letter", "")
-	resources, projects := buildProjectAndResource()
+	resources, projects := buildProjectAndResource(pInput)
 	template := buildTemplate("Matrix of Assign", pdf)
 
 	wTable := []float64{90, 15, 35, 25}
@@ -157,12 +169,6 @@ func MatrixOfAssign() string {
 	pdf.SetFont("Arial", "", 14)
 
 	projectTable()
-
-	filePDF := "MatrixOfAssign.pdf"
-	_, err := os.Stat("static/pdf")
-	if os.IsNotExist(err) {
-		os.Mkdir("static/pdf", os.ModePerm)
-	}
 
 	pdf.OutputFileAndClose("static/pdf/" + filePDF)
 	return filePDF
@@ -243,7 +249,8 @@ func buildTemplate(pName string, pdf *gofpdf.Fpdf) gofpdf.Template {
 	return template
 }
 
-func getAllProjects() []*domain.Project {
+func GetAllProjects() []*domain.Project {
+
 	operation := "GetProjects"
 	res, _ := utilr.PostData(operation, nil)
 
@@ -252,11 +259,24 @@ func getAllProjects() []*domain.Project {
 	return message.Projects
 }
 
-func getProjectAssign() map[string][]*domain.ProjectResources {
+func GetAllResources() []*domain.Resource {
+
+	operation := "GetResources"
+	res, _ := utilr.PostData(operation, nil)
+
+	message := new(domain.GetResourcesRS)
+	json.NewDecoder(res.Body).Decode(&message)
+	return message.Resources
+}
+
+func getProjectAssign(pInput domain.GetResourcesToProjectsRQ) map[string][]*domain.ProjectResources {
+
+	inputBuffer := utilr.EncoderInput(pInput)
+
 	mapPR := map[string][]*domain.ProjectResources{}
 	operation := "GetResourcesToProjects"
 
-	res, _ := utilr.PostData(operation, nil)
+	res, _ := utilr.PostData(operation, inputBuffer)
 
 	message := new(domain.GetResourcesToProjectsRS)
 	json.NewDecoder(res.Body).Decode(&message)
@@ -274,9 +294,12 @@ func getProjectAssign() map[string][]*domain.ProjectResources {
 	return mapPR
 }
 
-func buildProjectAndResource() (map[int64]string, map[string]map[string]*domain.ProjectResources) { //} map[string]float64 {
+func buildProjectAndResource(pInput domain.GetResourcesToProjectsRQ) (map[int64]string, map[string]map[string]*domain.ProjectResources) { //} map[string]float64 {
+
+	inputBuffer := utilr.EncoderInput(pInput)
+
 	operation := "GetResourcesToProjects"
-	res, _ := utilr.PostData(operation, nil)
+	res, _ := utilr.PostData(operation, inputBuffer)
 	message := new(domain.GetResourcesToProjectsRS)
 	json.NewDecoder(res.Body).Decode(&message)
 
@@ -325,11 +348,14 @@ func buildProjectAndResource() (map[int64]string, map[string]map[string]*domain.
 	return mapResources, mapPR
 }
 
-func getResourceAsssign() map[string][]*domain.ProjectResources {
+func getResourceAsssign(pInput domain.GetResourcesToProjectsRQ) map[string][]*domain.ProjectResources {
+
+	inputBuffer := utilr.EncoderInput(pInput)
+
 	mapPR := map[string][]*domain.ProjectResources{}
 	operation := "GetResourcesToProjects"
 
-	res, _ := utilr.PostData(operation, nil)
+	res, _ := utilr.PostData(operation, inputBuffer)
 
 	message := new(domain.GetResourcesToProjectsRS)
 	json.NewDecoder(res.Body).Decode(&message)
@@ -345,4 +371,20 @@ func getResourceAsssign() map[string][]*domain.ProjectResources {
 		}
 	}
 	return mapPR
+}
+
+// Function that create folder if not exist
+func createFolder() {
+	_, err := os.Stat("static/pdf")
+	if os.IsNotExist(err) {
+		os.Mkdir("static/pdf", os.ModePerm)
+	}
+}
+
+// function that delete the file to generate.
+func deleteFile(pFilePDF string) {
+	_, err := os.Stat("static/pdf/" + pFilePDF)
+	if !os.IsNotExist(err) {
+		os.Remove("static/pdf/" + pFilePDF)
+	}
 }
