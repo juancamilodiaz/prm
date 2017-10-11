@@ -74,8 +74,8 @@ func GetProjectById(pId int64) *DOMAIN.Project {
 func GetProjectsByDateRange(pStartDate, pEndDate int64) []*DOMAIN.Project {
 	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
-	startDate := time.Unix(pStartDate, 0).Format("YYYYMMdd")
-	endDate := time.Unix(pEndDate, 0).Format("YYYYMMdd")
+	startDate := time.Unix(pStartDate, 0).Format("20060102")
+	endDate := time.Unix(pEndDate, 0).Format("20060102")
 	// Filter projects by date range
 	res := getProjectCollection().Find().Where("start_date >= ?", startDate).And("end_date <= ?", endDate)
 	// Close session when ends the method

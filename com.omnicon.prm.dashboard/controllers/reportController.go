@@ -13,7 +13,7 @@ type ReportController struct {
 /*Index*/
 func (this *ReportController) Reports() {
 	this.Data["PDF"] = ""
-	this.Data["Projects"] = report.GetAllProjects()
+	this.Data["Projects"] = report.GetAllProjects(domain.GetProjectsRQ{})
 	this.Data["Resources"] = report.GetAllResources()
 	this.TplName = "Reports/reports.tpl"
 }

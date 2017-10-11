@@ -44,7 +44,15 @@ func ProjectAssign(pInput domain.GetResourcesToProjectsRQ) string {
 		for nameProject, project := range resourceToProjects {
 			fill := false
 
-			createHeader(pdf, "Project Name: "+nameProject, wTable)
+			var dates string
+			if len(project) > 0 {
+				projectInfo := GetAllProjects(domain.GetProjectsRQ{ID: project[0].ProjectId})
+				if len(projectInfo) == 1 {
+					dates = util.Concatenate("From: ", projectInfo[0].StartDate.Format("2006-01-02"), " To: ", projectInfo[0].EndDate.Format("2006-01-02"))
+				}
+			}
+
+			createHeader(pdf, "Project Name: "+nameProject, dates, wTable)
 
 			// Color and font restoration
 
@@ -96,7 +104,7 @@ func ResourceAssign(pInput domain.GetResourcesToProjectsRQ) string {
 
 		for resourceName, project := range resourceToProjects {
 			fill := false
-			createHeader(pdf, "Resource Name: "+resourceName, wTable)
+			createHeader(pdf, "Resource Name: "+resourceName, "", wTable)
 
 			// Color and font restoration
 			pdf.SetFillColor(222, 225, 229)
@@ -174,10 +182,14 @@ func MatrixOfAssign(pInput domain.GetResourcesToProjectsRQ) string {
 	return filePDF
 }
 
-func createHeader(pdf *gofpdf.Fpdf, pName string, wTable []float64) {
+func createHeader(pdf *gofpdf.Fpdf, pName, pDate string, wTable []float64) {
 
 	pdf.Write(15, "\n")
 	pdf.Text(10, pdf.GetY(), pName)
+	pdf.Write(5, "\n")
+	pdf.SetFont("Arial", "", 10)
+	pdf.Text(10, pdf.GetY(), pDate)
+	pdf.SetFont("Arial", "", 14)
 	pdf.Write(5, "\n")
 	pdf.SetX(15)
 	header := []string{"Name", "Start Date", "End Date", "Hours"}
@@ -243,16 +255,19 @@ func buildTemplate(pName string, pdf *gofpdf.Fpdf) gofpdf.Template {
 	template := pdf.CreateTemplate(func(tpl *gofpdf.Tpl) {
 		tpl.Image("static/img/prm.png", 10, 6, 0, 0, true, "", 0, "")
 		tpl.SetFont("Arial", "B", 16)
-		tpl.Text(80, 20, pName)
+		tpl.WriteAligned(0, 0, pName, "C")
+		//tpl.Text(80, 20, pName)
 		tpl.Ln(-1)
 	})
 	return template
 }
 
-func GetAllProjects() []*domain.Project {
+func GetAllProjects(pInput domain.GetProjectsRQ) []*domain.Project {
+
+	inputBuffer := utilr.EncoderInput(pInput)
 
 	operation := "GetProjects"
-	res, _ := utilr.PostData(operation, nil)
+	res, _ := utilr.PostData(operation, inputBuffer)
 
 	message := new(domain.GetProjectsRS)
 	json.NewDecoder(res.Body).Decode(&message)
