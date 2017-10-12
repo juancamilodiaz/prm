@@ -343,12 +343,14 @@ function setResourceToProjectExc(){
 							{{range $index, $resource := .Resources}}
 								{{if $availBreakdown}}
 									{{$avail := index $availBreakdown $resource.ID}}
-									{{if gt $avail.TotalHours 0.0}}
-										<tr draggable=false>
-											<td style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
-											<td style="font-size:11px;text-align: -webkit-center;">{{$avail.TotalHours}}</td>
-										</tr>
-									{{end}}
+									{{if $avail}}
+										{{if gt $avail.TotalHours 0.0}}
+											<tr draggable=false>
+												<td style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+												<td style="font-size:11px;text-align: -webkit-center;">{{$avail.TotalHours}}</td>
+											</tr>
+										{{end}}
+									{{end}}	
 								{{end}}
 							{{end}}
 						</tbody>
