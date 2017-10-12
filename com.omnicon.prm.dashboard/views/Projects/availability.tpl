@@ -17,6 +17,7 @@
 			$('#backButton').css("display", "none");
 			$('#refreshButton').css("display", "none");
 			$('#buttonOption').css("display", "none");
+			$('#datePicker').css("display", "none");
 		});
 	</script>
 	<script>
