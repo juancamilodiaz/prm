@@ -639,17 +639,22 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 	for _, resource := range response.Resources {
 
-		availBreakdown[resource.ID] = make(map[string]float64)
-
 		for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
 			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
 				_, exist := breakdown[resource.ID]
+
 				if exist {
 					availHours := HoursOfWork - breakdown[resource.ID][day.Format("2006-01-02")]
 					if availHours > 0 {
+						if availBreakdown[resource.ID] == nil {
+							availBreakdown[resource.ID] = make(map[string]float64)
+						}
 						availBreakdown[resource.ID][day.Format("2006-01-02")] = availHours
 					}
 				} else {
+					if availBreakdown[resource.ID] == nil {
+						availBreakdown[resource.ID] = make(map[string]float64)
+					}
 					availBreakdown[resource.ID][day.Format("2006-01-02")] = HoursOfWork
 				}
 			}
