@@ -183,7 +183,7 @@
 			</div>		
 		  <a  onclick="toNav();getTypes();">Simulator</a>
 		  <a  ng-click="link('reports')" onclick="toNav();sendTitle($(this).html())">Reports</a>
-		  <a  ng-click="link('avail')" onclick="toNav();sendTitle($(this).html())">Status</a>
+		  <a  ng-click="link('dashboard')" onclick="toNav();sendTitle($(this).html())">Status</a>
 		  <!--a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a-->
 		</div>
 		<div id="sidebar">
