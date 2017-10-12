@@ -37,6 +37,7 @@ func init() {
 	beego.Router("/projects/types", &controllers.ProjectController{}, "post:GetTypesByProject")
 	beego.Router("/projects/types/unassign", &controllers.ProjectController{}, "post:DeleteTypesByProject")
 	beego.Router("/projects/settype", &controllers.ProjectController{}, "post:SetTypesToProject")
+	beego.Router("/dashboard", &controllers.ProjectController{}, "get,post:Availability")
 
 	// Skills
 	beego.Router("/skills", &controllers.SkillController{}, "post:ListSkills")
@@ -64,6 +65,6 @@ func init() {
 	beego.Router("/reports", &controllers.ReportController{}, "post:Reports")
 	beego.Router("/reports/projectassign", &controllers.ReportController{}, "post:ProjectAssign")
 	beego.Router("/reports/resourceassign", &controllers.ReportController{}, "post:ResourceAssign")
-	beego.Router("/reports/matrixassign", &controllers.ReportController{}, "post:MatrixOfAssign")
+	beego.Router("/reports/resourceskills", &controllers.ReportController{}, "post:ResourceSkills")
 
 }
