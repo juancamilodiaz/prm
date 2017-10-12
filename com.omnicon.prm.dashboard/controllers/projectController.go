@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -628,4 +629,95 @@ func (this *ProjectController) GetAssignationByResource() {
 		this.Data["Type"] = "Error"
 		this.TplName = "Common/message.tpl"
 	}
+}
+
+func (this *ProjectController) Availability() {
+	operation := "GetResourcesToProjects"
+	y, w := time.Now().ISOWeek()
+	dateFrom := FirstDayOfISOWeek(y, w, time.UTC)
+	dateTo := dateFrom.AddDate(0, 0, 5)
+
+	if this.Ctx.Input.IsPost() {
+		this.Data["IsGet"] = false
+	} else {
+		this.Data["IsGet"] = true
+	}
+
+	input := domain.GetResourcesToProjectsRQ{}
+	input.StartDate = dateFrom.Format("2006-01-02")
+	input.EndDate = dateTo.Format("2006-01-02")
+
+	dates := []string{}
+
+	for i := 0; i < 5; i++ { //dateFrom.Before(dateTo) {
+		dates = append(dates, dateFrom.Format("2006-01-02"))
+		dateFrom = dateFrom.AddDate(0, 0, 1)
+	}
+
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.GetResourcesToProjectsRS)
+		json.NewDecoder(res.Body).Decode(&message)
+
+		this.Data["Dates"] = dates
+		//this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+		for _, project := range message.Projects {
+			diff := project.EndDate.Sub(project.StartDate)
+			days := int(diff.Hours() / 24)
+
+			diff2 := time.Now().Sub(project.StartDate)
+			days2 := int(diff2.Hours() / 24)
+
+			f := float32(days2) / float32(days)
+			project.Percent = int(f * float32(100))
+		}
+
+		this.Data["Projects"] = message.Projects
+		this.Data["Resources"] = message.Resources
+		this.Data["AvailBreakdown"] = message.AvailBreakdown
+		//this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+		this.Data["Title"] = input.ProjectName
+		this.TplName = "Projects/availability.tpl"
+
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
+
+func FirstDayOfISOWeek(year int, week int, timezone *time.Location) time.Time {
+	date := time.Date(year, 0, 0, 0, 0, 0, 0, timezone)
+	isoYear, isoWeek := date.ISOWeek()
+
+	// iterate back to Monday
+	for date.Weekday() != time.Monday {
+		date = date.AddDate(0, 0, -1)
+		isoYear, isoWeek = date.ISOWeek()
+	}
+
+	// iterate forward to the first day of the first week
+	for isoYear < year {
+		date = date.AddDate(0, 0, 7)
+		isoYear, isoWeek = date.ISOWeek()
+	}
+
+	// iterate forward to the first day of the given week
+	for isoWeek < week {
+		date = date.AddDate(0, 0, 7)
+		isoYear, isoWeek = date.ISOWeek()
+	}
+
+	return date
 }
