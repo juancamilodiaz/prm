@@ -20,6 +20,7 @@ type Project struct {
 	EndDate         time.Time `db:"end_date"`
 	Enabled         bool      `db:"enabled"`
 	ResourceAssign  map[int64]*ResourceAssign
+	Percent         int
 	Lead            string
 	ProjectType     []*Type
 	OperationCenter string `db:"operation_center"`
