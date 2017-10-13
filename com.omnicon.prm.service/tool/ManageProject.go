@@ -699,7 +699,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 						rangePerDay = new(DOMAIN.RangeDatesAvailability)
 					}
 				}
-			} else if day.Unix() > endDate.Unix() {
+			} else if day.Unix() > endDate.Unix() && rangePerDay.Hours > 0 {
 				copyRangePerDay := *rangePerDay
 				totalHours += copyRangePerDay.Hours
 				rangesPerDay = append(rangesPerDay, &copyRangePerDay)
