@@ -155,7 +155,7 @@
     		<div class="modal-content">
       			<div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal">&times;</button>
-			        <h4 id="modalResourceProjectTitle" class="modal-title">Set New Resource</h4>
+			        <h4 id="modalResourceProjectTitle" class="modal-title">Set New Assignment</h4>
 			    </div>
 		    	<div class="modal-body">
 					<input type="hidden" id="resourceProjectId">
