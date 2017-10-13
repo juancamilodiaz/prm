@@ -44,6 +44,7 @@ type GetResourcesToProjectsRQ struct {
 	EndDate      string
 	Lead         *bool
 	Hours        float64
+	Enabled      bool
 }
 
 type DeleteResourceToProjectRQ struct {
