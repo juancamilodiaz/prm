@@ -41,20 +41,22 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 			return &response
 		}
 
-		for _, typesRow := range pRequest.ProjectType {
-			projectTypes := new(DOMAIN.ProjectTypes)
+		if len(pRequest.ProjectType) > 0 {
+			for _, typesRow := range pRequest.ProjectType {
+				projectTypes := new(DOMAIN.ProjectTypes)
 
-			val, _ := strconv.Atoi(typesRow)
-			typeRq := new(DOMAIN.TypeRQ)
-			typeRq.ID = val
-			typeRS := GetTypeById(typeRq)
-			if typeRS != nil && len(typeRS.Types) > 0 {
-				projectTypes.TypeId = val
-				projectTypes.ProjectId = id
-				projectTypes.Name = typeRS.Types[0].Name
-				dao.AddTypeToProject(projectTypes)
+				val, _ := strconv.Atoi(typesRow)
+				typeRq := new(DOMAIN.TypeRQ)
+				typeRq.ID = val
+				typeRS := GetTypeById(typeRq)
+				if typeRS != nil && len(typeRS.Types) > 0 {
+					projectTypes.TypeId = val
+					projectTypes.ProjectId = id
+					projectTypes.Name = typeRS.Types[0].Name
+					dao.AddTypeToProject(projectTypes)
+				}
+
 			}
-
 		}
 
 		// Get Project inserted
