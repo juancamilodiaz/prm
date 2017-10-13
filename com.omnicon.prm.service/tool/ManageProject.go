@@ -577,7 +577,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 		responseProjects := GetProjects(&requestProjects)
 		response.Projects = responseProjects.Projects*/
 
-	response.Projects = getFilterProject(pRequest.StartDate, pRequest.EndDate)
+	response.Projects = getFilterProject(pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
 
 	/*for _, project := range responseProjects.Projects {
 		// only return projects enabled
@@ -754,11 +754,13 @@ func getFilterResource() []*DOMAIN.Resource {
 
 var EnabledResources = []*DOMAIN.Resource{}
 
-func getFilterProject(pStartDate, pEndDate string) []*DOMAIN.Project {
+func getFilterProject(pStartDate, pEndDate string, pEnabled bool) []*DOMAIN.Project {
 	requestProjects := DOMAIN.GetProjectsRQ{}
 	requestProjects.StartDate = pStartDate
 	requestProjects.EndDate = pEndDate
-	requestProjects.Enabled = newTrue()
+	if pEnabled {
+		requestProjects.Enabled = &pEnabled
+	}
 
 	//TODO filter in query enabled projects.
 	responseProjects := GetProjects(&requestProjects)
