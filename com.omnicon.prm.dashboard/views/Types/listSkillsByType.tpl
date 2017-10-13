@@ -31,7 +31,11 @@
 		$('#buttonOption').html("Set New Skill");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#loadSkillModal");
-		$('#buttonOption').attr("onclick", "configureCreateTypeModal();");		
+		$('#buttonOption').attr("onclick", "configureCreateTypeModal();");	
+		
+		{{if not .TypeSkills}}
+			$('#chartjs-wrapper').css("display", "none");
+		{{end}}	
 		
 	});
 	

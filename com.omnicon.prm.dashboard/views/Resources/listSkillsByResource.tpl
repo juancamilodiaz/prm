@@ -36,6 +36,10 @@
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#resourceSkillModal");
 		$('#buttonOption').attr("onclick","configureCreateModal();getSkills()");
+		
+		{{if not .Skills}}
+			$('#chartjs-wrapper').css("display", "none");
+		{{end}}	
 	});
 	
 	configureUpdateSkillResourceModal = function(pSkillId, pName, pValue){
