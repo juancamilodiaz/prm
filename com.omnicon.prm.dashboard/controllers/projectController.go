@@ -506,7 +506,9 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 				if len(listSkillsPerProject) != 0 {
 					average = float64(count / len(listSkillsPerProject))
 					listAbleResource[resource.ID] = average
-					listResourceToDraw = append(listResourceToDraw, *resource)
+					if message.AvailBreakdownPerRange[resource.ID] != nil {
+						listResourceToDraw = append(listResourceToDraw, *resource)
+					}
 				}
 			}
 
