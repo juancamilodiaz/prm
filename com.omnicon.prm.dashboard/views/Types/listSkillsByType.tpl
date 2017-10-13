@@ -22,7 +22,7 @@
 		$('#refreshButton').click(function(){
 			reload('/types/skills',{
 				"ID": {{.TypeID}},
-				"Name": "{{.Title}}"
+				"Description": "{{.Title}}"
 			});
 		});
 		
@@ -177,7 +177,7 @@
 		
       </div>
       <div class="modal-footer">
-        <button type="button" id="addSkill" class="btn btn-default" onclick="addSkillToType({{.TypeID}},$('#skillId').val(),$('#typeValueSkill').val(), {{.Title}})" data-dismiss="modal">Add</button>
+        <button type="button" id="addSkill" class="btn btn-default" onclick="addSkillToType({{.TypeID}},$('#skillId').val(),$('#typeValueSkill').val(), {{.Title}})" data-dismiss="modal">Ok</button>
 		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>
