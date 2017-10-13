@@ -55,8 +55,10 @@ func (this *ProjectController) CreateProject() {
 	err := this.ParseForm(&input)
 
 	idstrg := this.GetString("ProjectType")
-	ids := strings.Split(idstrg, ",")
-	input.ProjectType = ids
+	if len(idstrg) > 0 {
+		ids := strings.Split(idstrg, ",")
+		input.ProjectType = ids
+	}
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
