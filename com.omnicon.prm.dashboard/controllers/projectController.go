@@ -215,6 +215,7 @@ func (this *ProjectController) GetResourcesByProject() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = false
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -329,6 +330,7 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -363,6 +365,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
 	idTypesString := this.GetString("Types")
 
 	isSkillFilter, _ := this.GetBool("SkillsActive")
@@ -637,6 +640,7 @@ func (this *ProjectController) GetAssignationByResource() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -682,6 +686,7 @@ func (this *ProjectController) Availability() {
 	}
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
 	input.StartDate = dateFrom.Format("2006-01-02")
 	input.EndDate = dateTo.Format("2006-01-02")
 
