@@ -309,7 +309,7 @@ func getProjectAssign(pInput domain.GetResourcesToProjectsRQ) map[string][]*doma
 	return mapPR
 }
 
-func buildProjectAndResource(pInput domain.GetResourcesToProjectsRQ) (map[int64]string, map[string]map[string]*domain.ProjectResources) { //} map[string]float64 {
+func buildProjectAndResource(pInput domain.GetResourcesToProjectsRQ) (map[int]string, map[string]map[string]*domain.ProjectResources) { //} map[string]float64 {
 
 	inputBuffer := utilr.EncoderInput(pInput)
 
@@ -333,7 +333,7 @@ func buildProjectAndResource(pInput domain.GetResourcesToProjectsRQ) (map[int64]
 
 	return mapPR*/
 	var mapPR map[string]map[string]*domain.ProjectResources
-	mapResources := map[int64]string{}
+	mapResources := map[int]string{}
 
 	mapPR = make(map[string]map[string]*domain.ProjectResources)
 	//mapInternal := make(map[string]*domain.ProjectResources)

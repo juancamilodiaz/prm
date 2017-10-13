@@ -428,7 +428,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	return &response
 }
 
-func getInsertedResource(pIdResProject int64, pProject *DOMAIN.Project, pTimeResponse time.Time) *DOMAIN.SetResourceToProjectRS {
+func getInsertedResource(pIdResProject int, pProject *DOMAIN.Project, pTimeResponse time.Time) *DOMAIN.SetResourceToProjectRS {
 	response := DOMAIN.SetResourceToProjectRS{}
 	// Get ProjectResources inserted
 	projectResourceInserted := dao.GetProjectResourcesById(pIdResProject)
@@ -607,7 +607,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	endDate, _ := time.Parse("2006-01-02", pRequest.EndDate)
 
 	// breakdown exist assignation map[resourceID]map[day]hours
-	breakdown := make(map[int64]map[string]float64)
+	breakdown := make(map[int]map[string]float64)
 
 	for _, assignation := range projectsResources {
 
@@ -635,7 +635,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	log.Debug("breakdownGet", breakdown)
 
 	// Calculate the available hours according to hours assignation
-	availBreakdown := make(map[int64]map[string]float64)
+	availBreakdown := make(map[int]map[string]float64)
 
 	for _, resource := range response.Resources {
 
@@ -665,7 +665,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 	response.AvailBreakdown = availBreakdown
 	//
-	availBreakdownPerRange := make(map[int64]*DOMAIN.ResourceAvailabilityInformation)
+	availBreakdownPerRange := make(map[int]*DOMAIN.ResourceAvailabilityInformation)
 	for resourceId, mapHourPerDate := range response.AvailBreakdown {
 
 		resourceAvailabilityInformation := DOMAIN.ResourceAvailabilityInformation{}

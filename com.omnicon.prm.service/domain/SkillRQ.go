@@ -5,31 +5,31 @@ type CreateSkillRQ struct {
 }
 
 type DeleteSkillRQ struct {
-	ID int64
+	ID int
 }
 
 type DeleteSkillToResourceRQ struct {
-	ResourceId int64
-	SkillId    int64
+	ResourceId int
+	SkillId    int
 }
 
 type GetSkillsRQ struct {
-	ID   int64
+	ID   int
 	Name string
 }
 
 type SetSkillToResourceRQ struct {
-	ResourceId int64
-	SkillId    int64
+	ResourceId int
+	SkillId    int
 	Value      int
 }
 
 type UpdateSkillRQ struct {
-	ID   int64
+	ID   int
 	Name string
 }
 
 type GetTypesRQ struct {
-	ID   int64
+	ID   int
 	Name string
 }

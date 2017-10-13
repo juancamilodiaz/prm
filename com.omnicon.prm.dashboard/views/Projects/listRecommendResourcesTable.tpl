@@ -1,3 +1,4 @@
+<script src="/static/js/chartjs/Chart.min.js" > </script>
 <script>
 	var MyProject = {};
 	$(document).ready(function(){
@@ -13,9 +14,18 @@
 			responsive: true,
 			"pageLength": 50,
 			"searching": true,
-			"paging": true,
+			"paging": true,			
+			"dom": '<"col-sm-4"l><"col-sm-4"f><"col-sm-4"<"toolbar">><rtip>',
+			initComplete: function(){
+		      $("div.toolbar").html('<button type="button" data-toggle="modal" data-target="#spiderModal" class="pull-right buttonTable button2" id="compare" style="border-radius:8px;">Compare</button>');         
+		   	}       
 		});
-		
+		if (!$('#skillsActive').prop("checked")) {
+			$('#compare').attr('disabled', 'disabled');
+		}else{
+			$('#compare').removeAttr('disabled', 'disabled');
+		}		
+				
 		$('#availabilityTable tbody').on('click', 'td.details-control', function(){
 			
 		});
@@ -53,8 +63,8 @@
 <div class="col-sm-12" style="padding: 1%;">
 	<table id="availabilityTable" class="table table-striped table-bordered">
 		<thead id="availabilityTableHead">
-			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-10">Resource Name</th>
-			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-1">Hours</th>
+			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-9">Resource Name</th>
+			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-2">Hours</th>
 		</thead>
 		<tbody id="availabilityTableBody">
 			{{$availBreakdownPerRange := .AvailBreakdownPerRange}}
@@ -65,7 +75,7 @@
 						{{$resourceAvailabilityInfo := index $availBreakdownPerRange $resource.ID}}
 						{{if ne $resourceAvailabilityInfo.TotalHours 0.0}}
 							<tr>
-								<td class="col-sm-10" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
+								<td class="col-sm-9" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
 									{{if gt $resourceSkillValue 3.0}}
 										<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
 									{{end}}
@@ -88,4 +98,72 @@
 			{{end}}
 		</tbody>
 	</table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="spiderModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 id="modalProjectTitle" class="modal-title">Spider Diagram</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="projectID">
+        <div class="chart-container-compare" id="chartjs-wrapper">
+			<canvas id="chartjs-3" >
+			</canvas>
+			
+			
+			<script>
+			new Chart(document.getElementById("chartjs-3"),
+				{"type":"radar",
+					"data": {
+						"labels": {{.ListProjectSkillsName}},
+							"datasets":[
+								{{$ableResource := .AbleResource}}
+								{{$mapCompare := .MapCompare}}
+								{{$listColors := .ListColor}}
+								{"label":$('#projectName').val(),"data":{{.ListProjectSkillsValue}},"fill":true,"backgroundColor":"rgba(80, 169, 224, 0.2)","borderColor":"rgb(8, 91, 142)","pointBackgroundColor":"rgb(8, 91, 142)","pointBorderColor":"#ffffff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},
+								
+								{{range $index, $resource := .ListToDraw}}	
+									
+											{{$listSkillsValue := index $mapCompare $resource.ID}}
+											{{if (ne $index 0)}}
+												,
+											{{end}}
+											{"label":"{{$resource.Name}}","data":{{$listSkillsValue}},"fill":false,"backgroundColor":"transparent","borderColor":"{{index $listColors $index}}","pointBackgroundColor":"{{index $listColors $index}}","pointBorderColor":"{{index $listColors $index}}","pointHoverBackgroundColor":"{{index $listColors $index}}","pointHoverBorderColor":"{{index $listColors $index}}"}
+										
+								{{end}}
+							]
+						},
+					"options": {
+						"elements": {
+							"line":{"tension":0,"borderWidth":3}
+						},
+						"scale": {
+					        "display": true,
+							"ticks": {
+								"max": 100,
+								"min": 0,
+								"beginAtZero":true,
+								"stepSize": 20	
+							}				
+					    },
+						legend: {
+							display:true
+						}
+					}
+				
+				});
+			</script>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+    
+  </div>
 </div>

@@ -296,7 +296,7 @@ func MappingSkillsInAResource(pResource *domain.Resource, pSkills []*domain.Reso
  */
 func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*domain.ProjectResources) string {
 	var lead string
-	mapResources := make(map[int64]*domain.ResourceAssign, len(pProjectResources))
+	mapResources := make(map[int]*domain.ResourceAssign, len(pProjectResources))
 	for _, projectResource := range pProjectResources {
 		resourceAssign := domain.ResourceAssign{}
 		resourceAssign.Resource = dao.GetResourceById(projectResource.ResourceId)

@@ -18,7 +18,7 @@ func (m *CreateResourceRS) GetHeader() *Response_Header {
 //-------- Delete Resource
 type DeleteResourceRS struct {
 	Header   *Response_Header
-	ID       int64
+	ID       int
 	Name     string
 	LastName string
 	Status   string
@@ -68,8 +68,8 @@ type GetResourcesToProjectsRS struct {
 	ResourcesToProjects    []*ProjectResources
 	Projects               []*Project
 	Resources              []*Resource
-	AvailBreakdown         map[int64]map[string]float64
-	AvailBreakdownPerRange map[int64]*ResourceAvailabilityInformation
+	AvailBreakdown         map[int]map[string]float64
+	AvailBreakdownPerRange map[int]*ResourceAvailabilityInformation
 	Status                 string
 	Message                string
 }
@@ -84,7 +84,7 @@ func (m *GetResourcesToProjectsRS) GetHeader() *Response_Header {
 //-------- Delete Resource to Project
 type DeleteResourceToProjectRS struct {
 	Header       *Response_Header
-	ID           int64
+	ID           int
 	ResourceName string
 	ProjectName  string
 	Status       string

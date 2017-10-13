@@ -11,11 +11,11 @@ type CreateProjectRQ struct {
 }
 
 type DeleteProjectRQ struct {
-	ID int64
+	ID int
 }
 
 type GetProjectsRQ struct {
-	ID              int64
+	ID              int
 	Name            string
 	StartDate       string
 	EndDate         string
@@ -26,7 +26,7 @@ type GetProjectsRQ struct {
 }
 
 type UpdateProjectRQ struct {
-	ID              int64
+	ID              int
 	Name            string
 	StartDate       string
 	EndDate         string

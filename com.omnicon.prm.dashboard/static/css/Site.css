@@ -373,6 +373,13 @@ tr.shown td.details-control {
 .chart-container {
   position: relative;
   margin: auto;
-  height: 350px;
-  width: 350px;
+  height: 450px;
+  width: 450px;
+}
+
+.chart-container-compare {
+  position: relative;
+  margin: auto;
+  height: 450px;
+  width: 450px;
 }

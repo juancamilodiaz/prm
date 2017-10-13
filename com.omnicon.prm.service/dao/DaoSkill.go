@@ -45,7 +45,7 @@ func GetAllSkills() []*DOMAIN.Skill {
 *	Return: *DOMAIN.Skill
 *	Description: Get a skill by ID in a skill table
  */
-func GetSkillById(pId int64) *DOMAIN.Skill {
+func GetSkillById(pId int) *DOMAIN.Skill {
 	// Skill structure
 	skill := DOMAIN.Skill{}
 	// Add in skill variable, the skill where ID is the same that the param
@@ -99,7 +99,7 @@ func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
 	var filters bytes.Buffer
 	if pSkillFilters.ID != 0 {
 		filters.WriteString("id = '")
-		filters.WriteString(strconv.FormatInt(pSkillFilters.ID, 10))
+		filters.WriteString(strconv.Itoa(pSkillFilters.ID))
 		filters.WriteString("'")
 	}
 	if pSkillFilters.Name != "" {
@@ -127,7 +127,7 @@ func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
 *	Return: int, error
 *	Description: Add skill in DB
  */
-func AddSkill(pSkill *DOMAIN.Skill) (int64, error) {
+func AddSkill(pSkill *DOMAIN.Skill) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -142,7 +142,7 @@ func AddSkill(pSkill *DOMAIN.Skill) (int64, error) {
 	}
 	// Get rows inserted
 	insertId, err := res.LastInsertId()
-	return insertId, nil
+	return int(insertId), nil
 }
 
 /**
@@ -151,13 +151,13 @@ func AddSkill(pSkill *DOMAIN.Skill) (int64, error) {
 *	Return: int, error
 *	Description: Update skill in DB
  */
-func UpdateSkill(pSkill *DOMAIN.Skill) (int64, error) {
+func UpdateSkill(pSkill *DOMAIN.Skill) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
 	defer session.Close()
 	// Update skill in DB
-	q := session.Update("Skill").Set("name = ?", pSkill.Name).Where("id = ?", int(pSkill.ID))
+	q := session.Update("Skill").Set("name = ?", pSkill.Name).Where("id = ?", pSkill.ID)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -165,7 +165,7 @@ func UpdateSkill(pSkill *DOMAIN.Skill) (int64, error) {
 	}
 	// Get rows updated
 	updateCount, err := res.RowsAffected()
-	return updateCount, nil
+	return int(updateCount), nil
 }
 
 /**
@@ -174,13 +174,13 @@ func UpdateSkill(pSkill *DOMAIN.Skill) (int64, error) {
 *	Return: int, error
 *	Description: Delete skill in DB
  */
-func DeleteSkill(pSkillId int64) (int64, error) {
+func DeleteSkill(pSkillId int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
 	defer session.Close()
 	// Delete skill in DB
-	q := session.DeleteFrom("Skill").Where("id", int(pSkillId))
+	q := session.DeleteFrom("Skill").Where("id", pSkillId)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -188,5 +188,5 @@ func DeleteSkill(pSkillId int64) (int64, error) {
 	}
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
-	return deleteCount, nil
+	return int(deleteCount), nil
 }

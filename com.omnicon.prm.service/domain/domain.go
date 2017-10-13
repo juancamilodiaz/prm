@@ -3,7 +3,7 @@ package domain
 import "time"
 
 type Resource struct {
-	ID            int64  `db:"id"`
+	ID            int    `db:"id"`
 	Name          string `db:"name"`
 	LastName      string `db:"last_name"`
 	Email         string `db:"email"`
@@ -14,12 +14,12 @@ type Resource struct {
 }
 
 type Project struct {
-	ID              int64     `db:"id"`
+	ID              int       `db:"id"`
 	Name            string    `db:"name"`
 	StartDate       time.Time `db:"start_date"`
 	EndDate         time.Time `db:"end_date"`
 	Enabled         bool      `db:"enabled"`
-	ResourceAssign  map[int64]*ResourceAssign
+	ResourceAssign  map[int]*ResourceAssign
 	Percent         int
 	Lead            string
 	ProjectType     []*Type
@@ -33,16 +33,16 @@ type Type struct {
 }
 
 type ProjectTypes struct {
-	ID        int64  `db:"id"`
-	ProjectId int64  `db:"project_id"`
+	ID        int    `db:"id"`
+	ProjectId int    `db:"project_id"`
 	TypeId    int    `db:"type_id"`
 	Name      string `db:"type_name"`
 }
 
 type ProjectResources struct {
-	ID           int64     `db:"id"`
-	ProjectId    int64     `db:"project_id"`
-	ResourceId   int64     `db:"resource_id"`
+	ID           int       `db:"id"`
+	ProjectId    int       `db:"project_id"`
+	ResourceId   int       `db:"resource_id"`
 	ProjectName  string    `db:"project_name"`
 	ResourceName string    `db:"resource_name"`
 	StartDate    time.Time `db:"start_date"`
@@ -52,15 +52,15 @@ type ProjectResources struct {
 }
 
 type ResourceSkills struct {
-	ID         int64  `db:"id"`
-	ResourceId int64  `db:"resource_id"`
-	SkillId    int64  `db:"skill_id"`
+	ID         int    `db:"id"`
+	ResourceId int    `db:"resource_id"`
+	SkillId    int    `db:"skill_id"`
 	Name       string `db:"name"`
 	Value      int    `db:"value"`
 }
 
 type Skill struct {
-	ID   int64  `db:"id"`
+	ID   int    `db:"id"`
 	Name string `db:"name"`
 }
 

@@ -46,7 +46,7 @@ func GetAllProjects() []*DOMAIN.Project {
 *	Return: *DOMAIN.Project
 *	Description: Get a project by ID in a project table
  */
-func GetProjectById(pId int64) *DOMAIN.Project {
+func GetProjectById(pId int) *DOMAIN.Project {
 	// Project structure
 	project := DOMAIN.Project{}
 	// Add in project variable, the project where ID is the same that the param
@@ -94,7 +94,7 @@ func GetProjectsByDateRange(pStartDate, pEndDate int64) []*DOMAIN.Project {
 *	Return: int, error
 *	Description: Add project in DB
  */
-func AddProject(pProject *DOMAIN.Project) (int64, error) {
+func AddProject(pProject *DOMAIN.Project) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -120,7 +120,7 @@ func AddProject(pProject *DOMAIN.Project) (int64, error) {
 	// Get rows inserted
 	insertId, err := res.LastInsertId()
 
-	return insertId, nil
+	return int(insertId), nil
 }
 
 /**
@@ -129,7 +129,7 @@ func AddProject(pProject *DOMAIN.Project) (int64, error) {
 *	Return: int, error
 *	Description: Update project in DB
  */
-func UpdateProject(pProject *DOMAIN.Project) (int64, error) {
+func UpdateProject(pProject *DOMAIN.Project) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -144,7 +144,7 @@ func UpdateProject(pProject *DOMAIN.Project) (int64, error) {
 	}
 	// Get rows updated
 	updateCount, err := res.RowsAffected()
-	return updateCount, nil
+	return int(updateCount), nil
 }
 
 /**
@@ -153,13 +153,13 @@ func UpdateProject(pProject *DOMAIN.Project) (int64, error) {
 *	Return: int, error
 *	Description: Delete project in DB
  */
-func DeleteProject(pProjectId int64) (int64, error) {
+func DeleteProject(pProjectId int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
 	defer session.Close()
 	// Delete project in DB
-	q := session.DeleteFrom("Project").Where("id", int(pProjectId))
+	q := session.DeleteFrom("Project").Where("id", pProjectId)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -167,7 +167,7 @@ func DeleteProject(pProjectId int64) (int64, error) {
 	}
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
-	return deleteCount, nil
+	return int(deleteCount), nil
 }
 
 func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
@@ -181,7 +181,7 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 	var filters bytes.Buffer
 	if pProjectFilters.ID != 0 {
 		filters.WriteString("id = '")
-		filters.WriteString(strconv.FormatInt(pProjectFilters.ID, 10))
+		filters.WriteString(strconv.Itoa(pProjectFilters.ID))
 		filters.WriteString("'")
 	}
 	if pProjectFilters.Name != "" {

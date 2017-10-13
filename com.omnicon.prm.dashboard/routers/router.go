@@ -65,6 +65,5 @@ func init() {
 	beego.Router("/reports", &controllers.ReportController{}, "post:Reports")
 	beego.Router("/reports/projectassign", &controllers.ReportController{}, "post:ProjectAssign")
 	beego.Router("/reports/resourceassign", &controllers.ReportController{}, "post:ResourceAssign")
-	beego.Router("/reports/resourceskills", &controllers.ReportController{}, "post:ResourceSkills")
 
 }

@@ -19,7 +19,7 @@ func (m *CreateProjectRS) GetHeader() *Response_Header {
 
 type DeleteProjectRS struct {
 	Header  *Response_Header
-	ID      int64
+	ID      int
 	Name    string
 	Status  string
 	Message string
