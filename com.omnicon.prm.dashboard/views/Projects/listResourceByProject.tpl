@@ -27,20 +27,30 @@
 			});
 		}); 
 		
-		$('#resourceDateStartProject, #resourceDateEndProject, #resourceUpdateDateStartProject, #resourceUpdateDateEndProject').change(function(){
+		$('#resourceDateStartProject, #resourceDateEndProject, #resourceUpdateDateStartProject, #resourceUpdateDateEndProject, #createHoursPerDay').change(function(){
 	    	var startDateCreate = new Date($("#resourceDateStartProject").val());
 			var endDateCreate = new Date($("#resourceDateEndProject").val());
 	
 			$("#resourceDateEndProject").attr("min", $("#resourceDateStartProject").val());
-			$("#resourceHoursProject").val(workingHoursBetweenDates(startDateCreate, endDateCreate));
+			$("#resourceHoursProject").val(workingHoursBetweenDates(startDateCreate, endDateCreate, $("#createHoursPerDay").val(), $("#checkHoursPerDay").is(":checked")));
 			
 			var startDateUpdate = new Date($("#resourceUpdateDateStartProject").val());
 			var endDateUpdate = new Date($("#resourceUpdateDateEndProject").val());
 	
-			$("#resourceUpdateDateHoursProject").val(workingHoursBetweenDates(startDateUpdate, endDateUpdate));
+			$("#resourceUpdateDateHoursProject").val(workingHoursBetweenDates(startDateUpdate, endDateUpdate, $("#createHoursPerDay").val(), $("#checkHoursPerDay").is(":checked")));
 			$('#resourceUpdateDateEndProject').attr("min", $("#resourceUpdateDateStartProject").val());
 		});
 		
+		$('#checkHoursPerDay').change(function() {
+			if ($('#checkHoursPerDay').is(":checked")) {
+				$('#resourceHoursProject').attr("disabled", "disabled");
+				$('#createHoursPerDay').removeAttr("disabled");
+			} else {
+				$('#createHoursPerDay').attr("disabled", "disabled");
+				$('#createHoursPerDay').val("8");
+				$('#resourceHoursProject').removeAttr("disabled");
+			}
+		});
 				
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
@@ -102,7 +112,7 @@
 		$("#resourceUpdate").css("display", "inline-block");
 	}
 	
-	setResourceToProject = function(ID, resourceId, projectId, startDate, endDate, hours, lead, isToCreate){
+	setResourceToProject = function(ID, resourceId, projectId, startDate, endDate, hours, lead, isToCreate, hoursPerDay, isHoursPerDay){
 		var settings = {
 			method: 'POST',
 			url: '/projects/setresource',
@@ -116,6 +126,8 @@
 				"StartDate": startDate,
 				"EndDate": endDate,
 				"Hours": hours,
+				"HoursPerDay": hoursPerDay,
+				"IsHoursPerDay": isHoursPerDay,
 				"Lead": lead,
 				"IsToCreate": isToCreate
 			}
@@ -231,9 +243,25 @@
         			</div>
 					<div class="row-box col-sm-12">
         				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
+        					<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Total Hours </label> 
              				<div class="col-sm-8">
               					<input type="number" id="resourceHoursProject" value="8">
+        					</div>
+          				</div>
+        			</div>
+					<div class="row-box col-sm-12">
+			        	<div class="form-group form-group-sm">
+			        		<label class="control-label col-sm-4 translatable" data-i18n="activeHoursPerDay"> Activate Hours Per Day </label> 
+			              <div class="col-sm-8">
+			              	<input type="checkbox" id="checkHoursPerDay"><br/>
+			              </div>    
+			          </div>
+			        </div>
+					<div class="row-box col-sm-12">
+        				<div class="form-group form-group-sm">
+        					<label class="control-label col-sm-4 translatable" data-i18n="HoursPerDay"> Hours Per Day </label> 
+             				<div class="col-sm-8">
+              					<input type="number" id="createHoursPerDay" value="8" disabled>
         					</div>
           				</div>
         			</div>
@@ -247,7 +275,7 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject(0, $('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), $('#resourceLead').is(':checked'), true)" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject(0, $('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), $('#resourceLead').is(':checked'), true, $('#createHoursPerDay').val(), $('#checkHoursPerDay').is(':checked'))" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
@@ -308,7 +336,7 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), $('#resourceUpdateLead').is(':checked'), false)" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), $('#resourceUpdateLead').is(':checked'), false, 0, false)" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
