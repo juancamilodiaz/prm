@@ -284,7 +284,7 @@ function setResourceToProjectExc(){
 					 	<div class="col-sm-6" style="padding-bottom: 10px;">	
 							<div id="panel-df-project{{$key}}" class="panel panel-default">
 								<div id="project{{$key}}" class="panel-heading">
-									{{$project.Name}}
+									{{$project.OperationCenter}}-{{$project.WorkOrder}} {{$project.Name}}
 									<div class="pull-right">
 										{{dateformat $project.StartDate "2006-01-02"}} to {{dateformat $project.EndDate "2006-01-02"}} 
 										<button id="collapseButton{{$key}}" class="btnCollapse" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
@@ -343,12 +343,14 @@ function setResourceToProjectExc(){
 							{{range $index, $resource := .Resources}}
 								{{if $availBreakdown}}
 									{{$avail := index $availBreakdown $resource.ID}}
-									{{if gt $avail.TotalHours 0.0}}
-										<tr draggable=false>
-											<td style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
-											<td style="font-size:11px;text-align: -webkit-center;">{{$avail.TotalHours}}</td>
-										</tr>
-									{{end}}
+									{{if $avail}}
+										{{if gt $avail.TotalHours 0.0}}
+											<tr draggable=false>
+												<td style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+												<td style="font-size:11px;text-align: -webkit-center;">{{$avail.TotalHours}}</td>
+											</tr>
+										{{end}}
+									{{end}}	
 								{{end}}
 							{{end}}
 						</tbody>

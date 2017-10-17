@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -54,8 +55,10 @@ func (this *ProjectController) CreateProject() {
 	err := this.ParseForm(&input)
 
 	idstrg := this.GetString("ProjectType")
-	ids := strings.Split(idstrg, ",")
-	input.ProjectType = ids
+	if len(idstrg) > 0 {
+		ids := strings.Split(idstrg, ",")
+		input.ProjectType = ids
+	}
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
@@ -212,6 +215,7 @@ func (this *ProjectController) GetResourcesByProject() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = false
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -253,7 +257,7 @@ func (this *ProjectController) DeleteResourceToProject() {
 	operation := "DeleteResourceToProject"
 
 	input := domain.DeleteResourceToProjectRQ{}
-	id, _ := this.GetInt64("ID")
+	id, _ := this.GetInt("ID")
 	input.ID = id
 
 	err := this.ParseForm(&input)
@@ -326,6 +330,7 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -360,7 +365,10 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
 	idTypesString := this.GetString("Types")
+
+	isSkillFilter, _ := this.GetBool("SkillsActive")
 
 	var epsilonValue float64
 	epsilonValue = 10
@@ -373,7 +381,10 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 
 	inputBuffer := EncoderInput(input)
 
-	idsType := strings.Split(idTypesString, ",")
+	var idsType []string
+	if idTypesString != "" {
+		idsType = strings.Split(idTypesString, ",")
+	}
 
 	res, err := PostData(operation, inputBuffer)
 
@@ -384,11 +395,18 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
 		this.Data["Projects"] = message.Projects
+		var listResources []domain.Resource
+		for _, resource := range message.Resources {
+			listResources = append(listResources, *resource)
+		}
+		this.Data["DerefResources"] = listResources
 		this.Data["Resources"] = message.Resources
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
 		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
 
 		listSkillsPerProject := make(map[int]int)
+		var listProjectsSkillName []string
+		var listProjectsSkillValue []int
 
 		for _, value := range idsType {
 			skillsByTypeInput := domain.TypeRQ{}
@@ -404,6 +422,8 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 
 				for _, skill := range messageSkillsByType.TypeSkills {
 					listSkillsPerProject[skill.SkillId] = skill.Value
+					listProjectsSkillName = append(listProjectsSkillName, skill.Name)
+					listProjectsSkillValue = append(listProjectsSkillValue, skill.Value)
 				}
 			} else {
 				this.Data["Title"] = "The Service is down."
@@ -413,75 +433,97 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 			}
 		}
 
-		listAbleResource := make(map[int64]float64)
+		listAbleResource := make(map[int]float64)
+		listResourceToDraw := []domain.Resource{}
+		mapCompare := make(map[int][]int)
+		listColors := []string{"Black", "Orange", "Red", "Green", "Purple", "Brown", "Gray", "Yellow", "Pink", "Aqua", "DarkCyan"}
 
 		for _, resource := range message.Resources {
-			resourceSkillsInput := domain.GetSkillByResourceRQ{}
-			resourceSkillsInput.ID = resource.ID
-			resourceSkillsInputBuffer := EncoderInput(resourceSkillsInput)
+			isAble := true
+			average := 0.0
+			count := 0
+			if isSkillFilter {
+				resourceSkillsInput := domain.GetSkillByResourceRQ{}
+				resourceSkillsInput.ID = resource.ID
+				resourceSkillsInputBuffer := EncoderInput(resourceSkillsInput)
 
-			resResourceSkills, errResourceSkills := PostData("GetSkillsByResource", resourceSkillsInputBuffer)
+				resResourceSkills, errResourceSkills := PostData("GetSkillsByResource", resourceSkillsInputBuffer)
 
-			if errResourceSkills == nil {
-				defer resResourceSkills.Body.Close()
-				messageResourceSkills := new(domain.GetSkillByResourceRS)
-				json.NewDecoder(resResourceSkills.Body).Decode(&messageResourceSkills)
-				isAble := true
-				average := 0.0
-				count := 0
-				for skillID, skillValue := range listSkillsPerProject {
-					stars := 0
-					hasSkill := false
-					for _, skillsByResource := range messageResourceSkills.Skills {
-						if skillID == int(skillsByResource.SkillId) {
-							if skillsByResource.Value >= skillValue {
-								hasSkill = true
-								stars = 4
-								break
+				if errResourceSkills == nil {
+					defer resResourceSkills.Body.Close()
+					messageResourceSkills := new(domain.GetSkillByResourceRS)
+					json.NewDecoder(resResourceSkills.Body).Decode(&messageResourceSkills)
+
+					mapSkills := make(map[string]int)
+					for skillID, skillValue := range listSkillsPerProject {
+						stars := 0
+						hasSkill := false
+						for _, skillsByResource := range messageResourceSkills.Skills {
+							if skillID == int(skillsByResource.SkillId) {
+								mapSkills[skillsByResource.Name] = skillsByResource.Value
+								if skillsByResource.Value >= skillValue {
+									hasSkill = true
+									stars = 4
+									break
+								}
+								if skillsByResource.Value < skillValue && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.25) {
+									hasSkill = true
+									stars = 3
+									break
+								}
+								if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.25) && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.5) {
+									hasSkill = true
+									stars = 2
+									break
+								}
+								if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.5) && float64(skillsByResource.Value) >= float64(skillValue)-epsilonValue {
+									hasSkill = true
+									stars = 1
+									break
+								}
+							} else {
+								hasSkill = false
 							}
-							if skillsByResource.Value < skillValue && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.25) {
-								hasSkill = true
-								stars = 3
-								break
-							}
-							if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.25) && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.5) {
-								hasSkill = true
-								stars = 2
-								break
-							}
-							if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.5) && float64(skillsByResource.Value) >= float64(skillValue)-epsilonValue {
-								hasSkill = true
-								stars = 1
-								break
-							}
+						}
+						if !hasSkill {
+							isAble = false
+							break
 						} else {
-							hasSkill = false
+							count += stars
 						}
 					}
-					if !hasSkill {
-						isAble = false
-						break
-					} else {
-						count += stars
-					}
-				}
-				if isAble {
-					if len(listSkillsPerProject) != 0 {
-						average = float64(count / len(listSkillsPerProject))
-						listAbleResource[resource.ID] = average
-					}
-				}
 
+					for _, skillName := range listProjectsSkillName {
+						mapCompare[resource.ID] = append(mapCompare[resource.ID], mapSkills[skillName])
+					}
+				} else {
+					this.Data["Title"] = "The Service is down."
+					this.Data["Message"] = "Please contact with the system manager."
+					this.Data["Type"] = "Error"
+					this.TplName = "Common/message.tpl"
+				}
 			} else {
-				this.Data["Title"] = "The Service is down."
-				this.Data["Message"] = "Please contact with the system manager."
-				this.Data["Type"] = "Error"
-				this.TplName = "Common/message.tpl"
+				listAbleResource[resource.ID] = 5
+			}
+			if isAble {
+				if len(listSkillsPerProject) != 0 {
+					average = float64(count / len(listSkillsPerProject))
+					listAbleResource[resource.ID] = average
+					if message.AvailBreakdownPerRange[resource.ID] != nil {
+						listResourceToDraw = append(listResourceToDraw, *resource)
+					}
+				}
 			}
 
 		}
 
 		this.Data["AbleResource"] = listAbleResource
+		this.Data["ListProjectSkillsName"] = listProjectsSkillName
+		this.Data["ListProjectSkillsValue"] = listProjectsSkillValue
+		this.Data["MapCompare"] = mapCompare
+		this.Data["ListColor"] = listColors
+		this.Data["ListChecked"] = []int{}
+		this.Data["ListToDraw"] = listResourceToDraw
 		this.TplName = "Projects/listRecommendResourcesTable.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
@@ -598,6 +640,7 @@ func (this *ProjectController) GetAssignationByResource() {
 	operation := "GetResourcesToProjects"
 
 	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
 	err := this.ParseForm(&input)
 	if err != nil {
 		log.Error("[ParseInput]", input)
@@ -628,4 +671,96 @@ func (this *ProjectController) GetAssignationByResource() {
 		this.Data["Type"] = "Error"
 		this.TplName = "Common/message.tpl"
 	}
+}
+
+func (this *ProjectController) Availability() {
+	operation := "GetResourcesToProjects"
+	y, w := time.Now().ISOWeek()
+	dateFrom := FirstDayOfISOWeek(y, w, time.UTC)
+	dateTo := dateFrom.AddDate(0, 0, 5)
+
+	if this.Ctx.Input.IsPost() {
+		this.Data["IsGet"] = false
+	} else {
+		this.Data["IsGet"] = true
+	}
+
+	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
+	input.StartDate = dateFrom.Format("2006-01-02")
+	input.EndDate = dateTo.Format("2006-01-02")
+
+	dates := []string{}
+
+	for i := 0; i < 5; i++ { //dateFrom.Before(dateTo) {
+		dates = append(dates, dateFrom.Format("2006-01-02"))
+		dateFrom = dateFrom.AddDate(0, 0, 1)
+	}
+
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.GetResourcesToProjectsRS)
+		json.NewDecoder(res.Body).Decode(&message)
+
+		this.Data["Dates"] = dates
+		//this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+		for _, project := range message.Projects {
+			diff := project.EndDate.Sub(project.StartDate)
+			days := int(diff.Hours() / 24)
+
+			diff2 := time.Now().Sub(project.StartDate)
+			days2 := int(diff2.Hours() / 24)
+
+			f := float32(days2) / float32(days)
+			project.Percent = int(f * float32(100))
+		}
+
+		this.Data["Projects"] = message.Projects
+		this.Data["Resources"] = message.Resources
+		this.Data["AvailBreakdown"] = message.AvailBreakdown
+		//this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+		this.Data["Title"] = input.ProjectName
+		this.TplName = "Projects/availability.tpl"
+
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
+
+func FirstDayOfISOWeek(year int, week int, timezone *time.Location) time.Time {
+	date := time.Date(year, 0, 0, 0, 0, 0, 0, timezone)
+	isoYear, isoWeek := date.ISOWeek()
+
+	// iterate back to Monday
+	for date.Weekday() != time.Monday {
+		date = date.AddDate(0, 0, -1)
+		isoYear, isoWeek = date.ISOWeek()
+	}
+
+	// iterate forward to the first day of the first week
+	for isoYear < year {
+		date = date.AddDate(0, 0, 7)
+		isoYear, isoWeek = date.ISOWeek()
+	}
+
+	// iterate forward to the first day of the given week
+	for isoWeek < week {
+		date = date.AddDate(0, 0, 7)
+		isoYear, isoWeek = date.ISOWeek()
+	}
+
+	return date
 }

@@ -41,20 +41,22 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 			return &response
 		}
 
-		for _, typesRow := range pRequest.ProjectType {
-			projectTypes := new(DOMAIN.ProjectTypes)
+		if len(pRequest.ProjectType) > 0 {
+			for _, typesRow := range pRequest.ProjectType {
+				projectTypes := new(DOMAIN.ProjectTypes)
 
-			val, _ := strconv.Atoi(typesRow)
-			typeRq := new(DOMAIN.TypeRQ)
-			typeRq.ID = val
-			typeRS := GetTypeById(typeRq)
-			if typeRS != nil && len(typeRS.Types) > 0 {
-				projectTypes.TypeId = val
-				projectTypes.ProjectId = id
-				projectTypes.Name = typeRS.Types[0].Name
-				dao.AddTypeToProject(projectTypes)
+				val, _ := strconv.Atoi(typesRow)
+				typeRq := new(DOMAIN.TypeRQ)
+				typeRq.ID = val
+				typeRS := GetTypeById(typeRq)
+				if typeRS != nil && len(typeRS.Types) > 0 {
+					projectTypes.TypeId = val
+					projectTypes.ProjectId = id
+					projectTypes.Name = typeRS.Types[0].Name
+					dao.AddTypeToProject(projectTypes)
+				}
+
 			}
-
 		}
 
 		// Get Project inserted
@@ -92,6 +94,12 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 	if oldProject != nil {
 		if pRequest.Name != "" {
 			oldProject.Name = pRequest.Name
+		}
+		if pRequest.OperationCenter != "" {
+			oldProject.OperationCenter = pRequest.OperationCenter
+		}
+		if pRequest.WorkOrder != 0 {
+			oldProject.WorkOrder = pRequest.WorkOrder
 		}
 		if pRequest.StartDate != "" || pRequest.EndDate != "" {
 			startDate := new(string)
@@ -422,7 +430,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 	return &response
 }
 
-func getInsertedResource(pIdResProject int64, pProject *DOMAIN.Project, pTimeResponse time.Time) *DOMAIN.SetResourceToProjectRS {
+func getInsertedResource(pIdResProject int, pProject *DOMAIN.Project, pTimeResponse time.Time) *DOMAIN.SetResourceToProjectRS {
 	response := DOMAIN.SetResourceToProjectRS{}
 	// Get ProjectResources inserted
 	projectResourceInserted := dao.GetProjectResourcesById(pIdResProject)
@@ -569,7 +577,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 		responseProjects := GetProjects(&requestProjects)
 		response.Projects = responseProjects.Projects*/
 
-	response.Projects = getFilterProject(pRequest.StartDate, pRequest.EndDate)
+	response.Projects = getFilterProject(pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
 
 	/*for _, project := range responseProjects.Projects {
 		// only return projects enabled
@@ -601,7 +609,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	endDate, _ := time.Parse("2006-01-02", pRequest.EndDate)
 
 	// breakdown exist assignation map[resourceID]map[day]hours
-	breakdown := make(map[int64]map[string]float64)
+	breakdown := make(map[int]map[string]float64)
 
 	for _, assignation := range projectsResources {
 
@@ -629,21 +637,26 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	log.Debug("breakdownGet", breakdown)
 
 	// Calculate the available hours according to hours assignation
-	availBreakdown := make(map[int64]map[string]float64)
+	availBreakdown := make(map[int]map[string]float64)
 
 	for _, resource := range response.Resources {
-
-		availBreakdown[resource.ID] = make(map[string]float64)
 
 		for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
 			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
 				_, exist := breakdown[resource.ID]
+
 				if exist {
 					availHours := HoursOfWork - breakdown[resource.ID][day.Format("2006-01-02")]
 					if availHours > 0 {
+						if availBreakdown[resource.ID] == nil {
+							availBreakdown[resource.ID] = make(map[string]float64)
+						}
 						availBreakdown[resource.ID][day.Format("2006-01-02")] = availHours
 					}
 				} else {
+					if availBreakdown[resource.ID] == nil {
+						availBreakdown[resource.ID] = make(map[string]float64)
+					}
 					availBreakdown[resource.ID][day.Format("2006-01-02")] = HoursOfWork
 				}
 			}
@@ -654,7 +667,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 	response.AvailBreakdown = availBreakdown
 	//
-	availBreakdownPerRange := make(map[int64]*DOMAIN.ResourceAvailabilityInformation)
+	availBreakdownPerRange := make(map[int]*DOMAIN.ResourceAvailabilityInformation)
 	for resourceId, mapHourPerDate := range response.AvailBreakdown {
 
 		resourceAvailabilityInformation := DOMAIN.ResourceAvailabilityInformation{}
@@ -686,7 +699,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 						rangePerDay = new(DOMAIN.RangeDatesAvailability)
 					}
 				}
-			} else if day.Unix() > endDate.Unix() {
+			} else if day.Unix() > endDate.Unix() && rangePerDay.Hours > 0 {
 				copyRangePerDay := *rangePerDay
 				totalHours += copyRangePerDay.Hours
 				rangesPerDay = append(rangesPerDay, &copyRangePerDay)
@@ -741,11 +754,13 @@ func getFilterResource() []*DOMAIN.Resource {
 
 var EnabledResources = []*DOMAIN.Resource{}
 
-func getFilterProject(pStartDate, pEndDate string) []*DOMAIN.Project {
+func getFilterProject(pStartDate, pEndDate string, pEnabled bool) []*DOMAIN.Project {
 	requestProjects := DOMAIN.GetProjectsRQ{}
 	requestProjects.StartDate = pStartDate
 	requestProjects.EndDate = pEndDate
-	requestProjects.Enabled = newTrue()
+	if pEnabled {
+		requestProjects.Enabled = &pEnabled
+	}
 
 	//TODO filter in query enabled projects.
 	responseProjects := GetProjects(&requestProjects)

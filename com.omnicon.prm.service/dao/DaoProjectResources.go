@@ -45,7 +45,7 @@ func GetAllProjectResources() []*DOMAIN.ProjectResources {
 *	Return: *DOMAIN.ProjectResources
 *	Description: Get a projectResources by ID in a ProjectResources table
  */
-func GetProjectResourcesById(pId int64) *DOMAIN.ProjectResources {
+func GetProjectResourcesById(pId int) *DOMAIN.ProjectResources {
 	// ProjectResources structure
 	projectResources := DOMAIN.ProjectResources{}
 	// Add in projectResources variable, the projectResources where ID is the same that the param
@@ -65,7 +65,7 @@ func GetProjectResourcesById(pId int64) *DOMAIN.ProjectResources {
 *	Return: *DOMAIN.ProjectResources
 *	Description: Get a projectResources by ProjectId in a ProjectResources table
  */
-func GetProjectResourcesByProjectId(pId int64) []*DOMAIN.ProjectResources {
+func GetProjectResourcesByProjectId(pId int) []*DOMAIN.ProjectResources {
 	// Slice to keep all ProjectResources
 	var projectResources []*DOMAIN.ProjectResources
 	// Add all ProjectResources in projectResources variable
@@ -84,7 +84,7 @@ func GetProjectResourcesByProjectId(pId int64) []*DOMAIN.ProjectResources {
 *	Return: *DOMAIN.ProjectResources
 *	Description: Get a projectResources by ResourceId in a ProjectResources table
  */
-func GetProjectResourcesByResourceId(pId int64) []*DOMAIN.ProjectResources {
+func GetProjectResourcesByResourceId(pId int) []*DOMAIN.ProjectResources {
 	// Slice to keep all ProjectResources
 	var projectResources []*DOMAIN.ProjectResources
 	// Add all ProjectResources in projectResources variable
@@ -129,7 +129,7 @@ func GetProjectResourcesByResourceId(pId int64) []*DOMAIN.ProjectResources {
 *	Return: int, error
 *	Description: Add ProjectResources in DB
  */
-func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, error) {
+func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -158,7 +158,7 @@ func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, err
 	}
 	// Get rows inserted
 	insertId, err := res.LastInsertId()
-	return insertId, nil
+	return int(insertId), nil
 }
 
 /**
@@ -167,7 +167,7 @@ func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, err
 *	Return: int, error
 *	Description: Update ProjectResources in DB
  */
-func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, error) {
+func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -181,7 +181,7 @@ func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, 
 	}
 	// Get rows updated
 	updateCount, err := res.RowsAffected()
-	return updateCount, nil
+	return int(updateCount), nil
 }
 
 /**
@@ -190,7 +190,7 @@ func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int64, 
 *	Return: int, error
 *	Description: Delete ProjectResources in DB
  */
-func DeleteProjectResources(pProjectResourcesId int64) (int64, error) {
+func DeleteProjectResources(pProjectResourcesId int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -204,7 +204,7 @@ func DeleteProjectResources(pProjectResourcesId int64) (int64, error) {
 	}
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
-	return deleteCount, nil
+	return int(deleteCount), nil
 }
 
 /**
@@ -213,13 +213,13 @@ func DeleteProjectResources(pProjectResourcesId int64) (int64, error) {
 *	Return: int, error
 *	Description: Delete ProjectResources by ProjectId and ResourceId in DB
  */
-func DeleteProjectResourcesByProjectIdAndResourceId(pProjectId, pResourceId int64) (int64, error) {
+func DeleteProjectResourcesByProjectIdAndResourceId(pProjectId int, pResourceId int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
 	defer session.Close()
 	// Delete ProjectResources in DB
-	q := session.DeleteFrom("ProjectResources").Where("project_id", int(pProjectId)).And("resource_id", int(pResourceId))
+	q := session.DeleteFrom("ProjectResources").Where("project_id", pProjectId).And("resource_id", pResourceId)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -227,7 +227,7 @@ func DeleteProjectResourcesByProjectIdAndResourceId(pProjectId, pResourceId int6
 	}
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
-	return deleteCount, nil
+	return int(deleteCount), nil
 }
 
 func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResources, pStartDate, pEndDate string, pLead *bool) ([]*DOMAIN.ProjectResources, string) {
@@ -241,21 +241,21 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 	var filters bytes.Buffer
 	if pProjectResourceFilters.ID != 0 {
 		filters.WriteString("id = ")
-		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ID, 10))
+		filters.WriteString(strconv.Itoa(pProjectResourceFilters.ID))
 	}
 	if pProjectResourceFilters.ProjectId != 0 {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
 		filters.WriteString("project_id = ")
-		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ProjectId, 10))
+		filters.WriteString(strconv.Itoa(pProjectResourceFilters.ProjectId))
 	}
 	if pProjectResourceFilters.ResourceId != 0 {
 		if filters.String() != "" {
 			filters.WriteString(" and ")
 		}
 		filters.WriteString("resource_id = ")
-		filters.WriteString(strconv.FormatInt(pProjectResourceFilters.ResourceId, 10))
+		filters.WriteString(strconv.Itoa(pProjectResourceFilters.ResourceId))
 
 	}
 	if pProjectResourceFilters.ProjectName != "" {

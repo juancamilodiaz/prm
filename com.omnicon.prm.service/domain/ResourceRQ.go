@@ -10,11 +10,11 @@ type CreateResourceRQ struct {
 }
 
 type DeleteResourceRQ struct {
-	ID int64
+	ID int
 }
 
 type GetResourcesRQ struct {
-	ID            int64
+	ID            int
 	Name          string
 	LastName      string
 	Email         string
@@ -24,9 +24,9 @@ type GetResourcesRQ struct {
 }
 
 type SetResourceToProjectRQ struct {
-	ID         int64
-	ProjectId  int64
-	ResourceId int64
+	ID         int
+	ProjectId  int
+	ResourceId int
 	StartDate  string
 	EndDate    string
 	Lead       bool
@@ -35,25 +35,26 @@ type SetResourceToProjectRQ struct {
 }
 
 type GetResourcesToProjectsRQ struct {
-	ID           int64
-	ProjectId    int64
-	ResourceId   int64
+	ID           int
+	ProjectId    int
+	ResourceId   int
 	ProjectName  string
 	ResourceName string
 	StartDate    string
 	EndDate      string
 	Lead         *bool
 	Hours        float64
+	Enabled      bool
 }
 
 type DeleteResourceToProjectRQ struct {
-	ProjectId  int64
-	ResourceId int64
-	ID         int64
+	ProjectId  int
+	ResourceId int
+	ID         int
 }
 
 type UpdateResourceRQ struct {
-	ID            int64
+	ID            int
 	Name          string
 	LastName      string
 	Email         string
@@ -63,5 +64,5 @@ type UpdateResourceRQ struct {
 }
 
 type GetSkillByResourceRQ struct {
-	ID int64
+	ID int
 }

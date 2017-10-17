@@ -37,6 +37,7 @@ func init() {
 	beego.Router("/projects/types", &controllers.ProjectController{}, "post:GetTypesByProject")
 	beego.Router("/projects/types/unassign", &controllers.ProjectController{}, "post:DeleteTypesByProject")
 	beego.Router("/projects/settype", &controllers.ProjectController{}, "post:SetTypesToProject")
+	beego.Router("/dashboard", &controllers.ProjectController{}, "get,post:Availability")
 
 	// Skills
 	beego.Router("/skills", &controllers.SkillController{}, "post:ListSkills")

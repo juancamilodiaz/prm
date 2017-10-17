@@ -42,7 +42,7 @@ func GetAllProjectTypes() []*DOMAIN.ProjectTypes {
 *	Return: *DOMAIN.ProjectTypes
 *	Description: Get a resourceTypes by ID in a ProjectTypes table
  */
-func GetProjectTypesById(pId int64) *DOMAIN.ProjectTypes {
+func GetProjectTypesById(pId int) *DOMAIN.ProjectTypes {
 	// ProjectTypes structure
 	ProjectTypes := DOMAIN.ProjectTypes{}
 	// Add in ProjectTypes variable, the ProjectTypes where ID is the same that the param
@@ -62,7 +62,7 @@ func GetProjectTypesById(pId int64) *DOMAIN.ProjectTypes {
 *	Return: *DOMAIN.ProjectTypes
 *	Description: Get a resourceType by ProjectId in a ProjectTypes table
  */
-func GetProjectTypesByProjectId(pProjectId int64) []*DOMAIN.ProjectTypes {
+func GetProjectTypesByProjectId(pProjectId int) []*DOMAIN.ProjectTypes {
 	// Slice to keep all ProjectTypes
 	var projectTypes []*DOMAIN.ProjectTypes
 	// Add all ProjectTypes in ProjectTypes variable
@@ -81,7 +81,7 @@ func GetProjectTypesByProjectId(pProjectId int64) []*DOMAIN.ProjectTypes {
 *	Return: *DOMAIN.ProjectTypes
 *	Description: Get a resourceSkill by SkillId in a ProjectTypes table
  */
-func GetProjectTypesByTypeId(pId int64) []*DOMAIN.ProjectTypes {
+func GetProjectTypesByTypeId(pId int) []*DOMAIN.ProjectTypes {
 	// Slice to keep all ProjectTypes
 	var ProjectTypes []*DOMAIN.ProjectTypes
 	// Add all ProjectTypes in ProjectTypes variable
@@ -120,7 +120,7 @@ func GetProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) *DOMAIN.Projec
 *	Return: int, error
 *	Description: Add ProjectTypes in DB
  */
-func AddTypeToProject(pProjectTypes *DOMAIN.ProjectTypes) (int64, error) {
+func AddTypeToProject(pProjectTypes *DOMAIN.ProjectTypes) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -139,7 +139,7 @@ func AddTypeToProject(pProjectTypes *DOMAIN.ProjectTypes) (int64, error) {
 	}
 	// Get rows inserted
 	insertId, err := res.LastInsertId()
-	return insertId, nil
+	return int(insertId), nil
 }
 
 /**
@@ -148,7 +148,7 @@ func AddTypeToProject(pProjectTypes *DOMAIN.ProjectTypes) (int64, error) {
 *	Return: int, error
 *	Description: Delete ProjectTypes in DB
  */
-func DeleteProjectTypes(pProjectTypesId int64) (int64, error) {
+func DeleteProjectTypes(pProjectTypesId int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -162,7 +162,7 @@ func DeleteProjectTypes(pProjectTypesId int64) (int64, error) {
 	}
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
-	return deleteCount, nil
+	return int(deleteCount), nil
 }
 
 /**

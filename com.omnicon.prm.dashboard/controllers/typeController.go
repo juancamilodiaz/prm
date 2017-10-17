@@ -177,6 +177,11 @@ func (this *TypeController) GetSkillsByType() {
 		message := new(domain.TypeSkillsRS)
 		json.NewDecoder(res.Body).Decode(&message)
 
+		data := buildChartMessageType(message)
+
+		this.Data["SkillsName"] = data.SkillsName
+		this.Data["SkillsValue"] = data.SkillsValue
+
 		this.Data["TypeID"] = input.ID
 		this.Data["TypeSkills"] = message.TypeSkills
 		this.Data["Skills"] = message.Skills
@@ -262,4 +267,15 @@ func (this *TypeController) SetSkillToType() {
 	} else {
 		this.TplName = "Common/empty.tpl"
 	}
+}
+
+func buildChartMessageType(pMessage *domain.TypeSkillsRS) Datasets {
+
+	dataset := Datasets{}
+	for _, skill := range pMessage.TypeSkills {
+		dataset.SkillsName = append(dataset.SkillsName, skill.Name)
+		dataset.SkillsValue = append(dataset.SkillsValue, skill.Value)
+	}
+
+	return dataset
 }

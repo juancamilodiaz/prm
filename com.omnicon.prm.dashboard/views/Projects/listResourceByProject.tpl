@@ -160,7 +160,10 @@
 	}
 </script>
 
+<div class="col-sm-12" style="padding: 1%;">
+<div class="row">
 <p class="pull-right" style="padding-right: 0%;"> <label type="text" id="dates"/></p>
+</div>
 <table id="viewResourceInProject" class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -189,7 +192,7 @@
 		{{end}}	
 	</tbody>
 </table>
-
+</div>
 <!-- Modal -->
 	<div class="modal fade" id="resourceProjectModal" role="dialog">
   		<div class="modal-dialog">

@@ -45,7 +45,7 @@ func GetAllResources() []*DOMAIN.Resource {
 *	Return: *DOMAIN.Resource
 *	Description: Get a resource by ID in a resource table
  */
-func GetResourceById(pId int64) *DOMAIN.Resource {
+func GetResourceById(pId int) *DOMAIN.Resource {
 	// Resource structure
 	resource := DOMAIN.Resource{}
 	// Add in resource variable, the resource where ID is the same that the param
@@ -87,7 +87,7 @@ func GetResourcesByName(pName string) []*DOMAIN.Resource {
 *	Return: int, error
 *	Description: Add resource in DB
  */
-func AddResource(pResource *DOMAIN.Resource) (int64, error) {
+func AddResource(pResource *DOMAIN.Resource) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -112,7 +112,7 @@ func AddResource(pResource *DOMAIN.Resource) (int64, error) {
 	}
 	// Get rows inserted
 	insertId, err := res.LastInsertId()
-	return insertId, nil
+	return int(insertId), nil
 }
 
 /**
@@ -121,7 +121,7 @@ func AddResource(pResource *DOMAIN.Resource) (int64, error) {
 *	Return: int, error
 *	Description: Update resource in DB
  */
-func UpdateResource(pResource *DOMAIN.Resource) (int64, error) {
+func UpdateResource(pResource *DOMAIN.Resource) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -135,7 +135,7 @@ func UpdateResource(pResource *DOMAIN.Resource) (int64, error) {
 	}
 	// Get rows updated
 	updateCount, err := res.RowsAffected()
-	return updateCount, nil
+	return int(updateCount), nil
 }
 
 /**
@@ -144,7 +144,7 @@ func UpdateResource(pResource *DOMAIN.Resource) (int64, error) {
 *	Return: int, error
 *	Description: Delete resource in DB
  */
-func DeleteResource(pResourceId int64) (int64, error) {
+func DeleteResource(pResourceId int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -158,7 +158,7 @@ func DeleteResource(pResourceId int64) (int64, error) {
 	}
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
-	return deleteCount, nil
+	return int(deleteCount), nil
 }
 
 /**
@@ -178,7 +178,7 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([
 	var filters bytes.Buffer
 	if pResourceFilters.ID != 0 {
 		filters.WriteString("id = '")
-		filters.WriteString(strconv.FormatInt(pResourceFilters.ID, 10))
+		filters.WriteString(strconv.Itoa(pResourceFilters.ID))
 		filters.WriteString("'")
 	}
 	if pResourceFilters.Name != "" {

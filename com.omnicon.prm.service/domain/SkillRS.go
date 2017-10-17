@@ -34,7 +34,7 @@ func (m *GetSkillByResourceRS) GetHeader() *Response_Header {
 
 type DeleteSkillRS struct {
 	Header  *Response_Header
-	ID      int64
+	ID      int
 	Name    string
 	Status  string
 	Message string
@@ -50,7 +50,7 @@ func (m *DeleteSkillRS) GetHeader() *Response_Header {
 //-------- Delete Skill to Resource
 type DeleteSkillToResourceRS struct {
 	Header       *Response_Header
-	ID           int64
+	ID           int
 	SkillName    string
 	ResourceName string
 	Status       string

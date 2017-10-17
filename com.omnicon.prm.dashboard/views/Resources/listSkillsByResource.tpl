@@ -1,6 +1,12 @@
+<html>
+<head>
+	<script src="/static/js/chartjs/Chart.min.js" > </script>
+
+
 <script>
 	$(document).ready(function(){
 		$('#viewSkillsInResource').DataTable({
+			"lengthMenu": [[8, 16, 32, -1], [8, 16, 32, "All"]],
 			"columns":[
 				null,
 				null,
@@ -30,6 +36,10 @@
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#resourceSkillModal");
 		$('#buttonOption').attr("onclick","configureCreateModal();getSkills()");
+		
+		{{if not .Skills}}
+			$('#chartjs-wrapper').css("display", "none");
+		{{end}}	
 	});
 	
 	configureUpdateSkillResourceModal = function(pSkillId, pName, pValue){
@@ -102,29 +112,75 @@
 		  $('#resourceNameSkill').html(response);
 		});
 	}
-</script>
-<table id="viewSkillsInResource" class="table table-striped table-bordered">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Value</th>
-			<th>Options</th>
-		</tr>
-	</thead>
-	<tbody>
-	 	{{range $key, $skill := .Skills}}
-		<tr>
-			<td>{{$skill.Name}}</td>
-			<td>{{$skill.Value}}</td>
-			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#updateResourceSkillModal" onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmDeleteSkillResourceModal" class="buttonTable button2" onclick="configureDeleteSkillResourceModal({{$skill.SkillId}});$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.SkillId}});" data-dismiss="modal">Delete</button>
-			</td>
-		</tr>
-		{{end}}	
-	</tbody>
-</table>
 
+</script>
+
+</head>
+
+<body>
+<div class="col-sm-12">
+	<div class="col-sm-6">
+		<table id="viewSkillsInResource" class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Value</th>
+					<th>Options</th>
+				</tr>
+			</thead>
+			<tbody>
+			 	{{range $key, $skill := .Skills}}
+				<tr>
+					<td>{{$skill.Name}}</td>
+					<td>{{$skill.Value}}</td>
+					<td>
+						<button class="buttonTable button2" data-toggle="modal" data-target="#updateResourceSkillModal" onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})" data-dismiss="modal">Update</button>
+						<button data-toggle="modal" data-target="#confirmDeleteSkillResourceModal" class="buttonTable button2" onclick="configureDeleteSkillResourceModal({{$skill.SkillId}});$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.SkillId}});" data-dismiss="modal">Delete</button>
+					</td>
+				</tr>
+				{{end}}	
+			</tbody>
+		</table>
+	</div>
+	<div class="col-sm-6">
+		<p>
+		   <div class="chart-container" id="chartjs-wrapper">
+				<canvas id="chartjs-3" >
+				</canvas>
+				
+				
+				<script>new Chart(document.getElementById("chartjs-3"),
+					{"type":"radar",
+						"data": {
+							"labels": {{.SkillsName}},
+								"datasets":[
+									{"label":"{{.Title}}","data":{{.SkillsValue}},"fill":true,"backgroundColor":"rgba(54, 162, 235, 0.2)","borderColor":"rgb(54, 162, 235)","pointBackgroundColor":"rgb(54, 162, 235)","pointBorderColor":"#fff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},
+								]
+							},
+						"options": {
+							"elements": {
+								"line":{"tension":0,"borderWidth":3}
+							},
+							"scale": {
+						        "display": true,
+								"ticks": {
+									"max": 100,
+									"min": 0,
+									"beginAtZero":true,
+									"stepSize": 20	
+								}				
+						    },
+							legend: {
+								display:false
+							}
+						}
+					
+					});
+				</script>
+			</div>
+		</p>
+	</div>
+</div>
 <!-- Modal -->
 	<div class="modal fade" id="resourceSkillModal" role="dialog">
   		<div class="modal-dialog">
@@ -214,3 +270,4 @@
 	      	</div>
 	    </div>
 	</div>
+</body>

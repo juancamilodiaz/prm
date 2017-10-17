@@ -88,7 +88,7 @@ func DeleteType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 	if typeToDelete != nil {
 
 		// Delete asignation to project
-		projectsType := dao.GetProjectTypesByTypeId(int64(pRequest.ID))
+		projectsType := dao.GetProjectTypesByTypeId(pRequest.ID)
 		for _, project := range projectsType {
 			_, err := dao.DeleteProjectTypesByProjectIdAndTypeId(int(project.ProjectId), project.TypeId)
 			if err != nil {
@@ -147,7 +147,7 @@ func SetTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
 	}
 
 	request := new(DOMAIN.ProjectTypes)
-	request.ProjectId = int64(pRequest.ProjectId)
+	request.ProjectId = pRequest.ProjectId
 	request.TypeId = pRequest.TypeId
 
 	typeValue := dao.GetTypesById(pRequest.TypeId)

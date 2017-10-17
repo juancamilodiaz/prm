@@ -1,6 +1,8 @@
+<script src="/static/js/chartjs/Chart.min.js" > </script>
 <script>
 	$(document).ready(function(){
 		$('#viewSkillsByType').DataTable({
+			"lengthMenu": [[8, 16, 32, -1], [8, 16, 32, "All"]],
 			"columns":[
 				null,
 				null,
@@ -20,7 +22,7 @@
 		$('#refreshButton').click(function(){
 			reload('/types/skills',{
 				"ID": {{.TypeID}},
-				"Name": "{{.Title}}"
+				"Description": "{{.Title}}"
 			});
 		});
 		
@@ -29,7 +31,11 @@
 		$('#buttonOption').html("Set New Skill");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#loadSkillModal");
-		$('#buttonOption').attr("onclick", "configureCreateTypeModal();");		
+		$('#buttonOption').attr("onclick", "configureCreateTypeModal();");	
+		
+		{{if not .TypeSkills}}
+			$('#chartjs-wrapper').css("display", "none");
+		{{end}}	
 		
 	});
 	
@@ -52,28 +58,69 @@
 	}
 	
 </script>
-
-<table id="viewSkillsByType" class="table table-striped table-bordered">
-	<thead>
-		<tr>
-			<th>Skill</th>
-			<th>Value</th>
-			<th>Options</th>
-		</tr>
-	</thead>
-	<tbody>
-	 	{{range $key, $typeSkill := .TypeSkills}}
-		<tr>
-			<td>{{$typeSkill.Name}}</td>
-			<td>{{$typeSkill.Value}}</td>
-			<td>
-				<button data-toggle="modal" data-target="#loadSkillModal" class="buttonTable button2" onclick="configureUpdateTypeModal('{{$typeSkill.SkillId}}-{{$typeSkill.Name}}',{{$typeSkill.Value}})" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2"  onclick="$('#nameDelete').html('{{$typeSkill.Name}}');$('#typeSkillId').val({{$typeSkill.ID}});" data-dismiss="modal">Unassign</button>				
-			</td>
-		</tr>
-		{{end}}	
-	</tbody>
-</table>
+<div class="col-sm-12">
+	<div class="col-sm-6">
+		<table id="viewSkillsByType" class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>Skill</th>
+					<th>Value</th>
+					<th>Options</th>
+				</tr>
+			</thead>
+			<tbody>
+			 	{{range $key, $typeSkill := .TypeSkills}}
+				<tr>
+					<td>{{$typeSkill.Name}}</td>
+					<td>{{$typeSkill.Value}}</td>
+					<td>
+						<button data-toggle="modal" data-target="#loadSkillModal" class="buttonTable button2" onclick="configureUpdateTypeModal('{{$typeSkill.SkillId}}-{{$typeSkill.Name}}',{{$typeSkill.Value}})" data-dismiss="modal">Update</button>
+						<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2"  onclick="$('#nameDelete').html('{{$typeSkill.Name}}');$('#typeSkillId').val({{$typeSkill.ID}});" data-dismiss="modal">Unassign</button>				
+					</td>
+				</tr>
+				{{end}}	
+			</tbody>
+		</table>
+	</div>
+	<div class="col-sm-6">
+		<p>
+		   <div class="chart-container" id="chartjs-wrapper">
+				<canvas id="chartjs-3" >
+				</canvas>
+				
+				
+				<script>new Chart(document.getElementById("chartjs-3"),
+					{"type":"radar",
+						"data": {
+							"labels": {{.SkillsName}},
+								"datasets":[
+									{"label":"{{.Title}}","data":{{.SkillsValue}},"fill":true,"backgroundColor":"rgba(54, 162, 235, 0.2)","borderColor":"rgb(54, 162, 235)","pointBackgroundColor":"rgb(54, 162, 235)","pointBorderColor":"#fff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},
+								]
+							},
+						"options": {
+							"elements": {
+								"line":{"tension":0,"borderWidth":3}
+							},
+							"scale": {
+						        "display": true,
+								"ticks": {
+									"max": 100,
+									"min": 0,
+									"beginAtZero":true,
+									"stepSize": 20	
+								}				
+						    },
+							legend: {
+								display:false
+							}
+						}
+					
+					});
+				</script>
+			</div>
+		</p>
+	</div>
+</div>
 
 <div class="modal fade" id="confirmUnassignModal" role="dialog">
 	<div class="modal-dialog">
@@ -130,7 +177,7 @@
 		
       </div>
       <div class="modal-footer">
-        <button type="button" id="addSkill" class="btn btn-default" onclick="addSkillToType({{.TypeID}},$('#skillId').val(),$('#typeValueSkill').val(), {{.Title}})" data-dismiss="modal">Add</button>
+        <button type="button" id="addSkill" class="btn btn-default" onclick="addSkillToType({{.TypeID}},$('#skillId').val(),$('#typeValueSkill').val(), {{.Title}})" data-dismiss="modal">Ok</button>
 		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>

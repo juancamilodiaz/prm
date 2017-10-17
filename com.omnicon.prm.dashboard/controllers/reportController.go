@@ -1,13 +1,9 @@
 package controllers
 
 import (
-	//"encoding/json"
-	//	"io/ioutil"
-
 	"github.com/astaxie/beego"
-	//"prm/com.omnicon.prm.service/domain"
-	//"prm/com.omnicon.prm.service/log"
 	"prm/com.omnicon.prm.reports/report"
+	"prm/com.omnicon.prm.service/domain"
 )
 
 type ReportController struct {
@@ -17,17 +13,31 @@ type ReportController struct {
 /*Index*/
 func (this *ReportController) Reports() {
 	this.Data["PDF"] = ""
+	this.Data["Projects"] = report.GetAllProjects(domain.GetProjectsRQ{})
+	this.Data["Resources"] = report.GetAllResources()
 	this.TplName = "Reports/reports.tpl"
 }
 
 func (this *ReportController) ProjectAssign() {
-	fileName := report.ProjectAssign()
+	input := domain.GetResourcesToProjectsRQ{}
+	this.ParseForm(&input)
+	fileName := report.ProjectAssign(input)
 	this.Data["PDF"] = "/static/pdf/" + fileName
 	this.TplName = "Reports/report.tpl"
 }
 
 func (this *ReportController) ResourceAssign() {
-	fileName := report.ResourceAssign()
+	input := domain.GetResourcesToProjectsRQ{}
+	this.ParseForm(&input)
+	fileName := report.ResourceAssign(input)
+	this.Data["PDF"] = "/static/pdf/" + fileName
+	this.TplName = "Reports/report.tpl"
+}
+
+func (this *ReportController) MatrixOfAssign() {
+	input := domain.GetResourcesToProjectsRQ{}
+	this.ParseForm(&input)
+	fileName := report.MatrixOfAssign(input)
 	this.Data["PDF"] = "/static/pdf/" + fileName
 	this.TplName = "Reports/report.tpl"
 }

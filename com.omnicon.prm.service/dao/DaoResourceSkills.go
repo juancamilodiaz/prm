@@ -42,7 +42,7 @@ func GetAllResourceSkills() []*DOMAIN.ResourceSkills {
 *	Return: *DOMAIN.ResourceSkills
 *	Description: Get a resourceSkill by ID in a ResourceSkills table
  */
-func GetResourceSkillsById(pId int64) *DOMAIN.ResourceSkills {
+func GetResourceSkillsById(pId int) *DOMAIN.ResourceSkills {
 	// ResourceSkills structure
 	resourceSkills := DOMAIN.ResourceSkills{}
 	// Add in resourceSkills variable, the resourceSkills where ID is the same that the param
@@ -62,7 +62,7 @@ func GetResourceSkillsById(pId int64) *DOMAIN.ResourceSkills {
 *	Return: *DOMAIN.ResourceSkills
 *	Description: Get a resourceSkill by ResourceId in a ResourceSkills table
  */
-func GetResourceSkillsByResourceId(pId int64) []*DOMAIN.ResourceSkills {
+func GetResourceSkillsByResourceId(pId int) []*DOMAIN.ResourceSkills {
 	// Slice to keep all ResourceSkills
 	var resourceSkills []*DOMAIN.ResourceSkills
 	// Add all ResourceSkills in resourceSkills variable
@@ -81,7 +81,7 @@ func GetResourceSkillsByResourceId(pId int64) []*DOMAIN.ResourceSkills {
 *	Return: *DOMAIN.ResourceSkills
 *	Description: Get a resourceSkill by SkillId in a ResourceSkills table
  */
-func GetResourceSkillsBySkillId(pId int64) []*DOMAIN.ResourceSkills {
+func GetResourceSkillsBySkillId(pId int) []*DOMAIN.ResourceSkills {
 	// Slice to keep all ResourceSkills
 	var resourceSkills []*DOMAIN.ResourceSkills
 	// Add all ResourceSkills in resourceSkills variable
@@ -100,7 +100,7 @@ func GetResourceSkillsBySkillId(pId int64) []*DOMAIN.ResourceSkills {
 *	Return: *DOMAIN.ResourceSkills
 *	Description: Get a resourceSkill by ResourceId and SkillId in a ResourceSkills table
  */
-func GetResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int64) *DOMAIN.ResourceSkills {
+func GetResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int) *DOMAIN.ResourceSkills {
 	// ResourceSkills structure
 	resourceSkills := DOMAIN.ResourceSkills{}
 	// Add in resourceSkills variable, the resourceSkills where ID is the same that the param
@@ -125,7 +125,7 @@ func GetResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int64) *DOMAI
 *	Return: int, error
 *	Description: Add ResourceSkills in DB
  */
-func AddResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int64, error) {
+func AddResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -146,7 +146,7 @@ func AddResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int64, error) {
 	}
 	// Get rows inserted
 	insertId, err := res.LastInsertId()
-	return insertId, nil
+	return int(insertId), nil
 }
 
 /**
@@ -155,13 +155,13 @@ func AddResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int64, error) {
 *	Return: int, error
 *	Description: Update ResourceSkills in DB
  */
-func UpdateResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int64, error) {
+func UpdateResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
 	defer session.Close()
 	// Update ResourceSkills in DB
-	q := session.Update("ResourceSkills").Set("name = ?, value = ?", pResourceSkills.Name, pResourceSkills.Value).Where("id = ?", int(pResourceSkills.ID))
+	q := session.Update("ResourceSkills").Set("name = ?, value = ?", pResourceSkills.Name, pResourceSkills.Value).Where("id = ?", pResourceSkills.ID)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -169,7 +169,7 @@ func UpdateResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int64, error)
 	}
 	// Get rows updated
 	updateCount, err := res.RowsAffected()
-	return updateCount, nil
+	return int(updateCount), nil
 }
 
 /**
@@ -178,13 +178,13 @@ func UpdateResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int64, error)
 *	Return: int, error
 *	Description: Delete ResourceSkills in DB
  */
-func DeleteResourceSkills(pResourceSkillsId int64) (int64, error) {
+func DeleteResourceSkills(pResourceSkillsId int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
 	defer session.Close()
 	// Delete ResourceSkills in DB
-	q := session.DeleteFrom("ResourceSkills").Where("id", int(pResourceSkillsId))
+	q := session.DeleteFrom("ResourceSkills").Where("id", pResourceSkillsId)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -192,7 +192,7 @@ func DeleteResourceSkills(pResourceSkillsId int64) (int64, error) {
 	}
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
-	return deleteCount, nil
+	return int(deleteCount), nil
 }
 
 /**
@@ -201,7 +201,7 @@ func DeleteResourceSkills(pResourceSkillsId int64) (int64, error) {
 *	Return: int, error
 *	Description: Delete ResourceSkills by ResourceId and SkillId in DB
  */
-func DeleteResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int64) (int64, error) {
+func DeleteResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
@@ -215,5 +215,5 @@ func DeleteResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int64) (in
 	}
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
-	return deleteCount, nil
+	return int(deleteCount), nil
 }
