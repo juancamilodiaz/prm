@@ -57,6 +57,14 @@ func UpdateType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 			response.Status = "Error"
 			return &response
 		}
+
+		// Update table with new name
+		projectsTypes := dao.GetProjectTypesByTypeId(pRequest.ID)
+		for _, projectType := range projectsTypes {
+			projectType.Name = oldType.Name
+			dao.UpdateProjectType(projectType)
+		}
+
 		// Get Type updated
 		types := dao.GetTypesById(pRequest.ID)
 		response.Types = append(response.Types, types)

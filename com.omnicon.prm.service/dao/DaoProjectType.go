@@ -187,3 +187,26 @@ func DeleteProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) (int, error
 	deleteCount, err := res.RowsAffected()
 	return int(deleteCount), nil
 }
+
+/**
+*	Name : UpdateProjectType
+*	Params: pProjectTypes
+*	Return: int, error
+*	Description: Update ProjectTypes in DB
+ */
+func UpdateProjectType(pProjectTypes *DOMAIN.ProjectTypes) (int, error) {
+	// Get a session
+	session = GetSession()
+	// Close session when ends the method
+	defer session.Close()
+	// Update ResourceSkills in DB
+	q := session.Update("ProjectTypes").Set("type_name = ?", pProjectTypes.Name).Where("id = ?", pProjectTypes.ID)
+	res, err := q.Exec()
+	if err != nil {
+		log.Error(err)
+		return 0, err
+	}
+	// Get rows updated
+	updateCount, err := res.RowsAffected()
+	return int(updateCount), nil
+}
