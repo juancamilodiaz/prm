@@ -173,7 +173,7 @@ func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int, er
 	// Close session when ends the method
 	defer session.Close()
 	// Update ProjectResources in DB
-	q := session.Update("ProjectResources").Set("project_id = ?, resource_id = ?, start_date = ?, end_date = ?, lead = ?, hours = ?", pProjectResources.ProjectId, pProjectResources.ResourceId, pProjectResources.StartDate, pProjectResources.EndDate, pProjectResources.Lead, pProjectResources.Hours).Where("id = ?", int(pProjectResources.ID))
+	q := session.Update("ProjectResources").Set("project_id = ?, resource_id = ?, start_date = ?, end_date = ?, lead = ?, hours = ?, project_name = ?, resource_name = ?", pProjectResources.ProjectId, pProjectResources.ResourceId, pProjectResources.StartDate, pProjectResources.EndDate, pProjectResources.Lead, pProjectResources.Hours, pProjectResources.ProjectName, pProjectResources.ResourceName).Where("id = ?", int(pProjectResources.ID))
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)

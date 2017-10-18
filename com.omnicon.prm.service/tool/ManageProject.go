@@ -158,6 +158,14 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			response.Status = "Error"
 			return &response
 		}
+
+		// Update project name in other tables
+		projectsResources := dao.GetProjectResourcesByProjectId(pRequest.ID)
+		for _, projectResource := range projectsResources {
+			projectResource.ProjectName = oldProject.Name
+			dao.UpdateProjectResources(projectResource)
+		}
+
 		// Get Prooject updated
 		project := dao.GetProjectById(pRequest.ID)
 		response.Project = project

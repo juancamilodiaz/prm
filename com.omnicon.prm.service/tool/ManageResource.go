@@ -71,6 +71,14 @@ func UpdateResource(pResource *DOMAIN.UpdateResourceRQ) *DOMAIN.UpdateResourceRS
 			response.Status = "Error"
 			return &response
 		}
+
+		// Update resource name in other tables
+		projectsResources := dao.GetProjectResourcesByResourceId(pResource.ID)
+		for _, projectResource := range projectsResources {
+			projectResource.ResourceName = oldResource.Name
+			dao.UpdateProjectResources(projectResource)
+		}
+
 		// Get Resource updated
 		resource := dao.GetResourceById(pResource.ID)
 		response.Resource = resource
