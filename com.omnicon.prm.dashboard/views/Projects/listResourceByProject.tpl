@@ -7,8 +7,13 @@
 				null,
 				null,
 				null,
+				null,
 				{"searchable":false}
-			]
+			],
+			"dom": '<"col-sm-2"<"toolbar">><"col-sm-4"f><"col-sm-6"l><rtip>',
+			initComplete: function(){
+		      $("div.toolbar").html('<button id="multiDelete" disabled data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="' + "$('#projectID').val({{.ProjectId}}); $('#nameDelete').html('the marked elements')" + '" data-dismiss="modal"> Delete </button>');     
+		   	} 
 		});
 		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
@@ -64,6 +69,23 @@
 		var prjEndDate = formatDate({{.EndDate}});
 		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);
 	});
+
+	var listToDelete = [];
+	$('.checkToDelete').change(function() {
+		if(this.checked) {
+			listToDelete.push(this.value);
+		} else {
+			var index = listToDelete.indexOf(this.value);
+			if (index > -1){
+				listToDelete.splice(index,1);
+			}
+		}
+		if (listToDelete.length > 0){
+			$('#multiDelete').removeAttr("disabled");
+		} else {
+			$('#multiDelete').attr("disabled", "disabled");			
+		}
+	});
 	
 	unassignResource = function(){
 		var settings = {
@@ -73,7 +95,8 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"ID": $('#resourceProjectIDDelete').val()
+				"ID": $('#resourceProjectIDDelete').val(),
+				"IDs": listToDelete.toString()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -179,6 +202,7 @@
 <table id="viewResourceInProject" class="table table-striped table-bordered">
 	<thead>
 		<tr>
+			<th>To Delete</th>
 			<th>Resource Name</th>
 			<th>Start Date</th>
 			<th>End Date</th>
@@ -190,6 +214,7 @@
 	<tbody>
 	 	{{range $key, $resourceToProject := .ResourcesToProjects}}
 		<tr>
+			<td><input type="checkbox" value="{{$resourceToProject.ID}}" class="checkToDelete"></td>
 			<td>{{$resourceToProject.ResourceName}}</td>
 			<td>{{dateformat $resourceToProject.StartDate "2006-01-02"}}</td>
 			<td>{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>

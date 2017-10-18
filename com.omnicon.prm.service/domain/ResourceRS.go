@@ -84,7 +84,7 @@ func (m *GetResourcesToProjectsRS) GetHeader() *Response_Header {
 //-------- Delete Resource to Project
 type DeleteResourceToProjectRS struct {
 	Header       *Response_Header
-	ID           int
+	IDs          []int
 	ResourceName string
 	ProjectName  string
 	Status       string

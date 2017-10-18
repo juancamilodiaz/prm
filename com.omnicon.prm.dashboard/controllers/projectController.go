@@ -258,11 +258,15 @@ func (this *ProjectController) DeleteResourceToProject() {
 
 	input := domain.DeleteResourceToProjectRQ{}
 	id, _ := this.GetInt("ID")
-	input.ID = id
-
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
+	if id != 0 {
+		input.IDs = append(input.IDs, id)
+	} else {
+		idsStr := this.GetString("IDs")
+		ids := strings.Split(idsStr, ",")
+		for _, idStr := range ids {
+			id, _ := strconv.Atoi(idStr)
+			input.IDs = append(input.IDs, id)
+		}
 	}
 	log.Debugf("[ParseInput] Input: %+v \n", input)
 

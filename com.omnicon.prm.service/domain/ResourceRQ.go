@@ -50,9 +50,7 @@ type GetResourcesToProjectsRQ struct {
 }
 
 type DeleteResourceToProjectRQ struct {
-	ProjectId  int
-	ResourceId int
-	ID         int
+	IDs []int
 }
 
 type UpdateResourceRQ struct {

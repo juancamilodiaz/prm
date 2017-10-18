@@ -435,9 +435,11 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 							return &response
 						}
 						// Get ProjectResources inserted
-						response := getInsertedResource(id, project, timeResponse)
-						if response != nil && elements == len(breakdownAssig) {
-							return response
+						if elements == len(breakdownAssig) {
+							response := getInsertedResource(id, project, timeResponse)
+							if response != nil {
+								return response
+							}
 						}
 					}
 				}
@@ -489,24 +491,28 @@ func getInsertedResource(pIdResProject int, pProject *DOMAIN.Project, pTimeRespo
 func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN.DeleteResourceToProjectRS {
 	timeResponse := time.Now()
 	response := DOMAIN.DeleteResourceToProjectRS{}
-	projectResource := dao.GetProjectResourcesById(pRequest.ID)
-	if projectResource != nil {
-		// Delete in DB
-		rowsDeleted, err := dao.DeleteProjectResources(projectResource.ID)
-		if err != nil || rowsDeleted <= 0 {
-			message := "ProjectResource wasn't delete"
-			log.Error(message)
-			response.Message = message
-			response.Status = "Error"
-			return &response
+	for index, id := range pRequest.IDs {
+		projectResource := dao.GetProjectResourcesById(id)
+		if projectResource != nil {
+			// Delete in DB
+			rowsDeleted, err := dao.DeleteProjectResources(projectResource.ID)
+			if err != nil || rowsDeleted <= 0 {
+				message := "ProjectResource wasn't delete"
+				log.Error(message)
+				response.Message = message
+				response.Status = "Error"
+				return &response
+			}
+
+			response.IDs = append(response.IDs, projectResource.ID)
+			if index == len(pRequest.IDs)-1 {
+				response.Status = "OK"
+
+				response.Header = util.BuildHeaderResponse(timeResponse)
+
+				return &response
+			}
 		}
-
-		response.ID = projectResource.ID
-		response.Status = "OK"
-
-		response.Header = util.BuildHeaderResponse(timeResponse)
-
-		return &response
 	}
 	message := "ResourceSkill wasn't found in DB"
 	log.Error(message)
