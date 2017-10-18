@@ -63,7 +63,8 @@
 	});
 	
 	var listToDelete = [];
-	$('.checkToDelete').change(function() {
+	$(document).unbind('change');
+	$(document).on('change', '.checkToDelete', function() {
 		if(this.checked) {
 			listToDelete.push(this.value);
 		} else {
