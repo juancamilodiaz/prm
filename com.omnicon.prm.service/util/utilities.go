@@ -451,6 +451,35 @@ func MappingFiltersProjectResource(pRequest *domain.GetResourcesToProjectsRQ) *d
 	return nil
 }
 
+func MappingTrainingRQ(pDomain *domain.TrainingRQ) *domain.Training {
+	training := new(domain.Training)
+	training.ID = pDomain.ID
+	training.ResourceId = pDomain.ResourceId
+	training.TypeId = pDomain.TypeId
+
+	return training
+}
+
+func MappingTrainingSkills(idTraining int, pRequest []*domain.TrainingSkills) []*domain.TrainingSkills {
+	tSkills := []*domain.TrainingSkills{}
+
+	for _, skill := range pRequest {
+		tSkill := new(domain.TrainingSkills)
+		tSkill.TrainingId = idTraining
+		tSkill.SkillId = skill.SkillId
+		tSkill.Duration = skill.Duration
+		tSkill.Progress = skill.Progress
+		tSkill.ResultStatus = skill.ResultStatus
+		tSkill.TestResult = skill.TestResult
+		tSkill.StartDate = skill.StartDate
+		tSkill.EndDate = skill.EndDate
+
+		tSkills = append(tSkills, tSkill)
+	}
+
+	return tSkills
+}
+
 /**
 * Function to mapping Types request to business entity project.
  */
