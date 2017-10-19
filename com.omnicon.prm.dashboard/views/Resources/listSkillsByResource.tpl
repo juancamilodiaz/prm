@@ -192,20 +192,20 @@
 			    </div>
 		    	<div class="modal-body">
 					<input type="hidden" id="resourceIDSkills">
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Skill Name"> Skill Name </label>
           					<div class="col-sm-8">
-          						<select id="resourceNameSkill">
+          						<select id="resourceNameSkill" style="width: 174px; border-radius: 8px;">
 								</select>
     						</div>
           				</div>
         			</div>
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
              				<div class="col-sm-8">
-              					<input type="number" id="resourceValueSkill" min="1" max="100" value="1">
+              					<input type="number" id="resourceValueSkill" min="1" max="100" value="1" style="border-radius: 8px;">
         					</div>
           				</div>
         			</div>
@@ -228,19 +228,19 @@
 			    </div>
 		    	<div class="modal-body">
 					<input type="hidden" id="updateResourceSkillId">
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Skill Name"> Skill Name </label>
           					<div class="col-sm-8">
-          						<input type="text" id="updateResourceNameSkill" disabled>
+          						<input type="text" id="updateResourceNameSkill" disabled style="border-radius: 8px;">
     						</div>
           				</div>
         			</div>
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
              				<div class="col-sm-8">
-              					<input type="number" id="updateResourceValueSkill" min="1" max="100">
+              					<input type="number" id="updateResourceValueSkill" min="1" max="100" style="border-radius: 8px;">
         					</div>
           				</div>
         			</div>

@@ -198,40 +198,40 @@
 			    </div>
 		    	<div class="modal-body">
 					<input type="hidden" id="resourceProjectId">
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
           					<div class="col-sm-8">
-          						<select id="projectNames">
+          						<select id="projectNames" style="inline-size: 174px; border-radius: 8px;">
 								</select>
     						</div>
           				</div>
         			</div>
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="StartDate"> Start Date </label> 
              				<div class="col-sm-8">
-              					<input type="date" id="resourceDateStartProject">
+              					<input type="date" id="resourceDateStartProject" style="inline-size: 174px; border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="EndDate"> End Date </label> 
              				<div class="col-sm-8">
-              					<input type="date" id="resourceDateEndProject">
+              					<input type="date" id="resourceDateEndProject" style="inline-size: 174px; border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Total Hours </label> 
              				<div class="col-sm-8">
-              					<input type="number" id="resourceHoursProject" value="8">
+              					<input type="number" id="resourceHoursProject" value="8" style="border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 			        	<div class="form-group form-group-sm">
 			        		<label class="control-label col-sm-4 translatable" data-i18n="activeHoursPerDay"> Activate Hours Per Day </label> 
 			              <div class="col-sm-8">
@@ -239,15 +239,15 @@
 			              </div>    
 			          </div>
 			        </div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="HoursPerDay"> Hours Per Day </label> 
              				<div class="col-sm-8">
-              					<input type="number" id="createHoursPerDay" value="8" disabled>
+              					<input type="number" id="createHoursPerDay" value="8" disabled style="border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 			        	<div class="form-group form-group-sm">
 			        		<label class="control-label col-sm-4 translatable" data-i18n="Lead"> Lead </label> 
 			              <div class="col-sm-8">
@@ -276,39 +276,39 @@
 					<input type="hidden" id="resourceProjectUpdateId">
         			<input type="hidden" id="projectUpdateId">
 					<input type="hidden" id="resourceProjectIDUpdate">					
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
           					<div class="col-sm-8">
-								<input type="text" id="resourceProjectUpdateName" readonly>
+								<input type="text" id="resourceProjectUpdateName" readonly style="border-radius: 8px;">
     						</div>
           				</div>
         			</div>
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="StartDate"> Start Date </label> 
              				<div class="col-sm-8">
-              					<input type="date" id="resourceUpdateDateStartProject">
+              					<input type="date" id="resourceUpdateDateStartProject" style="inline-size: 174px; border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="EndDate"> End Date </label> 
              				<div class="col-sm-8">
-              					<input type="date" id="resourceUpdateDateEndProject">
+              					<input type="date" id="resourceUpdateDateEndProject" style="inline-size: 174px; border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
              				<div class="col-sm-8">
-              					<input type="number" id="resourceUpdateDateHoursProject">
+              					<input type="number" id="resourceUpdateDateHoursProject" style="border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 			        	<div class="form-group form-group-sm">
 			        		<label class="control-label col-sm-4 translatable" data-i18n="Lead"> Lead </label> 
 			              <div class="col-sm-8">

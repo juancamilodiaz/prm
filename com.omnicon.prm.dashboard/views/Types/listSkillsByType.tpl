@@ -153,11 +153,11 @@
         <h4 id="modalTitleType" class="modal-title">Select Skill</h4>
       </div>
       <div class="modal-body">
-		<div class="row-box col-sm-12">
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 			<div id="divSkillType" class="form-group form-group-sm">
 	       		<label class="control-label col-sm-4 translatable" data-i18n="Skill"> Skill </label> 
 	            	<div class="col-sm-8">
-	             	<select  id="skillId">
+	             	<select  id="skillId" style="width: 174px; border-radius: 8px;">
 					<option value="">Please select an option</option>
 					{{range $key, $skill := .Skills}}
 						<option value="{{$skill.ID}}-{{$skill.Name}}">{{$skill.Name}}</option>
@@ -166,11 +166,11 @@
 	             </div>    
 	        </div>
 		</div>
-		<div class="row-box col-sm-12">
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 			<div class="form-group form-group-sm">
 				<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
 				<div class="col-sm-8">
-					<input type="number" id="typeValueSkill" min="1" max="100" value="1">
+					<input type="number" id="typeValueSkill" min="1" max="100" value="1" style="border-radius: 8px;">
 				</div>
 			</div>
 		</div>

@@ -146,11 +146,11 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="typeID">
-        <div class="row-box col-sm-12">
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
               <div class="col-sm-8">
-              	<input type="text" id="typeName">
+              	<input type="text" id="typeName" style="border-radius: 8px;">
         		</div>
           </div>
         </div>

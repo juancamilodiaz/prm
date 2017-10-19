@@ -383,31 +383,31 @@ function setResourceToProjectExc(){
         <h4 id="modalTitle" class="modal-title">Assign dates to the resource</h4>
       </div>
       <div class="modal-body">
-        <div class="row-box col-sm-12">
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
               <div class="col-sm-8">
-              	<input type="date" id="resourceStartDate">
+              	<input type="date" id="resourceStartDate" style="width: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12">
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
               <div class="col-sm-8">
-              	<input type="date" id="resourceEndDate">
+              	<input type="date" id="resourceEndDate" style="width: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
-      		<div class="row-box col-sm-12">
+      		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 	       	<div class="form-group form-group-sm">
 	       		<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Total Hours </label> 
 	             	<div class="col-sm-6">
-	             		<input type="number" id="estimatedHours" value="8">
+	             		<input type="number" id="estimatedHours" value="8" style="border-radius: 8px;">
 	       		</div>
 	       	</div>
 		</div>
-		<div class="row-box col-sm-12">
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="activeHoursPerDay"> Activate Hours Per Day </label> 
               <div class="col-sm-8">
@@ -415,11 +415,11 @@ function setResourceToProjectExc(){
               </div>    
           </div>
         </div>
-		<div class="row-box col-sm-12">
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 			<div class="form-group form-group-sm">
 				<label class="control-label col-sm-4 translatable" data-i18n="HoursPerDay"> Hours Per Day </label> 
    				<div class="col-sm-8">
-    				<input type="number" id="createHoursPerDay" value="8" disabled>
+    				<input type="number" id="createHoursPerDay" value="8" disabled style="border-radius: 8px;">
 				</div>
  			</div>
 		</div>
