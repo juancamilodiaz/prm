@@ -49,6 +49,8 @@ func SetUpHandlers() {
 	http.HandleFunc("/DeleteSkillsByType", deleteSkillsByType)
 	http.HandleFunc("/SetSkillsToType", setSkillsToType)
 	http.HandleFunc("/SetTypesToProject", setTypesToProject)
+	http.HandleFunc("/CreateTraining", createTraining)
+	http.HandleFunc("/GetTraining", getTraining)
 }
 
 /*
@@ -1123,4 +1125,67 @@ func setTypesToProject(pResponse http.ResponseWriter, pRequest *http.Request) {
 	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
 
+}
+
+/*
+Descripcion : Funcion encargada de crear un Training  de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func createTraining(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("CreateTraining")
+
+	message := new(domain.TrainingRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+
+	log.Info("Process Create Training", message)
+
+	response := controller.ProcessCreateTraining(message)
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Descripcion : Funcion encargada de obtener un Training  de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func getTraining(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("GetTraining")
+
+	message := new(domain.TrainingRQ)
+	getMessage(pRequest, message)
+	log.Info("Process Get Training", message)
+
+	response := controller.ProcessGetTraining(message)
+	log.Debug("Response", response.Status)
+	log.Debug("Response.Training", *response.Training)
+	log.Debug("Response.TrainingSkills", len(response.TrainingSkills))
+	value := marshalJson(pRequest.Header.Get("Accept"), response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
 }
