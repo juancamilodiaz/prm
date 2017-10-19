@@ -42,6 +42,10 @@ func (this *TrainingController) GetTraining() {
 		data := buildPieMessage(message.TrainingSkills)
 		this.Data["TStatus"] = data.SkillsName
 		this.Data["TValues"] = data.SkillsValue
+
+		this.Data["Resources"] = message.Resources
+		this.Data["Types"] = message.Types
+
 		this.TplName = "Training/Training.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."

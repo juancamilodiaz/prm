@@ -61,6 +61,12 @@ func GetTraining(pRequest *DOMAIN.TrainingRQ) *DOMAIN.TrainingRS {
 		trainingSkills := dao.GetTrainingSkillsByTrainingId(training.ID)
 		log.Debug("TrainingSkills result:", len(trainingSkills))
 		response.TrainingSkills = trainingSkills
+
+		resources := dao.GetAllResources()
+		response.Resources = resources
+
+		types := dao.GetAllTypes()
+		response.Types = types
 	} else {
 		log.Debug("Training result empty", pRequest.ID)
 	}

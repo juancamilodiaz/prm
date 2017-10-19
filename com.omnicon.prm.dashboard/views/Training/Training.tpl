@@ -5,7 +5,8 @@
 	$(document).ready(function(){
 		$('#datePicker').css("display", "none");
 		$('#refreshButton').css("display", "none");
-		$('#optionButton').css("display", "none");
+		$('#backButton').css("display", "none");
+		$('#buttonOption').css("display", "none");
 	});
 	
 	google.charts.load('current', {'packages':['gantt']});
@@ -40,8 +41,38 @@
 	}
 </script>
 
-
+<button class="buttonHeader button2" data-toggle="collapse" data-target="#filters">
+<span class="glyphicon glyphicon-filter"></span> Filter 
+</button>
+<div id="filters" class="collapse">
+   <div class="row">
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="resourcesValue">Resources list:</label>
+            <select class="form-control" id="resourcesValue">
+               <option id="">All resources</option>
+               {{range $index, $resource := .Resources}}
+               <option id="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
+               {{end}}
+            </select>
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="projectsValue">Training list:</label>
+            <select class="form-control" id="projectsValue">
+               <option id="">All training</option>
+               {{range $index, $type := .Types}}
+               <option id="{{$type.ID}}">{{$type.Name}}</option>
+               {{end}}
+            </select>
+         </div>
+      </div>
+   </div>
+</div>
 <div class="col-sm-12">
+   <br>
+   <br>
 	<table id="viewTraining" class="table table-striped table-bordered">
 		<thead>
 			<tr>
