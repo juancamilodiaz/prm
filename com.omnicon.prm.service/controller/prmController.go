@@ -151,3 +151,11 @@ func ProcessSetSkillsByType(pRequest *domain.TypeSkillsRQ) *domain.TypeSkillsRS 
 func ProcessSetTypesByProject(pRequest *domain.ProjectTypesRQ) *domain.ProjectTypesRS {
 	return tool.SetTypesByProject(pRequest)
 }
+
+func ProcessCreateTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.CreateTraining(pRequest)
+}
+
+func ProcessGetTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.GetTraining(pRequest)
+}
