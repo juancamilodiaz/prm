@@ -81,7 +81,7 @@ function substractDates(pStartDate, pEndDate){
 function getHoursRemaining(pDateFrom, pDateTo, pHoursAssign){
 	var startDate = new Date(pDateFrom);
 	var endDate = new Date(pDateTo);
-	var totalHours = workingHoursBetweenDates(startDate, endDate);
+	var totalHours = workingHoursBetweenDates(startDate, endDate, 0, false);
 	return totalHours - pHoursAssign;
 }
 
