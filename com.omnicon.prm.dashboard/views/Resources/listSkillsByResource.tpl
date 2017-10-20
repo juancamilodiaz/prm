@@ -112,6 +112,38 @@
 		  $('#resourceNameSkill').html(response);
 		});
 	}
+	
+	//add event listener to button
+	document.getElementById('download-pdf').addEventListener("click", downloadPDF);
+	
+	//donwload pdf from original canvas
+	function downloadPDF() {
+		
+	  var canvas = document.querySelector('#chartjs-3');
+		//creates image
+		var canvasImg = canvas.toDataURL("image/jpg", 1.0);
+	  
+		//creates PDF from img
+		var doc = new jsPDF('landscape', 'mm', 'letter');
+		doc.setFontSize(20);
+		doc.text("Summary {{.Title}}'s skills", 139.5, 20, 'center' );
+		doc.addImage(canvasImg, 'JPEG', 99, 20, 100, 100);
+		
+		var columns = ["ID", "Name", "Value"];
+		var rows = [
+		{{range $key, $skill := .Skills}}
+		    [{{$key}}, "{{$skill.Name}}", "{{$skill.Value}}"],
+		{{end}}	
+		];		
+		
+		doc.autoTable(columns, rows, {
+			startY: 120
+		});
+		
+		//doc.autoPrint();
+		//window.open(doc.output('bloburl'), '_blank');
+		doc.save('{{.Title}}.pdf');
+	}
 
 </script>
 
@@ -142,6 +174,9 @@
 			</tbody>
 		</table>
 	</div>
+	<button class="buttonTable button2" id="download-pdf" >
+		Download PDF
+	</button>
 	<div class="col-sm-6">
 		<p>
 		   <div class="chart-container" id="chartjs-wrapper">
