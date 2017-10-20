@@ -125,6 +125,9 @@
 	  
 		//creates PDF from img
 		var doc = new jsPDF('landscape', 'mm', 'letter');
+		doc.setProperties({
+			title: '{{.Title}}'
+		});
 		doc.setFontSize(20);
 		doc.text("Summary {{.Title}}'s skills", 139.5, 20, 'center' );
 		doc.addImage(canvasImg, 'JPEG', 99, 20, 100, 100);
@@ -140,9 +143,8 @@
 			startY: 120
 		});
 		
-		//doc.autoPrint();
-		//window.open(doc.output('bloburl'), '_blank');
-		doc.save('{{.Title}}.pdf');
+		$('#objectPdf').attr('data', doc.output('datauristring'));
+		$('#showDocument').modal('show');
 	}
 
 </script>
@@ -295,14 +297,37 @@
 	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
 	        		<h4 class="modal-title">Delete Confirmation</h4>
 	      		</div>
-	      	<div class="modal-body">
-				<input type="hidden" id="deleteResourceSkillId">
-	      		Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
-	      	</div>
-	      	<div class="modal-footer" style="text-align:center;">
-		        <button type="button" id="resourceSkillDelete" class="btn btn-default" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val())" data-dismiss="modal">Yes</button>
-		        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-	      	</div>
+		      	<div class="modal-body">
+					<input type="hidden" id="deleteResourceSkillId">
+		      		Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
+		      	</div>
+		      	<div class="modal-footer" style="text-align:center;">
+			        <button type="button" id="resourceSkillDelete" class="btn btn-default" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val())" data-dismiss="modal">Yes</button>
+			        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+		      	</div>
+			</div>
 	    </div>
+	</div>
+	<!-- Modal -->
+	<div id="showDocument" class="modal fade" role="dialog">
+	  <div class="modal-dialog" style="width: 95%;height: 90%;padding: 0;">
+	
+	    <!-- Modal content-->
+	    <div class="modal-content" style="height: 100%;">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="modal-title">Preview Skills</h4>
+	      </div>
+	      <div class="modal-body" style="height: 80%">
+			<object id="objectPdf" type="application/pdf" width="100%" height="100%">
+			   
+			</object>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	
+	  </div>
 	</div>
 </body>
