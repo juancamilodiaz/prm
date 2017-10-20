@@ -19,7 +19,7 @@
 			initComplete: function(){
 				var startDateCreate = new Date($("#projectStartDate").val());
 				var endDateCreate = new Date($("#projectEndDate").val());
-				var projectHours = workingHoursBetweenDates(startDateCreate, endDateCreate);
+				var projectHours = workingHoursBetweenDates(startDateCreate, endDateCreate, 0, false);
 		      	$("div.toolbar").html('<label>Project Duration (h): '+projectHours+'</label><button type="button" data-toggle="modal" data-target="#spiderModal" class="pull-right buttonTable button2" id="compare" style="border-radius:8px;">Compare</button>');         
 		   	}       
 		});
