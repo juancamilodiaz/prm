@@ -62,6 +62,18 @@ func UpdateSkill(pRequest *DOMAIN.UpdateSkillRQ) *DOMAIN.UpdateSkillRS {
 		response.Skill = skill
 		response.Status = "OK"
 
+		// Update relation tables.
+		resourcesSkills := dao.GetResourceSkillsBySkillId(pRequest.ID)
+		for _, resourceSkill := range resourcesSkills {
+			resourceSkill.Name = oldSkill.Name
+			dao.UpdateResourceSkills(resourceSkill)
+		}
+		typesSkills := dao.GetTypesSkillsBySkillId(pRequest.ID)
+		for _, typeSkill := range typesSkills {
+			typeSkill.Name = oldSkill.Name
+			dao.UpdateTypeSkills(typeSkill)
+		}
+
 		response.Header = util.BuildHeaderResponse(timeResponse)
 
 		return &response

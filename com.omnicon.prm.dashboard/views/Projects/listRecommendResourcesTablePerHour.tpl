@@ -3,13 +3,14 @@
 	var MyProject = {};
 	$(document).ready(function(){
 		MyProject.table = $('#availabilityTable').DataTable({
+			"bSort": false,
 			"columns": [
 				{"className":'details-control',"searchable":true},
 				null
 	        ],
 			"columnDefs": [ {
-			      "targets": [1],
-			      "orderable": true
+			      "targets": [0,1],
+			      "orderable": false
 			    } ],
 			responsive: true,
 			"pageLength": 50,
@@ -17,10 +18,7 @@
 			"paging": true,			
 			"dom": '<"col-sm-4"l><"col-sm-4"f><"col-sm-4"<"toolbar">><rtip>',
 			initComplete: function(){
-				var startDateCreate = new Date($("#projectStartDate").val());
-				var endDateCreate = new Date($("#projectEndDate").val());
-				var projectHours = workingHoursBetweenDates(startDateCreate, endDateCreate, 0, false);
-		      	$("div.toolbar").html('<label>Project Duration (h): '+projectHours+'</label><button type="button" data-toggle="modal" data-target="#spiderModal" class="pull-right buttonTable button2" id="compare" style="border-radius:8px;">Compare</button>');         
+		      $("div.toolbar").html('<label>Hours by resource:{{.HoursByPerson}}</label><button type="button" data-toggle="modal" data-target="#spiderModal" class="pull-right buttonTable button2" id="compare" style="border-radius:8px;">Compare</button>');         
 		   	}       
 		});
 		if (!$('#skillsActive').prop("checked")) {

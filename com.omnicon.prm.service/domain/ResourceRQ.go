@@ -24,14 +24,16 @@ type GetResourcesRQ struct {
 }
 
 type SetResourceToProjectRQ struct {
-	ID         int
-	ProjectId  int
-	ResourceId int
-	StartDate  string
-	EndDate    string
-	Lead       bool
-	Hours      float64
-	IsToCreate bool
+	ID            int
+	ProjectId     int
+	ResourceId    int
+	StartDate     string
+	EndDate       string
+	Lead          bool
+	Hours         float64
+	IsToCreate    bool
+	HoursPerDay   float64
+	IsHoursPerDay bool
 }
 
 type GetResourcesToProjectsRQ struct {
@@ -48,9 +50,7 @@ type GetResourcesToProjectsRQ struct {
 }
 
 type DeleteResourceToProjectRQ struct {
-	ProjectId  int
-	ResourceId int
-	ID         int
+	IDs []int
 }
 
 type UpdateResourceRQ struct {

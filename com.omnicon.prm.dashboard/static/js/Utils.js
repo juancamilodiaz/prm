@@ -39,7 +39,7 @@ $(document).ready(
 
 // Simple function that accepts two parameters and calculates
 // the number of hours worked within that range
-function workingHoursBetweenDates(startDate, endDate) {  
+function workingHoursBetweenDates(startDate, endDate, workHoursUpdate, isHoursPerDay) {  
     // Store minutes worked
     var hoursWorked = 0;
 
@@ -51,6 +51,9 @@ function workingHoursBetweenDates(startDate, endDate) {
 
     // Define work hours
     var workHours = 8;
+	if (isHoursPerDay){
+		workHours = parseFloat(workHoursUpdate);
+	}
 	if (endDate.getDate() == startDate.getDate()) { return workHours; }
 	// Loop while currentDate is less than end Date (by minutes)
     while(current <= endDate){

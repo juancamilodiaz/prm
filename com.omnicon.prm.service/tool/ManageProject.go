@@ -10,7 +10,7 @@ import (
 	"prm/com.omnicon.prm.service/util"
 )
 
-const HoursOfWork = 8
+const HoursOfWork = 8.0
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 
@@ -158,6 +158,14 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			response.Status = "Error"
 			return &response
 		}
+
+		// Update project name in other tables
+		projectsResources := dao.GetProjectResourcesByProjectId(pRequest.ID)
+		for _, projectResource := range projectsResources {
+			projectResource.ProjectName = oldProject.Name
+			dao.UpdateProjectResources(projectResource)
+		}
+
 		// Get Prooject updated
 		project := dao.GetProjectById(pRequest.ID)
 		response.Project = project
@@ -316,15 +324,23 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			breakdownAssig := make(map[string]float64)
 			totalHoursAssig := pRequest.Hours
 
+			// if not are hours per day then get the total hours
+			if !pRequest.IsHoursPerDay {
+				pRequest.HoursPerDay = pRequest.Hours
+			}
+
 			for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
 				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
-					if totalHoursAssig > 0 && totalHoursAssig <= HoursOfWork {
-						breakdownAssig[day.String()] = totalHoursAssig
-						totalHoursAssig = totalHoursAssig - totalHoursAssig
-						break
-					} else {
-						breakdownAssig[day.String()] = HoursOfWork
-						totalHoursAssig = totalHoursAssig - HoursOfWork
+					if pRequest.HoursPerDay > 0 && pRequest.HoursPerDay <= HoursOfWork {
+						breakdownAssig[day.String()] = pRequest.HoursPerDay
+						totalHoursAssig = totalHoursAssig - pRequest.HoursPerDay
+					} else if totalHoursAssig != 0 {
+						hoursAssign := HoursOfWork
+						if pRequest.IsHoursPerDay {
+							hoursAssign = pRequest.HoursPerDay
+						}
+						breakdownAssig[day.String()] = hoursAssign
+						totalHoursAssig = totalHoursAssig - hoursAssign
 					}
 				}
 			}
@@ -393,20 +409,49 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 					return response
 				}
 			} else {
-				id, err := dao.AddProjectResources(&projectResources)
-				if err != nil {
-					message := "No Set Resource To Project"
-					log.Error(message)
-					response.Message = message
-					response.Project = nil
-					response.Status = "Error"
-					return &response
+
+				if !pRequest.IsHoursPerDay {
+					id, err := dao.AddProjectResources(&projectResources)
+					if err != nil {
+						message := "No Set Resource To Project"
+						log.Error(message)
+						response.Message = message
+						response.Project = nil
+						response.Status = "Error"
+						return &response
+					}
+					// Get ProjectResources inserted
+					response := getInsertedResource(id, project, timeResponse)
+					if response != nil {
+						return response
+					}
+				} else {
+					elements := 0
+					for day, hours := range breakdownAssig {
+						elements++
+						timeDay, err := time.Parse(util.LONGFORMAT, day)
+						projectResources.StartDate = timeDay
+						projectResources.EndDate = timeDay
+						projectResources.Hours = hours
+						id, err := dao.AddProjectResources(&projectResources)
+						if err != nil {
+							message := "No Set Resource To Project"
+							log.Error(message)
+							response.Message = message
+							response.Project = nil
+							response.Status = "Error"
+							return &response
+						}
+						// Get ProjectResources inserted
+						if elements == len(breakdownAssig) {
+							response := getInsertedResource(id, project, timeResponse)
+							if response != nil {
+								return response
+							}
+						}
+					}
 				}
-				// Get ProjectResources inserted
-				response := getInsertedResource(id, project, timeResponse)
-				if response != nil {
-					return response
-				}
+
 			}
 
 		} else {
@@ -454,24 +499,28 @@ func getInsertedResource(pIdResProject int, pProject *DOMAIN.Project, pTimeRespo
 func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN.DeleteResourceToProjectRS {
 	timeResponse := time.Now()
 	response := DOMAIN.DeleteResourceToProjectRS{}
-	projectResource := dao.GetProjectResourcesById(pRequest.ID)
-	if projectResource != nil {
-		// Delete in DB
-		rowsDeleted, err := dao.DeleteProjectResources(projectResource.ID)
-		if err != nil || rowsDeleted <= 0 {
-			message := "ProjectResource wasn't delete"
-			log.Error(message)
-			response.Message = message
-			response.Status = "Error"
-			return &response
+	for index, id := range pRequest.IDs {
+		projectResource := dao.GetProjectResourcesById(id)
+		if projectResource != nil {
+			// Delete in DB
+			rowsDeleted, err := dao.DeleteProjectResources(projectResource.ID)
+			if err != nil || rowsDeleted <= 0 {
+				message := "ProjectResource wasn't delete"
+				log.Error(message)
+				response.Message = message
+				response.Status = "Error"
+				return &response
+			}
+
+			response.IDs = append(response.IDs, projectResource.ID)
+			if index == len(pRequest.IDs)-1 {
+				response.Status = "OK"
+
+				response.Header = util.BuildHeaderResponse(timeResponse)
+
+				return &response
+			}
 		}
-
-		response.ID = projectResource.ID
-		response.Status = "OK"
-
-		response.Header = util.BuildHeaderResponse(timeResponse)
-
-		return &response
 	}
 	message := "ResourceSkill wasn't found in DB"
 	log.Error(message)

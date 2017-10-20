@@ -7,8 +7,13 @@
 				null,
 				null,
 				null,
+				null,
 				{"searchable":false}
-			]
+			],
+			"dom": '<"col-sm-2"<"toolbar">><"col-sm-4"f><"col-sm-6"l><rtip>',
+			initComplete: function(){
+		      $("div.toolbar").html('<button id="multiDelete" disabled data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="' + "$('#projectID').val({{.ProjectId}}); $('#nameDelete').html('the marked elements')" + '" data-dismiss="modal"> Delete </button>');     
+		   	} 
 		});
 		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
@@ -27,20 +32,30 @@
 			});
 		}); 
 		
-		$('#resourceDateStartProject, #resourceDateEndProject, #resourceUpdateDateStartProject, #resourceUpdateDateEndProject').change(function(){
+		$('#resourceDateStartProject, #resourceDateEndProject, #resourceUpdateDateStartProject, #resourceUpdateDateEndProject, #createHoursPerDay').change(function(){
 	    	var startDateCreate = new Date($("#resourceDateStartProject").val());
 			var endDateCreate = new Date($("#resourceDateEndProject").val());
 	
 			$("#resourceDateEndProject").attr("min", $("#resourceDateStartProject").val());
-			$("#resourceHoursProject").val(workingHoursBetweenDates(startDateCreate, endDateCreate));
+			$("#resourceHoursProject").val(workingHoursBetweenDates(startDateCreate, endDateCreate, $("#createHoursPerDay").val(), $("#checkHoursPerDay").is(":checked")));
 			
 			var startDateUpdate = new Date($("#resourceUpdateDateStartProject").val());
 			var endDateUpdate = new Date($("#resourceUpdateDateEndProject").val());
 	
-			$("#resourceUpdateDateHoursProject").val(workingHoursBetweenDates(startDateUpdate, endDateUpdate));
+			$("#resourceUpdateDateHoursProject").val(workingHoursBetweenDates(startDateUpdate, endDateUpdate, $("#createHoursPerDay").val(), $("#checkHoursPerDay").is(":checked")));
 			$('#resourceUpdateDateEndProject').attr("min", $("#resourceUpdateDateStartProject").val());
 		});
 		
+		$('#checkHoursPerDay').change(function() {
+			if ($('#checkHoursPerDay').is(":checked")) {
+				$('#resourceHoursProject').attr("disabled", "disabled");
+				$('#createHoursPerDay').removeAttr("disabled");
+			} else {
+				$('#createHoursPerDay').attr("disabled", "disabled");
+				$('#createHoursPerDay').val("8");
+				$('#resourceHoursProject').removeAttr("disabled");
+			}
+		});
 				
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
@@ -54,6 +69,24 @@
 		var prjEndDate = formatDate({{.EndDate}});
 		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);
 	});
+
+	var listToDelete = [];
+	$(document).unbind('change');
+	$(document).on('change', '.checkToDelete', function() {
+		if(this.checked) {
+			listToDelete.push(this.value);
+		} else {
+			var index = listToDelete.indexOf(this.value);
+			if (index > -1){
+				listToDelete.splice(index,1);
+			}
+		}
+		if (listToDelete.length > 0){
+			$('#multiDelete').removeAttr("disabled");
+		} else {
+			$('#multiDelete').attr("disabled", "disabled");			
+		}
+	});
 	
 	unassignResource = function(){
 		var settings = {
@@ -63,7 +96,8 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"ID": $('#resourceProjectIDDelete').val()
+				"ID": $('#resourceProjectIDDelete').val(),
+				"IDs": listToDelete.toString()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -102,7 +136,7 @@
 		$("#resourceUpdate").css("display", "inline-block");
 	}
 	
-	setResourceToProject = function(ID, resourceId, projectId, startDate, endDate, hours, lead, isToCreate){
+	setResourceToProject = function(ID, resourceId, projectId, startDate, endDate, hours, lead, isToCreate, hoursPerDay, isHoursPerDay){
 		var settings = {
 			method: 'POST',
 			url: '/projects/setresource',
@@ -116,6 +150,8 @@
 				"StartDate": startDate,
 				"EndDate": endDate,
 				"Hours": hours,
+				"HoursPerDay": hoursPerDay,
+				"IsHoursPerDay": isHoursPerDay,
 				"Lead": lead,
 				"IsToCreate": isToCreate
 			}
@@ -167,6 +203,7 @@
 <table id="viewResourceInProject" class="table table-striped table-bordered">
 	<thead>
 		<tr>
+			<th>To Delete</th>
 			<th>Resource Name</th>
 			<th>Start Date</th>
 			<th>End Date</th>
@@ -178,6 +215,7 @@
 	<tbody>
 	 	{{range $key, $resourceToProject := .ResourcesToProjects}}
 		<tr>
+			<td><input type="checkbox" value="{{$resourceToProject.ID}}" class="checkToDelete"></td>
 			<td>{{$resourceToProject.ResourceName}}</td>
 			<td>{{dateformat $resourceToProject.StartDate "2006-01-02"}}</td>
 			<td>{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>
@@ -204,40 +242,56 @@
 			    </div>
 		    	<div class="modal-body">
 					<input type="hidden" id="resourceProjectId">
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
           					<div class="col-sm-8">
-          						<select id="resourceNameProject">
+          						<select id="resourceNameProject" style="width: 174px; border-radius: 8px;">
 								</select>
     						</div>
           				</div>
         			</div>
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="StartDate"> Start Date </label> 
              				<div class="col-sm-8">
-              					<input type="date" id="resourceDateStartProject">
+              					<input type="date" id="resourceDateStartProject" style="inline-size: 174px; border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="EndDate"> End Date </label> 
              				<div class="col-sm-8">
-              					<input type="date" id="resourceDateEndProject">
+              					<input type="date" id="resourceDateEndProject" style="inline-size: 174px; border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
+        					<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Total Hours </label> 
              				<div class="col-sm-8">
-              					<input type="number" id="resourceHoursProject" value="8">
+              					<input type="number" id="resourceHoursProject" value="8" style="border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+			        	<div class="form-group form-group-sm">
+			        		<label class="control-label col-sm-4 translatable" data-i18n="activeHoursPerDay"> Activate Hours Per Day </label> 
+			              <div class="col-sm-8">
+			              	<input type="checkbox" id="checkHoursPerDay"><br/>
+			              </div>    
+			          </div>
+			        </div>
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        				<div class="form-group form-group-sm">
+        					<label class="control-label col-sm-4 translatable" data-i18n="HoursPerDay"> Hours Per Day </label> 
+             				<div class="col-sm-8">
+              					<input type="number" id="createHoursPerDay" value="8" disabled style="border-radius: 8px;">
+        					</div>
+          				</div>
+        			</div>
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 			        	<div class="form-group form-group-sm">
 			        		<label class="control-label col-sm-4 translatable" data-i18n="Lead"> Lead </label> 
 			              <div class="col-sm-8">
@@ -247,7 +301,7 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject(0, $('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), $('#resourceLead').is(':checked'), true)" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject(0, $('#resourceNameProject').val(), $('#resourceProjectId').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), $('#resourceLead').is(':checked'), true, $('#createHoursPerDay').val(), $('#checkHoursPerDay').is(':checked'))" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
@@ -266,39 +320,39 @@
 					<input type="hidden" id="resourceProjectUpdateId">
         			<input type="hidden" id="projectUpdateId">
 					<input type="hidden" id="resourceProjectIDUpdate">					
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
           					<div class="col-sm-8">
-								<input type="text" id="resourceProjectUpdateName" readonly>
+								<input type="text" id="resourceProjectUpdateName" readonly style="border-radius: 8px;">
     						</div>
           				</div>
         			</div>
-        			<div class="row-box col-sm-12">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="StartDate"> Start Date </label> 
              				<div class="col-sm-8">
-              					<input type="date" id="resourceUpdateDateStartProject">
+              					<input type="date" id="resourceUpdateDateStartProject" style="inline-size: 174px; border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="EndDate"> End Date </label> 
              				<div class="col-sm-8">
-              					<input type="date" id="resourceUpdateDateEndProject">
+              					<input type="date" id="resourceUpdateDateEndProject" style="inline-size: 174px; border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
         					<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
              				<div class="col-sm-8">
-              					<input type="number" id="resourceUpdateDateHoursProject">
+              					<input type="number" id="resourceUpdateDateHoursProject" style="border-radius: 8px;">
         					</div>
           				</div>
         			</div>
-					<div class="row-box col-sm-12">
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 			        	<div class="form-group form-group-sm">
 			        		<label class="control-label col-sm-4 translatable" data-i18n="Lead"> Lead </label> 
 			              <div class="col-sm-8">
@@ -308,7 +362,7 @@
 			        </div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), $('#resourceUpdateLead').is(':checked'), false)" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), $('#resourceUpdateLead').is(':checked'), false, 0, false)" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    

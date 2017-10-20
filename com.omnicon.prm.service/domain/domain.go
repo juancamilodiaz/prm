@@ -72,6 +72,24 @@ type TypeSkills struct {
 	Value   int    `db:"value"`
 }
 
+type Training struct {
+	ID         int `db:"id"`
+	ResourceId int `db:"resource_id"`
+	TypeId     int `db:"type_id"`
+}
+type TrainingSkills struct {
+	ID           int       `db:"id"`
+	TrainingId   int       `db:"training_id"`
+	SkillId      int       `db:"skill_id"`
+	SkillName    string    `db:"skill_name"`
+	StartDate    time.Time `db:"start_date"`
+	EndDate      time.Time `db:"end_date"`
+	Duration     int       `db:"duration"`
+	Progress     int       `db:"progress"`
+	TestResult   int       `db:"test_result"`
+	ResultStatus string    `db:"result_status"`
+}
+
 type ResourceAssign struct {
 	Resource  *Resource
 	StartDate time.Time
@@ -89,4 +107,10 @@ type RangeDatesAvailability struct {
 type ResourceAvailabilityInformation struct {
 	ListOfRange []*RangeDatesAvailability
 	TotalHours  float64
+}
+
+type ListByHours struct {
+	ResourceId    int
+	Days          int
+	NumberOfRange int
 }

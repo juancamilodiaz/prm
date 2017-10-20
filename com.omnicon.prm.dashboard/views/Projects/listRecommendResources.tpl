@@ -26,6 +26,9 @@
 		
 		$('#skillsActive').prop('checked', false);
 		$('#projectTypeSimulator').prop('disabled', true);
+		$('#projectHoursActive').prop('checked', false);
+		$('#projectHours').prop('disabled', true);
+		$('#personNumber').prop('disabled', true);
 	});
 				
 	configureShowCreateModal = function(){
@@ -60,6 +63,9 @@
 		dateFrom = $('#projectStartDate').val();
 		dateTo = $('#projectEndDate').val();
 		skillsActive = $('#skillsActive').is(":checked");
+		hoursActive = $('#projectHoursActive').is(":checked");
+		hours = $('#projectHours').val();
+		numberOfResources = $('#personNumber').val();
 		var values = "";
 		if ($('#projectTypeSimulator').val() != null) {
 			for (i =0; i<$('#projectTypeSimulator').val().length; i++){
@@ -82,6 +88,9 @@
 				"EndDate": dateTo,
 				"Types": values,
 				"SkillsActive": skillsActive,
+				"HoursActive" : hoursActive,
+				"Hours": hours,
+				"NumberOfResources": numberOfResources,
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -91,6 +100,13 @@
 	
 	$('#skillsActive').click(function(){
 		$("#projectTypeSimulator").prop('disabled', !this.checked);
+	});
+	
+	$('#projectHoursActive').click(function(){
+		$("#projectHours").prop('disabled', !this.checked);
+		$("#personNumber").prop('disabled', !this.checked);
+		$("#projectStartDate").prop('disabled', this.checked);
+		$("#projectEndDate").prop('disabled', this.checked);
 	});
 	
 
@@ -142,6 +158,25 @@
 	        		</div>
 		        </div>
 				<div class="col-sm-12" style="padding-bottom: 1%;">
+		        	<div class="col-sm-6 form-group form-group-sm">
+		        		<label class="translatable" data-i18n="Hours" style="padding:1px"> Hours </label>
+		          	</div>
+					<div class="col-sm-1" style="padding-right:1px">
+		        		<input type="checkbox" id="projectHoursActive" style="width: -webkit-fill-available;"><br/>
+		          	</div>
+					<div class="col-sm-5" style="padding-right:1px;">
+	              		<input type="number" id="projectHours" style="border-radius: 8px;width: -webkit-fill-available;">
+	        		</div>
+		        </div>
+				<div class="col-sm-12" style="padding-bottom: 1%;">
+		        	<div class="col-sm-7 form-group form-group-sm">
+		        		<label class="translatable" data-i18n="Number of resources" style="padding:1px"> Number of resources </label>
+		          	</div>
+					<div class="col-sm-5" style="padding-right:1px;">
+	              		<input type="number" id="personNumber" style="border-radius: 8px;width: -webkit-fill-available;" value="1">
+	        		</div>
+		        </div>
+				<div class="col-sm-12" style="padding-bottom: 1%;">
 		        	<div class="col-sm-7 form-group form-group-sm">
 		        		<label class="translatable" data-i18n="Active" style="padding:1px"> Active </label>  
 		          	</div>
@@ -150,19 +185,14 @@
 		            </div>   
 		        </div>
 				<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-7 form-group form-group-sm">
-		        		<label class="translatable" data-i18n="Enable skill filter" style="padding:1px">Enable skill filter</label> 
-  		          	</div>
-					<div class="col-sm-5" style="padding-right:1px">
-	              		<input type="checkbox" id="skillsActive" style="width: -webkit-fill-available;"><br/>
-	              	</div>  
-		        </div>
-				<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		        	<div id="divProjectType" class="col-sm-7 form-group form-group-sm">
+		        	<div id="divProjectType" class="col-sm-6 form-group form-group-sm">
 		        		<label class="translatable"  data-i18n="Types" style="padding:1px"> Types </label> 
 		          	</div>
+					<div class="col-sm-1" style="padding-right:1px">
+	              		<input type="checkbox" id="skillsActive" style="width: -webkit-fill-available;"><br/>
+	              	</div>
 					<div class="col-sm-5" style="padding-right:1px">
-		             	<select  id="projectTypeSimulator" multiple style="width: 135px; border-radius: 8px;">
+		             	<select  id="projectTypeSimulator" multiple style="width: -webkit-fill-available; border-radius: 8px;">
 							{{range $key, $types := .Types}}
 								<option value={{$types.ID}}>{{$types.Name}}</option>
 							{{end}}	

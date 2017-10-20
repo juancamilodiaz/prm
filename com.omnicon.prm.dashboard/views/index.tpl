@@ -18,8 +18,9 @@
 	<script src="/static/js/Angular/angular-sanitize.js"></script>
 	<script src="/static/js/Utils.js"></script>
 	<script src="/static/js/functions.js"></script>
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js">
-	</script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	
@@ -184,6 +185,7 @@
 		  <a  onclick="toNav();getTypes();">Simulator</a>
 		  <a  ng-click="link('reports')" onclick="toNav();sendTitle($(this).html())">Reports</a>
 		  <a  ng-click="link('dashboard')" onclick="toNav();sendTitle($(this).html())">Status</a>
+		  <a  ng-click="link('training')" onclick="toNav();sendTitle($(this).html())">Training</a>
 		  <!--a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a-->
 		</div>
 		<div id="sidebar">

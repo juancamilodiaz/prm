@@ -135,11 +135,22 @@
 	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
 	}
 
-	$('#resourceEndDate, #resourceStartDate').change(function(){
+	$('#resourceEndDate, #resourceStartDate, #createHoursPerDay').change(function(){
     	var startDate = new Date($("#resourceStartDate").val());
 		var endDate = new Date($("#resourceEndDate").val());
 
-		$("#estimatedHours").val(workingHoursBetweenDates(startDate, endDate));
+		$("#estimatedHours").val(workingHoursBetweenDates(startDate, endDate, $("#createHoursPerDay").val(), $("#checkHoursPerDay").is(":checked")));
+	});
+	
+	$('#checkHoursPerDay').change(function() {
+		if ($('#checkHoursPerDay').is(":checked")) {
+			$('#estimatedHours').attr("disabled", "disabled");
+			$('#createHoursPerDay').removeAttr("disabled");
+		} else {
+			$('#createHoursPerDay').attr("disabled", "disabled");
+			$('#createHoursPerDay').val("8");
+			$('#estimatedHours').removeAttr("disabled");
+		}
 	});
 
 </script>
@@ -148,7 +159,7 @@
 
 var evento;
 
-setResourceToProject = function(resourceId, projectId, startDate, endDate, estimatedHours){
+setResourceToProject = function(resourceId, projectId, startDate, endDate, estimatedHours, hoursPerDay, isHoursPerDay){
 	var settings = {
 		method: 'POST',
 		url: '/projects/setresource',
@@ -161,6 +172,8 @@ setResourceToProject = function(resourceId, projectId, startDate, endDate, estim
 			"StartDate": startDate,
 			"EndDate": endDate,
 			"Hours": estimatedHours,
+			"HoursPerDay": hoursPerDay,
+			"IsHoursPerDay" : isHoursPerDay,
 			"IsToCreate": true
 		}
 	}
@@ -245,7 +258,7 @@ function drop(ev, projectID, obj) {
 function setResourceToProjectExc(){
 	$(evento).append($("#tempResource").html());
 	$("#tempResource").html("")	
-	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val(), $("#estimatedHours").val());
+	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val(), $("#estimatedHours").val(), $("#createHoursPerDay").val(), $("#checkHoursPerDay").is(":checked"));
 }
 </script>
 
@@ -370,29 +383,45 @@ function setResourceToProjectExc(){
         <h4 id="modalTitle" class="modal-title">Assign dates to the resource</h4>
       </div>
       <div class="modal-body">
-        <div class="row-box col-sm-12">
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
               <div class="col-sm-8">
-              	<input type="date" id="resourceStartDate">
+              	<input type="date" id="resourceStartDate" style="width: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12">
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
               <div class="col-sm-8">
-              	<input type="date" id="resourceEndDate">
+              	<input type="date" id="resourceEndDate" style="width: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
-      		<div class="row-box col-sm-12">
+      		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
 	       	<div class="form-group form-group-sm">
-	       		<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
+	       		<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Total Hours </label> 
 	             	<div class="col-sm-6">
-	             		<input type="number" id="estimatedHours" value="8">
+	             		<input type="number" id="estimatedHours" value="8" style="border-radius: 8px;">
 	       		</div>
 	       	</div>
+		</div>
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        	<div class="form-group form-group-sm">
+        		<label class="control-label col-sm-4 translatable" data-i18n="activeHoursPerDay"> Activate Hours Per Day </label> 
+              <div class="col-sm-8">
+              	<input type="checkbox" id="checkHoursPerDay"><br/>
+              </div>    
+          </div>
+        </div>
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+			<div class="form-group form-group-sm">
+				<label class="control-label col-sm-4 translatable" data-i18n="HoursPerDay"> Hours Per Day </label> 
+   				<div class="col-sm-8">
+    				<input type="number" id="createHoursPerDay" value="8" disabled style="border-radius: 8px;">
+				</div>
+ 			</div>
 		</div>
 	</div>
       <div class="modal-footer">
