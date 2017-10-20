@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -9,6 +10,7 @@ import (
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
+	"prm/com.omnicon.prm.service/util"
 )
 
 type ProjectController struct {
@@ -374,14 +376,30 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 
 	isSkillFilter, _ := this.GetBool("SkillsActive")
 
+	isHoursFilter, _ := this.GetBool("HoursActive")
+	hoursNumber, _ := this.GetInt("Hours")
+	resourceNumber, _ := this.GetInt("NumberOfResources")
+
 	var epsilonValue float64
 	epsilonValue = 10
 
 	err := this.ParseForm(&input)
+	input.Hours = 0
 	if err != nil {
 		log.Error("[ParseInput]", input)
 	}
+
 	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	if isHoursFilter {
+		input.StartDate = util.GetFechaConFormato(time.Now().Unix(), util.DATEFORMAT)
+		input.EndDate = util.GetFechaConFormato(util.AgregarORestaDiasAUnaFecha(time.Now().Unix(), hoursNumber), util.DATEFORMAT)
+	}
+
+	startDate := util.GetDateInt64FromString(input.StartDate)
+	endDate := util.GetDateInt64FromString(input.EndDate)
+
+	projectDays := util.CalcularDiasEntreDosFechas(startDate, endDate)
 
 	inputBuffer := EncoderInput(input)
 
@@ -399,14 +417,14 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 
 		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
 		this.Data["Projects"] = message.Projects
-		var listResources []domain.Resource
-		for _, resource := range message.Resources {
-			listResources = append(listResources, *resource)
-		}
-		this.Data["DerefResources"] = listResources
 		this.Data["Resources"] = message.Resources
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
 		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+
+		var listSorted []domain.ListByHours
+		if isHoursFilter {
+			listSorted = transformByHours(message.AvailBreakdownPerRange, hoursNumber, resourceNumber)
+		}
 
 		listSkillsPerProject := make(map[int]int)
 		var listProjectsSkillName []string
@@ -441,6 +459,10 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		listResourceToDraw := []domain.Resource{}
 		mapCompare := make(map[int][]int)
 		listColors := []string{"Black", "Orange", "Red", "Green", "Purple", "Brown", "Gray", "Yellow", "Pink", "Aqua", "DarkCyan"}
+		/*Set color again*/
+		// TODO refactor this to assign ramdom colors.
+		listColors = append(listColors, listColors...)
+		listColors = append(listColors, listColors...)
 
 		for _, resource := range message.Resources {
 			isAble := true
@@ -528,7 +550,22 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		this.Data["ListColor"] = listColors
 		this.Data["ListChecked"] = []int{}
 		this.Data["ListToDraw"] = listResourceToDraw
-		this.TplName = "Projects/listRecommendResourcesTable.tpl"
+		if isHoursFilter {
+			var resourcesSorted []*domain.Resource
+			for _, resourceIdSorted := range listSorted {
+				for _, resource := range message.Resources {
+					if resourceIdSorted.ResourceId == resource.ID {
+						resourcesSorted = append(resourcesSorted, resource)
+					}
+				}
+			}
+			this.Data["Resources"] = resourcesSorted
+			this.Data["HoursByPerson"] = hoursNumber / resourceNumber
+			this.TplName = "Projects/listRecommendResourcesTablePerHour.tpl"
+		} else {
+			this.Data["ProjectHours"] = projectDays * 8
+			this.TplName = "Projects/listRecommendResourcesTable.tpl"
+		}
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."
@@ -767,4 +804,81 @@ func FirstDayOfISOWeek(year int, week int, timezone *time.Location) time.Time {
 	}
 
 	return date
+}
+
+func transformByHours(pMap map[int]*domain.ResourceAvailabilityInformation, pHours, pNumberResources int) []domain.ListByHours {
+	var hoursRequired float64
+	hoursRequired = float64(pHours) / float64(pNumberResources)
+
+	var listSorted []domain.ListByHours
+	temporalDays := 999
+	temporalNumberRange := 999
+	for resourceId, resourceInfo := range pMap {
+		if resourceInfo.TotalHours >= hoursRequired {
+			startDate := util.GetDateInt64FromString(resourceInfo.ListOfRange[0].StartDate)
+			today := util.GetDateInt64FromString(util.GetFechaConFormato(time.Now().Unix(), util.DATEFORMAT))
+			days := util.CalcularDiasEntreDosFechas(today, startDate)
+			if days <= temporalDays {
+				if days == temporalDays {
+					if len(resourceInfo.ListOfRange) <= temporalNumberRange {
+						resourceByHour := domain.ListByHours{}
+						resourceByHour.ResourceId = resourceId
+						resourceByHour.Days = days
+						resourceByHour.NumberOfRange = len(resourceInfo.ListOfRange)
+						listSorted = insertInList(listSorted, 0, resourceByHour)
+					} else {
+						resourceByHour := domain.ListByHours{}
+						resourceByHour.ResourceId = resourceId
+						resourceByHour.Days = days
+						resourceByHour.NumberOfRange = len(resourceInfo.ListOfRange)
+						listSorted = insertInList(listSorted, 1, resourceByHour)
+					}
+				} else {
+					resourceByHour := domain.ListByHours{}
+					resourceByHour.ResourceId = resourceId
+					resourceByHour.Days = days
+					resourceByHour.NumberOfRange = len(resourceInfo.ListOfRange)
+					temporalNumberRange = resourceByHour.NumberOfRange
+					listSorted = insertInList(listSorted, 0, resourceByHour)
+				}
+				temporalDays = days
+			} else {
+				pos := 0
+				for index, value := range listSorted {
+					if days <= value.Days {
+						if days == value.Days && value.NumberOfRange < len(resourceInfo.ListOfRange) {
+							pos = index + 1
+							break
+						} else {
+							pos = index
+							break
+						}
+					} else if index == len(listSorted)-1 {
+						pos = index + 1
+						break
+					}
+				}
+				resourceByHour := domain.ListByHours{}
+				resourceByHour.ResourceId = resourceId
+				resourceByHour.Days = days
+				resourceByHour.NumberOfRange = len(resourceInfo.ListOfRange)
+				listSorted = insertInList(listSorted, pos, resourceByHour)
+			}
+		}
+	}
+
+	return listSorted
+}
+
+func insertInList(pList []domain.ListByHours, pPos int, pValueToInsert domain.ListByHours) []domain.ListByHours {
+	position := int(math.Abs(float64(pPos)))
+	var temporalList []domain.ListByHours
+	if position > len(pList) {
+		position = len(pList)
+	}
+	temporalList = append(temporalList, pList[position:]...)
+	pList = append(pList[:position], pValueToInsert)
+	pList = append(pList, temporalList...)
+
+	return pList
 }

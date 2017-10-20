@@ -108,3 +108,9 @@ type ResourceAvailabilityInformation struct {
 	ListOfRange []*RangeDatesAvailability
 	TotalHours  float64
 }
+
+type ListByHours struct {
+	ResourceId    int
+	Days          int
+	NumberOfRange int
+}
