@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	//	"strconv"
 	//"strings"
 	//"time"
@@ -29,13 +28,10 @@ func (this *TrainingController) GetTraining() {
 
 	inputBuffer := EncoderInput(input)
 	res, err := PostData(operation, inputBuffer)
-	fmt.Println("RS:", res, err)
 	message := new(domain.TrainingRS)
 	json.NewDecoder(res.Body).Decode(&message)
 
 	if err == nil {
-		fmt.Println("RS:", *message.Training)
-		fmt.Println("RS:", len(message.TrainingSkills))
 		defer res.Body.Close()
 		this.Data["Training"] = message.Training
 		this.Data["TSkills"] = message.TrainingSkills
