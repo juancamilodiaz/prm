@@ -120,10 +120,10 @@
             <td>Resource Assign</td>
             <td><button data-toggle="modal" data-target="#viewReport" class="buttonTable button2" id="resourceAssign" onclick="reportResourceAssign();$('#titleReport').html('Report Resources Assign');" data-dismiss="modal">Generate</button></td>
          </tr>
-         <tr>
+         <!--tr>
             <td>Matrix Assign</td>
             <td><button data-toggle="modal" data-target="#viewReport" class="buttonTable button2" id="matrixAssign" onclick="reportMatrixAssign();$('#titleReport').html('Report Matrix Assign');" data-dismiss="modal">Generate</button></td>
-         </tr>
+         </tr-->
       </tbody>
    </table>
    <br>
