@@ -14,6 +14,7 @@ type TrainingRS struct {
 	TrainingSkills []*TrainingSkills
 	Resources      []*Resource
 	Types          []*Type
+	TypesSkills    []*TypeSkills
 	Status         string
 	Message        string
 }

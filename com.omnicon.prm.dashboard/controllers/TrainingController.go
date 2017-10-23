@@ -41,6 +41,7 @@ func (this *TrainingController) GetTraining() {
 
 		this.Data["Resources"] = message.Resources
 		this.Data["Types"] = message.Types
+		this.Data["TypesSkills"] = message.TypesSkills
 
 		this.TplName = "Training/Training.tpl"
 	} else {

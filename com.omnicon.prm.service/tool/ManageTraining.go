@@ -67,6 +67,12 @@ func GetTraining(pRequest *DOMAIN.TrainingRQ) *DOMAIN.TrainingRS {
 
 		types := dao.GetAllTypes()
 		response.Types = types
+
+		typesSkills := []*DOMAIN.TypeSkills{}
+		for _, typeE := range types {
+			typesSkills = append(typesSkills, dao.GetTypesSkillsByTypeId(typeE.ID)...)
+		}
+		response.TypesSkills = typesSkills
 	} else {
 		log.Debug("Training result empty", pRequest.ID)
 	}
