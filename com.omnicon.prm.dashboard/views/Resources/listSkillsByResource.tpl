@@ -176,10 +176,16 @@
 			</tbody>
 		</table>
 	</div>
-	<button class="buttonTable button2" id="download-pdf" >
-		Download PDF
-	</button>
 	<div class="col-sm-6">
+	    <div class="row">
+	        <div class="col-sm-5">
+	        </div>
+	        <div class="col-sm-3">
+				<button class="buttonTable button2" id="download-pdf" >Download PDF</button>
+	        </div>
+	        <div class="col-sm-4">
+	        </div>
+	    </div>
 		<p>
 		   <div class="chart-container" id="chartjs-wrapper">
 				<canvas id="chartjs-3" >
