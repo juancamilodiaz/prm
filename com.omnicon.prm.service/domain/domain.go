@@ -29,7 +29,7 @@ type Project struct {
 
 type Type struct {
 	ID   int    `db:"id"`
-	Name string `db:"value"`
+	Name string `db:"name"`
 }
 
 type ProjectTypes struct {
