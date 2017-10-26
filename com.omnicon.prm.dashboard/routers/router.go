@@ -67,5 +67,9 @@ func init() {
 	beego.Router("/reports/resourceassign", &controllers.ReportController{}, "post:ResourceAssign")
 
 	//training
+	beego.Router("/trainings", &controllers.TrainingController{}, "post:ListTrainings")
+	beego.Router("/trainings/create", &controllers.TrainingController{}, "post:CreateTraining")
+	beego.Router("/trainings/update", &controllers.TrainingController{}, "post:UpdateTraining")
+	beego.Router("/trainings/delete", &controllers.TrainingController{}, "post:DeleteTraining")
 	beego.Router("/training", &controllers.TrainingController{}, "post:GetTraining")
 }

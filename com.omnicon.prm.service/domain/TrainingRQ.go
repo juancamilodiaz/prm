@@ -1,20 +1,22 @@
 package domain
 
 type TrainingRQ struct {
-	ID             int
-	Name           string
-	ResourceId     int
-	TypeId         int
-	TrainingSkills []*TrainingSkills
+	ID                int
+	Name              string
+	SkillId           int
+	TypeId            int
+	TrainingResources []*TrainingResources
 }
 
 type TrainingRS struct {
-	Training       *Training
-	Header         *Response_Header
-	TrainingSkills []*TrainingSkills
-	Resources      []*Resource
-	Types          []*Type
-	TypesSkills    []*TypeSkills
-	Status         string
-	Message        string
+	Training          *Training
+	Trainings         []*Training
+	Header            *Response_Header
+	TrainingResources []*TrainingResources
+	Resources         []*Resource
+	Types             []*Type
+	TypesSkills       []*TypeSkills
+	Skills            []*Skill
+	Status            string
+	Message           string
 }

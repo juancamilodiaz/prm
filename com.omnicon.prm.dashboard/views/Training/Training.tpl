@@ -36,13 +36,13 @@
 		data.addColumn('number', 'Duration');
 		data.addColumn('number', 'Percent Complete');
       	data.addColumn('string', 'Dependencies');
-
+		{{$trainingInfo := .Training}}
 		data.addRows([
-		{{range $xx, $training := .TSkills}}
+		{{range $xx, $training := .TResources}}
 				{{if (ne $xx 0)}}
 					,
 				{{end}}
-				[{{$training.SkillName}}, {{$training.SkillName}}, new Date({{$training.StartDate}}), new Date({{$training.EndDate}}), 0, {{$training.Progress}},""]
+				[{{$trainingInfo.Name}}, {{$trainingInfo.Name}}, new Date({{$training.StartDate}}), new Date({{$training.EndDate}}), 0, {{$training.Progress}},""]
 				
 		{{end}}
 		]);
@@ -59,6 +59,16 @@
         {{range $index, $typeSkill := .TypesSkills}}
 			if ({{$typeSkill.TypeId}} == $('#createTypeValue option:selected').attr('id')) {
         		$('#createSkillValue').append('<option id="{{$typeSkill.SkillId}}">{{$typeSkill.Name}}</option>');
+			}
+        {{end}}
+	});
+	
+	$('#createTypeValue, #createSkillValue').change(function() {
+		$('#createTrainingValue').html('<option id="">Training...</option>');
+        {{range $index, $training := .Trainings}}
+			if ({{$training.TypeId}} == $('#createTypeValue option:selected').attr('id') &&
+				{{$training.SkillId}} == $('#createSkillValue option:selected').attr('id')) {
+        		$('#createTrainingValue').append('<option id="{{$training.ID}}">{{$training.Name}}</option>');
 			}
         {{end}}
 	});
@@ -118,15 +128,16 @@
 			</tr>
 		</thead>
 		<tbody>
-		 	{{range $key, $tSkill := .TSkills}}
+			{{$trainingInfo := .Training}}
+		 	{{range $key, $tResource := .TResources}}
 			<tr>
-				<td>{{$tSkill.SkillName}}</td>
-				<td>{{dateformat $tSkill.StartDate "2006-01-02"}}</td>
-				<td>{{dateformat $tSkill.EndDate "2006-01-02"}}</td>
-				<td>{{$tSkill.Duration}}</td>
-				<td>{{$tSkill.Progress}}</td>
-				<td>{{$tSkill.TestResult}}</td>
-				<td>{{$tSkill.ResultStatus}}</td>
+				<td>{{$trainingInfo.Name}}</td>
+				<td>{{dateformat $tResource.StartDate "2006-01-02"}}</td>
+				<td>{{dateformat $tResource.EndDate "2006-01-02"}}</td>
+				<td>{{$tResource.Duration}}</td>
+				<td>{{$tResource.Progress}}</td>
+				<td>{{$tResource.TestResult}}</td>
+				<td>{{$tResource.ResultStatus}}</td>
 			</tr>
 			{{end}}
 		</tbody>
@@ -180,7 +191,7 @@
                <div class="form-group form-group-sm">
                   <label class="control-label col-sm-4 translatable" data-i18n="Select Resource"> Select Resource </label>
                   <div class="col-sm-8">
-		            <select class="form-control" id="createResourcesValue" style="inline-size: 174px; border-radius: 8px;">
+		            <select id="createResourcesValue" style="width: 174px; border-radius: 8px;">
 		               <option id="">Resource...</option>
 		               {{range $index, $resource := .Resources}}
 		               <option id="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
@@ -193,7 +204,7 @@
                <div class="form-group form-group-sm">
                   <label class="control-label col-sm-4 translatable" data-i18n="Select Type"> Select Type </label>
                   <div class="col-sm-8">
-		            <select class="form-control" id="createTypeValue" style="inline-size: 174px; border-radius: 8px;">
+		            <select id="createTypeValue" style="width: 174px; border-radius: 8px;">
 		               <option id="">Type...</option>
 		               {{range $index, $type := .Types}}
 		               <option id="{{$type.ID}}">{{$type.Name}}</option>
@@ -206,8 +217,71 @@
                <div class="form-group form-group-sm">
                   <label class="control-label col-sm-4 translatable" data-i18n="Select Skill"> Select Skill </label>
                   <div class="col-sm-8">
-		            <select class="form-control" id="createSkillValue" style="inline-size: 174px; border-radius: 8px;">
+		            <select id="createSkillValue" style="width: 174px; border-radius: 8px;">
 		               <option id="">Skill...</option>
+		            </select>
+                  </div>
+               </div>
+            </div>
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+               <div class="form-group form-group-sm">
+                  <label class="control-label col-sm-4 translatable" data-i18n="Select Training"> Select Training </label>
+                  <div class="col-sm-8">
+		            <select id="createTrainingValue" style="width: 174px; border-radius: 8px;">
+		               <option id="">Training...</option>
+		            </select>
+                  </div>
+               </div>
+            </div>
+	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
+	              <div class="col-sm-8">
+	              	<input type="date" id="trainingStartDate" style="inline-size: 174px; border-radius: 8px;">
+	        		</div>
+	          </div>
+	        </div>
+	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
+	              <div class="col-sm-8">
+	              	<input type="date" id="trainingEndDate" style="inline-size: 174px; border-radius: 8px;">
+	        		</div>
+	          </div>
+	        </div>
+			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+				<div class="form-group form-group-sm">
+					<label class="control-label col-sm-4 translatable" data-i18n="Duration"> Duration </label> 
+					<div class="col-sm-8">
+						<input type="number" id="duration" value="0" style="border-radius: 8px;">
+					</div>
+				</div>
+			</div>
+			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+				<div class="form-group form-group-sm">
+					<label class="control-label col-sm-4 translatable" data-i18n="Progress"> Progress </label> 
+					<div class="col-sm-8">
+						<input type="number" id="progress" value="0" style="border-radius: 8px;">
+					</div>
+				</div>
+			</div>
+			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+				<div class="form-group form-group-sm">
+					<label class="control-label col-sm-4 translatable" data-i18n="Test Result"> Test Result </label> 
+					<div class="col-sm-8">
+						<input type="number" id="testResult" value="0" style="border-radius: 8px;">
+					</div>
+				</div>
+			</div>
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+               <div class="form-group form-group-sm">
+                  <label class="control-label col-sm-4 translatable" data-i18n="Results Status"> Results Status </label>
+                  <div class="col-sm-8">
+		            <select id="createTypeValue" style="width: 174px; border-radius: 8px;">
+						<option id="">Status...</option>
+						<option id="Passed">Passed</option>
+						<option id="Pending">Pending</option>
+						<option id="Failed">Failed</option>
 		            </select>
                   </div>
                </div>

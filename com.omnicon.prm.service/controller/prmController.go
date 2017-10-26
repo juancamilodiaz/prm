@@ -152,10 +152,22 @@ func ProcessSetTypesByProject(pRequest *domain.ProjectTypesRQ) *domain.ProjectTy
 	return tool.SetTypesByProject(pRequest)
 }
 
+func ProcessGetTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.GetTraining(pRequest)
+}
+
+func ProcessGetTrainings(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.GetTrainings(pRequest)
+}
+
 func ProcessCreateTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
 	return tool.CreateTraining(pRequest)
 }
 
-func ProcessGetTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
-	return tool.GetTraining(pRequest)
+func ProcessUpdateTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.UpdateTraining(pRequest)
+}
+
+func ProcessDeleteTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.DeleteTraining(pRequest)
 }

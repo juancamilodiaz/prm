@@ -181,6 +181,7 @@
 				<a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a>
 				<a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a>
 				<a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a>
+				<a ng-click="link('trainings')" onclick="toNav();sendTitle($(this).html())">Trainings</a>
 			</div>		
 		  <a  onclick="toNav();getTypes();">Simulator</a>
 		  <a  ng-click="link('reports')" onclick="toNav();sendTitle($(this).html())">Reports</a>

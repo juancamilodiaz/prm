@@ -1,6 +1,9 @@
 package dao
 
 import (
+	"bytes"
+	"strconv"
+
 	DOMAIN "prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 	"upper.io/db.v3"
@@ -71,8 +74,8 @@ func AddTraining(pTraining *DOMAIN.Training) (int, error) {
 	defer session.Close()
 	// Insert skill in DB
 	res, err := session.InsertInto("Training").Columns(
-		"resource_id", "type_id").Values(
-		pTraining.ResourceId, pTraining.TypeId).Exec()
+		"type_id", "skill_id", "name").Values(
+		pTraining.TypeId, pTraining.SkillId, pTraining.Name).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -86,7 +89,7 @@ func AddTraining(pTraining *DOMAIN.Training) (int, error) {
 *	Name : UpdateTraining
 *	Params: pTraining
 *	Return: int, error
-*	Description: Update skill in DB
+*	Description: Update training in DB
  */
 func UpdateTraining(pTraining *DOMAIN.Training) (int, error) {
 	// Get a session
@@ -94,7 +97,7 @@ func UpdateTraining(pTraining *DOMAIN.Training) (int, error) {
 	// Close session when ends the method
 	defer session.Close()
 	// Update skill in DB
-	q := session.Update("Training").Set("resource_id = ?, type_id =?", pTraining.ResourceId, pTraining.TypeId).Where("id = ?", int(pTraining.ID))
+	q := session.Update("Training").Set("name =?", pTraining.Name).Where("id = ?", int(pTraining.ID))
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -126,4 +129,60 @@ func DeleteTraining(pTrainingId int) (int, error) {
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
 	return int(deleteCount), nil
+}
+
+/**
+*	Name : GetTrainingsByFilters
+*	Params: pName
+*	Return: []*DOMAIN.Training
+*	Description: Get a slice of training from training table
+ */
+func GetTrainingsByFilters(pTrainingFilters *DOMAIN.Training) ([]*DOMAIN.Training, string) {
+	// Slice to keep all trainings
+	trainings := []*DOMAIN.Training{}
+	// Filter trainings
+	result := getTrainingCollection().Find()
+
+	// Close session when ends the method
+	defer session.Close()
+
+	var filters bytes.Buffer
+	if pTrainingFilters.ID != 0 {
+		filters.WriteString("id = '")
+		filters.WriteString(strconv.Itoa(pTrainingFilters.ID))
+		filters.WriteString("'")
+	}
+	if pTrainingFilters.Name != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("name = '")
+		filters.WriteString(pTrainingFilters.Name)
+		filters.WriteString("'")
+	}
+	if pTrainingFilters.TypeId != 0 {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("type_id = '")
+		filters.WriteString(strconv.Itoa(pTrainingFilters.TypeId))
+		filters.WriteString("'")
+	}
+	if pTrainingFilters.SkillId != 0 {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("skill_id = '")
+		filters.WriteString(strconv.Itoa(pTrainingFilters.SkillId))
+		filters.WriteString("'")
+	}
+
+	if filters.String() != "" {
+		// Add all training in trainings variable
+		err := result.Where(filters.String()).All(&trainings)
+		if err != nil {
+			log.Error(err)
+		}
+	}
+	return trainings, filters.String()
 }
