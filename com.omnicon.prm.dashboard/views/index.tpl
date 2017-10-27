@@ -134,7 +134,7 @@
 				'Content-Type': undefined
 			},		
 		  	data : { 
-					"Template": "types",
+					"Template": "types"
 				}
 			}
 			$.ajax(settings).done(function (response) {

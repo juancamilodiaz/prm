@@ -3,6 +3,7 @@
 		$('#viewTypes').DataTable({
 			"columns":[
 				null,
+				null,
 				{"searchable":false}
 			]
 		});
@@ -21,22 +22,60 @@
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#typeModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");
+		
+		$('#typesValue').on('change', function(){
+			var row = "";
+			if ($('#typesValue option:selected').attr("id") == ""){
+				{{range $key, $types := .Types}}
+					row += '<tr>' +
+						'<td>{{$types.Name}}</td>' +
+						'<td>{{$types.TypeOf}}</td>' +
+						'<td>' +
+							'<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="'+ "configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.TypeOf}}')" +'" data-dismiss="modal">Update</button>' +
+							'<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="'+$("#nameDelete").html("{{$types.Name}}")+ ';'+ $("#typeID").val({{$types.ID}}) + ';" data-dismiss="modal">Delete</button>' +
+							'<button class="buttonTable button2" onclick="' + "getSkillsByType({{$types.ID}}, '{{$types.Name}}');" + '" data-dismiss="modal">Skills</button>' +
+						'</td>' +
+					'</tr>'	
+				{{end}}	
+			}else {	
+				{{range $key, $types := .Types}}
+						if($('#typesValue option:selected').attr("id") == {{$types.TypeOf}}){
+							row += '<tr>' +
+								'<td>{{$types.Name}}</td>' +
+								'<td>{{$types.TypeOf}}</td>' +
+								'<td>' +
+									'<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="'+ "configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.TypeOf}}')" +'" data-dismiss="modal">Update</button>' +
+									'<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="'+$("#nameDelete").html("{{$types.Name}}")+ ';'+ $("#typeID").val({{$types.ID}}) + ';" data-dismiss="modal">Delete</button>' +
+									'<button class="buttonTable button2" onclick="' + "getSkillsByType({{$types.ID}}, '{{$types.Name}}');" + '" data-dismiss="modal">Skills</button>' +
+								'</td>' +
+							'</tr>'	
+						}				
+						
+				{{end}}						
+			}
+			
+			$('#viewTypes tbody').html(row);
+		});	
 	});
 	
 	configureCreateModal = function(){
 		
 		$("#typeID").val(null);
 		$("#typeName").val(null);
+		$("#typesTo").val(null);
+		$("#typesTo").attr("disabled", false);
 		
 		$("#modalTitle").html("Create Type");
 		$("#typeUpdate").css("display", "none");
 		$("#typeCreate").css("display", "inline-block");
 	}
 	
-	configureUpdateModal = function(pID, pName){
+	configureUpdateModal = function(pID, pName, pTypeTo){
 		
 		$("#typeID").val(pID);
 		$("#typeName").val(pName);
+		$("#typesTo").val(pTypeTo);
+		$("#typesTo").attr("disabled", "disabled");
 		
 		$("#modalTitle").html("Update Type");
 		$("#typeCreate").css("display", "none");
@@ -51,7 +90,8 @@
 				'Content-Type': undefined
 			},
 			data: { 
-				"Name": $('#typeName').val()
+				"Name": $('#typeName').val(),
+				"TypeOf": $('#typesTo option:selected').attr("id")
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -69,7 +109,8 @@
 			},
 			data: { 
 				"ID": $('#typeID').val(),
-				"Name": $('#typeName').val()
+				"Name": $('#typeName').val(),
+				"TypeOf": $('#typesTo option:selected').attr("id")
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -111,11 +152,39 @@
 	}
 	
 </script>
+<button class="buttonHeader button2" data-toggle="collapse" data-target="#filters">
+<span class="glyphicon glyphicon-filter"></span> Filter 
+</button>
+<div id="filters" class="collapse">
+   <div class="row">
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="typesValue">Types to:</label>
+            <select class="form-control" id="typesValue">
+               <option id="">All types</option>
+               {{range $index, $typeOf := .TypesOf}}
+               <option id="{{$typeOf}}">{{$typeOf}}</option>
+               {{end}}
+            </select>
+         </div>
+         <div class="form-group">
+           
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="form-group">
+         </div>
+         <div class="form-group">
+         </div>
+      </div>
+   </div>
+</div>
 <div>
 <table id="viewTypes" class="table table-striped table-bordered">
 	<thead>
 		<tr>
 			<th>Name</th>
+			<th>Type to</th>
 			<th>Options</th>
 		</tr>
 	</thead>
@@ -123,8 +192,9 @@
 	 	{{range $key, $types := .Types}}
 		<tr>
 			<td>{{$types.Name}}</td>
+			<td>{{$types.TypeOf}}</td>
 			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="configureUpdateModal({{$types.ID}},'{{$types.Name}}')" data-dismiss="modal">Update</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.TypeOf}}')" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$types.Name}}');$('#typeID').val({{$types.ID}});" data-dismiss="modal">Delete</button>
 				<button class="buttonTable button2" onclick="getSkillsByType({{$types.ID}}, '{{$types.Name}}');" data-dismiss="modal">Skills</button>
 			</td>
@@ -149,10 +219,22 @@
         <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-              <div class="col-sm-8">
-              	<input type="text" id="typeName" style="border-radius: 8px;">
+              	<div class="col-sm-8">
+              		<input type="text" id="typeName" style="border-radius: 8px;">
         		</div>
-          </div>
+          	</div>
+        </div>
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">        	
+			<div class="form-group form-group-sm">
+        		<label class="control-label col-sm-4 translatable" data-i18n="Type To"> Type To </label>
+              	<div class="col-sm-8">
+					<select id="typesTo" style="border-radius: 8px; width: 174px;">
+		               {{range $index, $typeOf := .TypesOf}}
+		               <option id="{{$typeOf}}">{{$typeOf}}</option>
+		               {{end}}
+		            </select>
+        		</div>
+          	</div>
         </div>
       </div>
       <div class="modal-footer">

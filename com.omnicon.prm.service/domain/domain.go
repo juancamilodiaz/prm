@@ -11,6 +11,7 @@ type Resource struct {
 	EngineerRange string `db:"engineer_range"`
 	Enabled       bool   `db:"enabled"`
 	Skills        map[string]int
+	ResourceType  []*Type
 }
 
 type Project struct {
@@ -28,8 +29,9 @@ type Project struct {
 }
 
 type Type struct {
-	ID   int    `db:"id"`
-	Name string `db:"name"`
+	ID     int    `db:"id"`
+	Name   string `db:"name"`
+	TypeOf string `db:"type_of"`
 }
 
 type ProjectTypes struct {
@@ -115,4 +117,11 @@ type ListByHours struct {
 	ResourceId    int
 	Days          int
 	NumberOfRange int
+}
+
+type ResourceTypes struct {
+	ID         int    `db:"id"`
+	ResourceId int    `db:"resource_id"`
+	TypeId     int    `db:"type_id"`
+	Name       string `db:"type_name"`
 }

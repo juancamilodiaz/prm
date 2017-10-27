@@ -10,8 +10,9 @@ type TypeRS struct {
 
 //--------
 type TypeRQ struct {
-	ID   int
-	Name string
+	ID     int
+	Name   string
+	TypeOf string
 }
 
 type Response_Header struct {
@@ -41,6 +42,13 @@ type ProjectTypesRQ struct {
 	Name      string
 }
 
+type ResourceTypesRQ struct {
+	ID         int
+	ResourceId int
+	TypeId     int
+	Name       string
+}
+
 type TypeSkillsRQ struct {
 	ID      int
 	TypeId  int
@@ -56,4 +64,13 @@ type ProjectTypesRS struct {
 	Types        []*Type
 	Status       string
 	Message      string
+}
+
+//--------- Get ResourceTypes
+type ResourceTypesRS struct {
+	Header        *Response_Header
+	ResourceTypes []*ResourceTypes
+	Types         []*Type
+	Status        string
+	Message       string
 }

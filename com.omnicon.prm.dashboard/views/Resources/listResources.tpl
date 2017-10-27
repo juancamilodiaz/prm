@@ -7,6 +7,7 @@
 				null,
 				null,
 				null,
+				null,
 				{"searchable":false}
 			]
 		});
@@ -157,7 +158,7 @@
 		});
 	}
 	
-	getSkillsByResource = function(resourceID, resourceName){
+	getSkillsByResource = function(resourceID, resourceName, mapTypesResource){
 		var settings = {
 			method: 'POST',
 			url: '/resources/skills',
@@ -166,7 +167,8 @@
 			},
 			data: { 
 				"ID": resourceID,
-				"ResourceName": resourceName
+				"ResourceName": resourceName,
+				"MapTypesResource" : JSON.stringify(mapTypesResource)
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -198,6 +200,7 @@
 		<tr>
 			<th>Name</th>
 			<th>Last Name</th>
+			<th>Profile(s)</th>
 			<th>Email</th>
 			<th>Engineer Rank</th>
 			<th>Enabled</th>
@@ -205,18 +208,26 @@
 		</tr>
 	</thead>
 	<tbody>
+		{{$typesResource := .TypesResource}}
 	 	{{range $key, $resource := .Resources}}
 		<tr>
 			<td>{{$resource.Name}}</td>
 			<td>{{$resource.LastName}}</td>
+			<td>
+			{{$mapOfTypes := index $typesResource $resource.ID}}
+			{{range $key, $type := $mapOfTypes}}
+				*{{$type}} 
+			{{end}}
+			</td>
 			<td>{{$resource.Email}}</td>
 			<td>{{$resource.EngineerRange}}</td>
 			<td><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
 			<td>
 				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
-				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Skills</button>
+				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}', {{$mapOfTypes}});" data-dismiss="modal">Skills</button>
 				<button class="buttonTable button2" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}},'{{$resource.Name}}'+' '+'{{$resource.LastName}}');" data-dismiss="modal">Assignations</button>
+				<button class="buttonTable button2" onclick="getTypesByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Types</button>
 			</td>
 		</tr>
 		{{end}}	

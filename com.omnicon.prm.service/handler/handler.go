@@ -54,6 +54,9 @@ func SetUpHandlers() {
 	http.HandleFunc("/CreateTraining", createTraining)
 	http.HandleFunc("/UpdateTraining", updateTraining)
 	http.HandleFunc("/DeleteTraining", deleteTraining)
+	http.HandleFunc("/GetTypesByResource", getTypesByResource)
+	http.HandleFunc("/SetTypesToResource", setTypesToResource)
+	http.HandleFunc("/DeleteTypesByResource", deleteTypesByResource)
 }
 
 /*
@@ -1310,3 +1313,71 @@ func deleteTraining(pResponse http.ResponseWriter, pRequest *http.Request) {
 	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
 }
+
+func getTypesByResource(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("GetTypesByResource")
+
+	message := new(domain.GetResourcesRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get Types by ResourceId", message)
+	response := controller.ProcessGetTypesByResource(message)
+
+	// Set response time to all process.
+	// TODO ?????????? why???
+	/*if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}*/
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+
+}
+
+func setTypesToResource(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("setTypesToResource")
+
+	message := new(domain.ResourceTypesRQ)
+	getMessage(pRequest, message)
+
+	response := controller.ProcessSetTypesByResource(message)
+	value := marshalJson(pRequest.Header.Get("Accept"), response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+
+}
+
+func deleteTypesByResource(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("deleteTypesByResource")
+
+	message := new(domain.ResourceTypesRQ)
+	getMessage(pRequest, message)
+
+	response := controller.ProcessDeleteTypesByResource(message)
+
+	value := marshalJson(pRequest.Header.Get("Accept"), response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+

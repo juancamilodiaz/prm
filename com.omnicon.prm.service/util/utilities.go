@@ -487,6 +487,7 @@ func MappingTrainingResources(idTraining int, pRequest []*domain.TrainingResourc
 func MappingType(pRequest *domain.TypeRQ) *domain.Type {
 	types := new(domain.Type)
 	types.Name = pRequest.Name
+	types.TypeOf = pRequest.TypeOf
 	return types
 }
 

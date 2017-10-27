@@ -171,3 +171,15 @@ func ProcessUpdateTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
 func ProcessDeleteTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
 	return tool.DeleteTraining(pRequest)
 }
+
+func ProcessGetTypesByResource(pRequest *domain.GetResourcesRQ) *domain.ResourceTypesRS {
+	return tool.GetTypesByResource(pRequest)
+}
+
+func ProcessDeleteTypesByResource(pRequest *domain.ResourceTypesRQ) *domain.ResourceTypesRS {
+	return tool.DeleteTypesByResource(pRequest)
+}
+
+func ProcessSetTypesByResource(pRequest *domain.ResourceTypesRQ) *domain.ResourceTypesRS {
+	return tool.SetTypesByResource(pRequest)
+}
