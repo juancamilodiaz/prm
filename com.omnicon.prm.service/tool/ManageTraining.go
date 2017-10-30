@@ -301,6 +301,16 @@ func SetTrainingToResource(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Trainin
 		return &response
 	}
 
+	// Values for update
+	var trainingResourceExist *DOMAIN.TrainingResources
+	if pRequest.ID != 0 {
+		trainingResourceExist = dao.GetTrainingResourcesById(pRequest.ID)
+		if trainingResourceExist != nil {
+			pRequest.ResourceId = trainingResourceExist.ResourceId
+			pRequest.TrainingId = trainingResourceExist.TrainingId
+		}
+	}
+
 	resource := dao.GetResourceById(pRequest.ResourceId)
 	if resource != nil {
 		// Get training in DB
@@ -352,7 +362,7 @@ func SetTrainingToResource(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Trainin
 			}
 			trainingResource.ResultStatus = pRequest.ResultStatus
 
-			trainingResourceExist := dao.GetTrainingResourcesByResourceIdAndTrainingId(pRequest.ResourceId, pRequest.TrainingId)
+			// trainingResourceExist := dao.GetTrainingResourcesByResourceIdAndTrainingId(pRequest.ResourceId, pRequest.TrainingId)
 			if trainingResourceExist != nil {
 
 				if pRequest.ID == 0 {

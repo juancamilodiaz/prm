@@ -71,18 +71,51 @@
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].Progress+'</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].TestResult+'</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].ResultStatus+'</td>'+
-				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;"><a id="updateTrainingResource"><span class="glyphicon glyphicon-edit"></span></a><a id="deleteTrainingResource" onclick="'+"$('#trainingResourceID').val("+ d[index].ID + ");" +"$('#nameDelete').html('"+ d[index].TrainingName + "'" +')"> <span class="glyphicon glyphicon-trash"></span></a></td>'+	            
+				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;"><a id="updateTrainingResource" onclick="'+
+					"$('#trainingResourceID').val(" + d[index].ID + ");" + 
+					"$('#trainingStartDate').val('" + d[index].StartDate.substring(0, 10) + "');"+
+					"$('#trainingEndDate').val('" + d[index].EndDate.substring(0, 10) + "');"+
+					"$('#duration').val(" + d[index].Duration + ");"+
+					"$('#progress').val(" + d[index].Progress + ");"+
+					"$('#testResult').val(" + d[index].TestResult + ");"+
+					"$('#resultStatus').val('" + d[index].ResultStatus + "');"+					
+				'"><span class="glyphicon glyphicon-edit"></span></a><a id="deleteTrainingResource" onclick="'+
+					"$('#trainingResourceID').val("+ d[index].ID + ");" +
+					"$('#nameDelete').html('"+ d[index].TrainingName + "')" +
+				'"> <span class="glyphicon glyphicon-trash"></span></a></td>'+	            
 	        '</tr>';
 		}
 	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
 	}
 	
+	configureCreateModal = function(){
+		$('#modalTrainingTitle').html('Create Resource Training');
+		$('#inputCreateResourcesValue').show();
+		$('#inputCreateTypeValue').show();
+		$('#inputCreateSkillValue').show();
+		$('#inputCreateTrainingValue').show();
+		$('#trainingCreate').show();
+		$('#trainingUpdate').hide();
+		$('#trainingStartDate').val(null);
+		$('#trainingEndDate').val(null);
+		$('#duration').val(null);
+		$('#progress').val(null);
+		$('#testResult').val(null);
+	}
+	
 	$(document).on('click','#updateTrainingResource',function(){
-    	console.log("Click on update");
+		$('#modalTrainingTitle').html('Update Resource Training');
+    	$('#trainingModal').modal('show');
+		$('#inputCreateResourcesValue').hide();
+		$('#inputCreateTypeValue').hide();
+		$('#inputCreateSkillValue').hide();
+		$('#inputCreateTrainingValue').hide();
+		$('#trainingCreate').hide();
+		$('#trainingUpdate').show();
 	});
 	
 	$(document).on('click','#deleteTrainingResource',function(){
-    	$('#confirmModal').modal('show');;
+    	$('#confirmModal').modal('show');
 	});
 	
 	function deleteTrainingResource(){
@@ -98,7 +131,8 @@
 		}
 		$.ajax(settings).done(function (response) {
 		  validationError(response);
-		  reload('/trainings/resources', {});
+		  searchTrainingResources();
+		  //reload('/trainings/resources', {});
 		});
 	}
 	
@@ -148,10 +182,6 @@
         {{end}}
 	});
 	
-	configureCreateModal = function(){
-		
-	}
-	
 	setTrainingToResource = function(){
 		var settings = {
 			method: 'POST',
@@ -159,7 +189,8 @@
 			headers: {
 				'Content-Type': undefined
 			},
-			data: { 
+			data: {
+				"ID": $('#trainingResourceID').val(),
 				"ResourceId": $('#createResourcesValue option:selected').attr('id'),
 				"TrainingId": $('#createTrainingValue option:selected').attr('id'),
 				"StartDate": $('#trainingStartDate').val(),
@@ -167,12 +198,13 @@
 				"Duration": $('#duration').val(),
 				"Progress": $('#progress').val(),
 				"TestResult": $('#testResult').val(),
-				"ResultStatus": $('#resultStatus option:selected').attr('id')
+				"ResultStatus": $('#resultStatus').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
 		  validationError(response);
-		  reload('/trainings/resources', {});
+		  searchTrainingResources();
+		  //reload('/trainings/resources', {});
 		});
 	}
 	
@@ -198,10 +230,6 @@
 			}
 		}
 	});
-	
-	function updateTraining(){
-		
-	}
 	
 	searchTrainingResources = function(){
 		var resourceID = $('#resourcesValue option:selected').attr('id');
@@ -334,11 +362,11 @@
       <div class="modal-content">
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 id="modalTrainingTitle" class="modal-title">Create Resource Training</h4>
+            <h4 id="modalTrainingTitle" class="modal-title"></h4>
          </div>
          <div class="modal-body">
             <input type="hidden" id="trainingResourceID">
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="inputCreateResourcesValue">
                <div class="form-group form-group-sm">
                   <label class="control-label col-sm-4 translatable" data-i18n="Select Resource"> Select Resource </label>
                   <div class="col-sm-8">
@@ -351,7 +379,7 @@
                   </div>
                </div>
             </div>
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="inputCreateTypeValue">
                <div class="form-group form-group-sm">
                   <label class="control-label col-sm-4 translatable" data-i18n="Select Type"> Select Type </label>
                   <div class="col-sm-8">
@@ -364,7 +392,7 @@
                   </div>
                </div>
             </div>
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="inputCreateSkillValue">
                <div class="form-group form-group-sm">
                   <label class="control-label col-sm-4 translatable" data-i18n="Select Skill"> Select Skill </label>
                   <div class="col-sm-8">
@@ -374,7 +402,7 @@
                   </div>
                </div>
             </div>
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="inputCreateTrainingValue">
                <div class="form-group form-group-sm">
                   <label class="control-label col-sm-4 translatable" data-i18n="Select Training"> Select Training </label>
                   <div class="col-sm-8">
@@ -434,8 +462,8 @@
             </div>
          </div>
          <div class="modal-footer">
-            <button type="button" id="trainingCreate" class="btn btn-default" onclick="setTrainingToResource()" data-dismiss="modal">Create</button>
-            <button type="button" id="trainingUpdate" class="btn btn-default" onclick="updateTraining()" data-dismiss="modal">Update</button>
+            <button type="button" id="trainingCreate" class="btn btn-default" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" data-dismiss="modal">Create</button>
+            <button type="button" id="trainingUpdate" class="btn btn-default" onclick="setTrainingToResource()" data-dismiss="modal">Update</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
          </div>
       </div>
