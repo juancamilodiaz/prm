@@ -58,6 +58,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/SetTypesToResource", setTypesToResource)
 	http.HandleFunc("/DeleteTypesByResource", deleteTypesByResource)
 	http.HandleFunc("/SetTrainingToResource", setTrainingToResource)
+	http.HandleFunc("/DeleteTrainingToResource", deleteTrainingToResource)
 }
 
 /*
@@ -1422,3 +1423,42 @@ func setTrainingToResource(pResponse http.ResponseWriter, pRequest *http.Request
 	log.Info("Process Time:", processTime.String())
 }
 
+/*
+Description : Function to delete a training in a resource according to input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func deleteTrainingToResource(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("DeleteTrainingToResource")
+
+	message := new(domain.TrainingResourcesRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Delete Training To Resource", message)
+	response := controller.ProcessDeleteTrainingToResource(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}

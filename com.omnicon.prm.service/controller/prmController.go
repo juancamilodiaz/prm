@@ -187,3 +187,7 @@ func ProcessSetTypesByResource(pRequest *domain.ResourceTypesRQ) *domain.Resourc
 func ProcessSetTrainingToResource(pRequest *domain.TrainingResourcesRQ) *domain.TrainingResourcesRS {
 	return tool.SetTrainingToResource(pRequest)
 }
+
+func ProcessDeleteTrainingToResource(pRequest *domain.TrainingResourcesRQ) *domain.TrainingResourcesRS {
+	return tool.DeleteTrainingToResource(pRequest)
+}

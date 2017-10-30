@@ -428,3 +428,38 @@ func SetTrainingToResource(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Trainin
 
 	return &response
 }
+
+/**
+* Function to delete a assignation training to resource from TrainingRQ
+ */
+func DeleteTrainingToResource(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.TrainingResourcesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.TrainingResourcesRS{}
+	trainingResourceToDelete := dao.GetTrainingResourcesById(pRequest.ID)
+	if trainingResourceToDelete != nil {
+
+		// Delete in DB
+		rowsDeleted, err := dao.DeleteTrainingResources(pRequest.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "Training Resource wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+
+		response.Status = "OK"
+
+		response.Header = util.BuildHeaderResponse(timeResponse)
+
+		return &response
+	}
+	message := "Training Resource wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}

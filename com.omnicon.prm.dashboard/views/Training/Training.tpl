@@ -64,16 +64,42 @@
 	    // `d` is the original data object for the row
 		var insert = '';
 		for (index = 0; index < d.length; index++) {
-			insert += '<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].TrainingName+'</td>'+
-	            '<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].StartDate.substring(0, 10)+'</td>'+
-				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].EndDate.substring(0, 10)+'</td>'+	            
-				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].Duration+ ' h.' + '</td>'+	            
-				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].Progress+'</td>'+	            
+			insert += '<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].TrainingName+'</td>'+
+	            '<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].StartDate.substring(0, 10)+'</td>'+
+				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].EndDate.substring(0, 10)+'</td>'+	            
+				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].Duration+ ' h.' + '</td>'+	            
+				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].Progress+'</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].TestResult+'</td>'+	            
-				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].ResultStatus+'</td>'+	            
+				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].ResultStatus+'</td>'+
+				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;"><a id="updateTrainingResource"><span class="glyphicon glyphicon-edit"></span></a><a id="deleteTrainingResource" onclick="'+"$('#trainingResourceID').val("+ d[index].ID +')"> <span class="glyphicon glyphicon-trash"></span></a></td>'+	            
 	        '</tr>';
 		}
 	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
+	}
+	
+	$(document).on('click','#updateTrainingResource',function(){
+    	console.log("Click on update");
+	});
+	
+	$(document).on('click','#deleteTrainingResource',function(){
+    	$('#confirmModal').modal('show');;
+	});
+	
+	function deleteTrainingResource(){
+		var settings = {
+			method: 'POST',
+			url: '/trainings/deletetraining',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"ID": $('#trainingResourceID').val()
+			}
+		}
+		$.ajax(settings).done(function (response) {
+		  validationError(response);
+		  reload('/trainings/resources', {});
+		});
 	}
 	
 	google.charts.load('current', {'packages':['gantt']});
@@ -311,7 +337,7 @@
             <h4 id="modalTrainingTitle" class="modal-title">Create Resource Training</h4>
          </div>
          <div class="modal-body">
-            <input type="hidden" id="trainingID">
+            <input type="hidden" id="trainingResourceID">
             <div class="row-box col-sm-12" style="padding-bottom: 1%;">
                <div class="form-group form-group-sm">
                   <label class="control-label col-sm-4 translatable" data-i18n="Select Resource"> Select Resource </label>
@@ -414,4 +440,25 @@
          </div>
       </div>
    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" role="dialog">
+<div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove <b id="nameDelete"></b> from trainings?
+		<br>
+		<li>The resource will lose this training assignment.</li>
+      </div>
+      <div class="modal-footer" style="text-align:center;">
+        <button type="button" id="trainingResourceDelete" class="btn btn-default" onclick="deleteTrainingResource()" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
 </div>
