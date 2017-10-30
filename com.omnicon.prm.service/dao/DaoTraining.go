@@ -56,9 +56,31 @@ func GetTrainingById(pId int) *DOMAIN.Training {
 	err := res.One(&training)
 	if err != nil {
 		log.Error(err)
+		return nil
 	}
 	log.Debug("Result:", training)
 	return &training
+}
+
+/**
+*	Name : GetTrainingByTypeId
+*	Params: pId
+*	Return: *DOMAIN.Training
+*	Description: Get a Training by Type ID in a Training table
+ */
+func GetTrainingByTypeId(pTypeId int) []*DOMAIN.Training {
+	// Training structure
+	trainings := []*DOMAIN.Training{}
+	// Add in Training variable, the Training where ID is the same that the param
+	res := getTrainingCollection().Find().Where("type_id = ?", pTypeId)
+	// Close session when ends the method
+	defer session.Close()
+	err := res.All(&trainings)
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	return trainings
 }
 
 /**

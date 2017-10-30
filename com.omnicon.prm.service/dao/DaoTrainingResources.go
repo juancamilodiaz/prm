@@ -43,7 +43,7 @@ func GetAllTrainingResources() []*DOMAIN.TrainingResources {
 *	Return: *DOMAIN.TrainingResources
 *	Description: Get a TrainingResources by ID in a TrainingResources table
  */
-func getTrainingResourcesById(pId int) *DOMAIN.TrainingResources {
+func GetTrainingResourcesById(pId int) *DOMAIN.TrainingResources {
 	// TrainingResources structure
 	TrainingResources := DOMAIN.TrainingResources{}
 	// Add in TrainingResources variable, the TrainingResources where ID is the same that the param
@@ -217,4 +217,29 @@ func DeleteTrainingResourcesByTrainingId(pTrainingId int) (int, error) {
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
 	return int(deleteCount), nil
+}
+
+/**
+*	Name : GetTrainingResourcesByResourceIdAndTrainingId
+*	Params: pResourceId, pTrainingId
+*	Return: *DOMAIN.TrainingResources
+*	Description: Get a trainingResource by ResourceId and TrainingId in a TrainingResources table
+ */
+func GetTrainingResourcesByResourceIdAndTrainingId(pResourceId, pTrainingId int) *DOMAIN.TrainingResources {
+	// TrainingResources structure
+	trainingResources := DOMAIN.TrainingResources{}
+	// Add in trainingResources variable, the trainingResources where ID is the same that the param
+	res := getTrainingResourcesCollection().Find(db.Cond{"resource_id": pResourceId}).And(db.Cond{"training_id": pTrainingId})
+	// Close session when ends the method
+	defer session.Close()
+	count, err := res.Count()
+	if count > 0 {
+		err = res.One(&trainingResources)
+		if err != nil {
+			log.Debug(err)
+		}
+		return &trainingResources
+	}
+
+	return nil
 }

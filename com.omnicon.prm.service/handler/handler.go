@@ -49,7 +49,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/DeleteSkillsByType", deleteSkillsByType)
 	http.HandleFunc("/SetSkillsToType", setSkillsToType)
 	http.HandleFunc("/SetTypesToProject", setTypesToProject)
-	http.HandleFunc("/GetTraining", getTraining)
+	http.HandleFunc("/GetTrainingResources", getTrainingResources)
 	http.HandleFunc("/GetTrainings", getTrainings)
 	http.HandleFunc("/CreateTraining", createTraining)
 	http.HandleFunc("/UpdateTraining", updateTraining)
@@ -57,6 +57,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/GetTypesByResource", getTypesByResource)
 	http.HandleFunc("/SetTypesToResource", setTypesToResource)
 	http.HandleFunc("/DeleteTypesByResource", deleteTypesByResource)
+	http.HandleFunc("/SetTrainingToResource", setTrainingToResource)
 }
 
 /*
@@ -1176,17 +1177,17 @@ Parametros :
       pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
 	  pRequest *http.Request :         Contiene la peticion del usuario
 */
-func getTraining(pResponse http.ResponseWriter, pRequest *http.Request) {
+func getTrainingResources(pResponse http.ResponseWriter, pRequest *http.Request) {
 	startTime := time.Now()
-	defer panics.CatchPanic("GetTraining")
+	defer panics.CatchPanic("GetTrainingResources")
 
-	message := new(domain.TrainingRQ)
+	message := new(domain.TrainingResourcesRQ)
 	getMessage(pRequest, message)
-	log.Info("Process Get Training", message)
+	log.Info("Process Get Training Resources", message)
 
-	response := controller.ProcessGetTraining(message)
+	response := controller.ProcessGetTrainingResources(message)
 	log.Debug("Response", response.Status)
-	log.Debug("Response.Training", *response.Training)
+	log.Debug("Response.Training", len(response.FilteredTrainings))
 	log.Debug("Response.TrainingResources", len(response.TrainingResources))
 	value := marshalJson(pRequest.Header.Get("Accept"), response)
 	pResponse.Header().Add("Content-Type", "application/json")
@@ -1374,6 +1375,46 @@ func deleteTypesByResource(pResponse http.ResponseWriter, pRequest *http.Request
 	response := controller.ProcessDeleteTypesByResource(message)
 
 	value := marshalJson(pRequest.Header.Get("Accept"), response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to set a training in a resource according to input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func setTrainingToResource(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("SetTrainingToResource")
+
+	message := new(domain.TrainingResourcesRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Set Training To Resource", message)
+	response := controller.ProcessSetTrainingToResource(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
 	pResponse.Header().Add("Content-Type", "application/json")
 	pResponse.Write(value)
 

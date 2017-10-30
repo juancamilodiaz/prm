@@ -82,6 +82,7 @@ type Training struct {
 	TypeName  string
 	SkillName string
 }
+
 type TrainingResources struct {
 	ID           int       `db:"id"`
 	TrainingId   int       `db:"training_id"`
@@ -92,6 +93,18 @@ type TrainingResources struct {
 	Progress     int       `db:"progress"`
 	TestResult   int       `db:"test_result"`
 	ResultStatus string    `db:"result_status"`
+	TrainingName string
+}
+
+type TrainingBreakdown struct {
+	SkillName         string
+	StartDate         time.Time
+	EndDate           time.Time
+	Duration          int
+	Progress          int
+	TestResult        int
+	ResultStatus      string
+	TrainingResources []*TrainingResources
 }
 
 type ResourceAssign struct {

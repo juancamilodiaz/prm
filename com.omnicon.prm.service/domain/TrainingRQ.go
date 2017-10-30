@@ -9,14 +9,37 @@ type TrainingRQ struct {
 }
 
 type TrainingRS struct {
-	Training          *Training
-	Trainings         []*Training
+	Trainings   []*Training
+	Header      *Response_Header
+	Types       []*Type
+	TypesSkills []*TypeSkills
+	Skills      []*Skill
+	Status      string
+	Message     string
+}
+
+type TrainingResourcesRQ struct {
+	ID           int
+	TrainingId   int
+	ResourceId   int
+	StartDate    string
+	EndDate      string
+	Duration     int
+	Progress     int
+	TestResult   int
+	ResultStatus string
+
+	TypeID int
+}
+
+type TrainingResourcesRS struct {
 	Header            *Response_Header
-	TrainingResources []*TrainingResources
+	Status            string
+	Message           string
+	FilteredTrainings []*Training
+	TrainingResources map[int]*TrainingBreakdown
+	Trainings         []*Training
 	Resources         []*Resource
 	Types             []*Type
 	TypesSkills       []*TypeSkills
-	Skills            []*Skill
-	Status            string
-	Message           string
 }
