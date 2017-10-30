@@ -71,7 +71,7 @@
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].Progress+'</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].TestResult+'</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].ResultStatus+'</td>'+
-				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;"><a id="updateTrainingResource"><span class="glyphicon glyphicon-edit"></span></a><a id="deleteTrainingResource" onclick="'+"$('#trainingResourceID').val("+ d[index].ID +')"> <span class="glyphicon glyphicon-trash"></span></a></td>'+	            
+				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;"><a id="updateTrainingResource"><span class="glyphicon glyphicon-edit"></span></a><a id="deleteTrainingResource" onclick="'+"$('#trainingResourceID').val("+ d[index].ID + ");" +"$('#nameDelete').html('"+ d[index].TrainingName + "'" +')"> <span class="glyphicon glyphicon-trash"></span></a></td>'+	            
 	        '</tr>';
 		}
 	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
