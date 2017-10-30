@@ -85,7 +85,7 @@
 				'"> <span class="glyphicon glyphicon-trash"></span></a></td>'+	            
 	        '</tr>';
 		}
-	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
+	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable"><thead><tr><th>Training Name</th><th>Start Date</th><th>End Date</th><th>Duration</th><th>Progress</th><th>Test Result</th><th>Result Status</th><th>Options</th></tr></thead>'+insert+'</table>';
 	}
 	
 	configureCreateModal = function(){
