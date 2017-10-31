@@ -147,7 +147,11 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 		response.Resources = resources
 
 		types := dao.GetAllTypes()
-		response.Types = types
+		for _, _type := range types {
+			if _type.TypeOf == "project" {
+				response.Types = append(response.Types, _type)
+			}
+		}
 
 		trainings := dao.GetAllTraining()
 		response.Trainings = trainings
@@ -183,7 +187,11 @@ func GetTrainings(pRequest *DOMAIN.TrainingRQ) *DOMAIN.TrainingRS {
 
 	// get all types
 	types := dao.GetAllTypes()
-	response.Types = types
+	for _, _type := range types {
+		if _type.TypeOf == "project" {
+			response.Types = append(response.Types, _type)
+		}
+	}
 
 	// get all skills
 	skills := dao.GetAllSkills()
