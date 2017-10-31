@@ -91,6 +91,27 @@ func GetTrainingResourcesByTrainingId(pTrainingId int) []*DOMAIN.TrainingResourc
 }
 
 /**
+*	Name : GetTrainingResourcesByResourceId
+*	Params: pResourceId
+*	Return: *DOMAIN.TrainingResources
+*	Description: Get a trainingResource by ResourceId in a TrainingResources table
+ */
+func GetTrainingResourcesByResourceId(pResourceId int) []*DOMAIN.TrainingResources {
+	// TrainingResources structure
+	trainingResources := []*DOMAIN.TrainingResources{}
+	// Add in trainingResources variable, the trainingResources where ID is the same that the param
+	res := getTrainingResourcesCollection().Find().Where("resource_id  = ?", pResourceId)
+	// Close session when ends the method
+	defer session.Close()
+	// Add all trainingResources in trainingResources variable
+	err := res.All(&trainingResources)
+	if err != nil {
+		log.Error(err)
+	}
+	return trainingResources
+}
+
+/**
 *	Name : AddTrainingResources
 *	Params: pTrainingResources
 *	Return: int, error

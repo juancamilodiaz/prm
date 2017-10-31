@@ -128,6 +128,15 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 			}
 		}
 
+		// Delete trainings assignation to resource
+		trainingsResource := dao.GetTrainingResourcesByResourceId(pResource.ID)
+		for _, trainingResource := range trainingsResource {
+			_, err := dao.DeleteTrainingResources(trainingResource.ID)
+			if err != nil {
+				log.Error("Failed to delete training resource")
+			}
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteResource(pResource.ID)
 		if err != nil || rowsDeleted <= 0 {
