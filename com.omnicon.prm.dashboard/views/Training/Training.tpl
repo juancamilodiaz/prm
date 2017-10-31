@@ -154,7 +154,7 @@
 		
 		data.addRows([
 		{{range $xx, $training := .TResources}}
-				[{{$training.SkillName}}, {{$training.SkillName}}, new Date({{$training.StartDate}}), new Date({{$training.EndDate}}), 0, {{$training.Progress}},""],
+				[{{$training.SkillName}}, {{$training.SkillName}}, parseDate({{$training.StartDate}}), parseDate({{$training.EndDate}}), 0, {{$training.Progress}},""],
 		{{end}}
 		]);
 		
@@ -216,6 +216,13 @@
 	$('#trainingStartDate').change(function(){
 		$('#trainingEndDate').attr("min", $("#trainingStartDate").val());
 	});
+	
+	// parse a date in yyyy-mm-dd format
+	function parseDate(input) {
+	  var parts = input.match(/(\d+)/g);
+	  // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+	  return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
+	}
 	
 	$('#trainingStartDate, #trainingEndDate').change(function(){
     	var startDate = new Date($("#trainingStartDate").val());
