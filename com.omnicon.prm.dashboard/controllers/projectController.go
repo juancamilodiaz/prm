@@ -31,7 +31,14 @@ func (this *ProjectController) ListProjects() {
 		res, err = PostData(operation, nil)
 		messageTypes := new(domain.TypeRS)
 		json.NewDecoder(res.Body).Decode(&messageTypes)
-		this.Data["Types"] = messageTypes.Types
+
+		typesProject := []*domain.Type{}
+		for _, _type := range messageTypes.Types {
+			if _type.TypeOf == "project" {
+				typesProject = append(typesProject, _type)
+			}
+		}
+		this.Data["Types"] = typesProject
 
 		this.Data["Projects"] = message.Projects
 
@@ -592,7 +599,14 @@ func (this *ProjectController) GetTypesByProject() {
 		message := new(domain.ProjectTypesRS)
 		json.NewDecoder(res.Body).Decode(&message)
 		this.Data["ProjectTypes"] = message.ProjectTypes
-		this.Data["Types"] = message.Types
+
+		typesProject := []*domain.Type{}
+		for _, _types := range message.Types {
+			if _types.TypeOf == "project" {
+				typesProject = append(typesProject, _types)
+			}
+		}
+		this.Data["Types"] = typesProject
 		this.Data["ProjectID"] = input.ID
 		this.Data["Title"] = this.GetString("Description")
 		this.TplName = "Projects/listProjectTypes.tpl"

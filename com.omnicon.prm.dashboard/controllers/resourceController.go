@@ -452,7 +452,13 @@ func (this *ResourceController) GetTypesByResource() {
 		message := new(domain.ResourceTypesRS)
 		json.NewDecoder(res.Body).Decode(&message)
 		this.Data["ResourceTypes"] = message.ResourceTypes
-		this.Data["Types"] = message.Types
+		typesResource := []*domain.Type{}
+		for _, _types := range message.Types {
+			if _types.TypeOf == "resource" {
+				typesResource = append(typesResource, _types)
+			}
+		}
+		this.Data["Types"] = typesResource
 		this.Data["ResourceID"] = input.ID
 		this.Data["Title"] = this.GetString("Description")
 		this.TplName = "Resources/listResourceTypes.tpl"
