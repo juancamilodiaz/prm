@@ -157,12 +157,15 @@
 				[{{$training.SkillName}}, {{$training.SkillName}}, new Date({{$training.StartDate}}), new Date({{$training.EndDate}}), 0, {{$training.Progress}},""],
 		{{end}}
 		]);
-		var options = {
-	    	height: 375
-	    };
-
-      	var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-      	chart.draw(data, options);
+		
+		if (data.getNumberOfRows() > 0) {
+			var options = {
+		    	height: 375
+		    };
+	
+	      	var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+	      	chart.draw(data, options);
+		}
 	}
 	
 	$('#createTypeValue').change(function() {

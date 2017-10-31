@@ -124,6 +124,20 @@ func DeleteType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 			}
 		}
 
+		// Delete training associations (training and training resouces)
+		trainings := dao.GetTrainingByTypeId(int(pRequest.ID))
+		for _, training := range trainings {
+			// Delete training resource
+			_, err := dao.DeleteTrainingResourcesByTrainingId(training.ID)
+			if err != nil {
+				log.Error("Failed to delete training resource")
+			}
+			_, err = dao.DeleteTraining(training.ID)
+			if err != nil {
+				log.Error("Failed to delete training")
+			}
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteType(pRequest.ID)
 		if err != nil || rowsDeleted <= 0 {

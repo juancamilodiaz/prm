@@ -259,6 +259,7 @@
 		<br>
 		<li>The projects will lose this type assignment.</li>
 		<li>The skills will lose this type assignment.</li>
+		<li>The training and the training's assignations will lose this skill assignment and they will be eliminated.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="typeDelete" class="btn btn-default" onclick="deleteType()" data-dismiss="modal">Yes</button>
