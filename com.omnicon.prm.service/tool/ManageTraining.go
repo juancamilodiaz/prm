@@ -78,9 +78,17 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 				trainingResource.TrainingName = training.Name
 				if pRequest.ResourceId != 0 {
 					if pRequest.ResourceId == trainingResource.ResourceId {
+						resource := dao.GetResourceById(trainingResource.ResourceId)
+						if resource != nil {
+							trainingResource.ResourceName = resource.Name + " " + resource.LastName
+						}
 						trainingResources = append(trainingResources, trainingResource)
 					}
 				} else {
+					resource := dao.GetResourceById(trainingResource.ResourceId)
+					if resource != nil {
+						trainingResource.ResourceName = resource.Name + " " + resource.LastName
+					}
 					trainingResources = append(trainingResources, trainingResource)
 				}
 			}
@@ -93,6 +101,11 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 					skill := dao.GetSkillById(training.SkillId)
 					if skill != nil {
 						trainingResourceDetail.SkillName = skill.Name
+					}
+					// get name from type
+					_type := dao.GetTypesById(training.TypeId)
+					if _type != nil {
+						trainingResourceDetail.TypeName = _type.Name
 					}
 					trainingResourcesBreakdown[training.SkillId] = trainingResourceDetail
 				}

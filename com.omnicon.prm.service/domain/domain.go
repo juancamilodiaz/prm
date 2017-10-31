@@ -94,10 +94,12 @@ type TrainingResources struct {
 	TestResult   int       `db:"test_result"`
 	ResultStatus string    `db:"result_status"`
 	TrainingName string
+	ResourceName string
 }
 
 type TrainingBreakdown struct {
 	SkillName         string
+	TypeName          string
 	StartDate         time.Time
 	EndDate           time.Time
 	Duration          int

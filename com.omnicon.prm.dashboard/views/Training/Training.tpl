@@ -27,6 +27,7 @@
 				null,
 				null,
 				null,
+				null,
 				null
 	        ],
 			"columnDefs": [ {
@@ -64,13 +65,14 @@
 	    // `d` is the original data object for the row
 		var insert = '';
 		for (index = 0; index < d.length; index++) {
-			insert += '<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].TrainingName+'</td>'+
+			insert += '<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].ResourceName+'</td>'+
+				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].TrainingName+'</td>'+
 	            '<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].StartDate.substring(0, 10)+'</td>'+
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].EndDate.substring(0, 10)+'</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].Duration+ ' h.' + '</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].Progress+'</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].TestResult+'</td>'+	            
-				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].ResultStatus+'</td>'+
+				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].ResultStatus+'</td>'+
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;"><a id="updateTrainingResource" onclick="'+
 					"$('#trainingResourceID').val(" + d[index].ID + ");" + 
 					"$('#trainingStartDate').val('" + d[index].StartDate.substring(0, 10) + "');"+
@@ -85,7 +87,7 @@
 				'"> <span class="glyphicon glyphicon-trash"></span></a></td>'+	            
 	        '</tr>';
 		}
-	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable"><thead><tr><th>Training Name</th><th>Start Date</th><th>End Date</th><th>Duration</th><th>Progress</th><th>Test Result</th><th>Result Status</th><th>Options</th></tr></thead>'+insert+'</table>';
+	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable"><thead><tr><th>Resource Name</th><th>Training Name</th><th>Start Date</th><th>End Date</th><th>Duration</th><th>Progress</th><th>Test Result</th><th>Result Status</th><th>Options</th></tr></thead>'+insert+'</table>';
 	}
 	
 	configureCreateModal = function(){
@@ -298,6 +300,7 @@
 	<table id="viewTraining" class="table table-striped table-bordered">
 		<thead>
 			<tr>
+				<th>Type Name</th>
 				<th>Training Name</th>
 				<th>Start Date</th>
 				<th>End Date</th>
@@ -310,7 +313,8 @@
 		<tbody id="detailBody">
 		 	{{range $key, $tResource := .TResources}}
 			<tr>
-				<td style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this), {{$tResource.TrainingResources}})">{{$tResource.SkillName}}</td>
+				<td style="background-position-x: 1%;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this), {{$tResource.TrainingResources}})">{{$tResource.TypeName}}</td>
+				<td>{{$tResource.SkillName}}</td>
 				<td>{{dateformat $tResource.StartDate "2006-01-02"}}</td>
 				<td>{{dateformat $tResource.EndDate "2006-01-02"}}</td>
 				<td>{{$tResource.Duration}} d.</td>
