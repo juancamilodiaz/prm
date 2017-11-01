@@ -118,9 +118,12 @@ type ResourceAssign struct {
 }
 
 type RangeDatesAvailability struct {
-	StartDate string
-	EndDate   string
-	Hours     float64
+	StartDate    string
+	EndDate      string
+	Hours        float64
+	HoursPerDay  float64
+	ResourceName string
+	ProjectName  string
 }
 
 type ResourceAvailabilityInformation struct {
