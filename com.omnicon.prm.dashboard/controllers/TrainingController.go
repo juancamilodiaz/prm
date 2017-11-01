@@ -97,8 +97,10 @@ func buildPieMessage(pMessage map[int]*domain.TrainingBreakdown) Datasets {
 		}
 	}
 
-	dataset.SkillsName = make([]string, 3)
-	dataset.SkillsValue = make([]int, 3)
+	if len(trnTotal) > 0 {
+		dataset.SkillsName = make([]string, 3)
+		dataset.SkillsValue = make([]int, 3)
+	}
 	for status, total := range trnTotal {
 		switch status {
 		case "Passed":
