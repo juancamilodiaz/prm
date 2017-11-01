@@ -118,6 +118,11 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 		for _, trainingResourceBD := range trainingResourcesBreakdown {
 			var startDate, endDate time.Time
 			var progess, testResult int
+
+			resultStatusPassed := DOMAIN.ResultStatus{Key: "Passed"}
+			resultStatusFailed := DOMAIN.ResultStatus{Key: "Failed"}
+			resultStatusPending := DOMAIN.ResultStatus{Key: "Pending"}
+
 			for index, trainingResource := range trainingResourceBD.TrainingResources {
 				if index == 0 {
 					startDate = trainingResource.StartDate
@@ -131,6 +136,16 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 				}
 				progess += trainingResource.Progress
 				testResult += trainingResource.TestResult
+
+				switch trainingResource.ResultStatus {
+				case "Passed":
+					resultStatusPassed.Value += 1
+				case "Failed":
+					resultStatusFailed.Value += 1
+				case "Pending":
+					resultStatusPending.Value += 1
+
+				}
 			}
 			duration := endDate.Sub(startDate)
 
@@ -139,6 +154,9 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 			trainingResourceBD.Duration = int(duration.Hours() / 24)
 			trainingResourceBD.Progress = progess / len(trainingResourceBD.TrainingResources)
 			trainingResourceBD.TestResult = testResult / len(trainingResourceBD.TrainingResources)
+			trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusPassed)
+			trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusFailed)
+			trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusPending)
 		}
 
 		response.TrainingResources = trainingResourcesBreakdown

@@ -105,8 +105,13 @@ type TrainingBreakdown struct {
 	Duration          int
 	Progress          int
 	TestResult        int
-	ResultStatus      string
+	ResultStatus      []ResultStatus
 	TrainingResources []*TrainingResources
+}
+
+type ResultStatus struct {
+	Key   string
+	Value int
 }
 
 type ResourceAssign struct {

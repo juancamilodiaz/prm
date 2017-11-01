@@ -330,7 +330,12 @@
 				<td>{{$tResource.Duration}} d.</td>
 				<td>{{$tResource.Progress}}</td>
 				<td>{{$tResource.TestResult}}</td>
-				<td>{{$tResource.ResultStatus}}</td>
+				<td>
+				||
+				{{range $key, $result := $tResource.ResultStatus}}
+					{{$result.Key}}:{{$result.Value}} ||
+				{{end}}
+				</td>
 			</tr>
 			{{end}}
 		</tbody>
