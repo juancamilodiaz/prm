@@ -16,8 +16,6 @@
 			"paging": true,
 		});
 		
-		
-		
 		$('#viewResourcesPerProjectUnassign tbody').on('click', 'td.details-control', function(){
 			
 		});
@@ -61,6 +59,24 @@
 				}
 			reload('/projects/resources/today', data);
 		});
+		
+		$('#viewResourcesHome_filter').parent().removeClass("col-md-6");
+		$('#viewResourcesHome_filter').parent().css("width","100%");
+		$('#viewResourcesHome_filter>label').css("width","100%");
+		
+		//collapse button event
+		$(".btnCollapse").click(
+			function(){
+				if($(this).hasClass('collapsed')){
+					$(this).removeClass('glyphicon-collapse-down');
+					$(this).addClass('glyphicon-collapse-up');
+				}
+				else{
+					$(this).removeClass('glyphicon-collapse-up');
+					$(this).addClass('glyphicon-collapse-down');
+				}
+			}
+		);
 		sendTitle("Home");
 	});
 	
@@ -300,7 +316,7 @@ function setResourceToProjectExc(){
 									{{$project.OperationCenter}}-{{$project.WorkOrder}} {{$project.Name}}
 									<div class="pull-right">
 										{{dateformat $project.StartDate "2006-01-02"}} to {{dateformat $project.EndDate "2006-01-02"}} 
-										<button id="collapseButton{{$key}}" class="btnCollapse" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
+										<button id="collapseButton{{$key}}" class="btnCollapse glyphicon glyphicon-collapse-up" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
 									</div>
 								</div>
 								<div id="collapse{{$key}}" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
