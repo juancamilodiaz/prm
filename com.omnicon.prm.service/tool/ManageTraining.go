@@ -63,125 +63,120 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 		trainings = dao.GetAllTraining()
 	}
 
-	if len(trainings) > 0 {
+	response.FilteredTrainings = trainings
 
-		response.FilteredTrainings = trainings
+	// Get trainingResources from ResourceID input or all trainingResources
+	trainingResourcesBreakdown := make(map[int]*DOMAIN.TrainingBreakdown)
+	for _, training := range trainings {
 
-		// Get trainingResources from ResourceID input or all trainingResources
-		trainingResourcesBreakdown := make(map[int]*DOMAIN.TrainingBreakdown)
-		for _, training := range trainings {
-
-			//Search all training resources
-			trainingResources := []*DOMAIN.TrainingResources{}
-			trainingsResources := dao.GetTrainingResourcesByTrainingId(training.ID)
-			for _, trainingResource := range trainingsResources {
-				trainingResource.TrainingName = training.Name
-				if pRequest.ResourceId != 0 {
-					if pRequest.ResourceId == trainingResource.ResourceId {
-						resource := dao.GetResourceById(trainingResource.ResourceId)
-						if resource != nil {
-							trainingResource.ResourceName = resource.Name + " " + resource.LastName
-						}
-						trainingResources = append(trainingResources, trainingResource)
-					}
-				} else {
+		//Search all training resources
+		trainingResources := []*DOMAIN.TrainingResources{}
+		trainingsResources := dao.GetTrainingResourcesByTrainingId(training.ID)
+		for _, trainingResource := range trainingsResources {
+			trainingResource.TrainingName = training.Name
+			if pRequest.ResourceId != 0 {
+				if pRequest.ResourceId == trainingResource.ResourceId {
 					resource := dao.GetResourceById(trainingResource.ResourceId)
 					if resource != nil {
 						trainingResource.ResourceName = resource.Name + " " + resource.LastName
 					}
 					trainingResources = append(trainingResources, trainingResource)
 				}
-			}
-
-			// if exist element, fill the element and initialize the struct
-			if len(trainingResources) > 0 {
-				if trainingResourcesBreakdown[training.SkillId] == nil {
-					trainingResourceDetail := new(DOMAIN.TrainingBreakdown)
-					// get name from skill
-					skill := dao.GetSkillById(training.SkillId)
-					if skill != nil {
-						trainingResourceDetail.SkillName = skill.Name
-					}
-					// get name from type
-					_type := dao.GetTypesById(training.TypeId)
-					if _type != nil {
-						trainingResourceDetail.TypeName = _type.Name
-					}
-					trainingResourcesBreakdown[training.SkillId] = trainingResourceDetail
+			} else {
+				resource := dao.GetResourceById(trainingResource.ResourceId)
+				if resource != nil {
+					trainingResource.ResourceName = resource.Name + " " + resource.LastName
 				}
-
-				trainingResourcesBreakdown[training.SkillId].TrainingResources = append(trainingResourcesBreakdown[training.SkillId].TrainingResources, trainingResources...)
+				trainingResources = append(trainingResources, trainingResource)
 			}
 		}
 
-		// Calculate header elements
-		for _, trainingResourceBD := range trainingResourcesBreakdown {
-			var startDate, endDate time.Time
-			var progess, testResult int
-
-			resultStatusPassed := DOMAIN.ResultStatus{Key: "Passed"}
-			resultStatusFailed := DOMAIN.ResultStatus{Key: "Failed"}
-			resultStatusPending := DOMAIN.ResultStatus{Key: "Pending"}
-
-			for index, trainingResource := range trainingResourceBD.TrainingResources {
-				if index == 0 {
-					startDate = trainingResource.StartDate
-					endDate = trainingResource.EndDate
+		// if exist element, fill the element and initialize the struct
+		if len(trainingResources) > 0 {
+			if trainingResourcesBreakdown[training.SkillId] == nil {
+				trainingResourceDetail := new(DOMAIN.TrainingBreakdown)
+				// get name from skill
+				skill := dao.GetSkillById(training.SkillId)
+				if skill != nil {
+					trainingResourceDetail.SkillName = skill.Name
 				}
-				if trainingResource.StartDate.Unix() < startDate.Unix() {
-					startDate = trainingResource.StartDate
+				// get name from type
+				_type := dao.GetTypesById(training.TypeId)
+				if _type != nil {
+					trainingResourceDetail.TypeName = _type.Name
 				}
-				if trainingResource.EndDate.Unix() > endDate.Unix() {
-					endDate = trainingResource.EndDate
-				}
-				progess += trainingResource.Progress
-				testResult += trainingResource.TestResult
-
-				switch trainingResource.ResultStatus {
-				case "Passed":
-					resultStatusPassed.Value += 1
-				case "Failed":
-					resultStatusFailed.Value += 1
-				case "Pending":
-					resultStatusPending.Value += 1
-
-				}
+				trainingResourcesBreakdown[training.SkillId] = trainingResourceDetail
 			}
-			duration := endDate.Sub(startDate)
 
-			trainingResourceBD.StartDate = startDate
-			trainingResourceBD.EndDate = endDate
-			trainingResourceBD.Duration = int(duration.Hours() / 24)
-			trainingResourceBD.Progress = progess / len(trainingResourceBD.TrainingResources)
-			trainingResourceBD.TestResult = testResult / len(trainingResourceBD.TrainingResources)
-			trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusPassed)
-			trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusFailed)
-			trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusPending)
+			trainingResourcesBreakdown[training.SkillId].TrainingResources = append(trainingResourcesBreakdown[training.SkillId].TrainingResources, trainingResources...)
 		}
-
-		response.TrainingResources = trainingResourcesBreakdown
-
-		resources := dao.GetAllResources()
-		response.Resources = resources
-
-		types := dao.GetAllTypes()
-		for _, _type := range types {
-			if _type.TypeOf == "project" {
-				response.Types = append(response.Types, _type)
-			}
-		}
-
-		trainings := dao.GetAllTraining()
-		response.Trainings = trainings
-
-		typesSkills := []*DOMAIN.TypeSkills{}
-		for _, typeE := range types {
-			typesSkills = append(typesSkills, dao.GetTypesSkillsByTypeId(typeE.ID)...)
-		}
-		response.TypesSkills = typesSkills
-	} else {
-		log.Debug("Training resource result empty")
 	}
+
+	// Calculate header elements
+	for _, trainingResourceBD := range trainingResourcesBreakdown {
+		var startDate, endDate time.Time
+		var progess, testResult int
+
+		resultStatusPassed := DOMAIN.ResultStatus{Key: "Passed"}
+		resultStatusFailed := DOMAIN.ResultStatus{Key: "Failed"}
+		resultStatusPending := DOMAIN.ResultStatus{Key: "Pending"}
+
+		for index, trainingResource := range trainingResourceBD.TrainingResources {
+			if index == 0 {
+				startDate = trainingResource.StartDate
+				endDate = trainingResource.EndDate
+			}
+			if trainingResource.StartDate.Unix() < startDate.Unix() {
+				startDate = trainingResource.StartDate
+			}
+			if trainingResource.EndDate.Unix() > endDate.Unix() {
+				endDate = trainingResource.EndDate
+			}
+			progess += trainingResource.Progress
+			testResult += trainingResource.TestResult
+
+			switch trainingResource.ResultStatus {
+			case "Passed":
+				resultStatusPassed.Value += 1
+			case "Failed":
+				resultStatusFailed.Value += 1
+			case "Pending":
+				resultStatusPending.Value += 1
+
+			}
+		}
+		duration := endDate.Sub(startDate)
+
+		trainingResourceBD.StartDate = startDate
+		trainingResourceBD.EndDate = endDate
+		trainingResourceBD.Duration = int(duration.Hours() / 24)
+		trainingResourceBD.Progress = progess / len(trainingResourceBD.TrainingResources)
+		trainingResourceBD.TestResult = testResult / len(trainingResourceBD.TrainingResources)
+		trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusPassed)
+		trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusFailed)
+		trainingResourceBD.ResultStatus = append(trainingResourceBD.ResultStatus, resultStatusPending)
+	}
+
+	response.TrainingResources = trainingResourcesBreakdown
+
+	resources := dao.GetAllResources()
+	response.Resources = resources
+
+	types := dao.GetAllTypes()
+	for _, _type := range types {
+		if _type.TypeOf == "project" {
+			response.Types = append(response.Types, _type)
+		}
+	}
+
+	trainingsBD := dao.GetAllTraining()
+	response.Trainings = trainingsBD
+
+	typesSkills := []*DOMAIN.TypeSkills{}
+	for _, typeE := range types {
+		typesSkills = append(typesSkills, dao.GetTypesSkillsByTypeId(typeE.ID)...)
+	}
+	response.TypesSkills = typesSkills
 
 	//response.training = append(response.training, training)
 	response.Status = "OK"
