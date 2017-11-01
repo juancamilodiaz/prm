@@ -9,7 +9,7 @@
   
 	<script src="/static/js/JQuery/jquery.js"></script>
 	<script src="/static/js/DataTables/datatables.min.js"></script>
-	<script src="/static/js/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"></script>
+	<script src="/static/js/DataTables/DataTables-1.10.15/js/dataTables.bootstrap4.min.js"></script>
 	<script src="/static/js/JQueryUI/jquery-ui.min.js"></script>
 	<script src="/static/js/Bootstrap/js/popper.min.js"></script>
 	<script src="/static/js/Bootstrap/js/bootstrap.min.js"></script>
@@ -24,7 +24,7 @@
 	
 	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	
-	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.15/css/dataTables.bootstrap4.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css">
@@ -147,23 +147,23 @@
 </head>
 
 <body>
-	<div id="HeaderPlaceHolder" style="height: 60px;">
-		<div id="NavLeft"  class="NavItem col-sm-2" style="text-align: left;">
-			<img src="/static/img/PRM-LOGO.svg" onclick="getResourcesByProjectToday();" width="200" height="50" style="cursor: pointer;margin: 3%;">
+	<div id="HeaderPlaceHolder">
+		<div id="NavLeft" class="NavItem col-sm-2">
+			<a href="http://www.omnicon.cc/" target="_blank"> 
+				<img src="/static/img/logo_omnicon_sa_blanco-01.svg" style="cursor: pointer;height: 100%;">
+			</a>
 			<!--div class="NavItem">
 				<div class="dropdown">
 					<button id="NavMenuButton" class="btn btn-primary btn-menu toggle" type="button"><span class="glyphicon glyphicon-th-list"></span></button>
 				</div>
 			</div-->
-			<div class="NavItem">
-			</div>
 		</div>
-		<div id="NavCenter" class="NavItem col-sm-8" style="text-align: center;">
-			<img src="/static/img/PRM_WORD.svg" style="padding: 1%"/>
+		<div id="NavCenter" class="NavItem col-sm-8">
+			<img src="/static/img/PRM-LOGO.svg" onclick="getResourcesByProjectToday();" style="cursor: pointer;height:100%;">
 		</div>
 		<div id="NavRight" class="NavItem col-sm-2" style="padding-right: 3%;padding-top: 20px;text-align: right;">
 			<a style="color: white;" itemprop="url" href='{{urlfor "LoginController.Logout"}}'>
-                 <span class='glyphicon glyphicon-log-out'></span> Sign out
+                <span class='glyphicon glyphicon-log-out'></span> Sign out
 			</a>
 		</div>
 	</div>
@@ -223,10 +223,12 @@
 	</div>
 	
 	<div id ="FooterPlaceHolder">
+		<div id="NavCenter" class="NavItem col-sm-12" style="text-align: center;">
+			<img src="/static/img/PRM_WORD.svg" style="width: 100%;max-height: 100%;"/>
+		</div>
 	</div>
-	<div id="mask" onclick="toNav()">
-    
 	
+	<div id="mask" onclick="toNav()">
 	</div>
 
 	<script>

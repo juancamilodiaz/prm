@@ -580,6 +580,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		this.TplName = "Common/message.tpl"
 	}
 }
+
 func (this *ProjectController) GetTypesByProject() {
 	operation := "GetTypesByProject"
 
@@ -783,10 +784,55 @@ func (this *ProjectController) Availability() {
 		this.Data["Projects"] = message.Projects
 		this.Data["Resources"] = message.Resources
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
+		this.Data["DateFrom"] = input.StartDate
+		this.Data["DateTo"] = input.EndDate
 		//this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
 		this.Data["Title"] = input.ProjectName
 		this.TplName = "Projects/availability.tpl"
 
+	} else {
+		this.Data["Title"] = "The Service is down."
+		this.Data["Message"] = "Please contact with the system manager."
+		this.Data["Type"] = "Error"
+		this.TplName = "Common/message.tpl"
+	}
+}
+
+func (this *ProjectController) AvailabileHours() {
+	operation := "GetResourcesToProjects"
+	dateFrom, _ := time.Parse("2006-01-02", this.GetString("dateFrom"))
+	dateTo := dateFrom.AddDate(0, 0, 5)
+
+	input := domain.GetResourcesToProjectsRQ{}
+	input.Enabled = true
+	input.StartDate = dateFrom.Format("2006-01-02")
+	input.EndDate = dateTo.Format("2006-01-02")
+
+	dates := []string{}
+
+	for i := 0; i < 5; i++ { //dateFrom.Before(dateTo) {
+		dates = append(dates, dateFrom.Format("2006-01-02"))
+		dateFrom = dateFrom.AddDate(0, 0, 1)
+	}
+
+	err := this.ParseForm(&input)
+	if err != nil {
+		log.Error("[ParseInput]", input)
+	}
+	log.Debugf("[ParseInput] Input: %+v \n", input)
+
+	inputBuffer := EncoderInput(input)
+
+	res, err := PostData(operation, inputBuffer)
+
+	if err == nil {
+		defer res.Body.Close()
+		message := new(domain.GetResourcesToProjectsRS)
+		json.NewDecoder(res.Body).Decode(&message)
+		this.Data["Dates"] = dates
+		this.Data["Resources"] = message.Resources
+		this.Data["AvailBreakdown"] = message.AvailBreakdown
+		this.TplName = "Projects/availableHours.tpl"
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."
