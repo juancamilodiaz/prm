@@ -37,7 +37,7 @@
 					{{if (ne $xx 0)}}
 						,
 					{{end}}
-					[{{$project.Name}}, {{$project.Name}}+{{$project.Lead}}, new Date({{$project.StartDate}}), new Date({{$project.EndDate}}), 0, {{$project.Percent}},""]
+					[{{$project.Name}}, {{$project.Name}}+{{$project.Lead}}, parseDate({{$project.StartDate}}), parseDate({{$project.EndDate}}), 0, {{$project.Percent}},""]
 					
 			{{end}}
 			]);
@@ -84,6 +84,13 @@
 				$("#viewResourcesPerProjectUnassign").html(response);
 				$('.search-button').prop('disabled', false);
 			});
+		}
+		
+		// parse a date in yyyy-mm-dd format
+		function parseDate(input) {
+		  var parts = input.match(/(\d+)/g);
+		  // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+		  return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
 		}
 	</script>
  </head>
