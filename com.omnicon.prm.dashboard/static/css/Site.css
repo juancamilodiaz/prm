@@ -1,10 +1,14 @@
 /* Body */
+Body{
+	min-height:500px;
+}
 #BodyPlaceHolder{
 	position: absolute;
-  top:50px;
-  bottom:50px;
-  width:100%;
-  display:flex;
+	top:60px;
+	bottom:50px;
+	width:100%;
+	display:flex;
+	min-height:390px;
 }
 .control-group {
   width: 100%;
@@ -51,12 +55,12 @@ h1{
 	margin-top: 0px;
 }
 #HeaderPlaceHolder{
-	height:50px;
-  display:block;
-  background-color: #2F4350;
-  width: 100%;
-  z-index: 10;
-  position:fixed;
+	height:60px;
+	display:block;
+	background-color: #2F4350;
+	width: 100%;
+	z-index: 10;
+	position:fixed;
 }
 .NavItem{
 	display: inline-block;
@@ -83,17 +87,30 @@ h1{
 }
 #NavRight{
 	position:absolute;
-  right:0px;
+  	right:0px;
 }
+#NavLeft{
+	text-align: left;
+	height: 100%;
+	padding: 5px;
+}
+#NavCenter{
+	text-align: center;
+	height: 100%;
+	padding:3px;
+}
+
+
+
 /* Footer */
 #FooterPlaceHolder{
 	height:50px;
-  display:block;
-  background-color: #2F4350;
-  width: 100%;
-  z-index: 10;
-  bottom:0;
-  position:fixed;
+	display:block;
+	background-color: #2F4350;
+	width: 100%;
+	z-index: 10;
+	bottom:0;
+	position:fixed;
 }
 /* Inputs */
 input{

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -22,6 +23,17 @@ func (this *TypeController) ListTypes() {
 		message := new(domain.TypeRS)
 		json.NewDecoder(res.Body).Decode(&message)
 		this.Data["Types"] = message.Types
+		typesOf := ""
+		for i, typeElement := range message.Types {
+			if !strings.Contains(typesOf, typeElement.TypeOf) {
+				if i != 0 {
+					typesOf = typesOf + ";"
+				}
+				typesOf = typesOf + typeElement.TypeOf
+			}
+		}
+		listTypeOf := strings.Split(typesOf, ";")
+		this.Data["TypesOf"] = listTypeOf
 		if this.GetString("Template") == "types" {
 			this.Data["ResourcesToProjects"] = nil
 			this.Data["Projects"] = nil

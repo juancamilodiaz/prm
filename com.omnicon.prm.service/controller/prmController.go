@@ -152,10 +152,42 @@ func ProcessSetTypesByProject(pRequest *domain.ProjectTypesRQ) *domain.ProjectTy
 	return tool.SetTypesByProject(pRequest)
 }
 
+func ProcessGetTrainingResources(pRequest *domain.TrainingResourcesRQ) *domain.TrainingResourcesRS {
+	return tool.GetTrainingResources(pRequest)
+}
+
+func ProcessGetTrainings(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.GetTrainings(pRequest)
+}
+
 func ProcessCreateTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
 	return tool.CreateTraining(pRequest)
 }
 
-func ProcessGetTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
-	return tool.GetTraining(pRequest)
+func ProcessUpdateTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.UpdateTraining(pRequest)
+}
+
+func ProcessDeleteTraining(pRequest *domain.TrainingRQ) *domain.TrainingRS {
+	return tool.DeleteTraining(pRequest)
+}
+
+func ProcessGetTypesByResource(pRequest *domain.GetResourcesRQ) *domain.ResourceTypesRS {
+	return tool.GetTypesByResource(pRequest)
+}
+
+func ProcessDeleteTypesByResource(pRequest *domain.ResourceTypesRQ) *domain.ResourceTypesRS {
+	return tool.DeleteTypesByResource(pRequest)
+}
+
+func ProcessSetTypesByResource(pRequest *domain.ResourceTypesRQ) *domain.ResourceTypesRS {
+	return tool.SetTypesByResource(pRequest)
+}
+
+func ProcessSetTrainingToResource(pRequest *domain.TrainingResourcesRQ) *domain.TrainingResourcesRS {
+	return tool.SetTrainingToResource(pRequest)
+}
+
+func ProcessDeleteTrainingToResource(pRequest *domain.TrainingResourcesRQ) *domain.TrainingResourcesRS {
+	return tool.DeleteTrainingToResource(pRequest)
 }

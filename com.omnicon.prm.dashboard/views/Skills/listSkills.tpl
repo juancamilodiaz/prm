@@ -176,6 +176,7 @@
 		<br>
 		<li>The resources will lose this skill assignment.</li>
 		<li>The types will lose this skill assignment.</li>
+		<li>The training and the training's assignations will lose this skill assignment and they will be eliminated.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="skillDelete" class="btn btn-default" onclick="deleteSkill()" data-dismiss="modal">Yes</button>

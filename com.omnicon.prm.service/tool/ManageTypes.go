@@ -47,6 +47,9 @@ func UpdateType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 		if pRequest.Name != "" {
 			oldType.Name = pRequest.Name
 		}
+		if pRequest.TypeOf != "" {
+			oldType.TypeOf = pRequest.TypeOf
+		}
 		// Save in DB
 		rowsUpdated, err := dao.UpdateType(oldType)
 		if err != nil || rowsUpdated <= 0 {
@@ -59,10 +62,18 @@ func UpdateType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 		}
 
 		// Update table with new name
-		projectsTypes := dao.GetProjectTypesByTypeId(pRequest.ID)
-		for _, projectType := range projectsTypes {
-			projectType.Name = oldType.Name
-			dao.UpdateProjectType(projectType)
+		if pRequest.TypeOf == "resource" {
+			resourcesTypes := dao.GetResourceTypesByTypeId(pRequest.ID)
+			for _, resourceType := range resourcesTypes {
+				resourceType.Name = oldType.Name
+				dao.UpdateResourceType(resourceType)
+			}
+		} else {
+			projectsTypes := dao.GetProjectTypesByTypeId(pRequest.ID)
+			for _, projectType := range projectsTypes {
+				projectType.Name = oldType.Name
+				dao.UpdateProjectType(projectType)
+			}
 		}
 
 		// Get Type updated
@@ -110,6 +121,20 @@ func DeleteType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 			_, err := dao.DeleteTypeSkillsByTypeIdAndSkillId(skill.TypeId, skill.SkillId)
 			if err != nil {
 				log.Error("Failed to delete skill resource")
+			}
+		}
+
+		// Delete training associations (training and training resouces)
+		trainings := dao.GetTrainingByTypeId(int(pRequest.ID))
+		for _, training := range trainings {
+			// Delete training resource
+			_, err := dao.DeleteTrainingResourcesByTrainingId(training.ID)
+			if err != nil {
+				log.Error("Failed to delete training resource")
+			}
+			_, err = dao.DeleteTraining(training.ID)
+			if err != nil {
+				log.Error("Failed to delete training")
 			}
 		}
 
@@ -285,6 +310,37 @@ func GetTypesByProject(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.ProjectTypesRS {
 
 }
 
+func DeleteTypesByProject(pRequest *DOMAIN.ProjectTypesRQ) *DOMAIN.ProjectTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ProjectTypesRS{}
+
+	projectTypes := dao.GetProjectTypesByProjectIdAndTypeId(pRequest.ProjectId, pRequest.TypeId)
+
+	if projectTypes != nil {
+
+		rowsDeleted, err := dao.DeleteProjectTypes(projectTypes.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "ProjectTypes wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Create response
+		response.Status = "OK"
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "ProjectTypes wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
+
 func DeleteSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.TypeSkillsRS{}
@@ -308,6 +364,114 @@ func DeleteSkillsByType(pRequest *DOMAIN.TypeSkillsRQ) *DOMAIN.TypeSkillsRS {
 	}
 
 	message := "TypeSkills wasn't found in DB"
+	log.Error(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+
+	return &response
+}
+
+func GetTypesByResource(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.ResourceTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ResourceTypesRS{}
+
+	types := dao.GetAllTypes()
+	response.Types = types
+
+	resourceTypes := dao.GetResourceTypesByResourceId(pRequest.ID)
+
+	if resourceTypes != nil {
+
+		if len(resourceTypes) <= 0 {
+			message := "Types to resources wasn't found in DB"
+			log.Warn(message)
+			response.Message = message
+			response.Status = "Warning"
+			response.Header = util.BuildHeaderResponse(timeResponse)
+		}
+		// Create response
+		response.Status = "OK"
+		response.ResourceTypes = resourceTypes
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "Types to resources wasn't found in DB"
+	log.Warn(message)
+	response.Message = message
+	response.Status = "Error"
+	response.Header = util.BuildHeaderResponse(timeResponse)
+	return &response
+
+}
+
+func SetTypesByResource(pRequest *DOMAIN.ResourceTypesRQ) *DOMAIN.ResourceTypesRS {
+	timeResponse := time.Now()
+
+	// Create response
+	response := DOMAIN.ResourceTypesRS{}
+
+	existTypeInResource := dao.GetResourceTypesByResourceIdAndTypeId(pRequest.ResourceId, pRequest.TypeId)
+	if existTypeInResource != nil {
+		message := "The type already exists for the resource."
+		log.Error(message)
+		response.Message = message
+		response.Status = "Error"
+		return &response
+	}
+
+	request := new(DOMAIN.ResourceTypes)
+	request.ResourceId = pRequest.ResourceId
+	request.TypeId = pRequest.TypeId
+
+	typeValue := dao.GetTypesById(pRequest.TypeId)
+	if typeValue != nil {
+		request.Name = typeValue.Name
+	}
+
+	id, err := dao.AddTypeToResource(request)
+
+	response.Header = util.BuildHeaderResponse(timeResponse)
+	if err != nil {
+		message := "ResourceType wasn't insert"
+		log.Error(message)
+		response.Message = message
+		response.Status = "Error"
+		return &response
+	}
+	// Get ResourceType inserted
+	resourceTypes := dao.GetResourceTypesById(id)
+	response.ResourceTypes = append(response.ResourceTypes, resourceTypes)
+	response.Status = "OK"
+
+	return &response
+
+}
+
+func DeleteTypesByResource(pRequest *DOMAIN.ResourceTypesRQ) *DOMAIN.ResourceTypesRS {
+	timeResponse := time.Now()
+	response := DOMAIN.ResourceTypesRS{}
+
+	resourceTypes := dao.GetResourceTypesByResourceIdAndTypeId(pRequest.ResourceId, pRequest.TypeId)
+
+	if resourceTypes != nil {
+
+		rowsDeleted, err := dao.DeleteResourceTypes(resourceTypes.ID)
+		if err != nil || rowsDeleted <= 0 {
+			message := "ResourceTypes wasn't delete"
+			log.Error(message)
+			response.Message = message
+			response.Status = "Error"
+			return &response
+		}
+		// Create response
+		response.Status = "OK"
+		response.Header = util.BuildHeaderResponse(timeResponse)
+		return &response
+	}
+
+	message := "ResourceTypes wasn't found in DB"
 	log.Error(message)
 	response.Message = message
 	response.Status = "Error"

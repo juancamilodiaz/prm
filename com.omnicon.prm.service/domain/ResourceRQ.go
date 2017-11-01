@@ -21,6 +21,7 @@ type GetResourcesRQ struct {
 	EngineerRange string
 	Enabled       *bool
 	Skills        map[string]int
+	ResourceType  []*Type
 }
 
 type SetResourceToProjectRQ struct {

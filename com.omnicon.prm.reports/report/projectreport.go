@@ -29,7 +29,7 @@ func ProjectAssign(pInput domain.GetResourcesToProjectsRQ) string {
 	resourceToProjects := getProjectAssign(pInput)
 	template := buildTemplate("Project Assign", pdf)
 
-	wTable := []float64{90, 35, 35, 25}
+	wTable := []float64{70, 30, 30, 20, 40}
 	wSum := 0.0
 	for _, v := range wTable {
 		wSum += v
@@ -59,13 +59,16 @@ func ProjectAssign(pInput domain.GetResourcesToProjectsRQ) string {
 			pdf.SetFillColor(222, 225, 229)
 			pdf.SetTextColor(0, 0, 0)
 			pdf.SetFont("", "", 0)
-			for _, resources := range project {
+
+			mapPerRange := GetAvailabilityPerRange(project)
+			for _, ranges := range mapPerRange.ListOfRange {
 				//y := 20 * (j + 1)
 				pdf.SetX(15)
-				pdf.CellFormat(wTable[0], 6, resources.ResourceName, "LR", 0, "", fill, 0, "")
-				pdf.CellFormat(wTable[1], 6, util.GetFechaConFormato(resources.StartDate.Unix(), util.DATEFORMAT), "LR", 0, "C", fill, 0, "")
-				pdf.CellFormat(wTable[2], 6, util.GetFechaConFormato(resources.EndDate.Unix(), util.DATEFORMAT), "LR", 0, "C", fill, 0, "")
-				pdf.CellFormat(wTable[3], 6, strconv.FormatFloat(resources.Hours, 'f', 1, 64), "LR", 0, "C", fill, 0, "")
+				pdf.CellFormat(wTable[0], 6, ranges.ResourceName, "LR", 0, "", fill, 0, "")
+				pdf.CellFormat(wTable[1], 6, ranges.StartDate, "LR", 0, "C", fill, 0, "")
+				pdf.CellFormat(wTable[2], 6, ranges.EndDate, "LR", 0, "C", fill, 0, "")
+				pdf.CellFormat(wTable[3], 6, strconv.FormatFloat(ranges.Hours, 'f', 1, 64), "LR", 0, "C", fill, 0, "")
+				pdf.CellFormat(wTable[4], 6, strconv.FormatFloat(ranges.HoursPerDay, 'f', 1, 64), "LR", 0, "C", fill, 0, "")
 				pdf.Ln(-1)
 				fill = !fill
 			}
@@ -82,6 +85,63 @@ func ProjectAssign(pInput domain.GetResourcesToProjectsRQ) string {
 	return filePDF
 }
 
+func GetAvailabilityPerRange(pProject []*domain.ProjectResources) *domain.ResourceAvailabilityInformation {
+	//availBreakdownPerRange := make(map[int]*domain.ResourceAvailabilityInformation)
+
+	resourceAvailabilityInformation := new(domain.ResourceAvailabilityInformation)
+	//var totalHours float64
+	rangesPerDay := []*domain.RangeDatesAvailability{}
+	rangePerDay := new(domain.RangeDatesAvailability)
+	totalHours := 0.0
+	//lastNumberHours := 0.0
+
+	for i, projectResource := range pProject {
+
+		if rangePerDay.StartDate == "" {
+			rangePerDay.StartDate = projectResource.StartDate.Format("2006-01-02")
+			totalHours += projectResource.Hours
+		}
+		rangePerDay.EndDate = projectResource.EndDate.Format("2006-01-02")
+		if projectResource.Hours > 8 {
+			days := float64(util.CalcularDiasEntreDosFechas(projectResource.StartDate.Unix(), projectResource.EndDate.Unix()))
+
+			rangePerDay.HoursPerDay = projectResource.Hours / (days + 1)
+		} else {
+			rangePerDay.HoursPerDay = projectResource.Hours
+		}
+		rangePerDay.Hours += projectResource.Hours
+		rangePerDay.ResourceName = projectResource.ResourceName
+		rangePerDay.ProjectName = projectResource.ProjectName
+		if i < len(pProject)-1 {
+			nextProjectResource := pProject[i+1]
+			if nextProjectResource.ResourceId == projectResource.ResourceId &&
+				(nextProjectResource.StartDate.Unix() == util.AgregarORestaDiasAUnaFecha(projectResource.EndDate.Unix(), 1) ||
+					((projectResource.EndDate.Weekday() == time.Friday && nextProjectResource.StartDate.Weekday() == time.Monday) && (nextProjectResource.StartDate.Unix() == util.AgregarORestaDiasAUnaFecha(projectResource.EndDate.Unix(), 3)))) &&
+				nextProjectResource.Hours == projectResource.Hours {
+				totalHours += projectResource.Hours
+				continue
+			} else {
+				rangesPerDay = append(rangesPerDay, rangePerDay)
+				resourceAvailabilityInformation.ListOfRange = rangesPerDay
+				resourceAvailabilityInformation.TotalHours = totalHours
+				//availBreakdownPerRange[projectResource.ResourceId] = resourceAvailabilityInformation
+
+				rangePerDay = new(domain.RangeDatesAvailability)
+			}
+		} else {
+			rangesPerDay = append(rangesPerDay, rangePerDay)
+			resourceAvailabilityInformation.ListOfRange = rangesPerDay
+			resourceAvailabilityInformation.TotalHours = totalHours
+
+			//availBreakdownPerRange[projectResource.ResourceId] = resourceAvailabilityInformation
+
+			rangePerDay = new(domain.RangeDatesAvailability)
+		}
+	}
+
+	return resourceAvailabilityInformation
+}
+
 func ResourceAssign(pInput domain.GetResourcesToProjectsRQ) string {
 
 	filePDF := "ResourceAssign.pdf"
@@ -91,7 +151,7 @@ func ResourceAssign(pInput domain.GetResourcesToProjectsRQ) string {
 	resourceToProjects := getResourceAsssign(pInput)
 	template := buildTemplate("Resource Assign", pdf)
 
-	wTable := []float64{90, 35, 35, 25}
+	wTable := []float64{70, 30, 30, 20, 40}
 	wSum := 0.0
 	for _, v := range wTable {
 		wSum += v
@@ -110,12 +170,14 @@ func ResourceAssign(pInput domain.GetResourcesToProjectsRQ) string {
 			pdf.SetFillColor(222, 225, 229)
 			pdf.SetTextColor(0, 0, 0)
 			pdf.SetFont("", "", 0)
-			for _, resources := range project {
+			mapPerRange := GetAvailabilityPerRange(project)
+			for _, ranges := range mapPerRange.ListOfRange {
 				pdf.SetX(15)
-				pdf.CellFormat(wTable[0], 8, resources.ProjectName, "LR", 0, "", fill, 0, "")
-				pdf.CellFormat(wTable[1], 8, util.GetFechaConFormato(resources.StartDate.Unix(), util.DATEFORMAT), "LR", 0, "C", fill, 0, "")
-				pdf.CellFormat(wTable[2], 8, util.GetFechaConFormato(resources.EndDate.Unix(), util.DATEFORMAT), "LR", 0, "C", fill, 0, "")
-				pdf.CellFormat(wTable[3], 8, strconv.FormatFloat(resources.Hours, 'f', 1, 64), "LR", 0, "C", fill, 0, "")
+				pdf.CellFormat(wTable[0], 8, ranges.ProjectName, "LR", 0, "", fill, 0, "")
+				pdf.CellFormat(wTable[1], 8, ranges.StartDate, "LR", 0, "C", fill, 0, "")
+				pdf.CellFormat(wTable[2], 8, ranges.EndDate, "LR", 0, "C", fill, 0, "")
+				pdf.CellFormat(wTable[3], 8, strconv.FormatFloat(ranges.Hours, 'f', 1, 64), "LR", 0, "C", fill, 0, "")
+				pdf.CellFormat(wTable[4], 8, strconv.FormatFloat(ranges.HoursPerDay, 'f', 1, 64), "LR", 0, "C", fill, 0, "")
 				pdf.Ln(-1)
 				fill = !fill
 			}
@@ -192,7 +254,7 @@ func createHeader(pdf *gofpdf.Fpdf, pName, pDate string, wTable []float64) {
 	pdf.SetFont("Arial", "", 14)
 	pdf.Write(5, "\n")
 	pdf.SetX(15)
-	header := []string{"Name", "Start Date", "End Date", "Hours"}
+	header := []string{"Name", "Start Date", "End Date", "Hours", "Hs. per day"}
 	// Colors, line width and bold font
 	pdf.SetFillColor(47, 67, 80) // 0, 92, 138
 	pdf.SetTextColor(255, 255, 255)

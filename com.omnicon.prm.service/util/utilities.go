@@ -454,30 +454,31 @@ func MappingFiltersProjectResource(pRequest *domain.GetResourcesToProjectsRQ) *d
 func MappingTrainingRQ(pDomain *domain.TrainingRQ) *domain.Training {
 	training := new(domain.Training)
 	training.ID = pDomain.ID
-	training.ResourceId = pDomain.ResourceId
+	training.SkillId = pDomain.SkillId
 	training.TypeId = pDomain.TypeId
+	training.Name = pDomain.Name
 
 	return training
 }
 
-func MappingTrainingSkills(idTraining int, pRequest []*domain.TrainingSkills) []*domain.TrainingSkills {
-	tSkills := []*domain.TrainingSkills{}
+func MappingTrainingResources(idTraining int, pRequest []*domain.TrainingResources) []*domain.TrainingResources {
+	tResources := []*domain.TrainingResources{}
 
-	for _, skill := range pRequest {
-		tSkill := new(domain.TrainingSkills)
+	for _, resource := range pRequest {
+		tSkill := new(domain.TrainingResources)
 		tSkill.TrainingId = idTraining
-		tSkill.SkillId = skill.SkillId
-		tSkill.Duration = skill.Duration
-		tSkill.Progress = skill.Progress
-		tSkill.ResultStatus = skill.ResultStatus
-		tSkill.TestResult = skill.TestResult
-		tSkill.StartDate = skill.StartDate
-		tSkill.EndDate = skill.EndDate
+		tSkill.ResourceId = resource.ResourceId
+		tSkill.Duration = resource.Duration
+		tSkill.Progress = resource.Progress
+		tSkill.ResultStatus = resource.ResultStatus
+		tSkill.TestResult = resource.TestResult
+		tSkill.StartDate = resource.StartDate
+		tSkill.EndDate = resource.EndDate
 
-		tSkills = append(tSkills, tSkill)
+		tResources = append(tResources, tSkill)
 	}
 
-	return tSkills
+	return tResources
 }
 
 /**
@@ -486,6 +487,7 @@ func MappingTrainingSkills(idTraining int, pRequest []*domain.TrainingSkills) []
 func MappingType(pRequest *domain.TypeRQ) *domain.Type {
 	types := new(domain.Type)
 	types.Name = pRequest.Name
+	types.TypeOf = pRequest.TypeOf
 	return types
 }
 
@@ -496,4 +498,28 @@ func BuildHeaderResponse(timeResponse time.Time) *domain.Response_Header {
 	header.ResponseTime = responseTime.String()
 
 	return header
+}
+
+/**
+* Function to mapping request to get trinings in a Training entity.
+ */
+func MappingFiltersTraining(pRequest *domain.TrainingRQ) *domain.Training {
+	if pRequest != nil {
+		filters := domain.Training{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.Name != "" {
+			filters.Name = pRequest.Name
+		}
+		if pRequest.SkillId != 0 {
+			filters.SkillId = pRequest.SkillId
+		}
+		if pRequest.TypeId != 0 {
+			filters.TypeId = pRequest.TypeId
+		}
+		return &filters
+	}
+	return nil
 }

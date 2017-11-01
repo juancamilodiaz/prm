@@ -19,6 +19,24 @@ func getTypeSkillsCollection() db.Collection {
 }
 
 /**
+*	Name : GetAllTypesSkills
+*	Return: []*DOMAIN.TypeSkills
+*	Description: Get all Type Skills in a TypeSkills table
+ */
+func GetAllTypesSkills() []*DOMAIN.TypeSkills {
+	// Slice to keep all typesSkills
+	var typesSkills []*DOMAIN.TypeSkills
+	// Add all types Skills in typesSkills variable
+	err := getTypeSkillsCollection().Find().All(&typesSkills)
+	// Close session when ends the method
+	defer session.Close()
+	if err != nil {
+		log.Error(err)
+	}
+	return typesSkills
+}
+
+/**
 *	Name : GetTypeSkillsById
 *	Params: pId
 *	Return: *DOMAIN.Types

@@ -22,6 +22,9 @@ func init() {
 	beego.Router("/resources/skills", &controllers.ResourceController{}, "post:GetSkillsByResource")
 	beego.Router("/resources/setskill", &controllers.ResourceController{}, "post:SetSkillsToResource")
 	beego.Router("/resources/deleteskill", &controllers.ResourceController{}, "post:DeleteSkillsToResource")
+	beego.Router("/resources/types", &controllers.ResourceController{}, "post:GetTypesByResource")
+	beego.Router("/resources/types/unassign", &controllers.ResourceController{}, "post:DeleteTypesByResource")
+	beego.Router("/resources/settype", &controllers.ResourceController{}, "post:SetTypesToResource")
 	// Projects
 	beego.Router("/projects", &controllers.ProjectController{}, "post:ListProjects")
 	beego.Router("/projects/create", &controllers.ProjectController{}, "post:CreateProject")
@@ -38,6 +41,7 @@ func init() {
 	beego.Router("/projects/types/unassign", &controllers.ProjectController{}, "post:DeleteTypesByProject")
 	beego.Router("/projects/settype", &controllers.ProjectController{}, "post:SetTypesToProject")
 	beego.Router("/dashboard", &controllers.ProjectController{}, "get,post:Availability")
+	beego.Router("/dashboard/availablehours", &controllers.ProjectController{}, "post:AvailabileHours")
 
 	// Skills
 	beego.Router("/skills", &controllers.SkillController{}, "post:ListSkills")
@@ -67,5 +71,11 @@ func init() {
 	beego.Router("/reports/resourceassign", &controllers.ReportController{}, "post:ResourceAssign")
 
 	//training
-	beego.Router("/training", &controllers.TrainingController{}, "post:GetTraining")
+	beego.Router("/trainings", &controllers.TrainingController{}, "post:ListTrainings")
+	beego.Router("/trainings/create", &controllers.TrainingController{}, "post:CreateTraining")
+	beego.Router("/trainings/update", &controllers.TrainingController{}, "post:UpdateTraining")
+	beego.Router("/trainings/delete", &controllers.TrainingController{}, "post:DeleteTraining")
+	beego.Router("/trainings/settraining", &controllers.TrainingController{}, "post:SetTrainingToResource")
+	beego.Router("/trainings/resources", &controllers.TrainingController{}, "post:GetTrainingResources")
+	beego.Router("/trainings/deletetraining", &controllers.TrainingController{}, "post:DeleteTrainingToResource")
 }

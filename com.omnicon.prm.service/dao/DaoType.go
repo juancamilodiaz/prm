@@ -69,8 +69,8 @@ func AddType(pType *DOMAIN.Type) (int, error) {
 	defer session.Close()
 	// Insert skill in DB
 	res, err := session.InsertInto("Type").Columns(
-		"value").Values(
-		pType.Name).Exec()
+		"name", "type_of").Values(
+		pType.Name, pType.TypeOf).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -92,7 +92,7 @@ func UpdateType(pType *DOMAIN.Type) (int, error) {
 	// Close session when ends the method
 	defer session.Close()
 	// Update skill in DB
-	q := session.Update("Type").Set("value = ?", pType.Name).Where("id = ?", int(pType.ID))
+	q := session.Update("Type").Set("name = ?, type_of = ?", pType.Name, pType.TypeOf).Where("id = ?", int(pType.ID))
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)

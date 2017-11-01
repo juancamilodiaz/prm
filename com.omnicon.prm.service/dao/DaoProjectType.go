@@ -60,7 +60,7 @@ func GetProjectTypesById(pId int) *DOMAIN.ProjectTypes {
 *	Name : GetProjectTypesByProjectId
 *	Params: pId
 *	Return: *DOMAIN.ProjectTypes
-*	Description: Get a resourceType by ProjectId in a ProjectTypes table
+*	Description: Get a projectType by ProjectId in a ProjectTypes table
  */
 func GetProjectTypesByProjectId(pProjectId int) []*DOMAIN.ProjectTypes {
 	// Slice to keep all ProjectTypes

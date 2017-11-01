@@ -11,6 +11,7 @@ type Resource struct {
 	EngineerRange string `db:"engineer_range"`
 	Enabled       bool   `db:"enabled"`
 	Skills        map[string]int
+	ResourceType  []*Type
 }
 
 type Project struct {
@@ -28,8 +29,9 @@ type Project struct {
 }
 
 type Type struct {
-	ID   int    `db:"id"`
-	Name string `db:"value"`
+	ID     int    `db:"id"`
+	Name   string `db:"name"`
+	TypeOf string `db:"type_of"`
 }
 
 type ProjectTypes struct {
@@ -73,21 +75,43 @@ type TypeSkills struct {
 }
 
 type Training struct {
-	ID         int `db:"id"`
-	ResourceId int `db:"resource_id"`
-	TypeId     int `db:"type_id"`
+	ID        int    `db:"id"`
+	TypeId    int    `db:"type_id"`
+	SkillId   int    `db:"skill_id"`
+	Name      string `db:"name"`
+	TypeName  string
+	SkillName string
 }
-type TrainingSkills struct {
+
+type TrainingResources struct {
 	ID           int       `db:"id"`
 	TrainingId   int       `db:"training_id"`
-	SkillId      int       `db:"skill_id"`
-	SkillName    string    `db:"skill_name"`
+	ResourceId   int       `db:"resource_id"`
 	StartDate    time.Time `db:"start_date"`
 	EndDate      time.Time `db:"end_date"`
 	Duration     int       `db:"duration"`
 	Progress     int       `db:"progress"`
 	TestResult   int       `db:"test_result"`
 	ResultStatus string    `db:"result_status"`
+	TrainingName string
+	ResourceName string
+}
+
+type TrainingBreakdown struct {
+	SkillName         string
+	TypeName          string
+	StartDate         time.Time
+	EndDate           time.Time
+	Duration          int
+	Progress          int
+	TestResult        int
+	ResultStatus      []ResultStatus
+	TrainingResources []*TrainingResources
+}
+
+type ResultStatus struct {
+	Key   string
+	Value int
 }
 
 type ResourceAssign struct {
@@ -99,9 +123,12 @@ type ResourceAssign struct {
 }
 
 type RangeDatesAvailability struct {
-	StartDate string
-	EndDate   string
-	Hours     float64
+	StartDate    string
+	EndDate      string
+	Hours        float64
+	HoursPerDay  float64
+	ResourceName string
+	ProjectName  string
 }
 
 type ResourceAvailabilityInformation struct {
@@ -113,4 +140,11 @@ type ListByHours struct {
 	ResourceId    int
 	Days          int
 	NumberOfRange int
+}
+
+type ResourceTypes struct {
+	ID         int    `db:"id"`
+	ResourceId int    `db:"resource_id"`
+	TypeId     int    `db:"type_id"`
+	Name       string `db:"type_name"`
 }

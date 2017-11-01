@@ -134,3 +134,62 @@ function addTypeToProject(projectId, typeId, description){
 		});
 	});
 }
+
+function getTypesByResource(resourceId, description){	
+	var settings = {
+		method: 'POST',
+		url: '/resources/types',
+		headers: {
+			'Content-Type': undefined
+		},
+		data: { 
+			"ID": resourceId,
+			"Description": description
+		}
+	}
+	$.ajax(settings).done(function (response) {
+	  $("#content").html(response);
+	});
+}
+
+function unassignResourceType(resourceId, typeId, description){
+	var settings = {
+		method: 'POST',
+		url: '/resources/types/unassign',
+		headers: {
+			'Content-Type': undefined
+		},
+		data: { 
+			"ResourceId": resourceId,
+			"TypeId": typeId
+		}
+	}
+	$.ajax(settings).done(function (response) {
+		validationError(response);
+		reload('/resources/types', {
+			"ID": resourceId,
+			"Description": description
+		});
+	});
+}
+
+function addTypeToResource(resourceId, typeId, description){
+	var settings = {
+		method: 'POST',
+		url: '/resources/settype',
+		headers: {
+			'Content-Type': undefined
+		},
+		data: {
+			"ResourceId": resourceId,
+			"TypeId": typeId
+		}
+	}
+	$.ajax(settings).done(function (response) {
+		validationError(response);
+		reload('/resources/types', {
+			"ID": resourceId,
+			"Description": description
+		});
+	});
+}

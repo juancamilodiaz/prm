@@ -26,7 +26,8 @@
 		$('#refreshButton').click(function(){
 			reload('/resources/skills',{
 				"ID": {{.ResourceId}},
-				"ResourceName": "{{.Title}}"
+				"ResourceName": "{{.Title}}",
+				"MapTypesResource" : JSON.stringify({{.MapTypesResource}})
 			});
 		});
 		
@@ -62,7 +63,7 @@
 	}
 
 	
-	setSkillToResource = function(resourceId, resourceName, value){
+	setSkillToResource = function(resourceId, resourceName, value, mapTypesResource){
 		var settings = {
 			method: 'POST',
 			url: '/resources/setskill',
@@ -76,11 +77,11 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}});
+		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}, "MapTypesResource" : JSON.stringify(mapTypesResource)});
 		});
 	}
 	
-	deleteSkillToResource = function(resourceId, skillId){
+	deleteSkillToResource = function(resourceId, skillId, mapTypesResource){
 		var settings = {
 			method: 'POST',
 			url: '/resources/deleteskill',
@@ -93,7 +94,7 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}});
+		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}, "MapTypesResource" : JSON.stringify(mapTypesResource)});
 		});
 	}
 	
@@ -130,7 +131,29 @@
 		});
 		doc.setFontSize(20);
 		doc.text("Summary {{.Title}}'s skills", 139.5, 20, 'center' );
-		doc.addImage(canvasImg, 'JPEG', 99, 20, 100, 100);
+		var listOfTypes = "";
+		{{$title := .Title}};
+		{{$listTypesName := .ListTypesName}}
+		{{range $index, $type := $listTypesName}}
+			{{if eq (index $listTypesName 0) $title}}
+				{{if ne $title $type}}
+					{{if eq $index 1}}
+						listOfTypes += "{{$type}}"
+					{{else}}
+						listOfTypes += ", {{$type}}"
+					{{end}}
+				{{end}}
+			{{else if ne $title $type}}
+				{{if eq $index 0}}
+					listOfTypes += "{{$type}}"
+				{{else}}
+					listOfTypes += ", {{$type}}"
+				{{end}}
+			{{end}}
+		{{end}}
+		doc.setFontSize(14);
+		doc.text("Profiles: " + listOfTypes, 139.5, 30, 'center' );
+		doc.addImage(canvasImg, 'JPEG', 99, 40, 100, 100);
 		
 		var columns = ["ID", "Name", "Value"];
 		var rows = [
@@ -140,7 +163,7 @@
 		];		
 		
 		doc.autoTable(columns, rows, {
-			startY: 120
+			startY: 140
 		});
 		
 		$('#objectPdf').attr('data', doc.output('datauristring'));
@@ -176,10 +199,16 @@
 			</tbody>
 		</table>
 	</div>
-	<button class="buttonTable button2" id="download-pdf" >
-		Download PDF
-	</button>
 	<div class="col-sm-6">
+	    <div class="row">
+	        <div class="col-sm-5">
+	        </div>
+	        <div class="col-sm-3">
+				<button class="buttonTable button2" id="download-pdf" >Download PDF</button>
+	        </div>
+	        <div class="col-sm-4">
+	        </div>
+	    </div>
 		<p>
 		   <div class="chart-container" id="chartjs-wrapper">
 				<canvas id="chartjs-3" >
@@ -189,9 +218,17 @@
 				<script>new Chart(document.getElementById("chartjs-3"),
 					{"type":"radar",
 						"data": {
-							"labels": {{.SkillsName}},
-								"datasets":[
-									{"label":"{{.Title}}","data":{{.SkillsValue}},"fill":true,"backgroundColor":"rgba(54, 162, 235, 0.2)","borderColor":"rgb(54, 162, 235)","pointBackgroundColor":"rgb(54, 162, 235)","pointBorderColor":"#fff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},
+							{{$mapSkillsAndValues := .MapSkillsAndValues}}
+							{{$listTypesName := .ListTypesName}}
+							{{$listSkills := .ListSkills}}	
+							{{$listValueSkills := .ListValues}}	
+							{{$listColors := .ListColor}}
+							{{$listColorsBkg := .ListColorBkg}}				
+							"labels": {{$listSkills}},
+								"datasets":[					
+									{{range $index, $listValue := $listValueSkills}}
+										{"label":"{{index $listTypesName $index}}","data":{{$listValue}},"fill":true,"backgroundColor":"{{index $listColorsBkg $index}}","borderColor":"{{index $listColors $index}}","pointBackgroundColor":"{{index $listColors $index}}","pointBorderColor":"{{index $listColors $index}}","pointHoverBackgroundColor":"{{index $listColors $index}}","pointHoverBorderColor":"{{index $listColors $index}}"},
+									{{end}}									
 								]
 							},
 						"options": {
@@ -208,7 +245,7 @@
 								}				
 						    },
 							legend: {
-								display:false
+								display:true
 							}
 						}
 					
@@ -248,7 +285,7 @@
         			</div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceSkillCreate" class="btn btn-default" onclick="setSkillToResource({{.ResourceId}}, $('#resourceNameSkill').val(),$('#resourceValueSkill').val())" data-dismiss="modal">Set</button>
+			        <button type="button" id="resourceSkillCreate" class="btn btn-default" onclick="setSkillToResource({{.ResourceId}}, $('#resourceNameSkill').val(),$('#resourceValueSkill').val(), {{.MapTypesResource}})" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
@@ -283,7 +320,7 @@
         			</div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="updateResourceSkill" class="btn btn-default" onclick="setSkillToResource({{.ResourceId}}, $('#updateResourceSkillId').val(), $('#updateResourceValueSkill').val())" data-dismiss="modal">Set</button>
+			        <button type="button" id="updateResourceSkill" class="btn btn-default" onclick="setSkillToResource({{.ResourceId}}, $('#updateResourceSkillId').val(), $('#updateResourceValueSkill').val(), {{.MapTypesResource}})" data-dismiss="modal">Set</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			    </div>
     		</div>    
@@ -302,7 +339,7 @@
 		      		Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
 		      	</div>
 		      	<div class="modal-footer" style="text-align:center;">
-			        <button type="button" id="resourceSkillDelete" class="btn btn-default" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val())" data-dismiss="modal">Yes</button>
+			        <button type="button" id="resourceSkillDelete" class="btn btn-default" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val(), {{.MapTypesResource}})" data-dismiss="modal">Yes</button>
 			        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
 		      	</div>
 			</div>
