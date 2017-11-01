@@ -322,7 +322,7 @@ a {
 button.btnCollapse{
 	display: inline-block;
 	background-color: transparent;
-    padding: 4px 12px;
+    /*padding: 4px 12px;*/
     margin-bottom: 0;
     font-size: 14px;
     line-height: 20px;
@@ -330,7 +330,7 @@ button.btnCollapse{
     vertical-align: middle;
     cursor: pointer;
 }
-button.btnCollapse.collapsed:before
+/*button.btnCollapse.collapsed:before
 {
     content:'+' ;
 	display:block;
@@ -339,7 +339,7 @@ button.btnCollapse:before
 {
     content:'-' ;
 	display:block;
-}
+}*/
 .title{
 	font-family: 'Lato', sans-serif;;
 	color: white;
@@ -399,4 +399,9 @@ tr.shown td.details-control {
   margin: auto;
   height: 450px;
   width: 450px;
+}
+
+.panel-heading{
+	display: inline-block;
+    width: 100%;
 }
