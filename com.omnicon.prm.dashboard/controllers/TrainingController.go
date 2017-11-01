@@ -96,9 +96,21 @@ func buildPieMessage(pMessage map[int]*domain.TrainingBreakdown) Datasets {
 			trnTotal[training.ResultStatus] = trnTotal[training.ResultStatus] + 1
 		}
 	}
+
+	dataset.SkillsName = make([]string, 3)
+	dataset.SkillsValue = make([]int, 3)
 	for status, total := range trnTotal {
-		dataset.SkillsName = append(dataset.SkillsName, status)
-		dataset.SkillsValue = append(dataset.SkillsValue, total)
+		switch status {
+		case "Passed":
+			dataset.SkillsName[0] = status
+			dataset.SkillsValue[0] = total
+		case "Failed":
+			dataset.SkillsName[1] = status
+			dataset.SkillsValue[1] = total
+		case "Pending":
+			dataset.SkillsName[2] = status
+			dataset.SkillsValue[2] = total
+		}
 	}
 
 	return dataset
