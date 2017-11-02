@@ -1,8 +1,17 @@
 <script src="/static/js/chartjs/Chart.min.js">
 </script>
+<script src="/static/js/chartjs/Chart.PieceLabel.js" > </script>
 
 <script>
 	var Training = {};
+	var chart;
+	var data;
+	var options;
+	
+	function repaint() {
+		chart.draw(data, options);
+	}
+		
 	$(document).ready(function(){
 		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
@@ -39,6 +48,13 @@
 			"searching": true,
 			"paging": true,
 		});
+		$( window ).resize(
+			function() {
+				if (data.getNumberOfRows() > 0){
+					repaint();
+				}
+			}
+		);
 	});
 	
 	$('#viewTraining tbody').on('click', 'td.details-control', function(){
@@ -48,16 +64,20 @@
 	function showDetails(pObjBody, tDetails) {
 		var tr = pObjBody.closest('tr');
         var row = Training.table.row( tr );
- 
+
         if ( row.child.isShown() ) {
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
+			$(pObjBody).children('span').addClass('glyphicon-collapse-down');
+			$(pObjBody).children('span').removeClass('glyphicon-expand');
         }
         else {
             // Open this row
             row.child( format(tDetails) ).show();
             tr.addClass('shown');
+			$(pObjBody).children('span').addClass('glyphicon-expand');
+			$(pObjBody).children('span').removeClass('glyphicon-collapse-down');
         }
 	}
 	/* Formatting function for row details - modify as you need */
@@ -142,7 +162,7 @@
     google.charts.setOnLoadCallback(drawChart);
 		
 	function drawChart() {
-		var data = new google.visualization.DataTable();
+		data = new google.visualization.DataTable();
 		
 		data.addColumn('string', 'Training ID');
 		data.addColumn('string', 'Training Name');
@@ -159,11 +179,11 @@
 		]);
 		
 		if (data.getNumberOfRows() > 0) {
-			var options = {
+			options = {
 		    	height: 375
 		    };
 	
-	      	var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+	      	chart = new google.visualization.Gantt(document.getElementById('chart_div'));
 	      	chart.draw(data, options);
 		}
 	}
@@ -262,6 +282,7 @@
 			$("#filters").collapse("show");
 			$("#resourcesValue option[id="+resourceID+"]").attr("selected", "selected");
 			$("#typeValue option[id="+typeID+"]").attr("selected", "selected");
+			$("#titleSearch").html($("#resourcesValue").val() + " ("+ $("#typeValue").val()+")");
 		});
 	}
 
@@ -287,7 +308,7 @@
          <div class="form-group">
             <label for="typeValue">Training list:</label>
             <select class="form-control" id="typeValue">
-               <option id="0">All training</option>
+               <option id="0">All trainings</option>
                {{range $index, $type := .Types}}
                <option id="{{$type.ID}}">{{$type.Name}}</option>
                {{end}}
@@ -304,10 +325,10 @@
       </div>
    </div>
 </div>
-<div class="col-sm-12" id="tableInfo">
-   <br>
-   <br>
-	<table id="viewTraining" class="table table-striped table-bordered">
+
+<div class="col-sm-12" id="tableInfo" style="background-color: #F5F5F5;">
+	<h3 id="titleSearch">All resources (All trainings)</h3>
+	<table id="viewTraining" class="table table-striped table-bordered dt-responsive nowrap" width="100%">
 		<thead>
 			<tr>
 				<th>Type Name</th>
@@ -323,18 +344,26 @@
 		<tbody id="detailBody">
 		 	{{range $key, $tResource := .TResources}}
 			<tr>
-				<td style="background-position-x: 1%;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this), {{$tResource.TrainingResources}})">{{$tResource.TypeName}}</td>
+				<td style="background-position-x: 1%;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this), {{$tResource.TrainingResources}})"><span class="glyphicon glyphicon-collapse-down" style="float:left;"></span>{{$tResource.TypeName}}</td>
 				<td>{{$tResource.SkillName}}</td>
 				<td>{{dateformat $tResource.StartDate "2006-01-02"}}</td>
 				<td>{{dateformat $tResource.EndDate "2006-01-02"}}</td>
 				<td>{{$tResource.Duration}} d.</td>
 				<td>{{$tResource.Progress}}</td>
 				<td>{{$tResource.TestResult}}</td>
-				<td>
-				||
-				{{range $key, $result := $tResource.ResultStatus}}
-					{{$result.Key}}:{{$result.Value}} ||
-				{{end}}
+				<td style="padding: unset;">
+					<table style="border: 1px solid black;border-collapse: collapse;text-align: center;width: -webkit-fill-available;">
+						<tr style="border: 1px solid black;">
+							{{range $key, $result := $tResource.ResultStatus}}
+								<th class="style-color-{{$result.Key}}" style="border: 1px solid #999; padding: 3px;">{{$result.Key}}</th>
+							{{end}}
+						</tr>
+						<tr style="border: 1px solid black;">
+							{{range $key, $result := $tResource.ResultStatus}}
+								<td style="border: 1px solid #999;text-align: center; padding: 3px;">{{$result.Value}}</td>
+							{{end}}
+						</tr>
+					</table>
 				</td>
 			</tr>
 			{{end}}
@@ -345,7 +374,7 @@
 </div>
 
 
-<div class="col-sm-12">
+<div class="col-sm-12" style="margin-top:10px;">
 	<div class="col-sm-6">
 		<p>
 		   	<div class="chart-container" id="chartjs-wrapper">
@@ -353,17 +382,23 @@
 				</canvas>
 			
 				<script>
-					new Chart(document.getElementById("chartjs"),
+					chart2=new Chart(document.getElementById("chartjs"),
 					{	"type": "pie",
 						"data": {
 							"labels": {{.TStatus}},
 							"datasets": [{ 
 								"data": {{.TValues}},
-								"backgroundColor":["rgb(54, 162, 235)","rgb(255, 99, 132)","rgb(155, 131, 184)"]
+								"backgroundColor":["rgb(54, 162, 235)","rgb(255, 99, 132)","rgb(75, 192, 192)"]
 								
 							}]						
+						},
+						options: {
+						  pieceLabel: {
+						    render: 'percentage',
+						    fontColor: ['white', 'white', 'white'],
+						    precision: 2
+						  }
 						}
-						
 					});
 				</script>
 		

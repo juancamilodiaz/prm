@@ -454,7 +454,7 @@ func (this *ResourceController) GetTypesByResource() {
 		this.Data["ResourceTypes"] = message.ResourceTypes
 		typesResource := []*domain.Type{}
 		for _, _types := range message.Types {
-			if _types.TypeOf == "resource" {
+			if _types.TypeOf == "Resource" {
 				typesResource = append(typesResource, _types)
 			}
 		}

@@ -90,10 +90,12 @@ func (this *TrainingController) GetTrainingResources() {
 
 func buildPieMessage(pMessage map[int]*domain.TrainingBreakdown) Datasets {
 	trnTotal := map[string]int{}
+	totalValues := 0
 	dataset := Datasets{}
 	for _, trainingBD := range pMessage {
 		for _, training := range trainingBD.TrainingResources {
 			trnTotal[training.ResultStatus] = trnTotal[training.ResultStatus] + 1
+			totalValues++
 		}
 	}
 
@@ -105,13 +107,13 @@ func buildPieMessage(pMessage map[int]*domain.TrainingBreakdown) Datasets {
 		switch status {
 		case "Passed":
 			dataset.SkillsName[0] = status
-			dataset.SkillsValue[0] = total
+			dataset.SkillsValue[0] = int(float64(total) / float64(totalValues) * 100)
 		case "Failed":
 			dataset.SkillsName[1] = status
-			dataset.SkillsValue[1] = total
+			dataset.SkillsValue[1] = int(float64(total) / float64(totalValues) * 100)
 		case "Pending":
 			dataset.SkillsName[2] = status
-			dataset.SkillsValue[2] = total
+			dataset.SkillsValue[2] = int(float64(total) / float64(totalValues) * 100)
 		}
 	}
 
