@@ -62,7 +62,7 @@ func UpdateType(pRequest *DOMAIN.TypeRQ) *DOMAIN.TypeRS {
 		}
 
 		// Update table with new name
-		if pRequest.TypeOf == "resource" {
+		if pRequest.TypeOf == "Resource" {
 			resourcesTypes := dao.GetResourceTypesByTypeId(pRequest.ID)
 			for _, resourceType := range resourcesTypes {
 				resourceType.Name = oldType.Name
