@@ -355,12 +355,12 @@
 					<table style="border: 1px solid black;border-collapse: collapse;text-align: center;width: -webkit-fill-available;">
 						<tr style="border: 1px solid black;">
 							{{range $key, $result := $tResource.ResultStatus}}
-								<th class="style-color-{{$result.Key}}" style="border: 1px solid #999; padding: 3px;">{{$result.Key}}</th>
+								<th class="style-color-{{$result.Key}}" style="border: 1px solid #DDDDDD; padding: 3px;text-align: -webkit-center;">{{$result.Key}}</th>
 							{{end}}
 						</tr>
 						<tr style="border: 1px solid black;">
 							{{range $key, $result := $tResource.ResultStatus}}
-								<td style="border: 1px solid #999;text-align: center; padding: 3px;">{{$result.Value}}</td>
+								<td style="border: 1px solid #DDDDDD;text-align: center; padding: 3px;">{{$result.Value}}</td>
 							{{end}}
 						</tr>
 					</table>
