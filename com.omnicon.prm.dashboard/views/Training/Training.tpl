@@ -281,6 +281,7 @@
 			$("#filters").collapse("show");
 			$("#resourcesValue option[id="+resourceID+"]").attr("selected", "selected");
 			$("#typeValue option[id="+typeID+"]").attr("selected", "selected");
+			$("#titleSearch").html($("#resourcesValue").val() + " ("+ $("#typeValue").val()+")");
 		});
 	}
 
@@ -306,7 +307,7 @@
          <div class="form-group">
             <label for="typeValue">Training list:</label>
             <select class="form-control" id="typeValue">
-               <option id="0">All training</option>
+               <option id="0">All trainings</option>
                {{range $index, $type := .Types}}
                <option id="{{$type.ID}}">{{$type.Name}}</option>
                {{end}}
@@ -325,8 +326,7 @@
 </div>
 
 <div class="col-sm-12" id="tableInfo" style="background-color: #F5F5F5;">
-   <br>
-   <br>
+	<h3 id="titleSearch">All resources (All trainings)</h3>
 	<table id="viewTraining" class="table table-striped table-bordered dt-responsive nowrap" width="100%">
 		<thead>
 			<tr>
