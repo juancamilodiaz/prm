@@ -354,7 +354,7 @@
 					<table style="border: 1px solid black;border-collapse: collapse;text-align: center; margin: 0 auto;">
 						<tr style="border: 1px solid black;">
 							{{range $key, $result := $tResource.ResultStatus}}
-								<th style="border: 1px solid #999; padding: 3px;">{{$result.Key}}</th>
+								<th class="style-color-{{$result.Key}}" style="border: 1px solid #999; padding: 3px;">{{$result.Key}}</th>
 							{{end}}
 						</tr>
 						<tr style="border: 1px solid black;">

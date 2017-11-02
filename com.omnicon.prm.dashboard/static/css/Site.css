@@ -409,3 +409,12 @@ td.details-control {
 	display: inline-block;
     width: 100%;
 }
+.style-color-Passed{
+	color: #059BFF;
+}
+.style-color-Failed{
+	color: #FF6384;
+}
+.style-color-Pending{
+	color: #9B83B8;
+}
