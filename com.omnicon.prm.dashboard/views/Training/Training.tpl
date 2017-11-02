@@ -1,5 +1,6 @@
 <script src="/static/js/chartjs/Chart.min.js">
 </script>
+<script src="/static/js/chartjs/Chart.PieceLabel.js" > </script>
 
 <script>
 	var Training = {};
@@ -387,11 +388,17 @@
 							"labels": {{.TStatus}},
 							"datasets": [{ 
 								"data": {{.TValues}},
-								"backgroundColor":["rgb(54, 162, 235)","rgb(255, 99, 132)","rgb(155, 131, 184)"]
+								"backgroundColor":["rgb(54, 162, 235)","rgb(255, 99, 132)","rgb(75, 192, 192)"]
 								
 							}]						
+						},
+						options: {
+						  pieceLabel: {
+						    render: 'percentage',
+						    fontColor: ['white', 'white', 'white'],
+						    precision: 2
+						  }
 						}
-						
 					});
 				</script>
 		
