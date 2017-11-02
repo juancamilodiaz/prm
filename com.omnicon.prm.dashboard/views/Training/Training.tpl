@@ -351,8 +351,8 @@
 				<td>{{$tResource.Duration}} d.</td>
 				<td>{{$tResource.Progress}}</td>
 				<td>{{$tResource.TestResult}}</td>
-				<td>
-					<table style="border: 1px solid black;border-collapse: collapse;text-align: center; margin: 0 auto;">
+				<td style="padding: unset;">
+					<table style="border: 1px solid black;border-collapse: collapse;text-align: center;width: -webkit-fill-available;">
 						<tr style="border: 1px solid black;">
 							{{range $key, $result := $tResource.ResultStatus}}
 								<th class="style-color-{{$result.Key}}" style="border: 1px solid #999; padding: 3px;">{{$result.Key}}</th>
