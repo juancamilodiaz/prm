@@ -1,6 +1,7 @@
 <script src="/static/js/chartjs/Chart.min.js" > </script>
 <script>
 	var MyProject = {};
+	var chart;
 	$(document).ready(function(){
 		MyProject.table = $('#availabilityTable').DataTable({
 			"columns": [
@@ -32,7 +33,13 @@
 		$('#availabilityTable tbody').on('click', 'td.details-control', function(){
 			
 		});
+		
+		$( window ).resize(function() {repaint();});
 	});
+	
+	function repaint() {
+		chart.update();
+	}
 	
 	function showDetails(pObjBody, pListOfRange) {
         var tr = pObjBody.closest('tr');
@@ -42,11 +49,15 @@
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
+			$(pObjBody).children('span').addClass('glyphicon-collapse-down');
+			$(pObjBody).children('span').removeClass('glyphicon-expand');
         }
         else {
             // Open this row
             row.child( format(pListOfRange) ).show();
             tr.addClass('shown');
+			$(pObjBody).children('span').addClass('glyphicon-expand');
+			$(pObjBody).children('span').removeClass('glyphicon-collapse-down');
         }
     }
 	
@@ -82,6 +93,7 @@
 								{{if ne $totalHours 0.0}}
 									<tr>
 										<td class="col-sm-9" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
+											<span class="glyphicon glyphicon-collapse-down" style="float:left;"></span>
 											{{if gt $resourceSkillValue 3.0}}
 												<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
 											{{end}}
@@ -125,8 +137,8 @@
 			
 			
 			<script>
-			new Chart(document.getElementById("chartjs-3"),
-				{"type":"radar",
+			chart = new Chart(document.getElementById("chartjs-3"),
+				{	"type":"radar",
 					"data": {
 						"labels": {{.ListProjectSkillsName}},
 							"datasets":[
@@ -163,7 +175,6 @@
 							display:true
 						}
 					}
-				
 				});
 			</script>
 		</div>

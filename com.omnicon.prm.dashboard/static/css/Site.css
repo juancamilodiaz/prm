@@ -379,26 +379,30 @@ div.panel-accordion {
 }
 
 /*Table*/
+#detailBody td{
+	vertical-align:middle;
+	text-align:center;
+}
 td.details-control {
-    background: url('../img/plus.png') no-repeat center center;
+    /*background: url('../img/plus.png') no-repeat center center;*/
     cursor: pointer;
 }
-tr.shown td.details-control {
+/*tr.shown td.details-control {
     background: url('../img/minus.png') no-repeat center center;
-}
+}*/
 
 .chart-container {
   position: relative;
   margin: auto;
   height: 450px;
-  width: 450px;
+  max-width: 450px;
 }
 
 .chart-container-compare {
   position: relative;
   margin: auto;
   height: 450px;
-  width: 450px;
+  max-width: 450px;
 }
 
 .panel-heading{
