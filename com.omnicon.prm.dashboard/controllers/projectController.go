@@ -34,7 +34,7 @@ func (this *ProjectController) ListProjects() {
 
 		typesProject := []*domain.Type{}
 		for _, _type := range messageTypes.Types {
-			if _type.TypeOf == "Project" {
+			if _type.ApplyTo == "Project" {
 				typesProject = append(typesProject, _type)
 			}
 		}
@@ -603,7 +603,7 @@ func (this *ProjectController) GetTypesByProject() {
 
 		typesProject := []*domain.Type{}
 		for _, _types := range message.Types {
-			if _types.TypeOf == "Project" {
+			if _types.ApplyTo == "Project" {
 				typesProject = append(typesProject, _types)
 			}
 		}

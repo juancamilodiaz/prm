@@ -29,9 +29,9 @@ type Project struct {
 }
 
 type Type struct {
-	ID     int    `db:"id"`
-	Name   string `db:"name"`
-	TypeOf string `db:"type_of"`
+	ID      int    `db:"id"`
+	Name    string `db:"name"`
+	ApplyTo string `db:"apply_to"`
 }
 
 type ProjectTypes struct {
