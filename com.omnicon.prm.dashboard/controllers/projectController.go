@@ -40,6 +40,20 @@ func (this *ProjectController) ListProjects() {
 		}
 		this.Data["Types"] = typesProject
 
+		operation = "GetResources"
+
+		input := domain.GetResourcesRQ{}
+		enabled := true
+		input.Enabled = &enabled
+
+		inputBuffer := EncoderInput(input)
+		res, _ = PostData(operation, inputBuffer)
+
+		messageResources := new(domain.GetResourcesRS)
+		json.NewDecoder(res.Body).Decode(&messageResources)
+
+		this.Data["Resources"] = messageResources.Resources
+
 		this.Data["Projects"] = message.Projects
 
 		if this.GetString("Template") == "select" {

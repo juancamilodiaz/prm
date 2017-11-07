@@ -8,6 +8,7 @@
 				null,
 				null,
 				null,
+				null,
 				{"searchable":false}
 			]
 		});
@@ -42,13 +43,14 @@
 		$("#projectStartDate").val(null);		
 		$("#projectEndDate").val(null);
 		$("#projectActive").prop('checked', false);
+		$("#leaderID").val(0);
 		
 		$("#modalProjectTitle").html("Create Project");
 		$("#projectUpdate").css("display", "none");
 		$("#projectCreate").css("display", "inline-block");
 	}
 	
-	configureUpdateModal = function(pID, pOperationCenter, pWorkOrder, pName, pStartDate, pEndDate, pActive){
+	configureUpdateModal = function(pID, pOperationCenter, pWorkOrder, pName, pStartDate, pEndDate, pActive, pLeaderID){
 		
 		$("#projectID").val(pID);
 		$("#projectOperationCenter").val(pOperationCenter);
@@ -60,6 +62,10 @@
 		$("#projectEndDate").attr("min", pStartDate);
 		$("#projectActive").prop('checked', pActive);
 		
+		$("#leaderID").val(0);
+		if (pLeaderID != null) {
+			$("#leaderID").val(pLeaderID);
+		}
 		$("#modalProjectTitle").html("Update Project");
 		$("#projectCreate").css("display", "none");
 		$("#projectUpdate").css("display", "inline-block");
@@ -89,7 +95,8 @@
 				"ProjectType": values,
 				"StartDate": $('#projectStartDate').val(),
 				"EndDate": $('#projectEndDate').val(),
-				"Enabled": $('#projectActive').is(":checked")
+				"Enabled": $('#projectActive').is(":checked"),
+				"LeaderID": $('#leaderID').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -113,7 +120,8 @@
 				"ProjectType": $('#projectType').val(),
 				"StartDate": $('#projectStartDate').val(),
 				"EndDate": $('#projectEndDate').val(),
-				"Enabled": $('#projectActive').is(":checked")
+				"Enabled": $('#projectActive').is(":checked"),
+				"LeaderID": $('#leaderID').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -184,6 +192,7 @@
 			<th>Name</th>
 			<th>Start Date</th>
 			<th>End Date</th>
+			<th>Leader</th>
 			<th>Enabled</th>			
 			<th>Options</th>			
 		</tr>
@@ -196,10 +205,11 @@
 			<td>{{$project.Name}}</td>
 			<td>{{dateformat $project.StartDate "2006-01-02"}}</td>
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
+			<td>{{$project.Lead}}</td>
 			<td><input type="checkbox" {{if $project.Enabled}}checked{{end}} disabled></td>
 			
 			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}})' data-dismiss="modal">Update</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}})' data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
 				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Resources</button>
 				<button class="buttonTable button2" onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Types</button>
@@ -282,6 +292,19 @@
               </div>    
           </div>
         </div>
+		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+			<div id="divProjectType" class="form-group form-group-sm">
+			<label class="control-label col-sm-4 translatable" data-i18n="Leader"> Leader </label> 
+				<div class="col-sm-8">
+					<select  id="leaderID" style="width: 174px; border-radius: 8px;">
+					<option value="0">Without leader</option>
+					{{range $key, $resource := .Resources}}
+					<option value="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
+					{{end}}
+					</select>
+				</div>    
+			</div>
+		</div>
       </div>
       <div class="modal-footer">
         <button type="button" id="projectCreate" class="btn btn-default" onclick="createProject()" data-dismiss="modal">Create</button>

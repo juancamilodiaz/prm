@@ -106,13 +106,15 @@ func AddProject(pProject *DOMAIN.Project) (int, error) {
 		"end_date",
 		"enabled",
 		"operation_center",
-		"work_order").Values(
+		"work_order",
+		"leader_id").Values(
 		pProject.Name,
 		pProject.StartDate,
 		pProject.EndDate,
 		pProject.Enabled,
 		pProject.OperationCenter,
-		pProject.WorkOrder).Exec()
+		pProject.WorkOrder,
+		pProject.LeaderID).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -135,7 +137,7 @@ func UpdateProject(pProject *DOMAIN.Project) (int, error) {
 	// Close session when ends the method
 	defer session.Close()
 	// Update project in DB
-	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?", pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder).Where("id = ?", int(pProject.ID))
+	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?, leader_id = ?", pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder, pProject.LeaderID).Where("id = ?", int(pProject.ID))
 
 	res, err := q.Exec()
 	if err != nil {

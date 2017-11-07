@@ -28,6 +28,13 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 
 	project := util.MappingCreateProject(pRequest)
 
+	// Set leader id (resource id)
+	resource := dao.GetResourceById(pRequest.LeaderID)
+	if resource != nil {
+		leaderID := resource.ID
+		project.LeaderID = &leaderID
+	}
+
 	if project != nil {
 		// Save in DB
 		id, err := dao.AddProject(project)
@@ -148,6 +155,20 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			}
 		}
 		oldProject.Enabled = pRequest.Enabled
+
+		resourceID := 0
+		if pRequest.LeaderID != 0 {
+			resource := dao.GetResourceById(pRequest.LeaderID)
+			if resource != nil {
+				resourceID = resource.ID
+			}
+		}
+		if resourceID != 0 {
+			oldProject.LeaderID = &resourceID
+		} else {
+			oldProject.LeaderID = nil
+		}
+
 		// Save in DB
 		rowsUpdated, err := dao.UpdateProject(oldProject)
 		if err != nil || rowsUpdated <= 0 {
@@ -578,6 +599,16 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 				}
 			}
 		*/
+
+		for _, project := range projects {
+			if project.LeaderID != nil {
+				resource := dao.GetResourceById(*project.LeaderID)
+				if resource != nil {
+					project.Lead = resource.Name + " " + resource.LastName
+				}
+			}
+		}
+
 		response.Projects = projects
 		// Create response
 		response.Status = "OK"

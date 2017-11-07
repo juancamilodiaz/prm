@@ -8,6 +8,7 @@ type CreateProjectRQ struct {
 	ProjectType     []string
 	OperationCenter string
 	WorkOrder       int
+	LeaderID        int
 }
 
 type DeleteProjectRQ struct {
@@ -23,6 +24,7 @@ type GetProjectsRQ struct {
 	ProjectType     []*Type
 	OperationCenter string
 	WorkOrder       int
+	LeaderID        int
 }
 
 type UpdateProjectRQ struct {
@@ -33,5 +35,6 @@ type UpdateProjectRQ struct {
 	Enabled         bool
 	OperationCenter string
 	WorkOrder       int
+	LeaderID        int
 	//ProjectType []string
 }
