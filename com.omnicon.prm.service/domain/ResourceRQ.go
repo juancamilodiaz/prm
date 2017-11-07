@@ -30,7 +30,7 @@ type SetResourceToProjectRQ struct {
 	ResourceId    int
 	StartDate     string
 	EndDate       string
-	Lead          bool
+	Lead          bool // TODO Delete all relations
 	Hours         float64
 	IsToCreate    bool
 	HoursPerDay   float64
