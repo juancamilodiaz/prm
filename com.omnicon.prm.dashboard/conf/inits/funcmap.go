@@ -86,4 +86,12 @@ func init() {
 		}
 		return template.JS("")
 	})
+
+	beego.AddFuncMap("inc", func(base, in int) interface{} {
+		return base + in
+	})
+
+	beego.AddFuncMap("minus", func(base, in int) interface{} {
+		return base - in
+	})
 }

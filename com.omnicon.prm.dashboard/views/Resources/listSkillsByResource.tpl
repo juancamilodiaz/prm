@@ -114,13 +114,10 @@
 		});
 	}
 	
-	//add event listener to button
-	document.getElementById('download-pdf').addEventListener("click", downloadPDF);
-	
 	//donwload pdf from original canvas
-	function downloadPDF() {
+	downloadPDF = function(index) {
 		
-	  var canvas = document.querySelector('#chartjs-3');
+	  var canvas = document.querySelector('#chartjs-'+ index);
 		//creates image
 		var canvasImg = canvas.toDataURL("image/jpg", 1.0);
 	  
@@ -169,9 +166,134 @@
 		$('#objectPdf').attr('data', doc.output('datauristring'));
 		$('#showDocument').modal('show');
 	}
+	
+	var slideIndex = 1;
+	showSlides(slideIndex);
+	
+	function plusSlides(n) {
+	  showSlides(slideIndex += n);
+	}
+	
+	function currentSlide(n) {
+	  showSlides(slideIndex = n);
+	}
+	
+	function showSlides(n) {
+	  var i;
+	  var slides = document.getElementsByClassName("mySlides");
+	  var dots = document.getElementsByClassName("dot");
+	  if (n > slides.length) {slideIndex = 1}    
+	  if (n < 1) {slideIndex = slides.length}
+	  for (i = 0; i < slides.length; i++) {
+	      slides[i].style.display = "none";  
+	  }
+	  for (i = 0; i < dots.length; i++) {
+	      dots[i].className = dots[i].className.replace(" active", "");
+	  }
+	  slides[slideIndex-1].style.display = "inline";  
+	  dots[slideIndex-1].className += " active";
+	}
 
 </script>
 
+<style>
+* {box-sizing:border-box}
+body {font-family: Verdana,sans-serif;margin:0}
+.mySlides {display:none}
+
+/* Slideshow container */
+.slideshow-container {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+/* Next & previous buttons */
+.prev-slide, .next-slide {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: black;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+}
+
+/* Position the "next button" to the right */
+.next-slide {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev-slide:hover, .next-slide:hover {
+  background-color: rgba(0,0,0,0.8);
+  color: white;
+}
+
+/* Caption text */
+.text {
+  color: #f2f2f2;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #f2f2f2;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade-slide {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade-slide {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+@keyframes fade-slide {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .prev-slide, .next-slide,.text {font-size: 11px}
+}
+</style>
 </head>
 
 <body>
@@ -200,58 +322,82 @@
 		</table>
 	</div>
 	<div class="col-sm-6">
-	    <div class="row">
-	        <div class="col-sm-5">
-	        </div>
-	        <div class="col-sm-3">
-				<button class="buttonTable button2" id="download-pdf" >Download PDF</button>
-	        </div>
-	        <div class="col-sm-4">
-	        </div>
-	    </div>
 		<p>
-		   <div class="chart-container" id="chartjs-wrapper">
-				<canvas id="chartjs-3" >
-				</canvas>
-				
-				
-				<script>new Chart(document.getElementById("chartjs-3"),
-					{"type":"radar",
-						"data": {
-							{{$mapSkillsAndValues := .MapSkillsAndValues}}
-							{{$listTypesName := .ListTypesName}}
-							{{$listSkills := .ListSkills}}	
-							{{$listValueSkills := .ListValues}}	
-							{{$listColors := .ListColor}}
-							{{$listColorsBkg := .ListColorBkg}}				
-							"labels": {{$listSkills}},
-								"datasets":[					
-									{{range $index, $listValue := $listValueSkills}}
-										{"label":"{{index $listTypesName $index}}","data":{{$listValue}},"fill":true,"backgroundColor":"{{index $listColorsBkg $index}}","borderColor":"{{index $listColors $index}}","pointBackgroundColor":"{{index $listColors $index}}","pointBorderColor":"{{index $listColors $index}}","pointHoverBackgroundColor":"{{index $listColors $index}}","pointHoverBorderColor":"{{index $listColors $index}}"},
-									{{end}}									
-								]
-							},
-						"options": {
-							"elements": {
-								"line":{"tension":0,"borderWidth":3}
-							},
-							"scale": {
-						        "display": true,
-								"ticks": {
-									"max": 100,
-									"min": 0,
-									"beginAtZero":true,
-									"stepSize": 20	
-								}				
-						    },
-							legend: {
-								display:true
-							}
-						}
-					
-					});
-				</script>
+		<div class="slideshow-container">
+			{{$mapSkillsAndValues := .MapSkillsAndValues}}
+			{{$listTypesName := .ListTypesName}}
+			{{$listSkills := .ListSkills}}	
+			{{$listValueSkills := .ListValues}}	
+			{{$listColors := .ListColor}}
+			{{$listColorsBkg := .ListColorBkg}}	
+			{{range $indexTypes, $typesNames := $listTypesName}}
+				{{if lt $indexTypes (minus (len $listTypesName) 1)}}
+				<div class="mySlides fade-slide">
+				  	<div class="chart-container" id="chartjs-wrapper">
+						<canvas id="chartjs-{{$indexTypes}}" >
+						</canvas>					
+						<script>new Chart(document.getElementById("chartjs-{{$indexTypes}}"),
+							{"type":"radar",
+								"data": {			
+									"labels": {{$listSkills}},
+										"datasets":[
+											{{range $index, $listValue := $listValueSkills}}
+												{{if lt $index (minus (len $listValueSkills) 1)}}
+													{{if eq $index $indexTypes}}										
+													{"label":"{{index $listTypesName $indexTypes}}","data":{{$listValue}},"fill":true,"backgroundColor":"{{index $listColorsBkg $indexTypes}}","borderColor":"{{index $listColors $indexTypes}}","pointBackgroundColor":"{{index $listColors $indexTypes}}","pointBorderColor":"{{index $listColors $indexTypes}}","pointHoverBackgroundColor":"{{index $listColors $indexTypes}}","pointHoverBorderColor":"{{index $listColors $indexTypes}}"},								
+													{{end}}
+												{{end}}
+											{{end}}
+											{"label":"{{index $listTypesName (minus (len $listTypesName) 1)}}","data":{{index $listValueSkills (minus (len $listValueSkills) 1)}},"fill":true,"backgroundColor":"{{index $listColorsBkg (minus (len $listColorsBkg) 1)}}","borderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointBackgroundColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointBorderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointHoverBackgroundColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointHoverBorderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}"},								
+										]
+									},
+								"options": {
+									"elements": {
+										"line":{"tension":0,"borderWidth":3}
+									},
+									"scale": {
+								        "display": true,
+										"ticks": {
+											"max": 100,
+											"min": 0,
+											"beginAtZero":true,
+											"stepSize": 20	
+										}				
+								    },
+									legend: {
+										display:true
+									}
+								}
+							
+							});
+						</script>
+					</div>
+					<div class="row">
+				        <div class="col-sm-5">
+				        </div>
+				        <div class="col-sm-2">
+							<button class="buttonTable button2" id="download-pdf" onclick="downloadPDF({{$indexTypes}})" >Download PDF</button>
+				        </div>
+				        <div class="col-sm-5">
+				        </div>
+				    </div>
+				</div>
+				{{end}}
+			{{end}}	
+			<a class="prev-slide" onclick="plusSlides(-1)">&#10094;</a>
+			<a class="next-slide" onclick="plusSlides(1)">&#10095;</a>
+		</div>
+		<div style="text-align:center">
+			<div class="col-sm-5"></div>
+			<div class="col-sm-2">
+				{{range $index, $typeName := $listTypesName}}
+					{{if lt $index (minus (len $listTypesName) 1)}}
+			  		<span class="dot" onclick="currentSlide({{inc $index 1}})"></span> 
+					{{end}}
+				{{end}}
 			</div>
+			<div class="col-sm-5"></div>
+		</div>
 		</p>
 	</div>
 </div>
