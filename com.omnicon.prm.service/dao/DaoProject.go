@@ -89,6 +89,27 @@ func GetProjectsByDateRange(pStartDate, pEndDate int64) []*DOMAIN.Project {
 }
 
 /**
+*	Name : GetProjectsByLeaderID
+*	Params: pLeaderID
+*	Return: []*DOMAIN.Project
+*	Description: Get a project by leader ID in a project table
+ */
+func GetProjectsByLeaderID(pLeaderID int) []*DOMAIN.Project {
+	// Slice to keep all projects
+	projects := []*DOMAIN.Project{}
+	// Filter projects by leader id
+	res := getProjectCollection().Find().Where("leader_id = ?", pLeaderID)
+	// Close session when ends the method
+	defer session.Close()
+	// Add all projects in projects variable
+	err := res.All(&projects)
+	if err != nil {
+		log.Error(err)
+	}
+	return projects
+}
+
+/**
 *	Name : AddProject
 *	Params: pProject
 *	Return: int, error

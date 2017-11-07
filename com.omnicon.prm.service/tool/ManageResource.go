@@ -137,6 +137,13 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 			}
 		}
 
+		// Delete leader in project
+		projects := dao.GetProjectsByLeaderID(pResource.ID)
+		for _, project := range projects {
+			project.LeaderID = nil
+			dao.UpdateProject(project)
+		}
+
 		// Delete in DB
 		rowsDeleted, err := dao.DeleteResource(pResource.ID)
 		if err != nil || rowsDeleted <= 0 {

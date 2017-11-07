@@ -310,6 +310,7 @@
 				<li>The projects will lose this resource assignment.</li>
 				<li>The skills will lose this resource assignment.</li>
 				<li>The trainings will lose this resource assignment.</li>
+				<li>The projects will lose this resource assignment as leader.</li>
 	      	</div>
 	      	<div class="modal-footer" style="text-align:center;">
 		        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>
