@@ -29,6 +29,10 @@
 		$('#projectHoursActive').prop('checked', false);
 		$('#projectHours').prop('disabled', true);
 		$('#personNumber').prop('disabled', true);
+		
+		$('#projectStartDate').change(function(){
+			$('#projectEndDate').attr("min", $("#projectStartDate").val());
+		});
 	});
 				
 	configureShowCreateModal = function(){
