@@ -159,7 +159,13 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 
 	response.TrainingResources = trainingResourcesBreakdown
 
-	resources := dao.GetAllResources()
+	resourcesBD := dao.GetAllResources()
+	resources := []*DOMAIN.Resource{}
+	for _, resource := range resourcesBD {
+		if resource.Enabled {
+			resources = append(resources, resource)
+		}
+	}
 	response.Resources = resources
 
 	types := dao.GetAllTypes()
