@@ -286,11 +286,112 @@
 		});
 	}
 
+	//donwload pdf from original canvas
+	downloadPDF = function() {
+		
+	  var canvas = document.querySelector('#chartjs');
+		//creates image
+		var canvasImg = canvas.toDataURL("image/jpg", 1.0);
+	  
+		//creates PDF from img
+		var doc = new jsPDF('landscape', 'mm', 'letter');
+		doc.setProperties({
+			title: $('#resourcesValue').val()
+		});
+		doc.setFontSize(20);
+		doc.text("Summary " + $('#resourcesValue').val() + "'s trainings", 139.5, 20, 'center' );
+
+		doc.addImage(canvasImg, 'JPEG', 107, 30, 65, 65);
+		
+		doc.setFontSize(14);
+		
+		var index = 0;
+		{{range $key, $tResource := .TResources}}
+		
+			var columns = ["Type Name",	"Training Name", "Start Date", "End Date", "Duration", "Progress", "Test Result"];
+			var rows = [			
+					["{{$tResource.TypeName}}", 
+					"{{$tResource.SkillName}}", 
+					"{{dateformat $tResource.StartDate "2006-01-02"}}", 
+					"{{dateformat $tResource.EndDate "2006-01-02"}}", 
+					"{{$tResource.Duration}}" + " d.", 
+					{{$tResource.Progress}}, 
+					{{$tResource.TestResult}}]			
+			];
+			
+			var first = doc.autoTable.previous;		
+			var finalY = 90;		
+			if (index != 0){
+				finalY = first.finalY;
+			}
+			index++;
+			doc.autoTable(columns, rows, {
+				startY: finalY + 15
+			});
+			
+			first = doc.autoTable.previous;
+			
+			var columnsRes = [];
+			var rowsRes = [];
+			var row = [];
+			{{range $key, $result := $tResource.ResultStatus}}
+				columnsRes.push("{{$result.Key}}");
+				row.push("{{$result.Value}}");
+			{{end}}
+			rowsRes.push(row);
+			doc.autoTable(columnsRes, rowsRes, {
+				theme: 'grid',
+				startY: first.finalY + 5,
+				headerStyles: {fillColor: [41, 128, 186]},
+				tableWidth: 'wrap'
+			});
+			
+			first = doc.autoTable.previous;
+			
+			var columnsInt = ["Resource Name", "Training Name", "Start Date", "End Date", "Duration", "Progress", "Test Result", "Result Status"];
+			var rowsInt = [
+			{{range $key, $trainingResource := $tResource.TrainingResources}}
+				["{{$trainingResource.ResourceName}}",
+				"{{$trainingResource.TrainingName}}",
+				"{{dateformat $trainingResource.StartDate "2006-01-02"}}",
+				"{{dateformat $trainingResource.EndDate "2006-01-02"}}",
+				"{{$trainingResource.Duration}}" + " h.",
+				{{$trainingResource.Progress}},
+				{{$trainingResource.TestResult}},
+				"{{$trainingResource.ResultStatus}}"],
+			{{end}}
+			];
+			
+			doc.autoTable(columnsInt, rowsInt, {
+				startY: first.finalY + 5,
+				theme: 'grid'
+			});
+			first = doc.autoTable.previous;
+		
+		{{end}}
+		
+		$('#objectPdf').attr('data', doc.output('datauristring'));
+		$('#showDocument').modal('show');
+	}
+
+
 </script>
 
-<button class="buttonHeader button2" data-toggle="collapse" data-target="#filters">
-<span class="glyphicon glyphicon-filter"></span> Filter 
-</button>
+
+<div class="row">
+	<div class="col-sm-5">
+		<button class="buttonHeader button2" data-toggle="collapse" data-target="#filters">
+			<span class="glyphicon glyphicon-filter"></span> Filter 
+		</button>
+	</div>
+	<div class="col-sm-5">
+	</div>
+	<div class="col-sm-2">
+		<button class="buttonHeader button2" id="download-pdf" onclick="downloadPDF()" >Download PDF</button>
+	</div>
+</div>
+	
+
 <div id="filters" class="collapse">
    <div class="row">
       <div class="col-md-4">
@@ -540,6 +641,26 @@
       <div class="modal-footer" style="text-align:center;">
         <button type="button" id="trainingResourceDelete" class="btn btn-default" onclick="deleteTrainingResource()" data-dismiss="modal">Yes</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="showDocument" class="modal fade" role="dialog">
+  <div class="modal-dialog" style="width: 95%;height: 90%;padding: 0;">
+    <!-- Modal content-->
+    <div class="modal-content" style="height: 100%;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Preview Skills</h4>
+      </div>
+      <div class="modal-body" style="height: 80%">
+		<object id="objectPdf" type="application/pdf" width="100%" height="100%">
+		   
+		</object>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
