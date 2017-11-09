@@ -326,7 +326,7 @@
 			}
 			index++;
 			doc.autoTable(columns, rows, {
-				startY: finalY + 15,
+				startY: finalY + 10,
 				margin: {right: 63}
 			});
 			
@@ -340,7 +340,7 @@
 			rowsRes.push(row);
 			doc.autoTable(columnsRes, rowsRes, {
 				theme: 'grid',
-				startY: finalY + 15,
+				startY: finalY + 10,
 				headerStyles: {fillColor: [41, 128, 186]},
 				tableWidth: 'wrap',
 				margin: {left: 218}
