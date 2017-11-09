@@ -326,10 +326,9 @@
 			}
 			index++;
 			doc.autoTable(columns, rows, {
-				startY: finalY + 15
+				startY: finalY + 15,
+				margin: {right: 63}
 			});
-			
-			first = doc.autoTable.previous;
 			
 			var columnsRes = [];
 			var rowsRes = [];
@@ -341,9 +340,10 @@
 			rowsRes.push(row);
 			doc.autoTable(columnsRes, rowsRes, {
 				theme: 'grid',
-				startY: first.finalY + 5,
+				startY: finalY + 15,
 				headerStyles: {fillColor: [41, 128, 186]},
-				tableWidth: 'wrap'
+				tableWidth: 'wrap',
+				margin: {left: 218}
 			});
 			
 			first = doc.autoTable.previous;
