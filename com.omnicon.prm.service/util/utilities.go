@@ -257,6 +257,11 @@ func MappingCreateProject(pRequest *domain.CreateProjectRQ) *domain.Project {
 	project.Enabled = pRequest.Enabled
 	project.ProjectType = buildType(pRequest.ProjectType)
 
+	if pRequest.Cost > 0 {
+		cost := pRequest.Cost
+		project.Cost = &cost
+	}
+
 	return project
 }
 

@@ -24,9 +24,10 @@ type Project struct {
 	Percent         int
 	Lead            string
 	ProjectType     []*Type
-	OperationCenter string `db:"operation_center"`
-	WorkOrder       int    `db:"work_order"`
-	LeaderID        *int   `db:"leader_id,omitempty"`
+	OperationCenter string   `db:"operation_center"`
+	WorkOrder       int      `db:"work_order"`
+	LeaderID        *int     `db:"leader_id,omitempty"`
+	Cost            *float64 `db:"cost,omitempty"`
 }
 
 type Type struct {

@@ -9,6 +9,7 @@
 				null,
 				null,
 				null,
+				null,
 				{"searchable":false}
 			]
 		});
@@ -44,13 +45,14 @@
 		$("#projectEndDate").val(null);
 		$("#projectActive").prop('checked', false);
 		$("#leaderID").val(0);
+		$("#projectCost").val(null);
 		
 		$("#modalProjectTitle").html("Create Project");
 		$("#projectUpdate").css("display", "none");
 		$("#projectCreate").css("display", "inline-block");
 	}
 	
-	configureUpdateModal = function(pID, pOperationCenter, pWorkOrder, pName, pStartDate, pEndDate, pActive, pLeaderID){
+	configureUpdateModal = function(pID, pOperationCenter, pWorkOrder, pName, pStartDate, pEndDate, pActive, pLeaderID, pCost){
 		
 		$("#projectID").val(pID);
 		$("#projectOperationCenter").val(pOperationCenter);
@@ -66,6 +68,8 @@
 		if (pLeaderID != null) {
 			$("#leaderID").val(pLeaderID);
 		}
+		$("#projectCost").val(pCost);
+		
 		$("#modalProjectTitle").html("Update Project");
 		$("#projectCreate").css("display", "none");
 		$("#projectUpdate").css("display", "inline-block");
@@ -96,7 +100,8 @@
 				"StartDate": $('#projectStartDate').val(),
 				"EndDate": $('#projectEndDate').val(),
 				"Enabled": $('#projectActive').is(":checked"),
-				"LeaderID": $('#leaderID').val()
+				"LeaderID": $('#leaderID').val(),
+				"Cost": $('#projectCost').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -121,7 +126,8 @@
 				"StartDate": $('#projectStartDate').val(),
 				"EndDate": $('#projectEndDate').val(),
 				"Enabled": $('#projectActive').is(":checked"),
-				"LeaderID": $('#leaderID').val()
+				"LeaderID": $('#leaderID').val(),
+				"Cost": $('#projectCost').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -193,6 +199,7 @@
 			<th>Start Date</th>
 			<th>End Date</th>
 			<th>Leader</th>
+			<th>Cost</th>
 			<th>Enabled</th>			
 			<th>Options</th>			
 		</tr>
@@ -206,10 +213,11 @@
 			<td>{{dateformat $project.StartDate "2006-01-02"}}</td>
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
 			<td>{{$project.Lead}}</td>
+			<td>{{if $project.Cost}} {{$project.Cost}} {{end}}</td>
 			<td><input type="checkbox" {{if $project.Enabled}}checked{{end}} disabled></td>
 			
 			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}})' data-dismiss="modal">Update</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})' data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
 				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Resources</button>
 				<button class="buttonTable button2" onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Types</button>
@@ -305,6 +313,14 @@
 				</div>    
 			</div>
 		</div>
+        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        	<div class="form-group form-group-sm">
+        		<label class="control-label col-sm-4 translatable" data-i18n="Cost"> Cost </label>
+	            <div class="col-sm-8">
+	            	<input type="number" id="projectCost" min="0" step="1000" class="currency" style="border-radius: 8px;">
+	        	</div>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" id="projectCreate" class="btn btn-default" onclick="createProject()" data-dismiss="modal">Create</button>

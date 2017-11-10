@@ -9,6 +9,7 @@ type CreateProjectRQ struct {
 	OperationCenter string
 	WorkOrder       int
 	LeaderID        int
+	Cost            float64
 }
 
 type DeleteProjectRQ struct {
@@ -24,7 +25,6 @@ type GetProjectsRQ struct {
 	ProjectType     []*Type
 	OperationCenter string
 	WorkOrder       int
-	LeaderID        int
 }
 
 type UpdateProjectRQ struct {
@@ -36,5 +36,5 @@ type UpdateProjectRQ struct {
 	OperationCenter string
 	WorkOrder       int
 	LeaderID        int
-	//ProjectType []string
+	Cost            float64
 }

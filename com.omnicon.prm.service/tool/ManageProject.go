@@ -169,6 +169,15 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			oldProject.LeaderID = nil
 		}
 
+		if pRequest.Cost > 0 {
+			cost := pRequest.Cost
+			oldProject.Cost = &cost
+		} else {
+			if pRequest.Cost == 0 {
+				oldProject.Cost = nil
+			}
+		}
+
 		// Save in DB
 		rowsUpdated, err := dao.UpdateProject(oldProject)
 		if err != nil || rowsUpdated <= 0 {
