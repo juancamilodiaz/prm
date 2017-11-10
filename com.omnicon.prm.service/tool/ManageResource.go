@@ -60,6 +60,12 @@ func UpdateResource(pResource *DOMAIN.UpdateResourceRQ) *DOMAIN.UpdateResourceRS
 		if pResource.Photo != "" {
 			oldResource.Photo = pResource.Photo
 		}
+		if pResource.VisaUS != "" {
+			visaUS := pResource.VisaUS
+			oldResource.VisaUS = &visaUS
+		} else {
+			oldResource.VisaUS = nil
+		}
 		oldResource.Enabled = pResource.Enabled
 		// Save in DB
 		rowsUpdated, err := dao.UpdateResource(oldResource)

@@ -3,13 +3,14 @@ package domain
 import "time"
 
 type Resource struct {
-	ID            int    `db:"id"`
-	Name          string `db:"name"`
-	LastName      string `db:"last_name"`
-	Email         string `db:"email"`
-	Photo         string `db:"photo"`
-	EngineerRange string `db:"engineer_range"`
-	Enabled       bool   `db:"enabled"`
+	ID            int     `db:"id"`
+	Name          string  `db:"name"`
+	LastName      string  `db:"last_name"`
+	Email         string  `db:"email"`
+	Photo         string  `db:"photo"`
+	EngineerRange string  `db:"engineer_range"`
+	Enabled       bool    `db:"enabled"`
+	VisaUS        *string `db:"visa_us"`
 	Skills        map[string]int
 	ResourceType  []*Type
 }

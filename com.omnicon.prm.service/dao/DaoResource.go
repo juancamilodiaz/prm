@@ -99,13 +99,15 @@ func AddResource(pResource *DOMAIN.Resource) (int, error) {
 		"email",
 		"photo",
 		"engineer_range",
-		"enabled").Values(
+		"enabled",
+		"visa_us").Values(
 		pResource.Name,
 		pResource.LastName,
 		pResource.Email,
 		pResource.Photo,
 		pResource.EngineerRange,
-		pResource.Enabled).Exec()
+		pResource.Enabled,
+		pResource.VisaUS).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -127,7 +129,8 @@ func UpdateResource(pResource *DOMAIN.Resource) (int, error) {
 	// Close session when ends the method
 	defer session.Close()
 	// Update resource in DB
-	q := session.Update("Resource").Set("name = ?, last_name = ?, email = ?, photo = ?, engineer_range = ?, enabled = ?", pResource.Name, pResource.LastName, pResource.Email, pResource.Photo, pResource.EngineerRange, pResource.Enabled).Where("id = ?", int(pResource.ID))
+	q := session.Update("Resource").Set("name = ?, last_name = ?, email = ?, photo = ?, engineer_range = ?, enabled = ?, visa_us = ?",
+		pResource.Name, pResource.LastName, pResource.Email, pResource.Photo, pResource.EngineerRange, pResource.Enabled, pResource.VisaUS).Where("id = ?", int(pResource.ID))
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)

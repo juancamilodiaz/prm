@@ -7,6 +7,7 @@ type CreateResourceRQ struct {
 	Photo         string
 	EngineerRange string
 	Enabled       bool
+	VisaUS        string
 }
 
 type DeleteResourceRQ struct {
@@ -62,6 +63,7 @@ type UpdateResourceRQ struct {
 	Photo         string
 	EngineerRange string
 	Enabled       bool
+	VisaUS        string
 }
 
 type GetSkillByResourceRQ struct {

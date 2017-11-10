@@ -228,6 +228,11 @@ func MappingCreateResource(pRequest *domain.CreateResourceRQ) *domain.Resource {
 	resource.EngineerRange = pRequest.EngineerRange
 	resource.Enabled = pRequest.Enabled
 
+	if pRequest.VisaUS != "" {
+		visaUS := pRequest.VisaUS
+		resource.VisaUS = &visaUS
+	}
+
 	return resource
 }
 

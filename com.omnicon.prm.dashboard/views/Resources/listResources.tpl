@@ -8,6 +8,7 @@
 				null,
 				null,
 				null,
+				null,
 				{"searchable":false}
 			]
 		});
@@ -61,13 +62,14 @@
 		$("#resourceEmail").val(null);
 		$("#resourceRank").val(null);
 		$("#resourceActive").prop('checked', false);
+		$("#resourceVisaUS").val(null);
 		
 		$("#modalResourceTitle").html("Create Resource");
 		$("#resourceUpdate").css("display", "none");
 		$("#resourceCreate").css("display", "inline-block");
 	}
 	
-	configureUpdateModal = function(pID, pName, pLastName, pEmail, pRank, pActive){
+	configureUpdateModal = function(pID, pName, pLastName, pEmail, pRank, pActive, pVisaUS){
 		
 		$("#resourceID").val(pID);
 		$("#resourceName").val(pName);
@@ -75,6 +77,7 @@
 		$("#resourceEmail").val(pEmail);
 		$("#resourceRank").val(pRank);
 		$("#resourceActive").prop('checked', pActive);
+		$("#resourceVisaUS").val(pVisaUS);
 		
 		$("#modalResourceTitle").html("Update Resource");
 		$("#resourceCreate").css("display", "none");
@@ -94,7 +97,8 @@
 				"Email": $('#resourceEmail').val(),
 				"Photo": 'test',
 				"EngineerRange": $('#resourceRank').val(),
-				"Enabled": $('#resourceActive').is(":checked")
+				"Enabled": $('#resourceActive').is(":checked"),
+				"VisaUS": $('#resourceVisaUS').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -117,7 +121,8 @@
 				"Email": $('#resourceEmail').val(),
 				"Photo": 'test',
 				"EngineerRange": $('#resourceRank').val(),
-				"Enabled": $('#resourceActive').is(":checked")
+				"Enabled": $('#resourceActive').is(":checked"),
+				"VisaUS": $('#resourceVisaUS').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -203,6 +208,7 @@
 			<th>Profile(s)</th>
 			<th>Email</th>
 			<th>Engineer Rank</th>
+			<th>Visa US</th>
 			<th>Enabled</th>
 			<th>Options</th>
 		</tr>
@@ -221,9 +227,10 @@
 			</td>
 			<td>{{$resource.Email}}</td>
 			<td>{{$resource.EngineerRange}}</td>
+			<td>{{if $resource.VisaUS}} {{$resource.VisaUS}} {{end}}</td>
 			<td><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
 			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}},{{$resource.VisaUS}})" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
 				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}', {{$mapOfTypes}});" data-dismiss="modal">Skills</button>
 				<button class="buttonTable button2" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}},'{{$resource.Name}}'+' '+'{{$resource.LastName}}');" data-dismiss="modal">Assignations</button>
@@ -276,6 +283,14 @@
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
 	              <div class="col-sm-8">
 	              	<select id="resourceRank" class="style-input" style="width: 174px; border-radius: 8px;"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option><option value="PM">PM</option></select>
+	        		</div>
+	          </div>
+	        </div>
+			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Visa US"> Visa US </label>
+	              <div class="col-sm-8">
+	              	<input type="text" id="resourceVisaUS" class="style-input" style="border-radius: 8px;">
 	        		</div>
 	          </div>
 	        </div>
