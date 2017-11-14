@@ -215,3 +215,11 @@ func ProcessDeleteProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.De
 	// Return response
 	return response
 }
+
+func ProcessGetSettings(pRequest *domain.SettingsRQ) *domain.SettingsRS {
+	return tool.GetSettings(pRequest)
+}
+
+func ProcessUpdateSettings(pRequest *domain.SettingsRQ) *domain.SettingsRS {
+	return tool.UpdateSettings(pRequest)
+}

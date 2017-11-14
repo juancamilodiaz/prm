@@ -654,3 +654,27 @@ func MappingFiltersProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.P
 	}
 	return nil
 }
+
+/**
+* Function to mapping request to get settings in a Settings entity.
+ */
+func MappingFiltersSettings(pRequest *domain.SettingsRQ) *domain.Settings {
+	if pRequest != nil {
+		filters := domain.Settings{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.Name != "" {
+			filters.Name = pRequest.Name
+		}
+		if pRequest.Value != "" {
+			filters.Value = pRequest.Value
+		}
+		if pRequest.Type != "" {
+			filters.Type = pRequest.Value
+		}
+		return &filters
+	}
+	return nil
+}

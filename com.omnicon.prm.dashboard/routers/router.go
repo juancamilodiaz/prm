@@ -78,4 +78,8 @@ func init() {
 	beego.Router("/trainings/settraining", &controllers.TrainingController{}, "post:SetTrainingToResource")
 	beego.Router("/trainings/resources", &controllers.TrainingController{}, "post:GetTrainingResources")
 	beego.Router("/trainings/deletetraining", &controllers.TrainingController{}, "post:DeleteTrainingToResource")
+
+	// Settings
+	beego.Router("/settings", &controllers.SettingsController{}, "post:ListSettings")
+	beego.Router("/settings/update", &controllers.SettingsController{}, "post:UpdateSettings")
 }

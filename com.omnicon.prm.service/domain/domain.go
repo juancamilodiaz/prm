@@ -190,3 +190,10 @@ type ProjectForecastTypes struct {
 	ProjectForecastId int `db:"projectForecast_id"`
 	TypeId            int `db:"type_id"`
 }
+
+type Settings struct {
+	ID    int    `db:"id"`
+	Name  string `db:"name"`
+	Value string `db:"value"`
+	Type  string `db:"type"`
+}

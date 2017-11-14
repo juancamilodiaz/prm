@@ -94,4 +94,8 @@ func init() {
 	beego.AddFuncMap("minus", func(base, in int) interface{} {
 		return base - in
 	})
+
+	beego.AddFuncMap("splitEmail", func(pString string) []string {
+		return strings.Split(pString, ";")
+	})
 }
