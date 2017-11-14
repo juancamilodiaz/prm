@@ -89,6 +89,12 @@ func ProcessGetResources(pRequest *domain.GetResourcesRQ) *domain.GetResourcesRS
 	return response
 }
 
+func ProcessGetProjectsForecast(pRequest *domain.ProjectForecastRQ) *domain.GetProjectsForecastRS {
+	response := tool.GetProjectsForecast(pRequest)
+	// Return response
+	return response
+}
+
 func ProcessGetProjects(pRequest *domain.GetProjectsRQ) *domain.GetProjectsRS {
 	response := tool.GetProjects(pRequest)
 	// Return response
@@ -190,4 +196,22 @@ func ProcessSetTrainingToResource(pRequest *domain.TrainingResourcesRQ) *domain.
 
 func ProcessDeleteTrainingToResource(pRequest *domain.TrainingResourcesRQ) *domain.TrainingResourcesRS {
 	return tool.DeleteTrainingToResource(pRequest)
+}
+
+func ProcessCreateProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.CreateProjectForecastRS {
+	response := tool.CreateProjectForecast(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessUpdateProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.UpdateProjectForecastRS {
+	response := tool.UpdateProjectForecast(pRequest)
+	// Return response
+	return response
+}
+
+func ProcessDeleteProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.DeleteProjectForecastRS {
+	response := tool.DeleteProjectForecast(pRequest)
+	// Return response
+	return response
 }

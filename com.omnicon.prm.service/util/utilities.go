@@ -533,3 +533,124 @@ func MappingFiltersTraining(pRequest *domain.TrainingRQ) *domain.Training {
 	}
 	return nil
 }
+
+/**
+* Function to mapping create project forecast request to business entity projectForecast.
+ */
+func MappingCreateProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.ProjectForecast {
+	projectForecast := new(domain.ProjectForecast)
+	projectForecast.Name = pRequest.Name
+	projectForecast.BusinessUnit = pRequest.BusinessUnit
+	projectForecast.Region = pRequest.Region
+	projectForecast.Description = pRequest.Description
+	startDate := new(string)
+	startDate = &pRequest.StartDate
+	endDate := new(string)
+	endDate = &pRequest.EndDate
+	if startDate == nil || endDate == nil || *startDate == "" || *endDate == "" {
+		log.Error("Dates undefined")
+		return nil
+	}
+	startDateInt, endDateInt, err := ConvertirFechasPeticion(startDate, endDate)
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+	projectForecast.StartDate = time.Unix(startDateInt, 0)
+	projectForecast.EndDate = time.Unix(endDateInt, 0)
+	projectForecast.Hours = pRequest.Hours
+	projectForecast.NumberSites = pRequest.NumberSites
+	projectForecast.NumberProcessPerSite = pRequest.NumberProcessPerSite
+	projectForecast.NumberProcessTotal = pRequest.NumberProcessTotal
+	projectForecast.EstimateCost = pRequest.EstimateCost
+	billingDate := new(string)
+	billingDate = &pRequest.BillingDate
+	if billingDate == nil || *billingDate == "" {
+		log.Error("Billing Date undefined")
+		return nil
+	}
+	billingDateInt := GetDateInt64FromString(*billingDate)
+	projectForecast.BillingDate = time.Unix(billingDateInt, 0)
+	projectForecast.Status = pRequest.Status
+
+	return projectForecast
+}
+
+/**
+* Function to mapping project forecast assign request to business entity projectForecastAssigns.
+ */
+func MappingSetProjectForecastAssigns(pRequest *domain.ProjectForecastAssignsRQ) *domain.ProjectForecastAssigns {
+	projectForecastAssigns := new(domain.ProjectForecastAssigns)
+	projectForecastAssigns.ID = pRequest.ID
+	projectForecastAssigns.ProjectForecastId = pRequest.ProjectForecastId
+	projectForecastAssigns.ProjectForecastName = pRequest.ProjectForecastName
+	projectForecastAssigns.TypeId = pRequest.TypeId
+	projectForecastAssigns.TypeName = pRequest.TypeName
+	projectForecastAssigns.NumberResources = pRequest.NumberResources
+
+	return projectForecastAssigns
+}
+
+/**
+* Function to mapping request to get projectsForecastRQ in a projectForecast entity.
+ */
+func MappingFiltersProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.ProjectForecast {
+	if pRequest != nil {
+		filters := domain.ProjectForecast{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.Name != "" {
+			filters.Name = pRequest.Name
+		}
+		if pRequest.BusinessUnit != "" {
+			filters.BusinessUnit = pRequest.BusinessUnit
+		}
+		if pRequest.Region != "" {
+			filters.Region = pRequest.Region
+		}
+		if pRequest.Description != "" {
+			filters.Description = pRequest.Description
+		}
+		if pRequest.StartDate != "" {
+			startDate, err := time.Parse("2006-01-02", pRequest.StartDate)
+			if err == nil {
+				filters.StartDate = startDate
+			}
+		}
+		if pRequest.EndDate != "" {
+			endDate, err := time.Parse("2006-01-02", pRequest.EndDate)
+			if err == nil {
+				filters.EndDate = endDate
+			}
+		}
+		if pRequest.Hours != 0 {
+			filters.Hours = pRequest.Hours
+		}
+		if pRequest.NumberSites != 0 {
+			filters.NumberSites = pRequest.NumberSites
+		}
+		if pRequest.NumberProcessPerSite != 0 {
+			filters.NumberProcessPerSite = pRequest.NumberProcessPerSite
+		}
+		if pRequest.NumberProcessTotal != 0 {
+			filters.NumberProcessTotal = pRequest.NumberProcessTotal
+		}
+		if pRequest.EstimateCost != 0 {
+			filters.EstimateCost = pRequest.EstimateCost
+		}
+		if pRequest.BillingDate != "" {
+			billingDate, err := time.Parse("2006-01-02", pRequest.BillingDate)
+			if err == nil {
+				filters.EndDate = billingDate
+			}
+		}
+		if pRequest.Status != "" {
+			filters.Status = pRequest.Status
+		}
+
+		return &filters
+	}
+	return nil
+}

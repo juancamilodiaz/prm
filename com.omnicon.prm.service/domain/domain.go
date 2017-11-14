@@ -151,3 +151,42 @@ type ResourceTypes struct {
 	TypeId     int    `db:"type_id"`
 	Name       string `db:"type_name"`
 }
+
+type ProjectForecast struct {
+	ID                   int       `db:"id"`
+	Name                 string    `db:"name"`
+	BusinessUnit         string    `db:"business_unit"`
+	Region               string    `db:"region"`
+	Description          string    `db:"description,omitempty"`
+	StartDate            time.Time `db:"start_date"`
+	EndDate              time.Time `db:"end_date"`
+	Hours                float64   `db:"hours"`
+	NumberSites          int       `db:"number_sites"`
+	NumberProcessPerSite int       `db:"number_process_per_site"`
+	NumberProcessTotal   int       `db:"number_process_total"`
+	Types                []string
+	AssignResources      map[int]ProjectForecastAssignResources
+	EstimateCost         float64   `db:"estimate_cost"`
+	BillingDate          time.Time `db:"billing_date"`
+	Status               string    `db:"status"`
+}
+
+type ProjectForecastAssignResources struct {
+	Name            string
+	NumberResources int
+}
+
+type ProjectForecastAssigns struct {
+	ID                  int    `db:"id"`
+	ProjectForecastId   int    `db:"projectForecast_id"`
+	ProjectForecastName string `db:"projectForecast_name"`
+	TypeId              int    `db:"type_id"`
+	TypeName            string `db:"type_name"`
+	NumberResources     int    `db:"number_resources"`
+}
+
+type ProjectForecastTypes struct {
+	ID                int `db:"id"`
+	ProjectForecastId int `db:"projectForecast_id"`
+	TypeId            int `db:"type_id"`
+}

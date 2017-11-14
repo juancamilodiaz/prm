@@ -29,12 +29,16 @@ func SetUpHandlers() {
 	http.HandleFunc("/CreateSkill", createSkill)
 	http.HandleFunc("/UpdateSkill", updateSkill)
 	http.HandleFunc("/DeleteSkill", deleteSkill)
+	http.HandleFunc("/CreateProjectForecast", createProjectForecast)
+	http.HandleFunc("/UpdateProjectForecast", updateProjectForecast)
+	http.HandleFunc("/DeleteProjectForecast", deleteProjectForecast)
 	// Management Operations
 	http.HandleFunc("/SetSkillToResource", setSkillToResource)
 	http.HandleFunc("/DeleteSkillToResource", deleteSkillToResource)
 	http.HandleFunc("/SetResourceToProject", setResourceToProject)
 	http.HandleFunc("/DeleteResourceToProject", deleteResourceToProject)
 	http.HandleFunc("/GetResources", getResources)
+	http.HandleFunc("/GetProjectsForecast", getProjects)
 	http.HandleFunc("/GetProjects", getProjects)
 	http.HandleFunc("/GetSkills", getSkills)
 	http.HandleFunc("/GetResourcesToProjects", getResourcesToProjects)
@@ -445,6 +449,126 @@ func deleteSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 }
 
 /*
+Descripcion : Funcion encargada de crear un proyecto forecast de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func createProjectForecast(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("CreateProjectForecast")
+
+	message := new(domain.ProjectForecastRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+
+	log.Info("Process Create Project Forecast", message)
+
+	response := controller.ProcessCreateProjectForecast(message)
+
+	// Se asigna tiempo de respuesta de todo el proceso.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Descripcion : Funcion encargada de actualizar un proyecto forecast de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func updateProjectForecast(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("UpdateProjectForecast")
+
+	message := new(domain.ProjectForecastRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+	log.Info("Process Update ProjectForecast", message)
+	response := controller.ProcessUpdateProjectForecast(message)
+
+	// Se asigna tiempo de respuesta de todo el proceso.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Descripcion : Funcion encargada de eliminar un proyecto forecast de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func deleteProjectForecast(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("DeleteProjectForecast")
+
+	message := new(domain.ProjectForecastRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+
+	log.Info("Process Delete ProjectForecast", message)
+	response := controller.ProcessDeleteProjectForecast(message)
+
+	// Se asigna tiempo de respuesta de todo el proceso.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
 Description : Function to set a skill in a resource according to input request.
 
 Params :
@@ -631,6 +755,47 @@ func getResources(pResponse http.ResponseWriter, pRequest *http.Request) {
 	log.Info("Process Get Resources", message)
 
 	response := controller.ProcessGetResources(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to get a projects forecast according to filters input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getProjectsForecast(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("GetProjectsForecast")
+
+	message := new(domain.ProjectForecastRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get Projects Forecast", message)
+
+	response := controller.ProcessGetProjectsForecast(message)
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {

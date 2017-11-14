@@ -197,7 +197,7 @@ func DeleteProject(pProjectId int) (int, error) {
 }
 
 func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
-	// Slice to keep all resources
+	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
 	result := getProjectCollection().Find()
 
