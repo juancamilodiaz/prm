@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"strconv"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -49,7 +50,17 @@ func GetSettings(pRequest *DOMAIN.SettingsRQ) *DOMAIN.SettingsRS {
 func UpdateSettings(pRequest *DOMAIN.SettingsRQ) *DOMAIN.SettingsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.SettingsRS{}
-	oldSettings := dao.GetSettingsById(pRequest.ID)
+
+	var oldSettings = new(DOMAIN.Settings)
+	if pRequest.ID != 0 {
+		oldSettings = dao.GetSettingsById(pRequest.ID)
+	} else if pRequest.ID == 0 && pRequest.Name != "" {
+		setting := dao.GetSettingsByName(pRequest.Name)
+		if setting != nil {
+			oldSettings = setting
+		}
+	}
+
 	if oldSettings != nil {
 		if pRequest.Name != "" {
 			oldSettings.Name = pRequest.Name
@@ -59,6 +70,9 @@ func UpdateSettings(pRequest *DOMAIN.SettingsRQ) *DOMAIN.SettingsRS {
 		}
 		if pRequest.Type != "" {
 			oldSettings.Type = pRequest.Type
+		}
+		if pRequest.Description != "" {
+			oldSettings.Description = pRequest.Description
 		}
 		// Save in DB
 		rowsUpdated, err := dao.UpdateSettings(oldSettings)
@@ -73,6 +87,9 @@ func UpdateSettings(pRequest *DOMAIN.SettingsRQ) *DOMAIN.SettingsRS {
 
 		response.Header = util.BuildHeaderResponse(timeResponse)
 
+		// update the settings variables
+		UpdateSettingsVariables()
+
 		return &response
 	}
 
@@ -84,4 +101,29 @@ func UpdateSettings(pRequest *DOMAIN.SettingsRQ) *DOMAIN.SettingsRS {
 	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
+}
+
+func UpdateSettingsVariables() {
+	setting := dao.GetSettingsByName(util.HOURS_OF_WORK)
+	if setting != nil {
+		hoursOfWork, err := strconv.ParseFloat(setting.Value, 64)
+		if err != nil {
+			log.Error("Error in parse " + util.HOURS_OF_WORK)
+		}
+		// Set variable
+		HoursOfWork = hoursOfWork
+	}
+	setting = dao.GetSettingsByName(util.VALID_EMAILS)
+	if setting != nil {
+		//TODO set value
+	}
+	setting = dao.GetSettingsByName(util.EPSILON_VALUE)
+	if setting != nil {
+		epsilonValue, err := strconv.ParseFloat(setting.Value, 64)
+		if err != nil {
+			log.Error("Error in parse " + util.EPSILON_VALUE)
+		}
+		// Set variable
+		EpsilonValue = epsilonValue
+	}
 }

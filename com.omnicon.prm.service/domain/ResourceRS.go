@@ -70,6 +70,7 @@ type GetResourcesToProjectsRS struct {
 	Resources              []*Resource
 	AvailBreakdown         map[int]map[string]float64
 	AvailBreakdownPerRange map[int]*ResourceAvailabilityInformation
+	EpsilonValue           float64
 	Status                 string
 	Message                string
 }

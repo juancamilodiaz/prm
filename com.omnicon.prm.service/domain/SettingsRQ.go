@@ -1,10 +1,11 @@
 package domain
 
 type SettingsRQ struct {
-	ID    int
-	Name  string
-	Value string
-	Type  string
+	ID          int
+	Name        string
+	Value       string
+	Type        string
+	Description string
 }
 
 type SettingsRS struct {

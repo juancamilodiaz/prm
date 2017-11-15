@@ -371,14 +371,14 @@ func SetTrainingToResource(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Trainin
 				return &response
 			}
 
-			maxHours := 0
+			maxHours := 0.0
 			for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
 				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
 					maxHours += HoursOfWork
 				}
 			}
-			if pRequest.Duration > maxHours {
-				message := "Maximum hours of training " + strconv.Itoa(maxHours)
+			if float64(pRequest.Duration) > maxHours {
+				message := "Maximum hours of training " + strconv.FormatFloat(maxHours, 'f', -1, 64)
 				log.Error(message)
 				response.Message = message
 				response.Status = "Error"

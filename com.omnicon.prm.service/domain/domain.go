@@ -192,8 +192,9 @@ type ProjectForecastTypes struct {
 }
 
 type Settings struct {
-	ID    int    `db:"id"`
-	Name  string `db:"name"`
-	Value string `db:"value"`
-	Type  string `db:"type"`
+	ID          int    `db:"id"`
+	Name        string `db:"name"`
+	Value       string `db:"value"`
+	Type        string `db:"type"`
+	Description string `db:"description"`
 }

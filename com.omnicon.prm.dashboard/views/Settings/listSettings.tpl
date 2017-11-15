@@ -4,6 +4,7 @@
 			"columns":[
 				null,
 				null,
+				null,
 				{"searchable":false}
 			]
 		});
@@ -63,6 +64,7 @@
 		<tr>
 			<th>Name</th>
 			<th>Value</th>
+			<th>Description</th>
 			<th>Options</th>
 		</tr>
 	</thead>
@@ -85,9 +87,14 @@
 				</ul>
 				{{end}}				
 			</td>
+			<td>{{$setting.Description}}</td>
 			<td>
-				<a><span id="updateSettingClick" class="glyphicon glyphicon-edit" onclick="configureUpdateModal({{$setting.ID}},'{{$setting.Name}}', '{{$setting.Value}}', '{{$setting.Type}}')"></span></a>
-				<!--button class="buttonTable button2" data-toggle="modal" data-target="#settingModal" onclick="configureUpdateModal({{$setting.ID}},'{{$setting.Name}}', '{{$setting.Value}}', '{{$setting.Type}}')" data-dismiss="modal">Update</button-->
+				{{if eq $setting.Name "ValidEmails"}}
+					<span class="glyphicon glyphicon-eye-open" ></span>
+				{{else}}
+					<a><span id="updateSettingClick" class="glyphicon glyphicon-edit" onclick="configureUpdateModal({{$setting.ID}},'{{$setting.Name}}', '{{$setting.Value}}', '{{$setting.Type}}')"></span></a>
+					<!--button class="buttonTable button2" data-toggle="modal" data-target="#settingModal" onclick="configureUpdateModal({{$setting.ID}},'{{$setting.Name}}', '{{$setting.Value}}', '{{$setting.Type}}')" data-dismiss="modal">Update</button-->
+				{{end}}
 			</td>
 		</tr>
 		{{end}}	

@@ -41,6 +41,12 @@ const (
 	LANGUAGES    = "es,en,ca,de,it,nl,fr,pt,ru,sv,zh,ja,da,ar,id,ko,ms,no,tl,th,tr,vi"
 )
 
+const (
+	HOURS_OF_WORK = "HoursOfWork"
+	VALID_EMAILS  = "ValidEmails"
+	EPSILON_VALUE = "EpsilonValue"
+)
+
 func StringToBool(pString string) bool {
 	if pString == "true" {
 		return true
@@ -672,7 +678,10 @@ func MappingFiltersSettings(pRequest *domain.SettingsRQ) *domain.Settings {
 			filters.Value = pRequest.Value
 		}
 		if pRequest.Type != "" {
-			filters.Type = pRequest.Value
+			filters.Type = pRequest.Type
+		}
+		if pRequest.Description != "" {
+			filters.Description = pRequest.Description
 		}
 		return &filters
 	}

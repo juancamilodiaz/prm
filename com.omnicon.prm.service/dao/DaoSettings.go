@@ -68,7 +68,7 @@ func GetSettingsById(pId int) *DOMAIN.Settings {
 *	Return: *DOMAIN.Settings
 *	Description: Get a Settings by Type ID in a Settings table
  */
-func GetSettingsByName(pName string) []*DOMAIN.Settings {
+func GetSettingsByName(pName string) *DOMAIN.Settings {
 	// Settings structure
 	settings := []*DOMAIN.Settings{}
 	// Add in Settings variable, the Settings where ID is the same that the param
@@ -80,7 +80,17 @@ func GetSettingsByName(pName string) []*DOMAIN.Settings {
 		log.Error(err)
 		return nil
 	}
-	return settings
+	if len(settings) == 1 {
+		return settings[0]
+	} else {
+		if len(settings) == 0 {
+			log.Error("The configuration " + pName + " does not exist")
+			return nil
+		} else {
+			log.Error("There is more than one configuration " + pName)
+			return nil
+		}
+	}
 }
 
 /**
@@ -95,7 +105,7 @@ func UpdateSettings(pSettings *DOMAIN.Settings) (int, error) {
 	// Close session when ends the method
 	defer session.Close()
 	// Update skill in DB
-	q := session.Update("Settings").Set("name = ?, value = ?, type = ?", pSettings.Name, pSettings.Value, pSettings.Type).Where("id = ?", pSettings.ID)
+	q := session.Update("Settings").Set("name = ?, value = ?, type = ?, description = ?", pSettings.Name, pSettings.Value, pSettings.Type, pSettings.Description).Where("id = ?", pSettings.ID)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
@@ -149,6 +159,14 @@ func GetSettingsByFilters(pSettingsFilters *DOMAIN.Settings) ([]*DOMAIN.Settings
 		}
 		filters.WriteString("type = '")
 		filters.WriteString(pSettingsFilters.Type)
+		filters.WriteString("'")
+	}
+	if pSettingsFilters.Description != "" {
+		if filters.String() != "" {
+			filters.WriteString(" and ")
+		}
+		filters.WriteString("description = '")
+		filters.WriteString(pSettingsFilters.Description)
 		filters.WriteString("'")
 	}
 

@@ -401,9 +401,6 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 	hoursNumber, _ := this.GetInt("Hours")
 	resourceNumber, _ := this.GetInt("NumberOfResources")
 
-	var epsilonValue float64
-	epsilonValue = 10
-
 	err := this.ParseForm(&input)
 	input.Hours = 0
 	if err != nil {
@@ -441,6 +438,9 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		this.Data["Resources"] = message.Resources
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
 		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+
+		// Set variable epsilon
+		epsilonValue := message.EpsilonValue
 
 		var listSorted []domain.ListByHours
 		if isHoursFilter {
