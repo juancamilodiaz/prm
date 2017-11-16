@@ -89,7 +89,7 @@
 			</td>
 			<td>{{$setting.Description}}</td>
 			<td>
-				{{if eq $setting.Name "ValidEmails"}}
+				{{if or (eq $setting.Name "ValidEmails") (eq $setting.Name "SuperUsers") }}
 					<span class="glyphicon glyphicon-eye-open" ></span>
 				{{else}}
 					<a><span id="updateSettingClick" class="glyphicon glyphicon-edit" onclick="configureUpdateModal({{$setting.ID}},'{{$setting.Name}}', '{{$setting.Value}}', '{{$setting.Type}}')"></span></a>
