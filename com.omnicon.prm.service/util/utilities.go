@@ -687,3 +687,64 @@ func MappingFiltersSettings(pRequest *domain.SettingsRQ) *domain.Settings {
 	}
 	return nil
 }
+
+func MappingProductivityTasksRQ(pDomain *domain.ProductivityTasksRQ) *domain.ProductivityTasks {
+	productivityTasks := new(domain.ProductivityTasks)
+	productivityTasks.ID = pDomain.ID
+	productivityTasks.ProjectID = pDomain.ProjectID
+	productivityTasks.Name = pDomain.Name
+	productivityTasks.TotalExecute = pDomain.TotalExecute
+	productivityTasks.Scheduled = pDomain.Scheduled
+	productivityTasks.Progress = pDomain.Progress
+
+	return productivityTasks
+}
+
+/**
+* Function to mapping request to get productivityTasks in a ProductivityTasks entity.
+ */
+func MappingFiltersProductivityTasks(pRequest *domain.ProductivityTasksRQ) *domain.ProductivityTasks {
+	if pRequest != nil {
+		filters := domain.ProductivityTasks{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.ProjectID != 0 {
+			filters.ProjectID = pRequest.ProjectID
+		}
+		return &filters
+	}
+	return nil
+}
+
+func MappingProductivityReportRQ(pDomain *domain.ProductivityReportRQ) *domain.ProductivityReport {
+	productivityReport := new(domain.ProductivityReport)
+	productivityReport.ID = pDomain.ID
+	productivityReport.TaskID = pDomain.TaskID
+	productivityReport.ResourceID = pDomain.ResourceID
+	productivityReport.Hours = pDomain.Hours
+
+	return productivityReport
+}
+
+/**
+* Function to mapping request to get productivityReport in a ProductivityReport entity.
+ */
+func MappingFiltersProductivityReport(pRequest *domain.ProductivityReportRQ) *domain.ProductivityReport {
+	if pRequest != nil {
+		filters := domain.ProductivityReport{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.TaskID != 0 {
+			filters.TaskID = pRequest.TaskID
+		}
+		if pRequest.ResourceID != 0 {
+			filters.ResourceID = pRequest.ResourceID
+		}
+		return &filters
+	}
+	return nil
+}

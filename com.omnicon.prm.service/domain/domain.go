@@ -198,3 +198,19 @@ type Settings struct {
 	Type        string `db:"type"`
 	Description string `db:"description"`
 }
+
+type ProductivityTasks struct {
+	ID           int     `db:"id"`
+	ProjectID    int     `db:"project_id"`
+	Name         string  `db:"name"`
+	TotalExecute float64 `db:"total_execute"`
+	Scheduled    float64 `db:"scheduled"`
+	Progress     float64 `db:"progress"`
+}
+
+type ProductivityReport struct {
+	ID         int     `db:"id"`
+	TaskID     int     `db:"task_id"`
+	ResourceID int     `db:"resource_id"`
+	Hours      float64 `db:"hours"`
+}

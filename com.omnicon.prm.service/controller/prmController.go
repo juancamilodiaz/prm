@@ -223,3 +223,35 @@ func ProcessGetSettings(pRequest *domain.SettingsRQ) *domain.SettingsRS {
 func ProcessUpdateSettings(pRequest *domain.SettingsRQ) *domain.SettingsRS {
 	return tool.UpdateSettings(pRequest)
 }
+
+func ProcessGetProductivityTasks(pRequest *domain.ProductivityTasksRQ) *domain.ProductivityTasksRS {
+	return tool.GetProductivityTasks(pRequest)
+}
+
+func ProcessCreateProductivityTasks(pRequest *domain.ProductivityTasksRQ) *domain.ProductivityTasksRS {
+	return tool.CreateProductivityTasks(pRequest)
+}
+
+func ProcessUpdateProductivityTasks(pRequest *domain.ProductivityTasksRQ) *domain.ProductivityTasksRS {
+	return tool.UpdateProductivityTasks(pRequest)
+}
+
+func ProcessDeleteProductivityTasks(pRequest *domain.ProductivityTasksRQ) *domain.ProductivityTasksRS {
+	return tool.DeleteProductivityTasks(pRequest)
+}
+
+func ProcessGetProductivityReport(pRequest *domain.ProductivityReportRQ) *domain.ProductivityReportRS {
+	return tool.GetProductivityReport(pRequest)
+}
+
+func ProcessCreateProductivityReport(pRequest *domain.ProductivityReportRQ) *domain.ProductivityReportRS {
+	return tool.CreateProductivityReport(pRequest)
+}
+
+func ProcessUpdateProductivityReport(pRequest *domain.ProductivityReportRQ) *domain.ProductivityReportRS {
+	return tool.UpdateProductivityReport(pRequest)
+}
+
+func ProcessDeleteProductivityReport(pRequest *domain.ProductivityReportRQ) *domain.ProductivityReportRS {
+	return tool.DeleteProductivityReport(pRequest)
+}
