@@ -15,10 +15,21 @@ import (
 func CreateProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.ProductivityTasksRS {
 	timeResponse := time.Now()
 
-	productivityTasks := util.MappingProductivityTasksRQ(pRequest)
-	_, err := dao.AddProductivityTasks(productivityTasks)
 	// Create response
 	response := DOMAIN.ProductivityTasksRS{}
+
+	// Validation
+	if pRequest.Progress > 100 {
+		message := "Progress can not exceed 100%"
+		log.Error(message)
+		response.Message = message
+		response.Status = "Error"
+		return &response
+	}
+
+	productivityTasks := util.MappingProductivityTasksRQ(pRequest)
+	_, err := dao.AddProductivityTasks(productivityTasks)
+
 	if err != nil {
 		message := "ProductivityTasks wasn't insert"
 		log.Error(message)
@@ -71,7 +82,18 @@ func GetProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.Producti
  */
 func UpdateProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.ProductivityTasksRS {
 	timeResponse := time.Now()
+
 	response := DOMAIN.ProductivityTasksRS{}
+
+	// Validation
+	if pRequest.Progress > 100 {
+		message := "Progress can not exceed 100%"
+		log.Error(message)
+		response.Message = message
+		response.Status = "Error"
+		return &response
+	}
+
 	oldProductivityTasks := dao.GetProductivityTasksByID(pRequest.ID)
 	if oldProductivityTasks != nil {
 
