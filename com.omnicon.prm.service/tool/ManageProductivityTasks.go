@@ -18,11 +18,10 @@ func CreateProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.Produ
 	// Create response
 	response := DOMAIN.ProductivityTasksRS{}
 
-	// Validation
-	if pRequest.Progress > 100 {
-		message := "Progress can not exceed 100%"
-		log.Error(message)
-		response.Message = message
+	// Validations
+	errorMessage := validationRequest(pRequest.Name, pRequest.Scheduled, pRequest.Progress)
+	if errorMessage != "" {
+		response.Message = errorMessage
 		response.Status = "Error"
 		return &response
 	}
@@ -85,11 +84,10 @@ func UpdateProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.Produ
 
 	response := DOMAIN.ProductivityTasksRS{}
 
-	// Validation
-	if pRequest.Progress > 100 {
-		message := "Progress can not exceed 100%"
-		log.Error(message)
-		response.Message = message
+	// Validations
+	errorMessage := validationRequest(pRequest.Name, pRequest.Scheduled, pRequest.Progress)
+	if errorMessage != "" {
+		response.Message = errorMessage
 		response.Status = "Error"
 		return &response
 	}
@@ -181,4 +179,30 @@ func DeleteProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.Produ
 	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
+}
+
+// function of validation request
+func validationRequest(pName string, pScheduled, pProgress float64) string {
+	// Validations
+	if pName == "" {
+		message := "Name can not empty"
+		log.Error(message)
+		return message
+	}
+	if pScheduled <= 0 {
+		message := "Scheduled can not zero or negative"
+		log.Error(message)
+		return message
+	}
+	if pProgress < 0 {
+		message := "Progress can not negative"
+		log.Error(message)
+		return message
+	}
+	if pProgress > 100 {
+		message := "Progress can not exceed 100%"
+		log.Error(message)
+		return message
+	}
+	return ""
 }
