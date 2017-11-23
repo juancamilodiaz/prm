@@ -18,6 +18,14 @@ func CreateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 	// Create response
 	response := DOMAIN.ProductivityReportRS{}
 
+	// Validations
+	errorMessage := validationRequestReport(pRequest.Hours)
+	if errorMessage != "" {
+		response.Message = errorMessage
+		response.Status = "Error"
+		return &response
+	}
+
 	report := dao.GetProductivityReportByTaskIDAndResourceID(pRequest.TaskID, pRequest.ResourceID)
 	if report != nil {
 		message := "ProductivityReport already exist"
@@ -37,6 +45,10 @@ func CreateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 		response.Status = "Error"
 		return &response
 	}
+
+	// update total execute
+	updateTotalExecute(pRequest.TaskID)
+
 	response.Status = "OK"
 	response.Header = util.BuildHeaderResponse(timeResponse)
 
@@ -83,6 +95,15 @@ func GetProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Produc
 func UpdateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.ProductivityReportRS {
 	timeResponse := time.Now()
 	response := DOMAIN.ProductivityReportRS{}
+
+	// Validations
+	errorMessage := validationRequestReport(pRequest.Hours)
+	if errorMessage != "" {
+		response.Message = errorMessage
+		response.Status = "Error"
+		return &response
+	}
+
 	oldProductivityReport := dao.GetProductivityReportByID(pRequest.ID)
 	if oldProductivityReport != nil {
 
@@ -92,7 +113,7 @@ func UpdateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 		if pRequest.ResourceID != 0 {
 			oldProductivityReport.ResourceID = pRequest.ResourceID
 		}
-		if pRequest.Hours != 0 {
+		if pRequest.Hours >= 0 {
 			oldProductivityReport.Hours = pRequest.Hours
 		}
 
@@ -105,6 +126,10 @@ func UpdateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 			response.Status = "Error"
 			return &response
 		}
+
+		// update total execute
+		updateTotalExecute(oldProductivityReport.TaskID)
+
 		response.Status = "OK"
 
 		response.Header = util.BuildHeaderResponse(timeResponse)
@@ -155,4 +180,29 @@ func DeleteProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 	response.Header = util.BuildHeaderResponse(timeResponse)
 
 	return &response
+}
+
+// function of validation request
+func validationRequestReport(pHours float64) string {
+	// Validations
+	if pHours < 0 {
+		message := "Hours can not negative"
+		log.Error(message)
+		return message
+	}
+	return ""
+}
+
+// update total execute
+func updateTotalExecute(pTaskID int) {
+	reportsByTask := dao.GetProductivityReportByTaskID(pTaskID)
+	totalExecute := 0.0
+	for _, report := range reportsByTask {
+		totalExecute += report.Hours
+	}
+	taskToUpdate := dao.GetProductivityTasksByID(pTaskID)
+	if taskToUpdate != nil {
+		taskToUpdate.TotalExecute = totalExecute
+		dao.UpdateProductivityTasks(taskToUpdate)
+	}
 }

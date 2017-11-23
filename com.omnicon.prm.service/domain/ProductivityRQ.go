@@ -14,6 +14,7 @@ type ProductivityTasksRS struct {
 	Status            string
 	Message           string
 	ProductivityTasks []*ProductivityTasks
+	ResourceReports   map[int]*ResourceReport
 }
 
 type ProductivityReportRQ struct {

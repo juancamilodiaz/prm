@@ -88,4 +88,7 @@ func init() {
 	beego.Router("/productivity/createtask", &controllers.ProductivityController{}, "post:CreateTask")
 	beego.Router("/productivity/updatetask", &controllers.ProductivityController{}, "post:UpdateTask")
 	beego.Router("/productivity/deletetask", &controllers.ProductivityController{}, "post:DeleteTask")
+	beego.Router("/productivity/createreport", &controllers.ProductivityController{}, "post:CreateReport")
+	beego.Router("/productivity/updatereport", &controllers.ProductivityController{}, "post:UpdateReport")
+	beego.Router("/productivity/deletereport", &controllers.ProductivityController{}, "post:DeleteReport")
 }

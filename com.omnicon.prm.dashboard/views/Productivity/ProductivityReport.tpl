@@ -3,6 +3,9 @@
 		$('#viewProductivity').DataTable({
 			"columns": [
 				null,
+				{{range $index, $resource := .Resources}}
+					null,
+				{{end}}
 				null,
 				null,
 				null,
@@ -145,6 +148,78 @@
 	$(document).on('click','#deleteTask',function(){
     	$('#confirmModal').modal('show');
 	});
+	
+	$(document).on('click','#manageReport',function(){
+		$('#reportHours').val($('#actualHours').val());
+    	$('#reportModal').modal('show');
+	});	
+	
+	manageReport = function () {
+		if ($('#actualHours').val() == "" && $('#reportHours').val() != "") {
+			createReport();
+			console.log("Create");
+		} else if ($('#actualHours').val() != "" && $('#reportHours').val() != "") {
+			updateReport();
+			console.log("Update");
+		} else if ($('#actualHours').val() != "" && $('#reportHours').val() == "") {
+			deleteReport();
+			console.log("Delete");
+		}
+	}
+	
+	createReport = function () {
+		var settings = {
+			method: 'POST',
+			url: '/productivity/createreport',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: {
+				"TaskID": $('#taskID').val(),
+				"ResourceID": $('#resourceID').val(),
+				"Hours": $('#reportHours').val()
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			validationError(response);
+			searchProductivityReport({{.ProjectID}});
+		});
+	}
+	
+	updateReport = function () {
+		var settings = {
+			method: 'POST',
+			url: '/productivity/updatereport',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: {
+				"ID": $('#reportID').val(),
+				"Hours": $('#reportHours').val()
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			validationError(response);
+			searchProductivityReport({{.ProjectID}});
+		});
+	}
+	
+	deleteReport = function () {
+		var settings = {
+			method: 'POST',
+			url: '/productivity/deletereport',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: {
+				"ID": $('#reportID').val()
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			validationError(response);
+			searchProductivityReport({{.ProjectID}});
+		});
+	}
 </script>
 
 <div class="row">
@@ -190,6 +265,9 @@
       <thead>
          <tr>
             <th>Task</th>
+			{{range $index, $resource := .Resources}}
+				<th>{{$resource.Name}} {{$resource.LastName}}</th>
+			{{end}}
             <th>Total Execute</th>
             <th>Scheduled</th>
 			<th>Progress</th>
@@ -197,9 +275,27 @@
          </tr>
       </thead>
       <tbody>
+		 {{$resources := .Resources}}
+		 {{$resourceReports := .ResourceReports}}
          {{range $key, $productivityTask := .ProductivityTasks}}
          <tr>
             <td>{{$productivityTask.Name}}</td>
+			{{range $index, $resource := $resources}}
+			<td>
+			{{$reportByTask := index $resourceReports $resource.ID}}
+			{{if $reportByTask}}
+				{{$reportHours := index $reportByTask.ReportByTask $productivityTask.ID}}
+				{{if $reportHours}}
+					{{$reportHours.Hours}}
+					<a id="manageReport" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val({{$reportHours.Hours}})"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+				{{else}}
+					<a id="manageReport" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+				{{end}}
+			{{else}}
+				<a id="manageReport" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+			{{end}}
+			</td>
+			{{end}}
             <td>{{$productivityTask.TotalExecute}}</td>
             <td>{{$productivityTask.Scheduled}}</td>
 			<td>{{$productivityTask.Progress}}%</td>
@@ -272,6 +368,36 @@
          <div class="modal-footer" style="text-align:center;">
             <button type="button" id="taskDelete" class="btn btn-default" onclick="deleteTask()" data-dismiss="modal">Yes</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="reportModal" role="dialog">
+   <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 id="modalTitle" class="modal-title">Report Hours</h4>
+         </div>
+         <div class="modal-body">
+			<input type="hidden" id="reportID">
+			<input type="hidden" id="resourceID">
+			<input type="hidden" id="actualHours">
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+               <div class="form-group form-group-sm">
+                  <label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label>
+                  <div class="col-sm-8">
+                     <input type="number" id="reportHours" style="border-radius: 8px;" min="0" max="100">
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="reportAdd" class="btn btn-default" onclick="manageReport()" data-dismiss="modal">OK</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
          </div>
       </div>
    </div>

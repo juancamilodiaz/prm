@@ -57,6 +57,34 @@ func GetProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.Producti
 
 	if productivityTasks != nil && len(productivityTasks) > 0 {
 
+		// Create list of reports
+		var listResourceReports map[int]*DOMAIN.ResourceReport
+		for _, task := range productivityTasks {
+			reports := dao.GetProductivityReportByTaskID(task.ID)
+			for _, report := range reports {
+				if listResourceReports == nil {
+					listResourceReports = make(map[int]*DOMAIN.ResourceReport)
+				}
+				if listResourceReports[report.ResourceID] == nil {
+					listResourceReports[report.ResourceID] = new(DOMAIN.ResourceReport)
+					resource := dao.GetResourceById(report.ResourceID)
+					if resource != nil {
+						listResourceReports[report.ResourceID].ResourceID = resource.ID
+						listResourceReports[report.ResourceID].NameResource = resource.Name + " " + resource.LastName
+						if listResourceReports[report.ResourceID].ReportByTask == nil {
+							listResourceReports[report.ResourceID].ReportByTask = make(map[int]*DOMAIN.Report)
+						}
+					}
+				}
+				listResourceReports[report.ResourceID].ReportByTask[report.TaskID] = new(DOMAIN.Report)
+				listResourceReports[report.ResourceID].ReportByTask[report.TaskID].ID = report.ID
+				listResourceReports[report.ResourceID].ReportByTask[report.TaskID].Hours = report.Hours
+			}
+		}
+
+		// Set of report resources
+		response.ResourceReports = listResourceReports
+
 		response.ProductivityTasks = productivityTasks
 		// Create response
 		response.Status = "OK"

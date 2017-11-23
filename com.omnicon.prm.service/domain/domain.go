@@ -214,3 +214,14 @@ type ProductivityReport struct {
 	ResourceID int     `db:"resource_id"`
 	Hours      float64 `db:"hours"`
 }
+
+type ResourceReport struct {
+	ResourceID   int
+	NameResource string
+	ReportByTask map[int]*Report // Map[taskID]
+}
+
+type Report struct {
+	ID    int // ID report
+	Hours float64
+}
