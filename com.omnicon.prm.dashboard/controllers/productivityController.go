@@ -51,6 +51,15 @@ func (this *ProductivityController) ListProductivity() {
 			defer resTasks.Body.Close()
 			json.NewDecoder(resTasks.Body).Decode(&messageTasks)
 
+			labels := []string{}
+			data := []float64{}
+			for _, task := range messageTasks.ProductivityTasks {
+				labels = append(labels, task.Name)
+				data = append(data, task.TotalExecute)
+			}
+			this.Data["TLabels"] = labels
+			this.Data["TValues"] = data
+
 			this.Data["ProductivityTasks"] = messageTasks.ProductivityTasks
 			this.Data["ResourceReports"] = messageTasks.ResourceReports
 

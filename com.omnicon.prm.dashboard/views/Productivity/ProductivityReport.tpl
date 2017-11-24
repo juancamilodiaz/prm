@@ -1,3 +1,6 @@
+<script src="/static/js/chartjs/Chart.min.js"></script>
+<script src="/static/js/chartjs/Chart.PieceLabel.js"></script>
+
 <script>
 	$(document).ready(function () {
 		$('#viewProductivity').DataTable({
@@ -402,3 +405,46 @@
       </div>
    </div>
 </div>
+
+<div class="col-sm-12" style="margin-top:10px;">
+	<div class="col-sm-6">
+		<p>
+		   	<div class="chart-container" id="chartjs-wrapper">
+				<canvas id="chartjs">
+				</canvas>
+			
+				<script>
+					var seq = 0;
+					{{if .TValues}}
+						seq = {{len .TValues}};
+					{{end}}					
+					var colorF = new Array(seq);
+					colorF.fill("white", 0, seq);
+					chart2=new Chart(document.getElementById("chartjs"),
+					{	"type": "pie",
+						"data": {
+							"labels": {{.TLabels}},
+							"datasets": [{ 
+								"data": {{.TValues}},
+								"backgroundColor": palette('tol', seq).map(function(hex) {
+												   		return '#' + hex;
+												   })
+							}]						
+						},
+						options: {
+						  pieceLabel: {
+						    render: 'percentage',
+						    fontColor: colorF,
+						    precision: 2
+						  }
+						}
+					});
+				</script>
+		
+			</div>
+		</p>
+	</div>
+	<div id="chart_div" class="col-sm-6">
+	</div>
+</div>
+
