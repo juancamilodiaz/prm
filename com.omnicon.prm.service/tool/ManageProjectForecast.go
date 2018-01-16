@@ -201,7 +201,7 @@ func UpdateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.UpdatePro
 		return &response
 	}
 
-	message = "Resource wasn't found in DB"
+	message = "Project forecast wasn't found in DB"
 	log.Error(message)
 	response.Message = message
 	response.ProjectForecast = nil
@@ -224,6 +224,14 @@ func DeleteProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.DeletePro
 			_, err := dao.DeleteProjectForecastAssignsByProjectForecastIdAndTypeId(projectForecastAssigns.ProjectForecastId, projectForecastAssigns.TypeId)
 			if err != nil {
 				log.Error("Failed to delete project forecast assign")
+			}
+		}
+
+		projectsForecastTypes := dao.GetProjectForecastTypesByProjectId(pRequest.ID)
+		for _, projectForecastTypes := range projectsForecastTypes {
+			_, err := dao.DeleteProjectForecastTypesByProjectIdAndTypeId(projectForecastTypes.ProjectForecastId, projectForecastTypes.TypeId)
+			if err != nil {
+				log.Error("Failed to delete project forecast types")
 			}
 		}
 
@@ -412,35 +420,21 @@ func GetProjectsForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.GetProjects
 		projectsForecast = dao.GetAllProjectsForecast()
 	}
 	if projectsForecast != nil && len(projectsForecast) > 0 {
-		/*
-			for _, project := range projectsForecast {
-				resourcesProject := dao.GetProjectResourcesByProjectId(project.ID)
-				if len(resourcesProject) > 0 {
-					project.ResourceAssign = make(map[int64]*DOMAIN.ResourceAssign)
-				}
-				for _, resourceProject := range resourcesProject {
-					resource := dao.GetResourceById(resourceProject.ResourceId)
-					if resource != nil {
-						if resourceProject.Lead {
-							project.Lead = resource.Name
-						}
-
-						resourceSkill := dao.GetResourceSkillsByResourceId(resource.ID)
-						if len(resourceSkill) > 0 {
-							util.MappingSkillsInAResource(resource, resourceSkill)
-						}
-
-						resourceAssign := new(DOMAIN.ResourceAssign)
-						resourceAssign.Resource = resource
-						resourceAssign.Lead = resourceProject.Lead
-						resourceAssign.StartDate = resourceProject.StartDate
-						resourceAssign.EndDate = resourceProject.EndDate
-						project.ResourceAssign[resource.ID] = resourceAssign
-					}
-				}
+		for _, project := range projectsForecast {
+			totalEngineers := 0
+			assignsProject := dao.GetProjectForecastAssignsByProjectId(project.ID)
+			if len(assignsProject) > 0 {
+				project.AssignResources = make(map[int]DOMAIN.ProjectForecastAssignResources)
 			}
-		*/
-
+			for _, assignProject := range assignsProject {
+				assign := DOMAIN.ProjectForecastAssignResources{}
+				assign.Name = assignProject.TypeName
+				assign.NumberResources = assignProject.NumberResources
+				totalEngineers += assignProject.NumberResources
+				project.AssignResources[assignProject.TypeId] = assign
+			}
+			project.TotalEngineers = totalEngineers
+		}
 		response.ProjectForecast = projectsForecast
 		// Create response
 		response.Status = "OK"

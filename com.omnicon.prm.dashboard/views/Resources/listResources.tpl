@@ -221,9 +221,11 @@
 			<td>{{$resource.LastName}}</td>
 			<td>
 			{{$mapOfTypes := index $typesResource $resource.ID}}
+			<ul>
 			{{range $key, $type := $mapOfTypes}}
-				*{{$type}} 
+				<li>{{$type}}</li>
 			{{end}}
+			</ul>
 			</td>
 			<td>{{$resource.Email}}</td>
 			<td>{{$resource.EngineerRange}}</td>

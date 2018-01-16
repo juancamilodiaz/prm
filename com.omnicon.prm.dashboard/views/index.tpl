@@ -19,6 +19,8 @@
 	<script src="/static/js/Utils.js"></script>
 	<script src="/static/js/functions.js"></script>
 	<script src="/static/js/palette/palette.js"></script>
+	<script src="/static/js/jquery.jeditable.js"></script>
+	<script src="/static/js/jquery.jeditable.mini.js"></script>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
@@ -176,6 +178,7 @@
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
           <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">Home</a>
+		  <a ng-click="link('projectsForecast')" onclick="toNav();sendTitle($(this).html());" style="width: 250px;">Forecast Projects</a>
 		  <a class="accordion">Manage</a>
 			<div class="panel-accordion">
 				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>

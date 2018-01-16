@@ -198,7 +198,7 @@
 					<input type="hidden" id="resourceProjectId">
         			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
         				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
+        					<label class="control-label col-sm-4 translatable" data-i18n="ProjectName"> Project Name </label>
           					<div class="col-sm-8">
           						<select id="projectNames" style="inline-size: 174px; border-radius: 8px;">
 								</select>

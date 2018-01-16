@@ -553,17 +553,15 @@ func MappingCreateProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.Pr
 	startDate = &pRequest.StartDate
 	endDate := new(string)
 	endDate = &pRequest.EndDate
-	if startDate == nil || endDate == nil || *startDate == "" || *endDate == "" {
-		log.Error("Dates undefined")
-		return nil
+	if startDate != nil && endDate != nil && *startDate != "" && *endDate != "" {
+		startDateInt, endDateInt, err := ConvertirFechasPeticion(startDate, endDate)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
+		projectForecast.StartDate = time.Unix(startDateInt, 0)
+		projectForecast.EndDate = time.Unix(endDateInt, 0)
 	}
-	startDateInt, endDateInt, err := ConvertirFechasPeticion(startDate, endDate)
-	if err != nil {
-		log.Error(err)
-		return nil
-	}
-	projectForecast.StartDate = time.Unix(startDateInt, 0)
-	projectForecast.EndDate = time.Unix(endDateInt, 0)
 	projectForecast.Hours = pRequest.Hours
 	projectForecast.NumberSites = pRequest.NumberSites
 	projectForecast.NumberProcessPerSite = pRequest.NumberProcessPerSite
@@ -571,15 +569,15 @@ func MappingCreateProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.Pr
 	projectForecast.EstimateCost = pRequest.EstimateCost
 	billingDate := new(string)
 	billingDate = &pRequest.BillingDate
-	if billingDate == nil || *billingDate == "" {
-		log.Error("Billing Date undefined")
-		return nil
+	if billingDate != nil && *billingDate != "" {
+		billingDateInt := GetDateInt64FromString(*billingDate)
+		projectForecast.BillingDate = time.Unix(billingDateInt, 0)
 	}
-	billingDateInt := GetDateInt64FromString(*billingDate)
-	projectForecast.BillingDate = time.Unix(billingDateInt, 0)
+
 	projectForecast.Status = pRequest.Status
 
 	return projectForecast
+
 }
 
 /**

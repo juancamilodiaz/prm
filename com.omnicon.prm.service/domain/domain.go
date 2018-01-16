@@ -166,6 +166,7 @@ type ProjectForecast struct {
 	NumberProcessTotal   int       `db:"number_process_total"`
 	Types                []string
 	AssignResources      map[int]ProjectForecastAssignResources
+	TotalEngineers       int
 	EstimateCost         float64   `db:"estimate_cost"`
 	BillingDate          time.Time `db:"billing_date"`
 	Status               string    `db:"status"`
@@ -189,6 +190,13 @@ type ProjectForecastTypes struct {
 	ID                int `db:"id"`
 	ProjectForecastId int `db:"projectForecast_id"`
 	TypeId            int `db:"type_id"`
+}
+
+type ProjectForecastWorkload struct {
+	MonthNumber  int
+	MOM          int
+	DEV          int
+	ResourceLoad float64
 }
 
 type Settings struct {

@@ -25,6 +25,11 @@ func init() {
 	beego.Router("/resources/types", &controllers.ResourceController{}, "post:GetTypesByResource")
 	beego.Router("/resources/types/unassign", &controllers.ResourceController{}, "post:DeleteTypesByResource")
 	beego.Router("/resources/settype", &controllers.ResourceController{}, "post:SetTypesToResource")
+	// Forecast Projects
+	beego.Router("/projectsForecast", &controllers.ProjectForecastController{}, "post:ListProjectsForecast")
+	beego.Router("/projectsForecast/create", &controllers.ProjectForecastController{}, "post:CreateProjectForecast")
+	beego.Router("/projectsForecast/update", &controllers.ProjectForecastController{}, "post:UpdateProjectForecast")
+	beego.Router("/projectsForecast/delete", &controllers.ProjectForecastController{}, "post:DeleteProjectForecast")
 	// Projects
 	beego.Router("/projects", &controllers.ProjectController{}, "post:ListProjects")
 	beego.Router("/projects/create", &controllers.ProjectController{}, "post:CreateProject")

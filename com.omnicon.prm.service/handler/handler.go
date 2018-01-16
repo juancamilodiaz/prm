@@ -38,7 +38,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/SetResourceToProject", setResourceToProject)
 	http.HandleFunc("/DeleteResourceToProject", deleteResourceToProject)
 	http.HandleFunc("/GetResources", getResources)
-	http.HandleFunc("/GetProjectsForecast", getProjects)
+	http.HandleFunc("/GetProjectsForecast", getProjectsForecast)
 	http.HandleFunc("/GetProjects", getProjects)
 	http.HandleFunc("/GetSkills", getSkills)
 	http.HandleFunc("/GetResourcesToProjects", getResourcesToProjects)
