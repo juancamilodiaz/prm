@@ -234,7 +234,7 @@
 			<td>
 				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}},{{$resource.VisaUS}})" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
-				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}', {{$mapOfTypes}});" data-dismiss="modal">Skills</button>
+				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}', {{$mapOfTypes}});" data-dismiss="modal">Skill Matrix</button>
 				<button class="buttonTable button2" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}},'{{$resource.Name}}'+' '+'{{$resource.LastName}}');" data-dismiss="modal">Assignations</button>
 				<button class="buttonTable button2" onclick="getTypesByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Types</button>
 			</td>

@@ -79,6 +79,7 @@ func GetProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.Producti
 				listResourceReports[report.ResourceID].ReportByTask[report.TaskID] = new(DOMAIN.Report)
 				listResourceReports[report.ResourceID].ReportByTask[report.TaskID].ID = report.ID
 				listResourceReports[report.ResourceID].ReportByTask[report.TaskID].Hours = report.Hours
+				listResourceReports[report.ResourceID].ReportByTask[report.TaskID].HoursBillable = report.HoursBillable
 			}
 		}
 
@@ -132,12 +133,16 @@ func UpdateProductivityTasks(pRequest *DOMAIN.ProductivityTasksRQ) *DOMAIN.Produ
 		if pRequest.TotalExecute != 0 {
 			oldProductivityTasks.TotalExecute = pRequest.TotalExecute
 		}
+		if pRequest.TotalBillable != 0 {
+			oldProductivityTasks.TotalBillable = pRequest.TotalBillable
+		}
 		if pRequest.Scheduled != 0 {
 			oldProductivityTasks.Scheduled = pRequest.Scheduled
 		}
 		if pRequest.Progress != 0 {
 			oldProductivityTasks.Progress = pRequest.Progress
 		}
+		oldProductivityTasks.IsOutOfScope = pRequest.IsOutOfScope
 
 		// Save in DB
 		rowsUpdated, err := dao.UpdateProductivityTasks(oldProductivityTasks)

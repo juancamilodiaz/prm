@@ -398,6 +398,13 @@ td.details-control {
   max-width: 450px;
 }
 
+.chart-container-complete {
+  position: relative;
+  margin: auto;
+  height: 500px;
+  max-width: 100%;
+}
+
 .chart-container-compare {
   position: relative;
   margin: auto;
@@ -472,4 +479,18 @@ div.tabs button.active {
 @keyframes fadeEffect {
     from {opacity: 0;}
     to {opacity: 1;}
+}
+
+/*Table border fix*/
+th.border-fix {
+   border-right-width: 1px !important;
+}
+
+/*Indicator*/
+.Indicator{
+  background-color: #005C8A;
+  color: white;
+  font-weight: bold;
+  padding-left: 4;
+  border-radius: 6px;
 }

@@ -95,6 +95,14 @@ func init() {
 		return base - in
 	})
 
+	beego.AddFuncMap("minusFloat", func(base, in float64) interface{} {
+		return base - in
+	})
+
+	beego.AddFuncMap("division", func(base, in float64) interface{} {
+		return base / in
+	})
+
 	beego.AddFuncMap("splitEmail", func(pString string) []string {
 		return strings.Split(pString, ";")
 	})

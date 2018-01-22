@@ -19,7 +19,7 @@ func CreateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 	response := DOMAIN.ProductivityReportRS{}
 
 	// Validations
-	errorMessage := validationRequestReport(pRequest.Hours)
+	errorMessage := validationRequestReport(pRequest.Hours, pRequest.HoursBillable)
 	if errorMessage != "" {
 		response.Message = errorMessage
 		response.Status = "Error"
@@ -97,7 +97,7 @@ func UpdateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 	response := DOMAIN.ProductivityReportRS{}
 
 	// Validations
-	errorMessage := validationRequestReport(pRequest.Hours)
+	errorMessage := validationRequestReport(pRequest.Hours, pRequest.HoursBillable)
 	if errorMessage != "" {
 		response.Message = errorMessage
 		response.Status = "Error"
@@ -113,8 +113,15 @@ func UpdateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 		if pRequest.ResourceID != 0 {
 			oldProductivityReport.ResourceID = pRequest.ResourceID
 		}
-		if pRequest.Hours >= 0 {
-			oldProductivityReport.Hours = pRequest.Hours
+		if !pRequest.IsBillable {
+			if pRequest.Hours >= 0 {
+				oldProductivityReport.Hours = pRequest.Hours
+			}
+		}
+		if pRequest.IsBillable {
+			if pRequest.HoursBillable >= 0 {
+				oldProductivityReport.HoursBillable = pRequest.HoursBillable
+			}
 		}
 
 		// Save in DB
@@ -183,9 +190,9 @@ func DeleteProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 }
 
 // function of validation request
-func validationRequestReport(pHours float64) string {
+func validationRequestReport(pHours, pHoursBillable float64) string {
 	// Validations
-	if pHours < 0 {
+	if pHours < 0 || pHoursBillable < 0 {
 		message := "Hours can not negative"
 		log.Error(message)
 		return message
@@ -197,12 +204,15 @@ func validationRequestReport(pHours float64) string {
 func updateTotalExecute(pTaskID int) {
 	reportsByTask := dao.GetProductivityReportByTaskID(pTaskID)
 	totalExecute := 0.0
+	totalBillable := 0.0
 	for _, report := range reportsByTask {
 		totalExecute += report.Hours
+		totalBillable += report.HoursBillable
 	}
 	taskToUpdate := dao.GetProductivityTasksByID(pTaskID)
 	if taskToUpdate != nil {
 		taskToUpdate.TotalExecute = totalExecute
+		taskToUpdate.TotalBillable = totalBillable
 		dao.UpdateProductivityTasks(taskToUpdate)
 	}
 }

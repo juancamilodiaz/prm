@@ -138,8 +138,8 @@ func AddProductivityReport(pProductivityReport *DOMAIN.ProductivityReport) (int,
 	defer session.Close()
 	// Insert ProductivityReport in DB
 	res, err := session.InsertInto("ProductivityReport").Columns(
-		"task_id", "resource_id", "hours").Values(
-		pProductivityReport.TaskID, pProductivityReport.ResourceID, pProductivityReport.Hours).Exec()
+		"task_id", "resource_id", "hours", "hours_billable").Values(
+		pProductivityReport.TaskID, pProductivityReport.ResourceID, pProductivityReport.Hours, pProductivityReport.HoursBillable).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -161,8 +161,8 @@ func UpdateProductivityReport(pProductivityReport *DOMAIN.ProductivityReport) (i
 	// Close session when ends the method
 	defer session.Close()
 	// Update ProductivityReport in DB
-	q := session.Update("ProductivityReport").Set("hours = ?",
-		pProductivityReport.Hours).Where("id = ?", pProductivityReport.ID)
+	q := session.Update("ProductivityReport").Set("hours = ?, hours_billable = ?",
+		pProductivityReport.Hours, pProductivityReport.HoursBillable).Where("id = ?", pProductivityReport.ID)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)

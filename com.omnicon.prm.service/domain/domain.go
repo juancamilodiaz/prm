@@ -208,19 +208,22 @@ type Settings struct {
 }
 
 type ProductivityTasks struct {
-	ID           int     `db:"id"`
-	ProjectID    int     `db:"project_id"`
-	Name         string  `db:"name"`
-	TotalExecute float64 `db:"total_execute"`
-	Scheduled    float64 `db:"scheduled"`
-	Progress     float64 `db:"progress"`
+	ID            int     `db:"id"`
+	ProjectID     int     `db:"project_id"`
+	Name          string  `db:"name"`
+	TotalExecute  float64 `db:"total_execute"`
+	Scheduled     float64 `db:"scheduled"`
+	Progress      float64 `db:"progress"`
+	IsOutOfScope  bool    `db:"is_out_of_scope"`
+	TotalBillable float64 `db:"total_billable"`
 }
 
 type ProductivityReport struct {
-	ID         int     `db:"id"`
-	TaskID     int     `db:"task_id"`
-	ResourceID int     `db:"resource_id"`
-	Hours      float64 `db:"hours"`
+	ID            int     `db:"id"`
+	TaskID        int     `db:"task_id"`
+	ResourceID    int     `db:"resource_id"`
+	Hours         float64 `db:"hours"`
+	HoursBillable float64 `db:"hours_billable"`
 }
 
 type ResourceReport struct {
@@ -230,6 +233,7 @@ type ResourceReport struct {
 }
 
 type Report struct {
-	ID    int // ID report
-	Hours float64
+	ID            int // ID report
+	Hours         float64
+	HoursBillable float64
 }

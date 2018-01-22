@@ -1,12 +1,14 @@
 package domain
 
 type ProductivityTasksRQ struct {
-	ID           int
-	ProjectID    int
-	Name         string
-	TotalExecute float64
-	Scheduled    float64
-	Progress     float64
+	ID            int
+	ProjectID     int
+	Name          string
+	TotalExecute  float64
+	Scheduled     float64
+	Progress      float64
+	IsOutOfScope  bool
+	TotalBillable float64
 }
 
 type ProductivityTasksRS struct {
@@ -18,10 +20,12 @@ type ProductivityTasksRS struct {
 }
 
 type ProductivityReportRQ struct {
-	ID         int
-	TaskID     int
-	ResourceID int
-	Hours      float64
+	ID            int
+	TaskID        int
+	ResourceID    int
+	Hours         float64
+	HoursBillable float64
+	IsBillable    bool
 }
 
 type ProductivityReportRS struct {

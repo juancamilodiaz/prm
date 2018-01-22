@@ -692,8 +692,10 @@ func MappingProductivityTasksRQ(pDomain *domain.ProductivityTasksRQ) *domain.Pro
 	productivityTasks.ProjectID = pDomain.ProjectID
 	productivityTasks.Name = pDomain.Name
 	productivityTasks.TotalExecute = pDomain.TotalExecute
+	productivityTasks.TotalBillable = pDomain.TotalBillable
 	productivityTasks.Scheduled = pDomain.Scheduled
 	productivityTasks.Progress = pDomain.Progress
+	productivityTasks.IsOutOfScope = pDomain.IsOutOfScope
 
 	return productivityTasks
 }
@@ -722,6 +724,7 @@ func MappingProductivityReportRQ(pDomain *domain.ProductivityReportRQ) *domain.P
 	productivityReport.TaskID = pDomain.TaskID
 	productivityReport.ResourceID = pDomain.ResourceID
 	productivityReport.Hours = pDomain.Hours
+	productivityReport.HoursBillable = pDomain.HoursBillable
 
 	return productivityReport
 }

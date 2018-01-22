@@ -96,8 +96,8 @@ func AddProductivityTasks(pProductivityTasks *DOMAIN.ProductivityTasks) (int, er
 	defer session.Close()
 	// Insert ProductivityTasks in DB
 	res, err := session.InsertInto("ProductivityTasks").Columns(
-		"project_id", "name", "total_execute", "scheduled", "progress").Values(
-		pProductivityTasks.ProjectID, pProductivityTasks.Name, pProductivityTasks.TotalExecute, pProductivityTasks.Scheduled, pProductivityTasks.Progress).Exec()
+		"project_id", "name", "total_execute", "total_billable", "scheduled", "progress", "is_out_of_scope").Values(
+		pProductivityTasks.ProjectID, pProductivityTasks.Name, pProductivityTasks.TotalExecute, pProductivityTasks.TotalBillable, pProductivityTasks.Scheduled, pProductivityTasks.Progress, pProductivityTasks.IsOutOfScope).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -119,8 +119,8 @@ func UpdateProductivityTasks(pProductivityTasks *DOMAIN.ProductivityTasks) (int,
 	// Close session when ends the method
 	defer session.Close()
 	// Update ProductivityTasks in DB
-	q := session.Update("ProductivityTasks").Set("name = ?, total_execute = ?, scheduled = ?, progress = ?",
-		pProductivityTasks.Name, pProductivityTasks.TotalExecute, pProductivityTasks.Scheduled, pProductivityTasks.Progress).Where("id = ?", pProductivityTasks.ID)
+	q := session.Update("ProductivityTasks").Set("name = ?, total_execute = ?, total_billable = ?, scheduled = ?, progress = ?, is_out_of_scope = ?",
+		pProductivityTasks.Name, pProductivityTasks.TotalExecute, pProductivityTasks.TotalBillable, pProductivityTasks.Scheduled, pProductivityTasks.Progress, pProductivityTasks.IsOutOfScope).Where("id = ?", pProductivityTasks.ID)
 	res, err := q.Exec()
 	if err != nil {
 		log.Error(err)
