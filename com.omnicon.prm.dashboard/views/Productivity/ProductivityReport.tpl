@@ -331,11 +331,31 @@
 		doc.setFontSize(20);
 		doc.text("Productivity Report", 139.5, 20, 'center' );
 		
-		doc.text("Tasks Executed Distribution", 69.25, 40, 'center' );
-		doc.addImage(canvasTaskExecutedImg, 'JPEG', 10, 60, 100, 100);
+		doc.roundedRect(7, 30, 57, 20, 3, 3); // empty square  
+		doc.text("Overall Progress", 35, 40, 'center' );
+		doc.text("{{.TOverallProgress}} %", 35, 48, 'center' );
 		
-		doc.text("Percentage of billable task", 210, 40, 'center' );
-		doc.addImage(canvasBillableImg, 'JPEG', 170, 60, 100, 100);
+		doc.roundedRect(66, 30, 48, 20, 3, 3); // empty square 
+		doc.text("Quoted Hours", 90, 40, 'center' );
+		doc.text("{{.TQuotedHours}} h", 90, 48, 'center' );
+		
+		doc.roundedRect(116, 30, 48, 20, 3, 3); // empty square 
+		doc.text("Billable Hours", 140, 40, 'center' );
+		doc.text("{{.TBillableHours}} h", 140, 48, 'center' );
+		
+		doc.roundedRect(166, 30, 51, 20, 3, 3); // empty square 
+		doc.text("Total Executed", 191, 40, 'center' );
+		doc.text("{{.TExecutedHours}} h", 191, 48, 'center' );
+		
+		doc.roundedRect(219, 30, 49, 20, 3, 3); // empty square 
+		doc.text("Out Of Scope", 243, 40, 'center' );
+		doc.text("{{.TOutOfScopeHours}} h", 243, 48, 'center' );
+		
+		doc.text("Tasks Executed Distribution", 69.25, 70, 'center' );
+		doc.addImage(canvasTaskExecutedImg, 'JPEG', 10, 80, 100, 100);
+		
+		doc.text("Percentage of billable task", 210, 70, 'center' );
+		doc.addImage(canvasBillableImg, 'JPEG', 170, 80, 100, 100);
 		
 		doc.addPage();
 		
