@@ -51,6 +51,7 @@ func CreateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.CreatePro
 						projectForecastAssigns.TypeName = typeRS.Types[0].Name
 						projectForecastAssigns.ProjectForecastName = projectForecast.Name
 						projectForecastAssigns.NumberResources = mapProjectForecastAssigns.NumberResources
+
 						dao.AddProjectForecastAssigns(projectForecastAssigns)
 					}
 				}
@@ -182,12 +183,57 @@ func UpdateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.UpdatePro
 
 		// Update project name in other tables
 		projectsForecastAssigns := dao.GetProjectForecastAssignsByProjectId(pRequest.ID)
-		for _, projectForecastAssign := range projectsForecastAssigns {
-			for idStr, value := range pRequest.AssignResources {
-				if idStr == strconv.Itoa(projectForecastAssign.TypeId) {
-					projectForecastAssign.NumberResources = value.NumberResources
-					dao.UpdateProjectForecastAssigns(projectForecastAssign)
+		if len(projectsForecastAssigns) == 0 {
+			forecastAssign := DOMAIN.ProjectForecastAssigns{}
+			forecastAssign.ProjectForecastId = pRequest.ID
+			forecastAssign.ProjectForecastName = pRequest.Name
+
+			keys := make([]int, 0, len(pRequest.AssignResources))
+			typeNames := make([]string, 0, len(pRequest.AssignResources))
+			numberResources := make([]int, 0, len(pRequest.AssignResources))
+			for key, value := range pRequest.AssignResources {
+				keyInt, _ := strconv.Atoi(key)
+				keys = append(keys, keyInt)
+				typeNames = append(typeNames, value.Name)
+				numberResources = append(numberResources, value.NumberResources)
+			}
+			if len(keys) > 0 {
+				forecastAssign.TypeId = keys[0]
+				forecastAssign.TypeName = typeNames[0]
+				forecastAssign.NumberResources = numberResources[0]
+			}
+			dao.AddProjectForecastAssigns(&forecastAssign)
+		} else {
+			findIt := false
+			for _, projectForecastAssign := range projectsForecastAssigns {
+				for idStr, value := range pRequest.AssignResources {
+					if idStr == strconv.Itoa(projectForecastAssign.TypeId) {
+						findIt = true
+						projectForecastAssign.NumberResources = value.NumberResources
+						dao.UpdateProjectForecastAssigns(projectForecastAssign)
+					}
 				}
+			}
+			if !findIt {
+				forecastAssign := DOMAIN.ProjectForecastAssigns{}
+				forecastAssign.ProjectForecastId = pRequest.ID
+				forecastAssign.ProjectForecastName = pRequest.Name
+
+				keys := make([]int, 0, len(pRequest.AssignResources))
+				typeNames := make([]string, 0, len(pRequest.AssignResources))
+				numberResources := make([]int, 0, len(pRequest.AssignResources))
+				for key, value := range pRequest.AssignResources {
+					keyInt, _ := strconv.Atoi(key)
+					keys = append(keys, keyInt)
+					typeNames = append(typeNames, value.Name)
+					numberResources = append(numberResources, value.NumberResources)
+				}
+				if len(keys) > 0 {
+					forecastAssign.TypeId = keys[0]
+					forecastAssign.TypeName = typeNames[0]
+					forecastAssign.NumberResources = numberResources[0]
+				}
+				dao.AddProjectForecastAssigns(&forecastAssign)
 			}
 		}
 

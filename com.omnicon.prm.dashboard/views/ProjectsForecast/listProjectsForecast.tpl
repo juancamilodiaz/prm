@@ -3,27 +3,29 @@
 	$(document).ready(function(){
 	
 		var oTable = $('#viewProjectsForecast').removeAttr('width').dataTable({
+			"order": [[ 2, "asc" ]],
 			"fnDrawCallback": function( oSettings ) {
 		    },
+			"bAutoWidth": true, 
 			scrollX:true,
 			"columns":[
-				{name: 'BusinessUnit', "className":'size-small'},
-				{name: 'Region', "className":'size-small'},
-				{name: 'ID', "className":'size-small'},
-				{name: 'Types', "className":'size-small'},
-				{name: 'Name', "className":'size-small'},
-				{name: 'Description', "className":'size-small'},
-				{name: 'StartDate', "className":'size-small'},
-				{name: 'EndDate', "className":'size-small'},
-				{name: 'NumberSites', "className":'size-small'},
-				{name: 'NumberProcessPerSite', "className":'size-small'},
-				{name: 'MOMResources', "className":'size-small'},
-				{name: 'DEVResources', "className":'size-small'},
-				{name: 'TotalResources', "className":'size-small'},
-				{name: 'EstimateCost', "className":'size-small'},
-				{name: 'BillingDate', "className":'size-small'},
-				{name: 'Status', "className":'size-small'},
-				{name: 'Options', "className":'size-small', "searchable":false}
+				{name: 'BusinessUnit', "orderable": false},
+				{name: 'Region', "orderable": false},
+				{name: 'ID', "orderable": false},
+				{name: 'Types', "orderable": false},
+				{name: 'Name', "orderable": false},
+				{name: 'Description', "orderable": false},
+				{name: 'StartDate', "orderable": false},
+				{name: 'EndDate', "orderable": false},
+				{name: 'NumberSites', "orderable": false},
+				{name: 'NumberProcessPerSite', "orderable": false},
+				{name: 'MOMResources', "orderable": false},
+				{name: 'DEVResources', "orderable": false},
+				{name: 'TotalResources', "orderable": false},
+				{name: 'EstimateCost', "orderable": false},
+				{name: 'BillingDate', "orderable": false},
+				{name: 'Status', "orderable": false},
+				{name: 'Options', "searchable":false, "orderable": false}
 			],
 			paging:false,
 			fields: [	
@@ -89,14 +91,9 @@
 		$('.edittext').editable(function(value, settings) {
 			var aPos = oTable.fnGetPosition( this )[2];
 			var rPos = $(this).context._DT_CellIndex.row;
-			console.log(rPos);
-			var id = oTable[0].rows[rPos].cells[2].innerText;
-			console.log(id);
+			var id = oTable[0].rows[rPos+1].cells[2].innerText;
 			var columns = oTable.api().columns();
-			console.log(columns);
 			var field = columns.context[0].aoColumns[aPos].name;
-			console.log(field);
-			console.log(value);
 			var myObj = {};
 			myObj["ID"] = parseInt(id);
 			myObj[field]=value;
@@ -125,14 +122,9 @@
 		 $('.edittextarea').editable(function(value, settings) {
 			var aPos = oTable.fnGetPosition( this )[2];
 			var rPos = $(this).context._DT_CellIndex.row;
-			console.log(rPos);
-			var id = oTable[0].rows[rPos].cells[2].innerText;
-			console.log(id);
+			var id = oTable[0].rows[rPos+1].cells[2].innerText;
 			var columns = oTable.api().columns();
-			console.log(columns);
 			var field = columns.context[0].aoColumns[aPos].name;
-			console.log(field);
-			console.log(value);
 			var myObj = {};
 			myObj["ID"] = parseInt(id);
 			myObj[field]=value;
@@ -165,23 +157,15 @@
 		$('.editResourceAssign').editable(function(value, settings) {
 			var aPos = oTable.fnGetPosition( this )[2];
 			var rPos = $(this).context._DT_CellIndex.row;
-			console.log(rPos);
-			var id = oTable[0].rows[rPos].cells[2].innerText;
-			console.log(id);
+			var id = oTable[0].rows[rPos+1].cells[2].innerText;
 			var columns = oTable.api().columns();
-			console.log(columns);
 			var field = columns.context[0].aoColumns[aPos].name;
-			console.log(field);
-			console.log(value);
 			var myObj = {};
 			myObj["ID"] = parseInt(id);
 			var myAssignMap = {};
 			var typesResources = {{.TypesResources}};
-			console.log({{.TypesResources}});
 			for(var i = 0; i<{{len .TypesResources}}; i++){
 				var projectAssignResources = {};
-				console.log(typesResources[i]);
-				console.log(typesResources[i]["Name"]);
 				if (field === "MOMResources" && typesResources[i]["Name"] === "MOM Engineer") {
 					projectAssignResources["Name"] = typesResources[i]["Name"];
 					projectAssignResources["NumberResources"] = parseInt(value);
@@ -196,7 +180,6 @@
 			
 			myObj["AssignResources"]=myAssignMap;
 			var json = JSON.stringify(myObj);
-			console.log(json);
 	        var settings = {
 				method: 'POST',
 				url: '/projectsForecast/update',
@@ -232,26 +215,27 @@
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
 		$('#buttonOption').html("New Forecast Project");
-		$('#buttonOption').attr("onclick","createForecastProject()");
+		//$('#buttonOption').attr("onclick","createForecastProject()");
+		$('#buttonOption').attr("data-toggle", "modal");
+		$('#buttonOption').attr("data-target", "#projectForecastModal");
+		$('#buttonOption').attr("onclick","configureCreateModal()");
 		
 		sendTitle("Forecast Projects");
-		
+				
 	});
 	
 	configureCreateModal = function(){
 		
-		$("#projectID").val(null);
-		$("#projectOperationCenter").val(null);
-		$("#projectWorkOrder").val(null);
-		$("#projectName").val(null);
-		$("#projectStartDate").val(null);		
-		$("#projectEndDate").val(null);
-		$("#projectActive").prop('checked', false);
-		$("#leaderID").val(0);
+		$("#projectForecastID").val(null);
+		$("#projectBusinessUnit").val(null);
+		$("#projectForecastRegion").val(null);
+		$("#projectForecastName").val(null);
+		$("#projectForecastStartDate").val(null);		
+		$("#projectForecastEndDate").val(null);
 		
-		$("#modalProjectTitle").html("Create Project");
-		$("#projectUpdate").css("display", "none");
-		$("#projectCreate").css("display", "inline-block");
+		$("#modalProjectForecastTitle").html("Create Forecast Project");
+		$("#projectForecastUpdate").css("display", "none");
+		$("#projectForecastCreate").css("display", "inline-block");
 	}
 	
 	configureUpdateModal = function(pID, pOperationCenter, pWorkOrder, pName, pStartDate, pEndDate, pActive, pLeaderID){
@@ -284,6 +268,11 @@
 				'Content-Type': undefined
 			},
 			data: { 
+				"BusinessUnit": $('#projectBusinessUnit').val(),
+				"Region": $('#projectForecastRegion').val(),
+				"Name": $('#projectForecastName').val(),
+				"StartDate": $('#projectForecastStartDate').val(),
+				"EndDate": $('#projectForecastEndDate').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -400,6 +389,23 @@
 	</div>
 	<div id="Planning" class="tabscontent">
 		<table id="viewProjectsForecast" class="table table-striped table-bordered">
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 6%"/>
+			<col style="width: 4%"/>
 			<thead>
 				<tr>
 					<th>Business Unit</th>
@@ -443,13 +449,29 @@
 						<td id ="DEVEngineers" class="editResourceAssign">0</td>
 					{{end}}
 					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
-						{{if eq "MOM Engineer" $assignResources.Name}}
-							<td id ="MOMEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
-						{{end}}
+						{{if eq (len $projectForecast.AssignResources) 1}}
+							{{if eq "MOM Engineer" $assignResources.Name}}
+								<td id ="MOMEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+							{{else}}
+								<td id ="MOMEngineers" class="editResourceAssign">0</td>
+							{{end}}
+						{{else}}
+							{{if eq "MOM Engineer" $assignResources.Name}}
+								<td id ="MOMEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+							{{end}}
+						{{end}}												
 					{{end}}
 					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
-						{{if eq "Developer" $assignResources.Name}}
-							<td id ="DEVEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+						{{if eq (len $projectForecast.AssignResources) 1}}
+							{{if eq "Developer" $assignResources.Name}}
+								<td id ="DEVEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+							{{else}}
+								<td id ="DEVEngineers" class="editResourceAssign">0</td>
+							{{end}}
+						{{else}}
+							{{if eq "Developer" $assignResources.Name}}
+								<td id ="DEVEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+							{{end}}
 						{{end}}
 					{{end}}
 					
@@ -471,37 +493,37 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="projectModal" role="dialog">
+<div class="modal fade" id="projectForecastModal" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalProjectTitle" class="modal-title"></h4>
+        <h4 id="modalProjectForecastTitle" class="modal-title"></h4>
       </div>
       <div class="modal-body">
-        <input type="hidden" id="projectID">
+        <input type="hidden" id="projectForecastID">
         <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Operation Center"> Operation Center </label>
+        		<label class="control-label col-sm-4 translatable" data-i18n="Business Unit"> Business Unit </label>
               <div class="col-sm-8">
-              	<input type="text" id="projectOperationCenter" style="border-radius: 8px;">
+              	<input type="text" id="projectBusinessUnit" style="border-radius: 8px;">
         		</div>
           </div>
         </div>
         <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Work Order"> Work Order </label>
+        		<label class="control-label col-sm-4 translatable" data-i18n="Region"> Region </label>
               <div class="col-sm-8">
-              	<input type="number" id="projectWorkOrder" style="border-radius: 8px;">
+              	<input type="text" id="projectForecastRegion" style="border-radius: 8px;">
         		</div>
           </div>
         </div>
         <div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
+        		<label class="control-label col-sm-4 translatable" data-i18n="Project Name"> Project Name </label>
               <div class="col-sm-8">
-              	<input type="text" id="projectName" style="border-radius: 8px;">
+              	<input type="text" id="projectForecastName" style="border-radius: 8px;">
         		</div>
           </div>
         </div>
@@ -509,7 +531,7 @@
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
               <div class="col-sm-8">
-              	<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;">
+              	<input type="date" id="projectForecastStartDate" style="inline-size: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
@@ -517,11 +539,11 @@
         	<div class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
               <div class="col-sm-8">
-              	<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;">
+              	<input type="date" id="projectForecastEndDate" style="inline-size: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
-		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+		<!--div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div id="divProjectType" class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
              	<div class="col-sm-8">
@@ -553,11 +575,11 @@
 					</select>
 				</div>    
 			</div>
-		</div>
+		</div-->
       </div>
       <div class="modal-footer">
-        <button type="button" id="projectCreate" class="btn btn-default" onclick="createProject()" data-dismiss="modal">Create</button>
-		<button type="button" id="projectUpdate" class="btn btn-default" onclick="updateProject()" data-dismiss="modal">Update</button>
+        <button type="button" id="projectForecastCreate" class="btn btn-default" onclick="createForecastProject()" data-dismiss="modal">Create</button>
+		<button type="button" id="projectForecastUpdate" class="btn btn-default" onclick="" data-dismiss="modal">Update</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>
