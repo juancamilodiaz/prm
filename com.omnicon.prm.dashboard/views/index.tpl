@@ -9,7 +9,8 @@
   
 	<script src="/static/js/JQuery/jquery.js"></script>
 	<script src="/static/js/DataTables/datatables.min.js"></script>
-	<script src="/static/js/DataTables/DataTables-1.10.15/js/dataTables.bootstrap4.min.js"></script>
+	<script src="/static/js/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script src="/static/js/DataTables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
 	<script src="/static/js/JQueryUI/jquery-ui.min.js"></script>
 	<script src="/static/js/Bootstrap/js/popper.min.js"></script>
 	<script src="/static/js/Bootstrap/js/bootstrap.min.js"></script>
@@ -25,9 +26,14 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
 	
+	<script src="/static/js/Editor-1.7.0/js/dataTables.editor.min.js"></script>
+	
 	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	
-	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.15/css/dataTables.bootstrap4.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/Editor-1.7.0/css/editor.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.16/css/jquery.dataTables.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css">

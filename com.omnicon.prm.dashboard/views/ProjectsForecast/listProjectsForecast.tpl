@@ -1,35 +1,11 @@
 <script>
 	var editor; 
 	$(document).ready(function(){
-	
-		var oTable = $('#viewProjectsForecast').removeAttr('width').dataTable({
-			"order": [[ 2, "asc" ]],
-			"fnDrawCallback": function( oSettings ) {
-		    },
-			"bAutoWidth": true, 
-			scrollX:true,
-			"columns":[
-				{name: 'BusinessUnit', "orderable": false},
-				{name: 'Region', "orderable": false},
-				{name: 'ID', "orderable": false},
-				{name: 'Types', "orderable": false},
-				{name: 'Name', "orderable": false},
-				{name: 'Description', "orderable": false},
-				{name: 'StartDate', "orderable": false},
-				{name: 'EndDate', "orderable": false},
-				{name: 'NumberSites', "orderable": false},
-				{name: 'NumberProcessPerSite', "orderable": false},
-				{name: 'MOMResources', "orderable": false},
-				{name: 'DEVResources', "orderable": false},
-				{name: 'TotalResources', "orderable": false},
-				{name: 'EstimateCost', "orderable": false},
-				{name: 'BillingDate', "orderable": false},
-				{name: 'Status', "orderable": false},
-				{name: 'Options', "searchable":false, "orderable": false}
-			],
-			paging:false,
-			fields: [	
-				{
+		
+		editor = new $.fn.dataTable.Editor( {
+	        table: "#viewProjectsForecast",
+			idSrc: 'id',
+	        fields: [ {
 	                label: "Business Unit:",
 	                name: "business_unit"
 	            }, {
@@ -85,124 +61,40 @@
 	                name: "options"
 	            }
 	        ]
-		});
+	    } );
 		
-		/* Apply the jEditable handlers to the table */
-		$('.edittext').editable(function(value, settings) {
-			var aPos = oTable.fnGetPosition( this )[2];
-			var rPos = $(this).context._DT_CellIndex.row;
-			var id = oTable[0].rows[rPos+1].cells[2].innerText;
-			var columns = oTable.api().columns();
-			var field = columns.context[0].aoColumns[aPos].name;
-			var myObj = {};
-			myObj["ID"] = parseInt(id);
-			myObj[field]=value;
-			var json = JSON.stringify(myObj);
-	        var settings = {
-				method: 'POST',
-				url: '/projectsForecast/update',
-				headers: {
-					'Content-Type': undefined
-				},
-				data: myObj
-			}	
+		// Activate an inline edit on click of a table cell
+	    $('#viewProjectsForecast').on( 'click', 'tbody td:not(:first-child)', function (e) {
+	        editor.inline( this, 'id' );
+	    } );
 		
-			//Call the service to update data in the project
-			$.ajax(settings).done(function (response) {		
-				var data = {
-					"default":true
-				}
-				reload('/projectsForecast',data);
-			});	        
-	    }, {
-		    height: "14px",
-        	width: "100%",
-			tooltip: "Click to edit...",
-		});
-		 $('.edittextarea').editable(function(value, settings) {
-			var aPos = oTable.fnGetPosition( this )[2];
-			var rPos = $(this).context._DT_CellIndex.row;
-			var id = oTable[0].rows[rPos+1].cells[2].innerText;
-			var columns = oTable.api().columns();
-			var field = columns.context[0].aoColumns[aPos].name;
-			var myObj = {};
-			myObj["ID"] = parseInt(id);
-			myObj[field]=value;
-			var json = JSON.stringify(myObj);
-	        var settings = {
-				method: 'POST',
-				url: '/projectsForecast/update',
-				headers: {
-					'Content-Type': undefined
-				},
-				data: myObj
-			}	
-		
-			//Call the service to update data in the project
-			$.ajax(settings).done(function (response) {	
-				var data = {
-					"default":true
-				}
-				reload('/projectsForecast',data);		
-			});	        
-	    }, {
-		    height: "14px",
-        	width: "100%",
-			type: "textarea",
-			cancel    : "Cancel",
-         	submit    : "OK",
-			tooltip: "Click to edit...",
-		});
-		
-		$('.editResourceAssign').editable(function(value, settings) {
-			var aPos = oTable.fnGetPosition( this )[2];
-			var rPos = $(this).context._DT_CellIndex.row;
-			var id = oTable[0].rows[rPos+1].cells[2].innerText;
-			var columns = oTable.api().columns();
-			var field = columns.context[0].aoColumns[aPos].name;
-			var myObj = {};
-			myObj["ID"] = parseInt(id);
-			var myAssignMap = {};
-			var typesResources = {{.TypesResources}};
-			for(var i = 0; i<{{len .TypesResources}}; i++){
-				var projectAssignResources = {};
-				if (field === "MOMResources" && typesResources[i]["Name"] === "MOM Engineer") {
-					projectAssignResources["Name"] = typesResources[i]["Name"];
-					projectAssignResources["NumberResources"] = parseInt(value);
-					myAssignMap[typesResources[i]["ID"].toString()] = projectAssignResources;
-				}
-				if (field === "DEVResources" && typesResources[i]["Name"] === "Developer") {
-					projectAssignResources["Name"] = typesResources[i]["Name"];
-					projectAssignResources["NumberResources"] = parseInt(value);
-					myAssignMap[typesResources[i]["ID"].toString()] = projectAssignResources;
-				}			
-			}
-			
-			myObj["AssignResources"]=myAssignMap;
-			var json = JSON.stringify(myObj);
-	        var settings = {
-				method: 'POST',
-				url: '/projectsForecast/update',
-				headers: {
-					'Content-Type': undefined
-				},
-				data: {
-					"AssignResources" : json
-				}
-			}	
-		
-			//Call the service to update data in the project
-			$.ajax(settings).done(function (response) {	
-				var data = {
-					"default":true
-				}
-				reload('/projectsForecast',data);		
-			});	        
-	    }, {
-		    height: "14px",
-        	width: "100%",
-			tooltip: "Click to edit...",
-		});
+		var oTable = $('#viewProjectsForecast').DataTable( {
+	        dom: "Bfrtip",
+	        order: [[ 1, 'asc' ]],
+	        columns: [
+	            {name: 'BusinessUnit', "orderable": false, "className":'editable'},
+				{name: 'Region', "orderable": false, "className":'editable'},
+				{name: 'ID', "orderable": false},
+				{name: 'Types', "orderable": false, "className":'editable'},
+				{name: 'Name', "orderable": false, "className":'editable'},
+				{name: 'Description', "orderable": false, "className":'editable'},
+				{name: 'StartDate', "orderable": false, "className":'editable'},
+				{name: 'EndDate', "orderable": false, "className":'editable'},
+				{name: 'NumberSites', "orderable": false, "className":'editable'},
+				{name: 'NumberProcessPerSite', "orderable": false, "className":'editable'},
+				{name: 'MOMResources', "orderable": false, "className":'editable'},
+				{name: 'DEVResources', "orderable": false, "className":'editable'},
+				{name: 'TotalResources', "orderable": false},
+				{name: 'EstimateCost', "orderable": false, "className":'editable'},
+				{name: 'BillingDate', "orderable": false, "className":'editable'},
+				{name: 'Status', "orderable": false, "className":'editable'},
+				{name: 'Options', "searchable":false, "orderable": false}
+	        ],
+	        select: {
+	            style:    'os',
+	            selector: 'td:first-child'
+	        }
+	    } );
 				
 		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
@@ -430,47 +322,47 @@
 			<tbody>
 			 	{{range $key, $projectForecast := .ProjectsForecast}}
 				<tr>
-					<td class="edittext">{{$projectForecast.BusinessUnit}}</td>
-					<td class="edittext">{{$projectForecast.Region}}</td>
+					<td>{{$projectForecast.BusinessUnit}}</td>
+					<td>{{$projectForecast.Region}}</td>
 					<td>{{$projectForecast.ID}}</td>
-					<td class="edittext">
+					<td>
 					{{range $keyTypes, $type := $projectForecast.Types}}
 						*{{$type.Name}} 
 					{{end}}
 					</td>
-					<td class="edittext">{{$projectForecast.Name}}</td>
-					<td class="edittextarea">{{$projectForecast.Description}}</td>
-					<td class="edittext">{{dateformat $projectForecast.StartDate "2006-01-02"}}</td>
-					<td class="edittext">{{dateformat $projectForecast.EndDate "2006-01-02"}}</td>
-					<td class="edittext">{{$projectForecast.NumberSites}}</td>
-					<td class="edittext">{{$projectForecast.NumberProcessPerSite}}</td>
+					<td>{{$projectForecast.Name}}</td>
+					<td>{{$projectForecast.Description}}</td>
+					<td>{{dateformat $projectForecast.StartDate "2006-01-02"}}</td>
+					<td>{{dateformat $projectForecast.EndDate "2006-01-02"}}</td>
+					<td>{{$projectForecast.NumberSites}}</td>
+					<td>{{$projectForecast.NumberProcessPerSite}}</td>
 					{{if eq (len $projectForecast.AssignResources) 0}}
-						<td id ="MOMEngineers" class="editResourceAssign">0</td>
-						<td id ="DEVEngineers" class="editResourceAssign">0</td>
+						<td id ="MOMEngineers">0</td>
+						<td id ="DEVEngineers">0</td>
 					{{end}}
 					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
 						{{if eq (len $projectForecast.AssignResources) 1}}
 							{{if eq "MOM Engineer" $assignResources.Name}}
-								<td id ="MOMEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+								<td id ="MOMEngineers">{{$assignResources.NumberResources}}</td>
 							{{else}}
-								<td id ="MOMEngineers" class="editResourceAssign">0</td>
+								<td id ="MOMEngineers">0</td>
 							{{end}}
 						{{else}}
 							{{if eq "MOM Engineer" $assignResources.Name}}
-								<td id ="MOMEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+								<td id ="MOMEngineers">{{$assignResources.NumberResources}}</td>
 							{{end}}
 						{{end}}												
 					{{end}}
 					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
 						{{if eq (len $projectForecast.AssignResources) 1}}
 							{{if eq "Developer" $assignResources.Name}}
-								<td id ="DEVEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+								<td id ="DEVEngineers">{{$assignResources.NumberResources}}</td>
 							{{else}}
-								<td id ="DEVEngineers" class="editResourceAssign">0</td>
+								<td id ="DEVEngineers">0</td>
 							{{end}}
 						{{else}}
 							{{if eq "Developer" $assignResources.Name}}
-								<td id ="DEVEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+								<td id ="DEVEngineers">{{$assignResources.NumberResources}}</td>
 							{{end}}
 						{{end}}
 					{{end}}
@@ -478,9 +370,9 @@
 					<td id ="totalEngineers">
 					{{$projectForecast.TotalEngineers}}
 					</td>
-					<td class="edittext">{{$projectForecast.EstimateCost}}</td>	
-					<td class="edittext">{{dateformat $projectForecast.BillingDate "2006-01-02"}}</td>
-					<td class="edittext">{{$projectForecast.Status}}</td>			
+					<td>{{$projectForecast.EstimateCost}}</td>	
+					<td>{{dateformat $projectForecast.BillingDate "2006-01-02"}}</td>
+					<td>{{$projectForecast.Status}}</td>			
 					<td>
 						<a id="deleteProjectForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});"> <span class="glyphicon glyphicon-trash"></span></a>
 					</td>
