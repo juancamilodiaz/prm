@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -60,6 +62,209 @@ func (this *ProjectForecastController) ListProjectsForecast() {
 		this.Data["Resources"] = messageResources.Resources
 
 		this.Data["ProjectsForecast"] = message.ProjectForecast
+
+		/*********/
+		years := make(map[int]map[int]*domain.UsageByWeek)
+		MOMType := ""
+		DEVType := ""
+		for _, typee := range messageTypes.Types {
+			if typee.Name == "MOM Engineer" {
+				MOMType = "MOM Engineer"
+			}
+			if typee.Name == "Developer" {
+				DEVType = "Developer"
+			}
+		}
+
+		for _, forecastProject := range message.ProjectForecast {
+			startYear, startWeek := forecastProject.StartDate.ISOWeek()
+			endYear, endWeek := forecastProject.EndDate.ISOWeek()
+
+			if startYear == endYear {
+				for week := startWeek; week <= endWeek; week++ {
+					weekRegister := make(map[int]*domain.UsageByWeek)
+					year := startYear
+					usage := domain.UsageByWeek{}
+					for _, assign := range forecastProject.AssignResources {
+						if assign.Name == MOMType {
+							usage.MOM = assign.NumberResources
+						}
+						if assign.Name == DEVType {
+							usage.DEV = assign.NumberResources
+						}
+					}
+
+					var currentDate time.Time
+					currentDate = FirstDayOfISOWeek(startYear, week, time.Local)
+					if week < startWeek {
+						year = endYear
+						currentDate = FirstDayOfISOWeek(endYear, week, time.Local)
+					}
+					usage.Month = currentDate.Month()
+					older := weekRegister[week]
+					if older != nil {
+						older.DEV += usage.DEV
+						older.MOM += usage.MOM
+					} else {
+						weekRegister[week] = &usage
+					}
+
+					olderYear := years[year]
+					if olderYear != nil {
+						if years[year][week] != nil {
+							years[year][week].DEV += weekRegister[week].DEV
+							years[year][week].MOM += weekRegister[week].MOM
+						} else {
+							years[year][week] = weekRegister[week]
+						}
+					} else {
+						years[year] = weekRegister
+					}
+				}
+			} else if startYear < endYear {
+				lastDayOfYear := time.Date(startYear, time.December, 31, 0, 0, 0, 0, time.Local)
+				_, endWeekOfYear := lastDayOfYear.ISOWeek()
+				for week := startWeek; week <= endWeekOfYear; week++ {
+					weekRegister := make(map[int]*domain.UsageByWeek)
+					year := startYear
+					usage := domain.UsageByWeek{}
+					for _, assign := range forecastProject.AssignResources {
+						if assign.Name == MOMType {
+							usage.MOM = assign.NumberResources
+						}
+						if assign.Name == DEVType {
+							usage.DEV = assign.NumberResources
+						}
+					}
+
+					var currentDate time.Time
+					currentDate = FirstDayOfISOWeek(startYear, week, time.Local)
+					if week < startWeek {
+						year = endYear
+						currentDate = FirstDayOfISOWeek(endYear, week, time.Local)
+					}
+					usage.Month = currentDate.Month()
+					older := weekRegister[week]
+					if older != nil {
+						older.DEV += usage.DEV
+						older.MOM += usage.MOM
+					} else {
+						weekRegister[week] = &usage
+					}
+
+					olderYear := years[year]
+					if olderYear != nil {
+						if years[year][week] != nil {
+							years[year][week].DEV += weekRegister[week].DEV
+							years[year][week].MOM += weekRegister[week].MOM
+						} else {
+							years[year][week] = weekRegister[week]
+						}
+					} else {
+						years[year] = weekRegister
+					}
+				}
+
+				for week := 1; week <= endWeek; week++ {
+					weekRegister := make(map[int]*domain.UsageByWeek)
+					year := startYear
+					usage := domain.UsageByWeek{}
+					for _, assign := range forecastProject.AssignResources {
+						if assign.Name == MOMType {
+							usage.MOM = assign.NumberResources
+						}
+						if assign.Name == DEVType {
+							usage.DEV = assign.NumberResources
+						}
+					}
+
+					var currentDate time.Time
+					currentDate = FirstDayOfISOWeek(startYear, week, time.Local)
+					if week < startWeek {
+						year = endYear
+						currentDate = FirstDayOfISOWeek(endYear, week, time.Local)
+					}
+					usage.Month = currentDate.Month()
+					older := weekRegister[week]
+					if older != nil {
+						older.DEV += usage.DEV
+						older.MOM += usage.MOM
+					} else {
+						weekRegister[week] = &usage
+					}
+
+					olderYear := years[year]
+					if olderYear != nil {
+						if years[year][week] != nil {
+							years[year][week].DEV += weekRegister[week].DEV
+							years[year][week].MOM += weekRegister[week].MOM
+						} else {
+							years[year][week] = weekRegister[week]
+						}
+					} else {
+						years[year] = weekRegister
+					}
+				}
+			}
+		}
+
+		for year, mapYear := range years {
+			fmt.Println(year, ": {")
+			for week, mapWeek := range mapYear {
+				fmt.Println("		", week, ": {")
+				fmt.Println("			", "Month:", mapWeek.Month)
+				fmt.Println("			", "DEV:", mapWeek.DEV)
+				fmt.Println("			", "MOM:", mapWeek.MOM)
+				fmt.Println("		}")
+			}
+			fmt.Println("}")
+		}
+
+		tableWorkLoad := make(map[int]map[string]*domain.UsageByWeek)
+		for year, mapYear := range years {
+			yearWorkLoad := make(map[string]*domain.UsageByWeek)
+			for _, mapWeek := range mapYear {
+				if yearWorkLoad[mapWeek.Month.String()] == nil {
+					obj := domain.UsageByWeek{}
+					obj.DEV = mapWeek.DEV
+					obj.MOM = mapWeek.MOM
+					obj.Month = mapWeek.Month
+
+					yearWorkLoad[mapWeek.Month.String()] = &obj
+				} else {
+					if yearWorkLoad[mapWeek.Month.String()].DEV < mapWeek.DEV {
+						yearWorkLoad[mapWeek.Month.String()].DEV = mapWeek.DEV
+					}
+					if yearWorkLoad[mapWeek.Month.String()].MOM < mapWeek.MOM {
+						yearWorkLoad[mapWeek.Month.String()].MOM = mapWeek.MOM
+					}
+				}
+			}
+			tableWorkLoad[year] = yearWorkLoad
+		}
+
+		for year, mapYear := range tableWorkLoad {
+			fmt.Println(year, ": {")
+			for month, mapWeek := range mapYear {
+				fmt.Println("		", month, ": {")
+				fmt.Println("			", "Month:", mapWeek.Month)
+				fmt.Println("			", "DEV:", mapWeek.DEV)
+				fmt.Println("			", "MOM:", mapWeek.MOM)
+				fmt.Println("		}")
+			}
+			fmt.Println("}")
+		}
+
+		numberOfYears := len(tableWorkLoad)
+		months := []string{}
+		referenceDate := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.Local)
+		for year, _ := range tableWorkLoad {
+			for i := 0; i < 12; i++ {
+				months = append(months, referenceDate.Month().String()+" - "+strconv.Itoa(year))
+				referenceDate = referenceDate.AddDate(0, 1, 0)
+			}
+		}
+		/*********/
 
 		getWorkLoad(message.ProjectForecast)
 
@@ -163,12 +368,6 @@ func (this *ProjectForecastController) UpdateProjectForecast() {
 
 	input := domain.ProjectForecastRQ{}
 	err := this.ParseForm(&input)
-	data := this.GetString("AssignResources")
-	if data != "" {
-		if err = json.Unmarshal([]byte(data), &input); err != nil {
-			log.Error(err)
-		}
-	}
 
 	if err != nil {
 		log.Error("[ParseInput]", input)

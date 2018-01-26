@@ -69,12 +69,12 @@ func GetTrainingResourcesByTrainingId(pTrainingId int) []*DOMAIN.TrainingResourc
 	// Close session when ends the method
 	defer session.Close()
 	// Insert in DB
-	q := session.Select("trn.id", "trn.training_id", "trn.resource_id", "skill.name skill_name",
+	q := session.Select("trn.id", "trn.training_id", "trn.resource_id", "resource.name resource_name",
 		"trn.start_date", "trn.end_date", "trn.duration", "trn.progress",
 		"trn.test_result", "trn.result_status").
 		From("TrainingResources AS trn").
-		Join("Skill AS skill").
-		On("skill.id = trn.resource_id").
+		Join("Resource AS resource").
+		On("resource.id = trn.resource_id").
 		And("training_id", pTrainingId)
 
 	rows, err := q.Query()

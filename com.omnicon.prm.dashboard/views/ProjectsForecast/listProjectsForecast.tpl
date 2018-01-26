@@ -1,99 +1,25 @@
 <script>
-	var editor; 
 	$(document).ready(function(){
-		
-		editor = new $.fn.dataTable.Editor( {
-	        table: "#viewProjectsForecast",
-			idSrc: 'id',
-	        fields: [ {
-	                label: "Business Unit:",
-	                name: "business_unit"
-	            }, {
-	                label: "Region:",
-	                name: "region"
-	            }, {
-	                label: "Project ID:",
-	                name: "id"
-	            }, {
-	                label: "Project Type:",
-	                name: "types"
-	            }, {
-	                label: "Project Name:",
-	                name: "name"
-	            }, {
-	                label: "Description:",
-	                name: "description"
-	            }, {
-	                label: "Start date:",
-	                name: "start_date",
-	                type: "datetime"
-	            }, {
-	                label: "End date:",
-	                name: "end_date",
-	                type: "datetime"
-	            }, {
-	                label: "No. Of Sites:",
-	                name: "number_sites"
-	            }, {
-	                label: "No. Of Process:",
-	                name: "number_process_per_site"
-	            }, {
-	                label: "MOM Resources",
-	                name: "mom_resources"
-	            }, {
-	                label: "DEV Resources",
-	                name: "dev_resources"
-	            }, {
-	                label: "Total Resources",
-	                name: "total_resources"
-	            }, {
-	                label: "Estimate Cost:",
-	                name: "estimate_cost"
-	            }, {
-	                label: "Billing date:",
-	                name: "billing_date",
-	                type: "datetime"
-	            }, {
-	                label: "Status:",
-	                name: "status"
-	            }, {
-	                label: "Options:",
-	                name: "options"
-	            }
-	        ]
-	    } );
-		
-		// Activate an inline edit on click of a table cell
-	    $('#viewProjectsForecast').on( 'click', 'tbody td:not(:first-child)', function (e) {
-	        editor.inline( this, 'id' );
-	    } );
-		
 		var oTable = $('#viewProjectsForecast').DataTable( {
-	        dom: "Bfrtip",
 	        order: [[ 1, 'asc' ]],
 	        columns: [
-	            {name: 'BusinessUnit', "orderable": false, "className":'editable'},
-				{name: 'Region', "orderable": false, "className":'editable'},
+	            {name: 'BusinessUnit', "orderable": false},
+				{name: 'Region', "orderable": false},
 				{name: 'ID', "orderable": false},
-				{name: 'Types', "orderable": false, "className":'editable'},
-				{name: 'Name', "orderable": false, "className":'editable'},
-				{name: 'Description', "orderable": false, "className":'editable'},
-				{name: 'StartDate', "orderable": false, "className":'editable'},
-				{name: 'EndDate', "orderable": false, "className":'editable'},
-				{name: 'NumberSites', "orderable": false, "className":'editable'},
-				{name: 'NumberProcessPerSite', "orderable": false, "className":'editable'},
-				{name: 'MOMResources', "orderable": false, "className":'editable'},
-				{name: 'DEVResources', "orderable": false, "className":'editable'},
+				{name: 'Name', "orderable": false},
+				{name: 'Description', "orderable": false},
+				{name: 'StartDate', "orderable": false},
+				{name: 'EndDate', "orderable": false},
+				{name: 'NumberSites', "orderable": false},
+				{name: 'NumberProcessPerSite', "orderable": false},
+				{name: 'MOMResources', "orderable": false},
+				{name: 'DEVResources', "orderable": false},
 				{name: 'TotalResources', "orderable": false},
-				{name: 'EstimateCost', "orderable": false, "className":'editable'},
-				{name: 'BillingDate', "orderable": false, "className":'editable'},
-				{name: 'Status', "orderable": false, "className":'editable'},
-				{name: 'Options', "searchable":false, "orderable": false}
-	        ],
-	        select: {
-	            style:    'os',
-	            selector: 'td:first-child'
-	        }
+				{name: 'EstimateCost', "orderable": false},
+				{name: 'BillingDate', "orderable": false},
+				{name: 'Status', "orderable": false},
+				{name: 'Options', "searchable":false}
+	        ]
 	    } );
 				
 		$('#datePicker').css("display", "none");
@@ -209,6 +135,139 @@
 		});
 	}
 	
+	updateForecastProject = function(){
+		var value = "";
+		var valueNumber = 0;
+		var valueDate = new Date();
+		var field = "";
+		
+		var dataToUpdate = null;
+		
+		switch ($('#field').html()) {
+		  case "Business Unit":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"BusinessUnit" : value
+			} 
+		    break;
+		  case "Region":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"Region" : value
+			} 
+		    break;
+		  case "Name":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"Name" : value
+			} 
+		    break;
+		  case "Description":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"Description" : value
+			} 
+		    break;
+		  case "Status":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"Status" : value
+			} 
+		    break;
+		  case "Start Date":
+			valueDate = $('#valueDate').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"StartDate" : valueDate
+			} 
+		    break;
+		  case "End Date":
+			valueDate = $('#valueDate').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"EndDate" : valueDate
+			} 
+		    break;
+		  case "Billing Date":
+			valueDate = $('#valueDate').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"BillingDate" : valueDate
+			} 
+		    break;
+		  case "Number Of Sites":
+			valueNumber = $('#valueNumber').val();
+			if (valueNumber == 0) {
+				valueNumber = -1;
+			}
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"NumberSites" : valueNumber
+			} 
+		    break;
+		  case "Number Of Process":
+			valueNumber = $('#valueNumber').val();
+			if (valueNumber == 0) {
+				valueNumber = -1;
+			}
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"NumberProcessPerSite" : valueNumber
+			} 
+		    break;
+		  case "Estimate Cost":
+			valueNumber = $('#valueNumber').val();
+			if (valueNumber == 0) {
+				valueNumber = -1;
+			}
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"EstimateCost" : valueNumber
+			} 
+		    break;
+		  case "MOM Resources":
+			valueNumber = $('#valueNumber').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"TypeID" : $('#typeResourceId').val(),
+				"TypeName": "MOM Engineer",
+				"TypeNumberResources": valueNumber
+			} 
+		    break;
+		  case "DEV Resources":
+			valueNumber = $('#valueNumber').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"TypeID" : $('#typeResourceId').val(),
+				"TypeName": "Developer",
+				"TypeNumberResources": valueNumber
+			} 
+		    break;
+		  default:
+		    console.log("Sorry, we are out of " + $('#field').html() + ".");
+		}
+		
+		var settings = {
+			method: 'POST',
+			url: '/projectsForecast/update',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: dataToUpdate
+		}
+		$.ajax(settings).done(function (response) {
+		 	var data = {
+				"default":true
+			}
+			reload('/projectsForecast',data);
+		});
+	}
+	
 	getResourcesByProject = function(projectID, projectName){
 		var settings = {
 			method: 'POST',
@@ -267,6 +326,40 @@
 	{{else}}
 		document.getElementById("defaultOpen").click();
 	{{end}}
+	
+	$(document).on('click','#manageForecast',function(){
+		$('#value').css("display", "inline-block");
+		$('#valueNumber').css("display", "none");
+		$('#valueDate').css("display", "none");
+		$('#projectType').css("display", "none");
+		$('#value').val($('#actualValue').val());
+		$('#field').html($('#actualField').val());
+    	$('#reportForecast').modal('show');
+	});
+	
+	$(document).on('click','#manageForecastDate',function(){
+		$('#value').css("display", "none");
+		$('#valueNumber').css("display", "none");
+		$('#valueDate').css("display", "inline-block");
+		$('#projectType').css("display", "none");
+		$('#valueDate').val($('#actualValue').val());
+		$('#field').html($('#actualField').val());
+    	$('#reportForecast').modal('show');
+	});		
+	
+	$(document).on('click','#manageForecastNumber',function(){
+		$('#value').css("display", "none");
+		$('#valueNumber').css("display", "inline-block");
+		$('#valueDate').css("display", "none");
+		$('#projectType').css("display", "none");
+		$('#valueNumber').val($('#actualValue').val());
+		$('#field').html($('#actualField').val());
+    	$('#reportForecast').modal('show');
+	});	
+		
+	manageReport = function () {
+		updateForecastProject();
+	}
 </script>
 
 <div>
@@ -281,10 +374,10 @@
 	</div>
 	<div id="Planning" class="tabscontent">
 		<table id="viewProjectsForecast" class="table table-striped table-bordered">
+			<col style="width: 8%"/>
 			<col style="width: 6%"/>
 			<col style="width: 6%"/>
-			<col style="width: 6%"/>
-			<col style="width: 6%"/>
+			<col style="width: 10%"/>
 			<col style="width: 6%"/>
 			<col style="width: 6%"/>
 			<col style="width: 6%"/>
@@ -303,7 +396,6 @@
 					<th>Business Unit</th>
 					<th>Region</th>
 					<th>Project ID</th>
-					<th>Project Type</th>
 					<th>Project Name</th>
 					<th>Description</th>
 					<th>Start Date</th>
@@ -320,49 +412,93 @@
 				</tr>
 			</thead>
 			<tbody>
+				{{$typeResources := .TypesResources}}
 			 	{{range $key, $projectForecast := .ProjectsForecast}}
 				<tr>
-					<td>{{$projectForecast.BusinessUnit}}</td>
-					<td>{{$projectForecast.Region}}</td>
+					<td>
+						{{$projectForecast.BusinessUnit}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.BusinessUnit}});$('#actualField').val('Business Unit');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{$projectForecast.Region}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Region}});$('#actualField').val('Region');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
 					<td>{{$projectForecast.ID}}</td>
 					<td>
-					{{range $keyTypes, $type := $projectForecast.Types}}
-						*{{$type.Name}} 
-					{{end}}
+						{{$projectForecast.Name}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Name}});$('#actualField').val('Name');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
 					</td>
-					<td>{{$projectForecast.Name}}</td>
-					<td>{{$projectForecast.Description}}</td>
-					<td>{{dateformat $projectForecast.StartDate "2006-01-02"}}</td>
-					<td>{{dateformat $projectForecast.EndDate "2006-01-02"}}</td>
-					<td>{{$projectForecast.NumberSites}}</td>
-					<td>{{$projectForecast.NumberProcessPerSite}}</td>
+					<td>
+						{{$projectForecast.Description}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Description}});$('#actualField').val('Description');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{dateformat $projectForecast.StartDate "2006-01-02"}}
+						<a id="manageForecastDate" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.StartDate "2006-01-02"}});$("#actualField").val("Start Date");'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{dateformat $projectForecast.EndDate "2006-01-02"}}
+						<a id="manageForecastDate" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.EndDate "2006-01-02"}});$("#actualField").val("End Date");'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{$projectForecast.NumberSites}}
+						<a id="manageForecastNumber" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.NumberSites}});$('#actualField').val('Number Of Sites');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{$projectForecast.NumberProcessPerSite}}
+						<a id="manageForecastNumber" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.NumberProcessPerSite}});$('#actualField').val('Number Of Process');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
 					{{if eq (len $projectForecast.AssignResources) 0}}
-						<td id ="MOMEngineers">0</td>
-						<td id ="DEVEngineers">0</td>
+						<td id ="MOMEngineers">
+							0
+							<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+						</td>
+						<td id ="DEVEngineers">
+							0
+							<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+						</td>
 					{{end}}
 					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
 						{{if eq (len $projectForecast.AssignResources) 1}}
 							{{if eq "MOM Engineer" $assignResources.Name}}
-								<td id ="MOMEngineers">{{$assignResources.NumberResources}}</td>
+								<td id ="MOMEngineers">
+									{{$assignResources.NumberResources}}
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{else}}
-								<td id ="MOMEngineers">0</td>
+								<td id ="MOMEngineers">
+									0
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{end}}
 						{{else}}
 							{{if eq "MOM Engineer" $assignResources.Name}}
-								<td id ="MOMEngineers">{{$assignResources.NumberResources}}</td>
+								<td id ="MOMEngineers">
+									{{$assignResources.NumberResources}}
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{end}}
 						{{end}}												
 					{{end}}
 					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
 						{{if eq (len $projectForecast.AssignResources) 1}}
 							{{if eq "Developer" $assignResources.Name}}
-								<td id ="DEVEngineers">{{$assignResources.NumberResources}}</td>
+								<td id ="DEVEngineers">
+									{{$assignResources.NumberResources}}
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{else}}
-								<td id ="DEVEngineers">0</td>
+								<td id ="DEVEngineers">
+									0
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{end}}
 						{{else}}
 							{{if eq "Developer" $assignResources.Name}}
-								<td id ="DEVEngineers">{{$assignResources.NumberResources}}</td>
+								<td id ="DEVEngineers">
+									{{$assignResources.NumberResources}}
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{end}}
 						{{end}}
 					{{end}}
@@ -370,11 +506,20 @@
 					<td id ="totalEngineers">
 					{{$projectForecast.TotalEngineers}}
 					</td>
-					<td>{{$projectForecast.EstimateCost}}</td>	
-					<td>{{dateformat $projectForecast.BillingDate "2006-01-02"}}</td>
-					<td>{{$projectForecast.Status}}</td>			
 					<td>
-						<a id="deleteProjectForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});"> <span class="glyphicon glyphicon-trash"></span></a>
+						{{$projectForecast.EstimateCost}}
+						<a id="manageForecastNumber" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.EstimateCost}});$('#actualField').val('Estimate Cost');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>	
+					<td>
+						{{dateformat $projectForecast.BillingDate "2006-01-02"}}
+						<a id="manageForecastDate" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.BillingDate "2006-01-02"}});$("#actualField").val("Billing Date");'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{$projectForecast.Status}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Status}});$('#actualField').val('Status');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>			
+					<td>
+						<a id="deleteProjectForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});$('#reportID').val({{$projectForecast.ID}});"> <span class="glyphicon glyphicon-trash"></span></a>
 					</td>
 				</tr>
 				{{end}}	
@@ -488,6 +633,7 @@
         <h4 class="modal-title">Delete Confirmation</h4>
       </div>
       <div class="modal-body">
+		<input type="hidden" id="projectID">
         Are you sure you want to remove <b id="nameDelete"></b> from projects?
 		<br>
 		<li>The resources will lose this project assignment.</li>
@@ -499,4 +645,45 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="reportForecast" role="dialog">
+   <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 id="modalTitle" class="modal-title">Edit</h4>
+         </div>
+         <div class="modal-body">
+			<input type="hidden" id="reportID">
+			<input type="hidden" id="resourceID">
+			<input type="hidden" id="actualValue">
+			<input type="hidden" id="actualField">
+			<input type="hidden" id="typeResourceId">
+			<input type="hidden" id="actualBillableHours">
+			<input type="hidden" id="actualProjectType">
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+               <div class="form-group form-group-sm">
+                  <label id="field" class="control-label col-sm-4 translatable" data-i18n=""></label>
+                  <div class="col-sm-8">
+                    <input type="text" id="value" style="border-radius: 8px;" min="0" max="100">
+					<input type="number" id="valueNumber" style="border-radius: 8px;" min="0" max="100">
+					<input type="date" id="valueDate" style="border-radius: 8px;" min="0" max="100">
+                  	<select  id="projectType" >
+					{{range $key, $types := .Types}}
+						<option value="{{$types.ID}}">{{$types.Name}}</option>
+					{{end}}
+					</select>
+				  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="reportAdd" class="btn btn-default" onclick="manageReport()" data-dismiss="modal">OK</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
 </div>

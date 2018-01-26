@@ -57,6 +57,27 @@ func ConvertirFechasPeticion(pEntrada, pSalida *string) (int64, int64, error) {
 	return entradaUnix, salidaUnix, nil
 }
 
+func ParseDate(pEntrada *string) (int64, error) {
+
+	var entradaUnix int64
+
+	if pEntrada == nil {
+		return entradaUnix, errors.New("Error Falta la fecha")
+	}
+
+	entradaTime, err := time.Parse(DATEFORMAT, *pEntrada) //'YYYY-MM-DD'
+	if err != nil {
+		log.Errorf("[ParseDate] Fecha de Entrada %v debe estar en el formato YYYY-MM-DD \n", pEntrada)
+		return entradaUnix, errors.New("Error en formato de fecha entrada")
+	}
+
+	log.Debug("[ParseDate] entrada", entradaTime.Format(DATEFORMAT))
+
+	entradaUnix = entradaTime.Unix()
+
+	return entradaUnix, nil
+}
+
 // Convierte una fecha string a int64
 func GetDateInt64FromString(pFecha string) int64 {
 	fechaTime, err := time.Parse(DATEFORMAT, pFecha) //"2006-01-02"

@@ -13,7 +13,9 @@ type ProjectForecastRQ struct {
 	NumberProcessPerSite int
 	NumberProcessTotal   int
 	Types                []string
-	AssignResources      map[string]ProjectForecastAssignResources
+	TypeID               int
+	TypeName             string
+	TypeNumberResources  int
 	EstimateCost         float64
 	BillingDate          string
 	Status               string
