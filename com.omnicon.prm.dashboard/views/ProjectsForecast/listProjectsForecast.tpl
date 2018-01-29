@@ -1,3 +1,7 @@
+<script src="/static/js/chartjs/Chart.bundle.js"></script>
+<script src="/static/js/chartjs/Chart.min.js"></script>
+<script src="/static/js/chartjs/Chart.PieceLabel.js"></script>
+
 <script>
 	$(document).ready(function(){
 		var oTable = $('#viewProjectsForecast').DataTable( {
@@ -370,7 +374,231 @@
 	</div>
 	
 	<div id="Report" class="tabscontent">
-		HOLA
+		<div id="tableWorkLoadByTypes" style="margin-top: 50px;">
+			{{if gt (len .MonthsSimple) 12}}
+			<div class="col-sm-12">
+				<h3 style="text-align: center;">Number of engineers by month</h3>
+				<table id="viewWorkLoadByTypes" class="table table-striped table-bordered border-fix">
+				    <thead>
+				    	<tr>
+							<th style="text-align:center;"></th>
+							{{range $key, $month := .MonthsSimple}}
+				        	<th style="text-align:center;">{{$month}}</th>
+							{{end}}
+				      	</tr>
+				    </thead>
+			    	<tbody>
+			        	<tr>
+							<td>MOM</td>
+							{{range $index, $mom := .MOM}}
+							<td>{{$mom}}</td>						
+							{{end}}
+			         	</tr>
+						<tr>
+							<td>DEV</td>
+							{{range $index, $dev := .DEV}}
+							<td>{{$dev}}</td>					
+							{{end}}
+			         	</tr>
+			      	</tbody>
+			   	</table>
+			</div>
+		   	<div class="col-sm-12">
+				<h3 style="text-align: center;">Workload percentage by month</h3>
+				<table id="viewWorkLoadByPercentage" class="table table-striped table-bordered border-fix">
+				    <thead>
+				    	<tr>
+							<th style="text-align:center;"></th>
+							{{range $key, $month := .MonthsSimple}}
+				        	<th style="text-align:center;">{{$month}}</th>
+							{{end}}
+				      	</tr>
+				    </thead>
+			    	<tbody>
+						<tr>
+							<td>Max</td>
+							{{range $index, $max := .MaxLoad}}
+							<td>{{$max}}%</td>					
+							{{end}}
+			         	</tr>
+						<tr>
+							<td>Resource Usage</td>
+							{{range $index, $percent := .PercentageWorkLoad}}
+							<td>{{$percent}}%</td>					
+							{{end}}
+			         	</tr>
+			        	<tr>
+							<td>Min</td>
+							{{range $index, $min := .MinLoad}}
+							<td>{{$min}}%</td>						
+							{{end}}
+			         	</tr>
+			      	</tbody>
+			   	</table>
+			</div>
+			{{else}}
+			<div class="col-sm-6">
+				<h3 style="text-align: center;">Number of engineers by month</h3>
+				<table id="viewWorkLoadByTypes" class="table table-striped table-bordered border-fix">
+				    <thead>
+				    	<tr>
+							<th style="text-align:center;"></th>
+							{{range $key, $month := .MonthsSimple}}
+				        	<th style="text-align:center;">{{$month}}</th>
+							{{end}}
+				      	</tr>
+				    </thead>
+			    	<tbody>
+			        	<tr>
+							<td>MOM</td>
+							{{range $index, $mom := .MOM}}
+							<td>{{$mom}}</td>						
+							{{end}}
+			         	</tr>
+						<tr>
+							<td>DEV</td>
+							{{range $index, $dev := .DEV}}
+							<td>{{$dev}}</td>					
+							{{end}}
+			         	</tr>
+			      	</tbody>
+			   	</table>
+			</div>
+		   	<div class="col-sm-6">
+				<h3 style="text-align: center;">Workload percentage by month</h3>
+				<table id="viewWorkLoadByPercentage" class="table table-striped table-bordered border-fix">
+				    <thead>
+				    	<tr>
+							<th style="text-align:center;"></th>
+							{{range $key, $month := .MonthsSimple}}
+				        	<th style="text-align:center;">{{$month}}</th>
+							{{end}}
+				      	</tr>
+				    </thead>
+			    	<tbody>
+						<tr>
+							<td>Max</td>
+							{{range $index, $max := .MaxLoad}}
+							<td>{{$max}}%</td>					
+							{{end}}
+			         	</tr>
+						<tr>
+							<td>Resource Usage</td>
+							{{range $index, $percent := .PercentageWorkLoad}}
+							<td>{{$percent}}%</td>					
+							{{end}}
+			         	</tr>
+			        	<tr>
+							<td>Min</td>
+							{{range $index, $min := .MinLoad}}
+							<td>{{$min}}%</td>						
+							{{end}}
+			         	</tr>
+			      	</tbody>
+			   	</table>
+			</div>
+			{{end}}
+		</div>
+		<div id="chartjs-stacked-wrapper" style="width:1500px; height:1000px; padding-left: 10%;">
+			<h3 style="text-align: center;">No. of Resources per Month</h3>
+			<canvas id="chartjs-stacked">
+			</canvas>
+		
+			<script>
+				chart6=new Chart(document.getElementById("chartjs-stacked"),
+				{	
+					type: 'bar',
+	                data: {
+			            labels: {{.Months}},
+			            datasets: [{
+			                label: 'MOM',
+			                backgroundColor: window.chartColors.greendark,
+			                data: {{.MOM}}
+			            }, {
+			                label: 'DEV',
+			                backgroundColor: window.chartColors.greenclear,
+			                data: {{.DEV}}
+			            }]					
+			        },
+	                options: {
+	                    responsive: true,
+	                    scales: {
+	                        xAxes: [{
+	                            stacked: true,
+								scaleLabel: {
+		                            display: true,
+		                            labelString: 'Month'
+		                        }
+	                        }],
+	                        yAxes: [{
+	                            stacked: true,
+								scaleLabel: {
+		                            display: true,
+		                            labelString: 'Number of resources'
+		                        }
+	                        }]
+	                    }
+	                }
+				});
+			</script>			
+		</div>
+		<div id="chartjs-lines-wrapper" style="width:1500px; height:1000px;padding-left: 10%;padding-top: 10%;">
+			<h3 style="text-align: center;">Resource Usage per Month</h3>
+			<canvas id="chartjs-lines">
+			</canvas>
+		
+			<script>
+				chart7=new Chart(document.getElementById("chartjs-lines"),
+				{	
+					type: 'line',
+	                data: {
+			            labels: {{.Months}},
+			            datasets: [{
+							label: "Resource Ussage",
+		                    fill: false,
+							pointRadius: 0,
+							lineTension: 0,
+		                    backgroundColor: window.chartColors.greendark,
+							borderColor: window.chartColors.greendark,
+		                    data: {{.PercentageWorkLoad}} 
+			            }, {
+			                label: "Max",
+			               	fill: false,
+		                    backgroundColor: window.chartColors.greenclear,
+							borderColor: window.chartColors.greenclear,
+                    		borderDash: [5, 5],
+		                    data: {{.MaxLoad}} 
+			            }, {
+			                label: "Min",
+			               	fill: false,
+		                    backgroundColor: window.chartColors.red,
+							borderColor: window.chartColors.red,
+                    		borderDash: [5, 5],
+		                    data: {{.MinLoad}} 
+			            }]					
+			        },
+	                options: {
+	                    responsive: true,
+	                    scales: {
+		                    xAxes: [{
+		                        display: true,
+		                        scaleLabel: {
+		                            display: true,
+		                            labelString: 'Month'
+		                        }
+		                    }],
+		                    yAxes: [{
+		                        display: true,
+		                        scaleLabel: {
+		                            display: true,
+		                            labelString: 'Work load percentage'
+		                        }
+		                    }]
+		                }
+	                }
+				});
+			</script>			
+		</div>
 	</div>
 	<div id="Planning" class="tabscontent">
 		<table id="viewProjectsForecast" class="table table-striped table-bordered">

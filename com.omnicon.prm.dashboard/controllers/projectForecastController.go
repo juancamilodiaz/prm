@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -59,11 +58,29 @@ func (this *ProjectForecastController) ListProjectsForecast() {
 		messageResources := new(domain.GetResourcesRS)
 		json.NewDecoder(res.Body).Decode(&messageResources)
 
+		// Call settings opration
+		operationSettings := "GetSettings"
+
+		resSettings, _ := PostData(operationSettings, nil)
+
+		defer resSettings.Body.Close()
+		messageSettings := new(domain.SettingsRS)
+		json.NewDecoder(resSettings.Body).Decode(&messageSettings)
+
+		hoursOfWork := 8.0
+		for _, setting := range messageSettings.Settings {
+			if setting.Name == "HoursOfWork" {
+				hoursOfWork, _ = strconv.ParseFloat(setting.Value, 64)
+			}
+		}
+
 		this.Data["Resources"] = messageResources.Resources
+
+		workHoursCapacity := float64(len(messageResources.Resources)) * hoursOfWork * 5 * 4
+		this.Data["WorkHoursCapacity"] = workHoursCapacity
 
 		this.Data["ProjectsForecast"] = message.ProjectForecast
 
-		/*********/
 		years := make(map[int]map[int]*domain.UsageByWeek)
 		MOMType := ""
 		DEVType := ""
@@ -208,18 +225,6 @@ func (this *ProjectForecastController) ListProjectsForecast() {
 			}
 		}
 
-		for year, mapYear := range years {
-			fmt.Println(year, ": {")
-			for week, mapWeek := range mapYear {
-				fmt.Println("		", week, ": {")
-				fmt.Println("			", "Month:", mapWeek.Month)
-				fmt.Println("			", "DEV:", mapWeek.DEV)
-				fmt.Println("			", "MOM:", mapWeek.MOM)
-				fmt.Println("		}")
-			}
-			fmt.Println("}")
-		}
-
 		tableWorkLoad := make(map[int]map[string]*domain.UsageByWeek)
 		for year, mapYear := range years {
 			yearWorkLoad := make(map[string]*domain.UsageByWeek)
@@ -243,43 +248,55 @@ func (this *ProjectForecastController) ListProjectsForecast() {
 			tableWorkLoad[year] = yearWorkLoad
 		}
 
-		for year, mapYear := range tableWorkLoad {
-			fmt.Println(year, ": {")
-			for month, mapWeek := range mapYear {
-				fmt.Println("		", month, ": {")
-				fmt.Println("			", "Month:", mapWeek.Month)
-				fmt.Println("			", "DEV:", mapWeek.DEV)
-				fmt.Println("			", "MOM:", mapWeek.MOM)
-				fmt.Println("		}")
-			}
-			fmt.Println("}")
-		}
-
-		numberOfYears := len(tableWorkLoad)
 		months := []string{}
+		monthsSimple := []string{}
+		mom := []int{}
+		dev := []int{}
+		percentageWorkLoad := []string{}
+		maxLoad := []float64{}
+		minLoad := []float64{}
 		referenceDate := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.Local)
-		for year, _ := range tableWorkLoad {
-			for i := 0; i < 12; i++ {
-				months = append(months, referenceDate.Month().String()+" - "+strconv.Itoa(year))
-				referenceDate = referenceDate.AddDate(0, 1, 0)
+		actualTime := time.Now()
+		actualYear := actualTime.Year()
+		for year := actualYear - 1; year <= actualYear+1; year++ {
+			workLoad, exist := tableWorkLoad[year]
+			if exist {
+				for i := 0; i < 12; i++ {
+					months = append(months, referenceDate.Month().String()+" - "+strconv.Itoa(year))
+					monthsSimple = append(monthsSimple, TruncateString(referenceDate.Month().String(), 3))
+					if workLoad[referenceDate.Month().String()] != nil {
+						mom = append(mom, workLoad[referenceDate.Month().String()].MOM)
+						dev = append(dev, workLoad[referenceDate.Month().String()].DEV)
+						percent := (float64(workLoad[referenceDate.Month().String()].MOM+workLoad[referenceDate.Month().String()].DEV) * hoursOfWork * 5 * 4) / workHoursCapacity * 100
+						percentageWorkLoad = append(percentageWorkLoad, strconv.FormatFloat(percent, 'f', 2, 64))
+					} else {
+						mom = append(mom, 0)
+						dev = append(dev, 0)
+						percentageWorkLoad = append(percentageWorkLoad, "0.0")
+					}
+					minLoad = append(minLoad, 50)
+					maxLoad = append(maxLoad, 85)
+					referenceDate = referenceDate.AddDate(0, 1, 0)
+				}
 			}
 		}
-		/*********/
+		this.Data["MinLoad"] = minLoad
+		this.Data["MaxLoad"] = maxLoad
+		this.Data["PercentageWorkLoad"] = percentageWorkLoad
 
 		getWorkLoad(message.ProjectForecast)
 
-		//if this.GetString("Template") == "select" {
-		//this.TplName = "Projects/listProjectsToDropDown.tpl"
-		//} else {
+		this.Data["Months"] = months
+		this.Data["MonthsSimple"] = monthsSimple
+		this.Data["DEV"] = dev
+		this.Data["MOM"] = mom
 		this.TplName = "ProjectsForecast/listProjectsForecast.tpl"
-		//}
 	} else {
 		this.Data["Title"] = "The Service is down."
 		this.Data["Message"] = "Please contact with the system manager."
 		this.Data["Type"] = "Error"
 		this.TplName = "Common/message.tpl"
 	}
-	//body, _ := ioutil.ReadAll(res.Body)
 }
 
 func (this *ProjectForecastController) CreateProjectForecast() {

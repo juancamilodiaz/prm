@@ -643,7 +643,7 @@
 				</canvas>
 			
 				<script>				
-					chart3=new Chart(document.getElementById("chartjsBar"),
+					chart4=new Chart(document.getElementById("chartjsBar"),
 					{
 						type: 'bar',
 					  	data: {
@@ -727,7 +727,7 @@
 						{{end}}					
 						var colorF = new Array(seq);
 						colorF.fill("white", 0, seq);
-						chart4=new Chart(document.getElementById("chartjsOutOfScope"),
+						chart5=new Chart(document.getElementById("chartjsOutOfScope"),
 						{	"type": "pie",
 							"data": {
 								"labels": {{.TLabelsOutOfScope}},
@@ -796,7 +796,7 @@
 						{{end}}					
 						var colorF = new Array(seq);
 						colorF.fill("white", 0, seq);
-						chart4=new Chart(document.getElementById("chartjsBillable"),
+						chart6=new Chart(document.getElementById("chartjsBillable"),
 						{	"type": "pie",
 							"data": {
 								"labels": ["Not Billable", "Billable"],
