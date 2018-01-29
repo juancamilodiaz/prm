@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"strconv"
 	"time"
 
 	"prm/com.omnicon.prm.service/dao"
@@ -38,24 +37,21 @@ func CreateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.CreatePro
 			response.Status = "Error"
 			return &response
 		}
-		if len(pRequest.AssignResources) > 0 {
-			for typeId, mapProjectForecastAssigns := range pRequest.AssignResources {
-				projectForecastAssigns := new(DOMAIN.ProjectForecastAssigns)
-				typeRq := new(DOMAIN.TypeRQ)
-				typeRq.ID, _ = strconv.Atoi(typeId)
-				typeRS := GetTypeById(typeRq)
-				if typeRS != nil && len(typeRS.Types) > 0 {
-					if typeRS.Types[0].ApplyTo == "Resource" {
-						projectForecastAssigns.TypeId = typeRS.Types[0].ID
-						projectForecastAssigns.ProjectForecastId = id
-						projectForecastAssigns.TypeName = typeRS.Types[0].Name
-						projectForecastAssigns.ProjectForecastName = projectForecast.Name
-						projectForecastAssigns.NumberResources = mapProjectForecastAssigns.NumberResources
+		if pRequest.TypeID != 0 {
+			projectForecastAssigns := new(DOMAIN.ProjectForecastAssigns)
+			typeRq := new(DOMAIN.TypeRQ)
+			typeRq.ID = pRequest.TypeID
+			typeRS := GetTypeById(typeRq)
+			if typeRS != nil && len(typeRS.Types) > 0 {
+				if typeRS.Types[0].ApplyTo == "Resource" {
+					projectForecastAssigns.TypeId = typeRS.Types[0].ID
+					projectForecastAssigns.ProjectForecastId = id
+					projectForecastAssigns.TypeName = typeRS.Types[0].Name
+					projectForecastAssigns.ProjectForecastName = projectForecast.Name
+					projectForecastAssigns.NumberResources = pRequest.TypeNumberResources
 
-						dao.AddProjectForecastAssigns(projectForecastAssigns)
-					}
+					dao.AddProjectForecastAssigns(projectForecastAssigns)
 				}
-
 			}
 		}
 
@@ -119,16 +115,14 @@ func UpdateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.UpdatePro
 		if pRequest.Description != "" {
 			oldProjectForecast.Description = pRequest.Description
 		}
-		if pRequest.StartDate != "" || pRequest.EndDate != "" {
+		if pRequest.StartDate != "" {
 			startDate := new(string)
 			startDate = &pRequest.StartDate
-			endDate := new(string)
-			endDate = &pRequest.EndDate
-			if startDate == nil || endDate == nil || *startDate == "" || *endDate == "" {
-				log.Error("Dates undefined")
+			if startDate == nil || *startDate == "" {
+				log.Error("Start date undefined")
 				return nil
 			}
-			startDateInt, endDateInt, err := util.ConvertirFechasPeticion(startDate, endDate)
+			startDateInt, err := util.ParseDate(startDate)
 			if err != nil {
 				log.Error(err)
 				return nil
@@ -136,7 +130,20 @@ func UpdateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.UpdatePro
 			if pRequest.StartDate != "" {
 				oldProjectForecast.StartDate = time.Unix(startDateInt, 0)
 			}
-			if pRequest.StartDate != "" {
+		}
+		if pRequest.EndDate != "" {
+			endDate := new(string)
+			endDate = &pRequest.EndDate
+			if endDate == nil || *endDate == "" {
+				log.Error("Date undefined")
+				return nil
+			}
+			endDateInt, err := util.ParseDate(endDate)
+			if err != nil {
+				log.Error(err)
+				return nil
+			}
+			if pRequest.EndDate != "" {
 				oldProjectForecast.EndDate = time.Unix(endDateInt, 0)
 			}
 		}
@@ -144,16 +151,32 @@ func UpdateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.UpdatePro
 			oldProjectForecast.Hours = pRequest.Hours
 		}
 		if pRequest.NumberSites != 0 {
-			oldProjectForecast.NumberSites = pRequest.NumberSites
+			if pRequest.NumberSites == -1 {
+				oldProjectForecast.NumberSites = 0
+			} else {
+				oldProjectForecast.NumberSites = pRequest.NumberSites
+			}
 		}
 		if pRequest.NumberProcessPerSite != 0 {
-			oldProjectForecast.NumberProcessPerSite = pRequest.NumberProcessPerSite
+			if pRequest.NumberProcessPerSite == -1 {
+				oldProjectForecast.NumberProcessPerSite = 0
+			} else {
+				oldProjectForecast.NumberProcessPerSite = pRequest.NumberProcessPerSite
+			}
 		}
 		if pRequest.NumberProcessTotal != 0 {
-			oldProjectForecast.NumberProcessTotal = pRequest.NumberProcessTotal
+			if pRequest.NumberProcessTotal == -1 {
+				oldProjectForecast.NumberProcessTotal = 0
+			} else {
+				oldProjectForecast.NumberProcessTotal = pRequest.NumberProcessTotal
+			}
 		}
 		if pRequest.EstimateCost != 0 {
-			oldProjectForecast.EstimateCost = pRequest.EstimateCost
+			if pRequest.EstimateCost == -1 {
+				oldProjectForecast.EstimateCost = 0
+			} else {
+				oldProjectForecast.EstimateCost = pRequest.EstimateCost
+			}
 		}
 		if pRequest.BillingDate != "" {
 			billingDate := new(string)
@@ -188,15 +211,13 @@ func UpdateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.UpdatePro
 			forecastAssign.ProjectForecastId = pRequest.ID
 			forecastAssign.ProjectForecastName = pRequest.Name
 
-			keys := make([]int, 0, len(pRequest.AssignResources))
-			typeNames := make([]string, 0, len(pRequest.AssignResources))
-			numberResources := make([]int, 0, len(pRequest.AssignResources))
-			for key, value := range pRequest.AssignResources {
-				keyInt, _ := strconv.Atoi(key)
-				keys = append(keys, keyInt)
-				typeNames = append(typeNames, value.Name)
-				numberResources = append(numberResources, value.NumberResources)
-			}
+			keys := make([]int, 0, 1)
+			typeNames := make([]string, 0, 1)
+			numberResources := make([]int, 0, 1)
+			keys = append(keys, pRequest.TypeID)
+			typeNames = append(typeNames, pRequest.TypeName)
+			numberResources = append(numberResources, pRequest.TypeNumberResources)
+
 			if len(keys) > 0 {
 				forecastAssign.TypeId = keys[0]
 				forecastAssign.TypeName = typeNames[0]
@@ -206,12 +227,10 @@ func UpdateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.UpdatePro
 		} else {
 			findIt := false
 			for _, projectForecastAssign := range projectsForecastAssigns {
-				for idStr, value := range pRequest.AssignResources {
-					if idStr == strconv.Itoa(projectForecastAssign.TypeId) {
-						findIt = true
-						projectForecastAssign.NumberResources = value.NumberResources
-						dao.UpdateProjectForecastAssigns(projectForecastAssign)
-					}
+				if pRequest.TypeID == projectForecastAssign.TypeId {
+					findIt = true
+					projectForecastAssign.NumberResources = pRequest.TypeNumberResources
+					dao.UpdateProjectForecastAssigns(projectForecastAssign)
 				}
 			}
 			if !findIt {
@@ -219,15 +238,13 @@ func UpdateProjectForecast(pRequest *DOMAIN.ProjectForecastRQ) *DOMAIN.UpdatePro
 				forecastAssign.ProjectForecastId = pRequest.ID
 				forecastAssign.ProjectForecastName = pRequest.Name
 
-				keys := make([]int, 0, len(pRequest.AssignResources))
-				typeNames := make([]string, 0, len(pRequest.AssignResources))
-				numberResources := make([]int, 0, len(pRequest.AssignResources))
-				for key, value := range pRequest.AssignResources {
-					keyInt, _ := strconv.Atoi(key)
-					keys = append(keys, keyInt)
-					typeNames = append(typeNames, value.Name)
-					numberResources = append(numberResources, value.NumberResources)
-				}
+				keys := make([]int, 0, 1)
+				typeNames := make([]string, 0, 1)
+				numberResources := make([]int, 0, 1)
+				keys = append(keys, pRequest.TypeID)
+				typeNames = append(typeNames, pRequest.TypeName)
+				numberResources = append(numberResources, pRequest.TypeNumberResources)
+
 				if len(keys) > 0 {
 					forecastAssign.TypeId = keys[0]
 					forecastAssign.TypeName = typeNames[0]

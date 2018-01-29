@@ -165,6 +165,7 @@ type ProjectForecast struct {
 	NumberProcessPerSite int       `db:"number_process_per_site"`
 	NumberProcessTotal   int       `db:"number_process_total"`
 	Types                []string
+	ProjectType          string
 	AssignResources      map[int]ProjectForecastAssignResources
 	TotalEngineers       int
 	EstimateCost         float64   `db:"estimate_cost"`
@@ -173,6 +174,7 @@ type ProjectForecast struct {
 }
 
 type ProjectForecastAssignResources struct {
+	TypeID          int
 	Name            string
 	NumberResources int
 }
@@ -236,4 +238,14 @@ type Report struct {
 	ID            int // ID report
 	Hours         float64
 	HoursBillable float64
+}
+
+type ForecastByMonth struct {
+	Weeks map[int]map[int]*UsageByWeek
+}
+
+type UsageByWeek struct {
+	Month time.Month
+	DEV   int
+	MOM   int
 }

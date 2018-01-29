@@ -1,18 +1,15 @@
+<script src="/static/js/chartjs/Chart.bundle.js"></script>
+<script src="/static/js/chartjs/Chart.min.js"></script>
+<script src="/static/js/chartjs/Chart.PieceLabel.js"></script>
+
 <script>
-	var editor; 
 	$(document).ready(function(){
-	
-		var oTable = $('#viewProjectsForecast').removeAttr('width').dataTable({
-			"order": [[ 2, "asc" ]],
-			"fnDrawCallback": function( oSettings ) {
-		    },
-			"bAutoWidth": true, 
-			scrollX:true,
-			"columns":[
-				{name: 'BusinessUnit', "orderable": false},
+		var oTable = $('#viewProjectsForecast').DataTable( {
+	        order: [[ 1, 'asc' ]],
+	        columns: [
+	            {name: 'BusinessUnit', "orderable": false},
 				{name: 'Region', "orderable": false},
 				{name: 'ID', "orderable": false},
-				{name: 'Types', "orderable": false},
 				{name: 'Name', "orderable": false},
 				{name: 'Description', "orderable": false},
 				{name: 'StartDate', "orderable": false},
@@ -25,184 +22,9 @@
 				{name: 'EstimateCost', "orderable": false},
 				{name: 'BillingDate', "orderable": false},
 				{name: 'Status', "orderable": false},
-				{name: 'Options', "searchable":false, "orderable": false}
-			],
-			paging:false,
-			fields: [	
-				{
-	                label: "Business Unit:",
-	                name: "business_unit"
-	            }, {
-	                label: "Region:",
-	                name: "region"
-	            }, {
-	                label: "Project ID:",
-	                name: "id"
-	            }, {
-	                label: "Project Type:",
-	                name: "types"
-	            }, {
-	                label: "Project Name:",
-	                name: "name"
-	            }, {
-	                label: "Description:",
-	                name: "description"
-	            }, {
-	                label: "Start date:",
-	                name: "start_date",
-	                type: "datetime"
-	            }, {
-	                label: "End date:",
-	                name: "end_date",
-	                type: "datetime"
-	            }, {
-	                label: "No. Of Sites:",
-	                name: "number_sites"
-	            }, {
-	                label: "No. Of Process:",
-	                name: "number_process_per_site"
-	            }, {
-	                label: "MOM Resources",
-	                name: "mom_resources"
-	            }, {
-	                label: "DEV Resources",
-	                name: "dev_resources"
-	            }, {
-	                label: "Total Resources",
-	                name: "total_resources"
-	            }, {
-	                label: "Estimate Cost:",
-	                name: "estimate_cost"
-	            }, {
-	                label: "Billing date:",
-	                name: "billing_date",
-	                type: "datetime"
-	            }, {
-	                label: "Status:",
-	                name: "status"
-	            }, {
-	                label: "Options:",
-	                name: "options"
-	            }
+				{name: 'Options', "searchable":false}
 	        ]
-		});
-		
-		/* Apply the jEditable handlers to the table */
-		$('.edittext').editable(function(value, settings) {
-			var aPos = oTable.fnGetPosition( this )[2];
-			var rPos = $(this).context._DT_CellIndex.row;
-			var id = oTable[0].rows[rPos+1].cells[2].innerText;
-			var columns = oTable.api().columns();
-			var field = columns.context[0].aoColumns[aPos].name;
-			var myObj = {};
-			myObj["ID"] = parseInt(id);
-			myObj[field]=value;
-			var json = JSON.stringify(myObj);
-	        var settings = {
-				method: 'POST',
-				url: '/projectsForecast/update',
-				headers: {
-					'Content-Type': undefined
-				},
-				data: myObj
-			}	
-		
-			//Call the service to update data in the project
-			$.ajax(settings).done(function (response) {		
-				var data = {
-					"default":true
-				}
-				reload('/projectsForecast',data);
-			});	        
-	    }, {
-		    height: "14px",
-        	width: "100%",
-			tooltip: "Click to edit...",
-		});
-		 $('.edittextarea').editable(function(value, settings) {
-			var aPos = oTable.fnGetPosition( this )[2];
-			var rPos = $(this).context._DT_CellIndex.row;
-			var id = oTable[0].rows[rPos+1].cells[2].innerText;
-			var columns = oTable.api().columns();
-			var field = columns.context[0].aoColumns[aPos].name;
-			var myObj = {};
-			myObj["ID"] = parseInt(id);
-			myObj[field]=value;
-			var json = JSON.stringify(myObj);
-	        var settings = {
-				method: 'POST',
-				url: '/projectsForecast/update',
-				headers: {
-					'Content-Type': undefined
-				},
-				data: myObj
-			}	
-		
-			//Call the service to update data in the project
-			$.ajax(settings).done(function (response) {	
-				var data = {
-					"default":true
-				}
-				reload('/projectsForecast',data);		
-			});	        
-	    }, {
-		    height: "14px",
-        	width: "100%",
-			type: "textarea",
-			cancel    : "Cancel",
-         	submit    : "OK",
-			tooltip: "Click to edit...",
-		});
-		
-		$('.editResourceAssign').editable(function(value, settings) {
-			var aPos = oTable.fnGetPosition( this )[2];
-			var rPos = $(this).context._DT_CellIndex.row;
-			var id = oTable[0].rows[rPos+1].cells[2].innerText;
-			var columns = oTable.api().columns();
-			var field = columns.context[0].aoColumns[aPos].name;
-			var myObj = {};
-			myObj["ID"] = parseInt(id);
-			var myAssignMap = {};
-			var typesResources = {{.TypesResources}};
-			for(var i = 0; i<{{len .TypesResources}}; i++){
-				var projectAssignResources = {};
-				if (field === "MOMResources" && typesResources[i]["Name"] === "MOM Engineer") {
-					projectAssignResources["Name"] = typesResources[i]["Name"];
-					projectAssignResources["NumberResources"] = parseInt(value);
-					myAssignMap[typesResources[i]["ID"].toString()] = projectAssignResources;
-				}
-				if (field === "DEVResources" && typesResources[i]["Name"] === "Developer") {
-					projectAssignResources["Name"] = typesResources[i]["Name"];
-					projectAssignResources["NumberResources"] = parseInt(value);
-					myAssignMap[typesResources[i]["ID"].toString()] = projectAssignResources;
-				}			
-			}
-			
-			myObj["AssignResources"]=myAssignMap;
-			var json = JSON.stringify(myObj);
-	        var settings = {
-				method: 'POST',
-				url: '/projectsForecast/update',
-				headers: {
-					'Content-Type': undefined
-				},
-				data: {
-					"AssignResources" : json
-				}
-			}	
-		
-			//Call the service to update data in the project
-			$.ajax(settings).done(function (response) {	
-				var data = {
-					"default":true
-				}
-				reload('/projectsForecast',data);		
-			});	        
-	    }, {
-		    height: "14px",
-        	width: "100%",
-			tooltip: "Click to edit...",
-		});
+	    } );
 				
 		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
@@ -317,6 +139,139 @@
 		});
 	}
 	
+	updateForecastProject = function(){
+		var value = "";
+		var valueNumber = 0;
+		var valueDate = new Date();
+		var field = "";
+		
+		var dataToUpdate = null;
+		
+		switch ($('#field').html()) {
+		  case "Business Unit":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"BusinessUnit" : value
+			} 
+		    break;
+		  case "Region":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"Region" : value
+			} 
+		    break;
+		  case "Name":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"Name" : value
+			} 
+		    break;
+		  case "Description":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"Description" : value
+			} 
+		    break;
+		  case "Status":
+			value = $('#value').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"Status" : value
+			} 
+		    break;
+		  case "Start Date":
+			valueDate = $('#valueDate').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"StartDate" : valueDate
+			} 
+		    break;
+		  case "End Date":
+			valueDate = $('#valueDate').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"EndDate" : valueDate
+			} 
+		    break;
+		  case "Billing Date":
+			valueDate = $('#valueDate').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"BillingDate" : valueDate
+			} 
+		    break;
+		  case "Number Of Sites":
+			valueNumber = $('#valueNumber').val();
+			if (valueNumber == 0) {
+				valueNumber = -1;
+			}
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"NumberSites" : valueNumber
+			} 
+		    break;
+		  case "Number Of Process":
+			valueNumber = $('#valueNumber').val();
+			if (valueNumber == 0) {
+				valueNumber = -1;
+			}
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"NumberProcessPerSite" : valueNumber
+			} 
+		    break;
+		  case "Estimate Cost":
+			valueNumber = $('#valueNumber').val();
+			if (valueNumber == 0) {
+				valueNumber = -1;
+			}
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"EstimateCost" : valueNumber
+			} 
+		    break;
+		  case "MOM Resources":
+			valueNumber = $('#valueNumber').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"TypeID" : $('#typeResourceId').val(),
+				"TypeName": "MOM Engineer",
+				"TypeNumberResources": valueNumber
+			} 
+		    break;
+		  case "DEV Resources":
+			valueNumber = $('#valueNumber').val();
+			dataToUpdate = { 
+				"ID": $('#reportID').val(),
+				"TypeID" : $('#typeResourceId').val(),
+				"TypeName": "Developer",
+				"TypeNumberResources": valueNumber
+			} 
+		    break;
+		  default:
+		    console.log("Sorry, we are out of " + $('#field').html() + ".");
+		}
+		
+		var settings = {
+			method: 'POST',
+			url: '/projectsForecast/update',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: dataToUpdate
+		}
+		$.ajax(settings).done(function (response) {
+		 	var data = {
+				"default":true
+			}
+			reload('/projectsForecast',data);
+		});
+	}
+	
 	getResourcesByProject = function(projectID, projectName){
 		var settings = {
 			method: 'POST',
@@ -375,6 +330,40 @@
 	{{else}}
 		document.getElementById("defaultOpen").click();
 	{{end}}
+	
+	$(document).on('click','#manageForecast',function(){
+		$('#value').css("display", "inline-block");
+		$('#valueNumber').css("display", "none");
+		$('#valueDate').css("display", "none");
+		$('#projectType').css("display", "none");
+		$('#value').val($('#actualValue').val());
+		$('#field').html($('#actualField').val());
+    	$('#reportForecast').modal('show');
+	});
+	
+	$(document).on('click','#manageForecastDate',function(){
+		$('#value').css("display", "none");
+		$('#valueNumber').css("display", "none");
+		$('#valueDate').css("display", "inline-block");
+		$('#projectType').css("display", "none");
+		$('#valueDate').val($('#actualValue').val());
+		$('#field').html($('#actualField').val());
+    	$('#reportForecast').modal('show');
+	});		
+	
+	$(document).on('click','#manageForecastNumber',function(){
+		$('#value').css("display", "none");
+		$('#valueNumber').css("display", "inline-block");
+		$('#valueDate').css("display", "none");
+		$('#projectType').css("display", "none");
+		$('#valueNumber').val($('#actualValue').val());
+		$('#field').html($('#actualField').val());
+    	$('#reportForecast').modal('show');
+	});	
+		
+	manageReport = function () {
+		updateForecastProject();
+	}
 </script>
 
 <div>
@@ -385,14 +374,238 @@
 	</div>
 	
 	<div id="Report" class="tabscontent">
-		HOLA
+		<div id="tableWorkLoadByTypes" style="margin-top: 50px;">
+			{{if gt (len .MonthsSimple) 12}}
+			<div class="col-sm-12">
+				<h3 style="text-align: center;">Number of engineers by month</h3>
+				<table id="viewWorkLoadByTypes" class="table table-striped table-bordered border-fix">
+				    <thead>
+				    	<tr>
+							<th style="text-align:center;"></th>
+							{{range $key, $month := .MonthsSimple}}
+				        	<th style="text-align:center;">{{$month}}</th>
+							{{end}}
+				      	</tr>
+				    </thead>
+			    	<tbody>
+			        	<tr>
+							<td>MOM</td>
+							{{range $index, $mom := .MOM}}
+							<td>{{$mom}}</td>						
+							{{end}}
+			         	</tr>
+						<tr>
+							<td>DEV</td>
+							{{range $index, $dev := .DEV}}
+							<td>{{$dev}}</td>					
+							{{end}}
+			         	</tr>
+			      	</tbody>
+			   	</table>
+			</div>
+		   	<div class="col-sm-12">
+				<h3 style="text-align: center;">Workload percentage by month</h3>
+				<table id="viewWorkLoadByPercentage" class="table table-striped table-bordered border-fix">
+				    <thead>
+				    	<tr>
+							<th style="text-align:center;"></th>
+							{{range $key, $month := .MonthsSimple}}
+				        	<th style="text-align:center;">{{$month}}</th>
+							{{end}}
+				      	</tr>
+				    </thead>
+			    	<tbody>
+						<tr>
+							<td>Max</td>
+							{{range $index, $max := .MaxLoad}}
+							<td>{{$max}}%</td>					
+							{{end}}
+			         	</tr>
+						<tr>
+							<td>Resource Usage</td>
+							{{range $index, $percent := .PercentageWorkLoad}}
+							<td>{{$percent}}%</td>					
+							{{end}}
+			         	</tr>
+			        	<tr>
+							<td>Min</td>
+							{{range $index, $min := .MinLoad}}
+							<td>{{$min}}%</td>						
+							{{end}}
+			         	</tr>
+			      	</tbody>
+			   	</table>
+			</div>
+			{{else}}
+			<div class="col-sm-6">
+				<h3 style="text-align: center;">Number of engineers by month</h3>
+				<table id="viewWorkLoadByTypes" class="table table-striped table-bordered border-fix">
+				    <thead>
+				    	<tr>
+							<th style="text-align:center;"></th>
+							{{range $key, $month := .MonthsSimple}}
+				        	<th style="text-align:center;">{{$month}}</th>
+							{{end}}
+				      	</tr>
+				    </thead>
+			    	<tbody>
+			        	<tr>
+							<td>MOM</td>
+							{{range $index, $mom := .MOM}}
+							<td>{{$mom}}</td>						
+							{{end}}
+			         	</tr>
+						<tr>
+							<td>DEV</td>
+							{{range $index, $dev := .DEV}}
+							<td>{{$dev}}</td>					
+							{{end}}
+			         	</tr>
+			      	</tbody>
+			   	</table>
+			</div>
+		   	<div class="col-sm-6">
+				<h3 style="text-align: center;">Workload percentage by month</h3>
+				<table id="viewWorkLoadByPercentage" class="table table-striped table-bordered border-fix">
+				    <thead>
+				    	<tr>
+							<th style="text-align:center;"></th>
+							{{range $key, $month := .MonthsSimple}}
+				        	<th style="text-align:center;">{{$month}}</th>
+							{{end}}
+				      	</tr>
+				    </thead>
+			    	<tbody>
+						<tr>
+							<td>Max</td>
+							{{range $index, $max := .MaxLoad}}
+							<td>{{$max}}%</td>					
+							{{end}}
+			         	</tr>
+						<tr>
+							<td>Resource Usage</td>
+							{{range $index, $percent := .PercentageWorkLoad}}
+							<td>{{$percent}}%</td>					
+							{{end}}
+			         	</tr>
+			        	<tr>
+							<td>Min</td>
+							{{range $index, $min := .MinLoad}}
+							<td>{{$min}}%</td>						
+							{{end}}
+			         	</tr>
+			      	</tbody>
+			   	</table>
+			</div>
+			{{end}}
+		</div>
+		<div id="chartjs-stacked-wrapper" style="width:1500px; height:1000px; padding-left: 10%;">
+			<h3 style="text-align: center;">No. of Resources per Month</h3>
+			<canvas id="chartjs-stacked">
+			</canvas>
+		
+			<script>
+				chart6=new Chart(document.getElementById("chartjs-stacked"),
+				{	
+					type: 'bar',
+	                data: {
+			            labels: {{.Months}},
+			            datasets: [{
+			                label: 'MOM',
+			                backgroundColor: window.chartColors.greendark,
+			                data: {{.MOM}}
+			            }, {
+			                label: 'DEV',
+			                backgroundColor: window.chartColors.greenclear,
+			                data: {{.DEV}}
+			            }]					
+			        },
+	                options: {
+	                    responsive: true,
+	                    scales: {
+	                        xAxes: [{
+	                            stacked: true,
+								scaleLabel: {
+		                            display: true,
+		                            labelString: 'Month'
+		                        }
+	                        }],
+	                        yAxes: [{
+	                            stacked: true,
+								scaleLabel: {
+		                            display: true,
+		                            labelString: 'Number of resources'
+		                        }
+	                        }]
+	                    }
+	                }
+				});
+			</script>			
+		</div>
+		<div id="chartjs-lines-wrapper" style="width:1500px; height:1000px;padding-left: 10%;padding-top: 10%;">
+			<h3 style="text-align: center;">Resource Usage per Month</h3>
+			<canvas id="chartjs-lines">
+			</canvas>
+		
+			<script>
+				chart7=new Chart(document.getElementById("chartjs-lines"),
+				{	
+					type: 'line',
+	                data: {
+			            labels: {{.Months}},
+			            datasets: [{
+							label: "Resource Ussage",
+		                    fill: false,
+							pointRadius: 0,
+							lineTension: 0,
+		                    backgroundColor: window.chartColors.greendark,
+							borderColor: window.chartColors.greendark,
+		                    data: {{.PercentageWorkLoad}} 
+			            }, {
+			                label: "Max",
+			               	fill: false,
+		                    backgroundColor: window.chartColors.greenclear,
+							borderColor: window.chartColors.greenclear,
+                    		borderDash: [5, 5],
+		                    data: {{.MaxLoad}} 
+			            }, {
+			                label: "Min",
+			               	fill: false,
+		                    backgroundColor: window.chartColors.red,
+							borderColor: window.chartColors.red,
+                    		borderDash: [5, 5],
+		                    data: {{.MinLoad}} 
+			            }]					
+			        },
+	                options: {
+	                    responsive: true,
+	                    scales: {
+		                    xAxes: [{
+		                        display: true,
+		                        scaleLabel: {
+		                            display: true,
+		                            labelString: 'Month'
+		                        }
+		                    }],
+		                    yAxes: [{
+		                        display: true,
+		                        scaleLabel: {
+		                            display: true,
+		                            labelString: 'Work load percentage'
+		                        }
+		                    }]
+		                }
+	                }
+				});
+			</script>			
+		</div>
 	</div>
 	<div id="Planning" class="tabscontent">
 		<table id="viewProjectsForecast" class="table table-striped table-bordered">
+			<col style="width: 8%"/>
 			<col style="width: 6%"/>
 			<col style="width: 6%"/>
-			<col style="width: 6%"/>
-			<col style="width: 6%"/>
+			<col style="width: 10%"/>
 			<col style="width: 6%"/>
 			<col style="width: 6%"/>
 			<col style="width: 6%"/>
@@ -411,7 +624,6 @@
 					<th>Business Unit</th>
 					<th>Region</th>
 					<th>Project ID</th>
-					<th>Project Type</th>
 					<th>Project Name</th>
 					<th>Description</th>
 					<th>Start Date</th>
@@ -428,49 +640,93 @@
 				</tr>
 			</thead>
 			<tbody>
+				{{$typeResources := .TypesResources}}
 			 	{{range $key, $projectForecast := .ProjectsForecast}}
 				<tr>
-					<td class="edittext">{{$projectForecast.BusinessUnit}}</td>
-					<td class="edittext">{{$projectForecast.Region}}</td>
-					<td>{{$projectForecast.ID}}</td>
-					<td class="edittext">
-					{{range $keyTypes, $type := $projectForecast.Types}}
-						*{{$type.Name}} 
-					{{end}}
+					<td>
+						{{$projectForecast.BusinessUnit}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.BusinessUnit}});$('#actualField').val('Business Unit');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
 					</td>
-					<td class="edittext">{{$projectForecast.Name}}</td>
-					<td class="edittextarea">{{$projectForecast.Description}}</td>
-					<td class="edittext">{{dateformat $projectForecast.StartDate "2006-01-02"}}</td>
-					<td class="edittext">{{dateformat $projectForecast.EndDate "2006-01-02"}}</td>
-					<td class="edittext">{{$projectForecast.NumberSites}}</td>
-					<td class="edittext">{{$projectForecast.NumberProcessPerSite}}</td>
+					<td>
+						{{$projectForecast.Region}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Region}});$('#actualField').val('Region');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>{{$projectForecast.ID}}</td>
+					<td>
+						{{$projectForecast.Name}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Name}});$('#actualField').val('Name');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{$projectForecast.Description}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Description}});$('#actualField').val('Description');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{dateformat $projectForecast.StartDate "2006-01-02"}}
+						<a id="manageForecastDate" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.StartDate "2006-01-02"}});$("#actualField").val("Start Date");'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{dateformat $projectForecast.EndDate "2006-01-02"}}
+						<a id="manageForecastDate" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.EndDate "2006-01-02"}});$("#actualField").val("End Date");'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{$projectForecast.NumberSites}}
+						<a id="manageForecastNumber" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.NumberSites}});$('#actualField').val('Number Of Sites');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{$projectForecast.NumberProcessPerSite}}
+						<a id="manageForecastNumber" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.NumberProcessPerSite}});$('#actualField').val('Number Of Process');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
 					{{if eq (len $projectForecast.AssignResources) 0}}
-						<td id ="MOMEngineers" class="editResourceAssign">0</td>
-						<td id ="DEVEngineers" class="editResourceAssign">0</td>
+						<td id ="MOMEngineers">
+							0
+							<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+						</td>
+						<td id ="DEVEngineers">
+							0
+							<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+						</td>
 					{{end}}
 					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
 						{{if eq (len $projectForecast.AssignResources) 1}}
 							{{if eq "MOM Engineer" $assignResources.Name}}
-								<td id ="MOMEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+								<td id ="MOMEngineers">
+									{{$assignResources.NumberResources}}
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{else}}
-								<td id ="MOMEngineers" class="editResourceAssign">0</td>
+								<td id ="MOMEngineers">
+									0
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{end}}
 						{{else}}
 							{{if eq "MOM Engineer" $assignResources.Name}}
-								<td id ="MOMEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+								<td id ="MOMEngineers">
+									{{$assignResources.NumberResources}}
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{end}}
 						{{end}}												
 					{{end}}
 					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
 						{{if eq (len $projectForecast.AssignResources) 1}}
 							{{if eq "Developer" $assignResources.Name}}
-								<td id ="DEVEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+								<td id ="DEVEngineers">
+									{{$assignResources.NumberResources}}
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{else}}
-								<td id ="DEVEngineers" class="editResourceAssign">0</td>
+								<td id ="DEVEngineers">
+									0
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{end}}
 						{{else}}
 							{{if eq "Developer" $assignResources.Name}}
-								<td id ="DEVEngineers" class="editResourceAssign">{{$assignResources.NumberResources}}</td>
+								<td id ="DEVEngineers">
+									{{$assignResources.NumberResources}}
+									<a id="manageForecastNumber" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+								</td>
 							{{end}}
 						{{end}}
 					{{end}}
@@ -478,11 +734,20 @@
 					<td id ="totalEngineers">
 					{{$projectForecast.TotalEngineers}}
 					</td>
-					<td class="edittext">{{$projectForecast.EstimateCost}}</td>	
-					<td class="edittext">{{dateformat $projectForecast.BillingDate "2006-01-02"}}</td>
-					<td class="edittext">{{$projectForecast.Status}}</td>			
 					<td>
-						<a id="deleteProjectForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});"> <span class="glyphicon glyphicon-trash"></span></a>
+						{{$projectForecast.EstimateCost}}
+						<a id="manageForecastNumber" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.EstimateCost}});$('#actualField').val('Estimate Cost');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>	
+					<td>
+						{{dateformat $projectForecast.BillingDate "2006-01-02"}}
+						<a id="manageForecastDate" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.BillingDate "2006-01-02"}});$("#actualField").val("Billing Date");'> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>
+					<td>
+						{{$projectForecast.Status}}
+						<a id="manageForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Status}});$('#actualField').val('Status');"> <span align="right" class="glyphicon glyphicon-pencil pull-right"></span></a>
+					</td>			
+					<td>
+						<a id="deleteProjectForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});$('#reportID').val({{$projectForecast.ID}});"> <span class="glyphicon glyphicon-trash"></span></a>
 					</td>
 				</tr>
 				{{end}}	
@@ -596,6 +861,7 @@
         <h4 class="modal-title">Delete Confirmation</h4>
       </div>
       <div class="modal-body">
+		<input type="hidden" id="projectID">
         Are you sure you want to remove <b id="nameDelete"></b> from projects?
 		<br>
 		<li>The resources will lose this project assignment.</li>
@@ -607,4 +873,45 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="reportForecast" role="dialog">
+   <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 id="modalTitle" class="modal-title">Edit</h4>
+         </div>
+         <div class="modal-body">
+			<input type="hidden" id="reportID">
+			<input type="hidden" id="resourceID">
+			<input type="hidden" id="actualValue">
+			<input type="hidden" id="actualField">
+			<input type="hidden" id="typeResourceId">
+			<input type="hidden" id="actualBillableHours">
+			<input type="hidden" id="actualProjectType">
+            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+               <div class="form-group form-group-sm">
+                  <label id="field" class="control-label col-sm-4 translatable" data-i18n=""></label>
+                  <div class="col-sm-8">
+                    <input type="text" id="value" style="border-radius: 8px;" min="0" max="100">
+					<input type="number" id="valueNumber" style="border-radius: 8px;" min="0" max="100">
+					<input type="date" id="valueDate" style="border-radius: 8px;" min="0" max="100">
+                  	<select  id="projectType" >
+					{{range $key, $types := .Types}}
+						<option value="{{$types.ID}}">{{$types.Name}}</option>
+					{{end}}
+					</select>
+				  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="reportAdd" class="btn btn-default" onclick="manageReport()" data-dismiss="modal">OK</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
 </div>
