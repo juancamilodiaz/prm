@@ -425,7 +425,7 @@
 	<div class="col-sm-5">
 	</div>
 	<div class="col-sm-2">
-		<button class="buttonHeader button2" id="download-pdf" onclick="downloadPDF()">
+		<button class="buttonHeader button2" id="download-pdf" onclick="downloadPDF()" style="display: none;">
 			<span class="glyphicon glyphicon-download-alt"></span> Download PDF
 		</button>
 	</div>
