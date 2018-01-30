@@ -86,4 +86,24 @@ func init() {
 		}
 		return template.JS("")
 	})
+
+	beego.AddFuncMap("inc", func(base, in int) interface{} {
+		return base + in
+	})
+
+	beego.AddFuncMap("minus", func(base, in int) interface{} {
+		return base - in
+	})
+
+	beego.AddFuncMap("minusFloat", func(base, in float64) interface{} {
+		return base - in
+	})
+
+	beego.AddFuncMap("division", func(base, in float64) interface{} {
+		return base / in
+	})
+
+	beego.AddFuncMap("splitEmail", func(pString string) []string {
+		return strings.Split(pString, ";")
+	})
 }

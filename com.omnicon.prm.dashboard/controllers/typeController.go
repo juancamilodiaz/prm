@@ -23,17 +23,17 @@ func (this *TypeController) ListTypes() {
 		message := new(domain.TypeRS)
 		json.NewDecoder(res.Body).Decode(&message)
 		this.Data["Types"] = message.Types
-		typesOf := ""
+		applyTo := ""
 		for i, typeElement := range message.Types {
-			if !strings.Contains(typesOf, typeElement.TypeOf) {
+			if !strings.Contains(applyTo, typeElement.ApplyTo) {
 				if i != 0 {
-					typesOf = typesOf + ";"
+					applyTo = applyTo + ";"
 				}
-				typesOf = typesOf + typeElement.TypeOf
+				applyTo = applyTo + typeElement.ApplyTo
 			}
 		}
-		listTypeOf := strings.Split(typesOf, ";")
-		this.Data["TypesOf"] = listTypeOf
+		listApplyTo := strings.Split(applyTo, ";")
+		this.Data["ListApplyTo"] = listApplyTo
 		if this.GetString("Template") == "types" {
 			this.Data["ResourcesToProjects"] = nil
 			this.Data["Projects"] = nil

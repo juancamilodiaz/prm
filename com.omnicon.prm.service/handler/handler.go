@@ -29,12 +29,16 @@ func SetUpHandlers() {
 	http.HandleFunc("/CreateSkill", createSkill)
 	http.HandleFunc("/UpdateSkill", updateSkill)
 	http.HandleFunc("/DeleteSkill", deleteSkill)
+	http.HandleFunc("/CreateProjectForecast", createProjectForecast)
+	http.HandleFunc("/UpdateProjectForecast", updateProjectForecast)
+	http.HandleFunc("/DeleteProjectForecast", deleteProjectForecast)
 	// Management Operations
 	http.HandleFunc("/SetSkillToResource", setSkillToResource)
 	http.HandleFunc("/DeleteSkillToResource", deleteSkillToResource)
 	http.HandleFunc("/SetResourceToProject", setResourceToProject)
 	http.HandleFunc("/DeleteResourceToProject", deleteResourceToProject)
 	http.HandleFunc("/GetResources", getResources)
+	http.HandleFunc("/GetProjectsForecast", getProjectsForecast)
 	http.HandleFunc("/GetProjects", getProjects)
 	http.HandleFunc("/GetSkills", getSkills)
 	http.HandleFunc("/GetResourcesToProjects", getResourcesToProjects)
@@ -59,6 +63,16 @@ func SetUpHandlers() {
 	http.HandleFunc("/DeleteTypesByResource", deleteTypesByResource)
 	http.HandleFunc("/SetTrainingToResource", setTrainingToResource)
 	http.HandleFunc("/DeleteTrainingToResource", deleteTrainingToResource)
+	http.HandleFunc("/GetSettings", getSettings)
+	http.HandleFunc("/UpdateSettings", updateSettings)
+	http.HandleFunc("/GetProductivityTasks", getProductivityTasks)
+	http.HandleFunc("/CreateProductivityTasks", createProductivityTasks)
+	http.HandleFunc("/UpdateProductivityTasks", updateProductivityTasks)
+	http.HandleFunc("/DeleteProductivityTasks", deleteProductivityTasks)
+	http.HandleFunc("/GetProductivityReport", getProductivityReport)
+	http.HandleFunc("/CreateProductivityReport", createProductivityReport)
+	http.HandleFunc("/UpdateProductivityReport", updateProductivityReport)
+	http.HandleFunc("/DeleteProductivityReport", deleteProductivityReport)
 }
 
 /*
@@ -445,6 +459,126 @@ func deleteSkill(pResponse http.ResponseWriter, pRequest *http.Request) {
 }
 
 /*
+Descripcion : Funcion encargada de crear un proyecto forecast de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func createProjectForecast(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("CreateProjectForecast")
+
+	message := new(domain.ProjectForecastRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+
+	log.Info("Process Create Project Forecast", message)
+
+	response := controller.ProcessCreateProjectForecast(message)
+
+	// Se asigna tiempo de respuesta de todo el proceso.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Descripcion : Funcion encargada de actualizar un proyecto forecast de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func updateProjectForecast(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("UpdateProjectForecast")
+
+	message := new(domain.ProjectForecastRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+	log.Info("Process Update ProjectForecast", message)
+	response := controller.ProcessUpdateProjectForecast(message)
+
+	// Se asigna tiempo de respuesta de todo el proceso.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Descripcion : Funcion encargada de eliminar un proyecto forecast de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func deleteProjectForecast(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("DeleteProjectForecast")
+
+	message := new(domain.ProjectForecastRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+
+	log.Info("Process Delete ProjectForecast", message)
+	response := controller.ProcessDeleteProjectForecast(message)
+
+	// Se asigna tiempo de respuesta de todo el proceso.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
 Description : Function to set a skill in a resource according to input request.
 
 Params :
@@ -631,6 +765,47 @@ func getResources(pResponse http.ResponseWriter, pRequest *http.Request) {
 	log.Info("Process Get Resources", message)
 
 	response := controller.ProcessGetResources(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to get a projects forecast according to filters input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getProjectsForecast(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("GetProjectsForecast")
+
+	message := new(domain.ProjectForecastRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get Projects Forecast", message)
+
+	response := controller.ProcessGetProjectsForecast(message)
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
@@ -1449,6 +1624,392 @@ func deleteTrainingToResource(pResponse http.ResponseWriter, pRequest *http.Requ
 
 	log.Info("Process Delete Training To Resource", message)
 	response := controller.ProcessDeleteTrainingToResource(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to get all settings according request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getSettings(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+	defer panics.CatchPanic("GetSettings")
+
+	message := new(domain.SettingsRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get Settings", message)
+	response := controller.ProcessGetSettings(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to update a setting according to input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func updateSettings(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("UpdateSettings")
+
+	message := new(domain.SettingsRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+	log.Info("Process Update Settings", message)
+	response := controller.ProcessUpdateSettings(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Descripcion : Funcion encargada de crear un ProductivityTasks  de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func createProductivityTasks(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("CreateProductivityTasks")
+
+	message := new(domain.ProductivityTasksRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+
+	log.Info("Process Create ProductivityTasks", message)
+
+	response := controller.ProcessCreateProductivityTasks(message)
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to get all ProductivityTasks according request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getProductivityTasks(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+	defer panics.CatchPanic("GetProductivityTasks")
+
+	message := new(domain.ProductivityTasksRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get ProductivityTasks", message)
+	response := controller.ProcessGetProductivityTasks(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to update a ProductivityTasks according to input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func updateProductivityTasks(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("UpdateProductivityTasks")
+
+	message := new(domain.ProductivityTasksRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+	log.Info("Process Update ProductivityTasks", message)
+	response := controller.ProcessUpdateProductivityTasks(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to delete a productivityTasks according to input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func deleteProductivityTasks(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("DeleteProductivityTasks")
+
+	message := new(domain.ProductivityTasksRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Delete ProductivityTasks", message)
+	response := controller.ProcessDeleteProductivityTasks(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Descripcion : Funcion encargada de crear un ProductivityReport  de acuerdo a la peticion de entrada.
+
+Parametros :
+      pResponse http.ResponseWriter :  contiene la respuesta que se enviara al usuario
+	  pRequest *http.Request :         Contiene la peticion del usuario
+*/
+func createProductivityReport(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("CreateProductivityReport")
+
+	message := new(domain.ProductivityReportRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Ha ocurrido un error al realizar el Unmarshal", err)
+		}
+	}
+
+	log.Info("Process Create ProductivityReport", message)
+
+	response := controller.ProcessCreateProductivityReport(message)
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to get all ProductivityReport according request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getProductivityReport(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+	defer panics.CatchPanic("GetProductivityReport")
+
+	message := new(domain.ProductivityReportRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Get ProductivityReport", message)
+	response := controller.ProcessGetProductivityReport(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to update a ProductivityReport according to input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func updateProductivityReport(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("UpdateProductivityReport")
+
+	message := new(domain.ProductivityReportRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+	log.Info("Process Update ProductivityReport", message)
+	response := controller.ProcessUpdateProductivityReport(message)
+
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.Header.ResponseTime = util.Concatenate(response.Header.ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to delete a productivityReport according to input request.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func deleteProductivityReport(pResponse http.ResponseWriter, pRequest *http.Request) {
+
+	startTime := time.Now()
+
+	defer panics.CatchPanic("DeleteProductivityReport")
+
+	message := new(domain.ProductivityReportRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Delete ProductivityReport", message)
+	response := controller.ProcessDeleteProductivityReport(message)
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {

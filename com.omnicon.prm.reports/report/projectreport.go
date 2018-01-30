@@ -10,6 +10,7 @@ import (
 
 	"github.com/jung-kurt/gofpdf"
 	utilr "prm/com.omnicon.prm.reports/util"
+	"prm/com.omnicon.prm.service/dao"
 	"prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/util"
 )
@@ -61,16 +62,39 @@ func ProjectAssign(pInput domain.GetResourcesToProjectsRQ) string {
 			pdf.SetFont("", "", 0)
 
 			mapPerRange := GetAvailabilityPerRange(project)
-			for _, ranges := range mapPerRange.ListOfRange {
+			sameName := false
+			for i, ranges := range mapPerRange.ListOfRange {
 				//y := 20 * (j + 1)
 				pdf.SetX(15)
-				pdf.CellFormat(wTable[0], 6, ranges.ResourceName, "LR", 0, "", fill, 0, "")
+				if sameName {
+					pdf.CellFormat(wTable[0], 0, "", "", 0, "", fill, 0, "")
+					if i >= len(mapPerRange.ListOfRange)-1 || mapPerRange.ListOfRange[i+1].ResourceName != ranges.ResourceName {
+						sameName = false
+					}
+				} else {
+					if i < len(mapPerRange.ListOfRange)-1 && mapPerRange.ListOfRange[i+1].ResourceName == ranges.ResourceName {
+						sameName = true
+					}
+					if sameName {
+						count := 1
+						for j := i; j <= len(mapPerRange.ListOfRange); j++ {
+							if j < len(mapPerRange.ListOfRange)-1 && mapPerRange.ListOfRange[j].ProjectName == mapPerRange.ListOfRange[j+1].ProjectName {
+								count++
+							}
+						}
+						pdf.CellFormat(wTable[0], float64(count*6), ranges.ResourceName, "LR", 0, "", fill, 0, "")
+					} else {
+						pdf.CellFormat(wTable[0], 6, ranges.ResourceName, "LR", 0, "", fill, 0, "")
+					}
+				}
 				pdf.CellFormat(wTable[1], 6, ranges.StartDate, "LR", 0, "C", fill, 0, "")
 				pdf.CellFormat(wTable[2], 6, ranges.EndDate, "LR", 0, "C", fill, 0, "")
 				pdf.CellFormat(wTable[3], 6, strconv.FormatFloat(ranges.Hours, 'f', 1, 64), "LR", 0, "C", fill, 0, "")
 				pdf.CellFormat(wTable[4], 6, strconv.FormatFloat(ranges.HoursPerDay, 'f', 1, 64), "LR", 0, "C", fill, 0, "")
 				pdf.Ln(-1)
-				fill = !fill
+				if !sameName || fill {
+					fill = !fill
+				}
 			}
 			pdf.SetX(15)
 			pdf.CellFormat(wSum, 0, "", "T", 0, "", false, 0, "")
@@ -95,6 +119,8 @@ func GetAvailabilityPerRange(pProject []*domain.ProjectResources) *domain.Resour
 	totalHours := 0.0
 	//lastNumberHours := 0.0
 
+	dao.SortByStartDate(pProject)
+
 	for i, projectResource := range pProject {
 
 		if rangePerDay.StartDate == "" {
@@ -103,9 +129,16 @@ func GetAvailabilityPerRange(pProject []*domain.ProjectResources) *domain.Resour
 		}
 		rangePerDay.EndDate = projectResource.EndDate.Format("2006-01-02")
 		if projectResource.Hours > 8 {
-			days := float64(util.CalcularDiasEntreDosFechas(projectResource.StartDate.Unix(), projectResource.EndDate.Unix()))
+			var days float64
+			holidays := 0
+			for day := projectResource.StartDate; day.Unix() < projectResource.EndDate.AddDate(0, 0, 1).Unix(); day = day.AddDate(0, 0, 1) {
+				if day.Weekday() == time.Saturday || day.Weekday() == time.Sunday {
+					holidays++
+				}
+			}
+			days = float64(util.CalcularDiasEntreDosFechas(projectResource.StartDate.Unix(), projectResource.EndDate.Unix()))
 
-			rangePerDay.HoursPerDay = projectResource.Hours / (days + 1)
+			rangePerDay.HoursPerDay = projectResource.Hours / (days - float64(holidays) + 1)
 		} else {
 			rangePerDay.HoursPerDay = projectResource.Hours
 		}
@@ -171,9 +204,30 @@ func ResourceAssign(pInput domain.GetResourcesToProjectsRQ) string {
 			pdf.SetTextColor(0, 0, 0)
 			pdf.SetFont("", "", 0)
 			mapPerRange := GetAvailabilityPerRange(project)
-			for _, ranges := range mapPerRange.ListOfRange {
+			sameName := false
+			for i, ranges := range mapPerRange.ListOfRange {
 				pdf.SetX(15)
-				pdf.CellFormat(wTable[0], 8, ranges.ProjectName, "LR", 0, "", fill, 0, "")
+				if sameName {
+					pdf.CellFormat(wTable[0], 0, "", "", 0, "", fill, 0, "")
+					if i >= len(mapPerRange.ListOfRange)-1 || mapPerRange.ListOfRange[i+1].ProjectName != ranges.ProjectName {
+						sameName = false
+					}
+				} else {
+					if i < len(mapPerRange.ListOfRange)-1 && mapPerRange.ListOfRange[i+1].ProjectName == ranges.ProjectName {
+						sameName = true
+					}
+					if sameName {
+						count := 1
+						for j := i; j <= len(mapPerRange.ListOfRange); j++ {
+							if j < len(mapPerRange.ListOfRange)-1 && mapPerRange.ListOfRange[j].ProjectName == mapPerRange.ListOfRange[j+1].ProjectName {
+								count++
+							}
+						}
+						pdf.CellFormat(wTable[0], float64(count*8), ranges.ProjectName, "LR", 0, "", fill, 0, "")
+					} else {
+						pdf.CellFormat(wTable[0], 8, ranges.ProjectName, "LR", 0, "", fill, 0, "")
+					}
+				}
 				pdf.CellFormat(wTable[1], 8, ranges.StartDate, "LR", 0, "C", fill, 0, "")
 				pdf.CellFormat(wTable[2], 8, ranges.EndDate, "LR", 0, "C", fill, 0, "")
 				pdf.CellFormat(wTable[3], 8, strconv.FormatFloat(ranges.Hours, 'f', 1, 64), "LR", 0, "C", fill, 0, "")

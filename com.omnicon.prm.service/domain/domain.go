@@ -3,13 +3,14 @@ package domain
 import "time"
 
 type Resource struct {
-	ID            int    `db:"id"`
-	Name          string `db:"name"`
-	LastName      string `db:"last_name"`
-	Email         string `db:"email"`
-	Photo         string `db:"photo"`
-	EngineerRange string `db:"engineer_range"`
-	Enabled       bool   `db:"enabled"`
+	ID            int     `db:"id"`
+	Name          string  `db:"name"`
+	LastName      string  `db:"last_name"`
+	Email         string  `db:"email"`
+	Photo         string  `db:"photo"`
+	EngineerRange string  `db:"engineer_range"`
+	Enabled       bool    `db:"enabled"`
+	VisaUS        *string `db:"visa_us"`
 	Skills        map[string]int
 	ResourceType  []*Type
 }
@@ -24,14 +25,16 @@ type Project struct {
 	Percent         int
 	Lead            string
 	ProjectType     []*Type
-	OperationCenter string `db:"operation_center"`
-	WorkOrder       int    `db:"work_order"`
+	OperationCenter string   `db:"operation_center"`
+	WorkOrder       int      `db:"work_order"`
+	LeaderID        *int     `db:"leader_id,omitempty"`
+	Cost            *float64 `db:"cost,omitempty"`
 }
 
 type Type struct {
-	ID     int    `db:"id"`
-	Name   string `db:"name"`
-	TypeOf string `db:"type_of"`
+	ID      int    `db:"id"`
+	Name    string `db:"name"`
+	ApplyTo string `db:"apply_to"`
 }
 
 type ProjectTypes struct {
@@ -147,4 +150,102 @@ type ResourceTypes struct {
 	ResourceId int    `db:"resource_id"`
 	TypeId     int    `db:"type_id"`
 	Name       string `db:"type_name"`
+}
+
+type ProjectForecast struct {
+	ID                   int       `db:"id"`
+	Name                 string    `db:"name"`
+	BusinessUnit         string    `db:"business_unit"`
+	Region               string    `db:"region"`
+	Description          string    `db:"description,omitempty"`
+	StartDate            time.Time `db:"start_date"`
+	EndDate              time.Time `db:"end_date"`
+	Hours                float64   `db:"hours"`
+	NumberSites          int       `db:"number_sites"`
+	NumberProcessPerSite int       `db:"number_process_per_site"`
+	NumberProcessTotal   int       `db:"number_process_total"`
+	Types                []string
+	ProjectType          string
+	AssignResources      map[int]ProjectForecastAssignResources
+	TotalEngineers       int
+	EstimateCost         float64   `db:"estimate_cost"`
+	BillingDate          time.Time `db:"billing_date"`
+	Status               string    `db:"status"`
+}
+
+type ProjectForecastAssignResources struct {
+	TypeID          int
+	Name            string
+	NumberResources int
+}
+
+type ProjectForecastAssigns struct {
+	ID                  int    `db:"id"`
+	ProjectForecastId   int    `db:"projectForecast_id"`
+	ProjectForecastName string `db:"projectForecast_name"`
+	TypeId              int    `db:"type_id"`
+	TypeName            string `db:"type_name"`
+	NumberResources     int    `db:"number_resources"`
+}
+
+type ProjectForecastTypes struct {
+	ID                int `db:"id"`
+	ProjectForecastId int `db:"projectForecast_id"`
+	TypeId            int `db:"type_id"`
+}
+
+type ProjectForecastWorkload struct {
+	MonthNumber  int
+	MOM          int
+	DEV          int
+	ResourceLoad float64
+}
+
+type Settings struct {
+	ID          int    `db:"id"`
+	Name        string `db:"name"`
+	Value       string `db:"value"`
+	Type        string `db:"type"`
+	Description string `db:"description"`
+}
+
+type ProductivityTasks struct {
+	ID            int     `db:"id"`
+	ProjectID     int     `db:"project_id"`
+	Name          string  `db:"name"`
+	TotalExecute  float64 `db:"total_execute"`
+	Scheduled     float64 `db:"scheduled"`
+	Progress      float64 `db:"progress"`
+	IsOutOfScope  bool    `db:"is_out_of_scope"`
+	TotalBillable float64 `db:"total_billable"`
+}
+
+type ProductivityReport struct {
+	ID            int     `db:"id"`
+	TaskID        int     `db:"task_id"`
+	ResourceID    int     `db:"resource_id"`
+	Hours         float64 `db:"hours"`
+	HoursBillable float64 `db:"hours_billable"`
+}
+
+type ResourceReport struct {
+	ResourceID   int
+	NameResource string
+	ReportByTask map[int]*Report // Map[taskID]
+}
+
+type Report struct {
+	ID            int // ID report
+	Hours         float64
+	HoursBillable float64
+}
+
+type ForecastByMonth struct {
+	Weeks map[int]map[int]*UsageByWeek
+}
+
+type UsageByWeek struct {
+	Month time.Month
+	DEV   int
+	MOM   int
 }

@@ -10,9 +10,9 @@ type TypeRS struct {
 
 //--------
 type TypeRQ struct {
-	ID     int
-	Name   string
-	TypeOf string
+	ID      int
+	Name    string
+	ApplyTo string
 }
 
 type Response_Header struct {

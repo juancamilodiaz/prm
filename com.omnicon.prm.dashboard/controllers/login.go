@@ -11,6 +11,8 @@ import (
 
 	"prm/com.omnicon.prm.dashboard/lib"
 	"prm/com.omnicon.prm.dashboard/models"
+	"prm/com.omnicon.prm.service/domain"
+	"prm/com.omnicon.prm.service/util"
 )
 
 const fileNameValidEmails = "conf/validEmails"
@@ -268,6 +270,13 @@ func (c *LoginController) GrantAccess() {
 		flash.Error("Internal Error writing Valid Emails.")
 		flash.Store(&c.Controller)
 	}
+
+	input := domain.SettingsRQ{}
+	input.Name = util.VALID_EMAILS
+	content, _ := ioutil.ReadFile(fileNameValidEmails)
+	input.Value = string(content)
+	inputBuffer := EncoderInput(input)
+	PostData("UpdateSettings", inputBuffer)
 
 	flash.Success("Grant Successful.")
 	flash.Store(&c.Controller)

@@ -7,6 +7,7 @@ type CreateResourceRQ struct {
 	Photo         string
 	EngineerRange string
 	Enabled       bool
+	VisaUS        string
 }
 
 type DeleteResourceRQ struct {
@@ -30,7 +31,7 @@ type SetResourceToProjectRQ struct {
 	ResourceId    int
 	StartDate     string
 	EndDate       string
-	Lead          bool
+	Lead          bool // TODO Delete all relations
 	Hours         float64
 	IsToCreate    bool
 	HoursPerDay   float64
@@ -62,6 +63,7 @@ type UpdateResourceRQ struct {
 	Photo         string
 	EngineerRange string
 	Enabled       bool
+	VisaUS        string
 }
 
 type GetSkillByResourceRQ struct {

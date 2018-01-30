@@ -10,7 +10,11 @@ import (
 	"prm/com.omnicon.prm.service/util"
 )
 
-const HoursOfWork = 8.0
+var HoursOfWork, EpsilonValue float64
+
+func init() {
+	UpdateSettingsVariables()
+}
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 
@@ -27,6 +31,13 @@ func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
 	}
 
 	project := util.MappingCreateProject(pRequest)
+
+	// Set leader id (resource id)
+	resource := dao.GetResourceById(pRequest.LeaderID)
+	if resource != nil {
+		leaderID := resource.ID
+		project.LeaderID = &leaderID
+	}
 
 	if project != nil {
 		// Save in DB
@@ -148,6 +159,29 @@ func UpdateProject(pRequest *DOMAIN.UpdateProjectRQ) *DOMAIN.UpdateProjectRS {
 			}
 		}
 		oldProject.Enabled = pRequest.Enabled
+
+		resourceID := 0
+		if pRequest.LeaderID != 0 {
+			resource := dao.GetResourceById(pRequest.LeaderID)
+			if resource != nil {
+				resourceID = resource.ID
+			}
+		}
+		if resourceID != 0 {
+			oldProject.LeaderID = &resourceID
+		} else {
+			oldProject.LeaderID = nil
+		}
+
+		if pRequest.Cost > 0 {
+			cost := pRequest.Cost
+			oldProject.Cost = &cost
+		} else {
+			if pRequest.Cost == 0 {
+				oldProject.Cost = nil
+			}
+		}
+
 		// Save in DB
 		rowsUpdated, err := dao.UpdateProject(oldProject)
 		if err != nil || rowsUpdated <= 0 {
@@ -346,7 +380,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			}
 			// If total hours assign is greater than zero it means that hours and the range is not met.
 			if totalHoursAssig > 0 {
-				response.Message = util.Concatenate("Total hours does not meet range. (Saturdays and Sundays should not have hours, maximum hours per day is " + strconv.Itoa(HoursOfWork) + " hours, according to the number of days this value is the maximum allowable)")
+				response.Message = util.Concatenate("Total hours does not meet range. (Saturdays and Sundays should not have hours, maximum hours per day is " + strconv.FormatFloat(HoursOfWork, 'f', -1, 64) + " hours, according to the number of days this value is the maximum allowable)")
 				response.Project = nil
 				response.Status = "Error"
 				return &response
@@ -355,7 +389,7 @@ func SetResourceToProject(pRequest *DOMAIN.SetResourceToProjectRQ) *DOMAIN.SetRe
 			log.Debug("breakdownAssig", breakdownAssig)
 
 			isValidAssig := true
-			messageValidation := util.Concatenate("The allocation of hours exceeds the limit of ", strconv.Itoa(HoursOfWork), " hours per day. * ")
+			messageValidation := util.Concatenate("The allocation of hours exceeds the limit of ", strconv.FormatFloat(HoursOfWork, 'f', -1, 64), " hours per day. * ")
 			for day := time.Unix(startDateInt, 0); day.Unix() <= time.Unix(endDateInt, 0).Unix(); day = day.AddDate(0, 0, 1) {
 				totalHours := breakdown[day.String()] + breakdownAssig[day.String()]
 				if totalHours > HoursOfWork {
@@ -578,6 +612,16 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 				}
 			}
 		*/
+
+		for _, project := range projects {
+			if project.LeaderID != nil {
+				resource := dao.GetResourceById(*project.LeaderID)
+				if resource != nil {
+					project.Lead = resource.Name + " " + resource.LastName
+				}
+			}
+		}
+
 		response.Projects = projects
 		// Create response
 		response.Status = "OK"
@@ -766,6 +810,10 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	//
 
 	response.ResourcesToProjects = projectsResources
+
+	// Set value epsilon
+	response.EpsilonValue = EpsilonValue
+
 	// Create response
 	response.Status = "OK"
 

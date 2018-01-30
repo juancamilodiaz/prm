@@ -34,11 +34,25 @@ func (this *ProjectController) ListProjects() {
 
 		typesProject := []*domain.Type{}
 		for _, _type := range messageTypes.Types {
-			if _type.TypeOf == "Project" {
+			if _type.ApplyTo == "Project" {
 				typesProject = append(typesProject, _type)
 			}
 		}
 		this.Data["Types"] = typesProject
+
+		operation = "GetResources"
+
+		input := domain.GetResourcesRQ{}
+		enabled := true
+		input.Enabled = &enabled
+
+		inputBuffer := EncoderInput(input)
+		res, _ = PostData(operation, inputBuffer)
+
+		messageResources := new(domain.GetResourcesRS)
+		json.NewDecoder(res.Body).Decode(&messageResources)
+
+		this.Data["Resources"] = messageResources.Resources
 
 		this.Data["Projects"] = message.Projects
 
@@ -387,9 +401,6 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 	hoursNumber, _ := this.GetInt("Hours")
 	resourceNumber, _ := this.GetInt("NumberOfResources")
 
-	var epsilonValue float64
-	epsilonValue = 10
-
 	err := this.ParseForm(&input)
 	input.Hours = 0
 	if err != nil {
@@ -427,6 +438,9 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 		this.Data["Resources"] = message.Resources
 		this.Data["AvailBreakdown"] = message.AvailBreakdown
 		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+
+		// Set variable epsilon
+		epsilonValue := message.EpsilonValue
 
 		var listSorted []domain.ListByHours
 		if isHoursFilter {
@@ -603,7 +617,7 @@ func (this *ProjectController) GetTypesByProject() {
 
 		typesProject := []*domain.Type{}
 		for _, _types := range message.Types {
-			if _types.TypeOf == "Project" {
+			if _types.ApplyTo == "Project" {
 				typesProject = append(typesProject, _types)
 			}
 		}

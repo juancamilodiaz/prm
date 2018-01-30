@@ -60,6 +60,12 @@ func UpdateResource(pResource *DOMAIN.UpdateResourceRQ) *DOMAIN.UpdateResourceRS
 		if pResource.Photo != "" {
 			oldResource.Photo = pResource.Photo
 		}
+		if pResource.VisaUS != "" {
+			visaUS := pResource.VisaUS
+			oldResource.VisaUS = &visaUS
+		} else {
+			oldResource.VisaUS = nil
+		}
 		oldResource.Enabled = pResource.Enabled
 		// Save in DB
 		rowsUpdated, err := dao.UpdateResource(oldResource)
@@ -135,6 +141,13 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 			if err != nil {
 				log.Error("Failed to delete training resource")
 			}
+		}
+
+		// Delete leader in project
+		projects := dao.GetProjectsByLeaderID(pResource.ID)
+		for _, project := range projects {
+			project.LeaderID = nil
+			dao.UpdateProject(project)
 		}
 
 		// Delete in DB

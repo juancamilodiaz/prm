@@ -89,6 +89,27 @@ func GetProjectsByDateRange(pStartDate, pEndDate int64) []*DOMAIN.Project {
 }
 
 /**
+*	Name : GetProjectsByLeaderID
+*	Params: pLeaderID
+*	Return: []*DOMAIN.Project
+*	Description: Get a project by leader ID in a project table
+ */
+func GetProjectsByLeaderID(pLeaderID int) []*DOMAIN.Project {
+	// Slice to keep all projects
+	projects := []*DOMAIN.Project{}
+	// Filter projects by leader id
+	res := getProjectCollection().Find().Where("leader_id = ?", pLeaderID)
+	// Close session when ends the method
+	defer session.Close()
+	// Add all projects in projects variable
+	err := res.All(&projects)
+	if err != nil {
+		log.Error(err)
+	}
+	return projects
+}
+
+/**
 *	Name : AddProject
 *	Params: pProject
 *	Return: int, error
@@ -106,13 +127,17 @@ func AddProject(pProject *DOMAIN.Project) (int, error) {
 		"end_date",
 		"enabled",
 		"operation_center",
-		"work_order").Values(
+		"work_order",
+		"leader_id",
+		"cost").Values(
 		pProject.Name,
 		pProject.StartDate,
 		pProject.EndDate,
 		pProject.Enabled,
 		pProject.OperationCenter,
-		pProject.WorkOrder).Exec()
+		pProject.WorkOrder,
+		pProject.LeaderID,
+		pProject.Cost).Exec()
 	if err != nil {
 		log.Error(err)
 		return 0, err
@@ -135,7 +160,8 @@ func UpdateProject(pProject *DOMAIN.Project) (int, error) {
 	// Close session when ends the method
 	defer session.Close()
 	// Update project in DB
-	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?", pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder).Where("id = ?", int(pProject.ID))
+	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?, leader_id = ?, cost = ?",
+		pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder, pProject.LeaderID, pProject.Cost).Where("id = ?", int(pProject.ID))
 
 	res, err := q.Exec()
 	if err != nil {
@@ -171,7 +197,7 @@ func DeleteProject(pProjectId int) (int, error) {
 }
 
 func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
-	// Slice to keep all resources
+	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
 	result := getProjectCollection().Find()
 

@@ -8,6 +8,7 @@
 				null,
 				null,
 				null,
+				null,
 				{"searchable":false}
 			]
 		});
@@ -61,13 +62,14 @@
 		$("#resourceEmail").val(null);
 		$("#resourceRank").val(null);
 		$("#resourceActive").prop('checked', false);
+		$("#resourceVisaUS").val(null);
 		
 		$("#modalResourceTitle").html("Create Resource");
 		$("#resourceUpdate").css("display", "none");
 		$("#resourceCreate").css("display", "inline-block");
 	}
 	
-	configureUpdateModal = function(pID, pName, pLastName, pEmail, pRank, pActive){
+	configureUpdateModal = function(pID, pName, pLastName, pEmail, pRank, pActive, pVisaUS){
 		
 		$("#resourceID").val(pID);
 		$("#resourceName").val(pName);
@@ -75,6 +77,7 @@
 		$("#resourceEmail").val(pEmail);
 		$("#resourceRank").val(pRank);
 		$("#resourceActive").prop('checked', pActive);
+		$("#resourceVisaUS").val(pVisaUS);
 		
 		$("#modalResourceTitle").html("Update Resource");
 		$("#resourceCreate").css("display", "none");
@@ -94,7 +97,8 @@
 				"Email": $('#resourceEmail').val(),
 				"Photo": 'test',
 				"EngineerRange": $('#resourceRank').val(),
-				"Enabled": $('#resourceActive').is(":checked")
+				"Enabled": $('#resourceActive').is(":checked"),
+				"VisaUS": $('#resourceVisaUS').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -117,7 +121,8 @@
 				"Email": $('#resourceEmail').val(),
 				"Photo": 'test',
 				"EngineerRange": $('#resourceRank').val(),
-				"Enabled": $('#resourceActive').is(":checked")
+				"Enabled": $('#resourceActive').is(":checked"),
+				"VisaUS": $('#resourceVisaUS').val()
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -203,6 +208,7 @@
 			<th>Profile(s)</th>
 			<th>Email</th>
 			<th>Engineer Rank</th>
+			<th>Visa US</th>
 			<th>Enabled</th>
 			<th>Options</th>
 		</tr>
@@ -215,17 +221,20 @@
 			<td>{{$resource.LastName}}</td>
 			<td>
 			{{$mapOfTypes := index $typesResource $resource.ID}}
+			<ul>
 			{{range $key, $type := $mapOfTypes}}
-				*{{$type}} 
+				<li>{{$type}}</li>
 			{{end}}
+			</ul>
 			</td>
 			<td>{{$resource.Email}}</td>
 			<td>{{$resource.EngineerRange}}</td>
+			<td>{{if $resource.VisaUS}} {{$resource.VisaUS}} {{end}}</td>
 			<td><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
 			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}})" data-dismiss="modal">Update</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}},{{$resource.VisaUS}})" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
-				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}', {{$mapOfTypes}});" data-dismiss="modal">Skills</button>
+				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}', {{$mapOfTypes}});" data-dismiss="modal">Skill Matrix</button>
 				<button class="buttonTable button2" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}},'{{$resource.Name}}'+' '+'{{$resource.LastName}}');" data-dismiss="modal">Assignations</button>
 				<button class="buttonTable button2" onclick="getTypesByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Types</button>
 			</td>
@@ -279,6 +288,14 @@
 	        		</div>
 	          </div>
 	        </div>
+			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+	        	<div class="form-group form-group-sm">
+	        		<label class="control-label col-sm-4 translatable" data-i18n="Visa US"> Visa US </label>
+	              <div class="col-sm-8">
+	              	<input type="text" id="resourceVisaUS" class="style-input" style="border-radius: 8px;">
+	        		</div>
+	          </div>
+	        </div>
 	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
 	        	<div class="form-group form-group-sm">
 	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
@@ -310,6 +327,7 @@
 				<li>The projects will lose this resource assignment.</li>
 				<li>The skills will lose this resource assignment.</li>
 				<li>The trainings will lose this resource assignment.</li>
+				<li>The projects will lose this resource assignment as leader.</li>
 	      	</div>
 	      	<div class="modal-footer" style="text-align:center;">
 		        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>

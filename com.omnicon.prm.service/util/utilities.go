@@ -41,6 +41,12 @@ const (
 	LANGUAGES    = "es,en,ca,de,it,nl,fr,pt,ru,sv,zh,ja,da,ar,id,ko,ms,no,tl,th,tr,vi"
 )
 
+const (
+	HOURS_OF_WORK = "HoursOfWork"
+	VALID_EMAILS  = "ValidEmails"
+	EPSILON_VALUE = "EpsilonValue"
+)
+
 func StringToBool(pString string) bool {
 	if pString == "true" {
 		return true
@@ -228,6 +234,11 @@ func MappingCreateResource(pRequest *domain.CreateResourceRQ) *domain.Resource {
 	resource.EngineerRange = pRequest.EngineerRange
 	resource.Enabled = pRequest.Enabled
 
+	if pRequest.VisaUS != "" {
+		visaUS := pRequest.VisaUS
+		resource.VisaUS = &visaUS
+	}
+
 	return resource
 }
 
@@ -256,6 +267,11 @@ func MappingCreateProject(pRequest *domain.CreateProjectRQ) *domain.Project {
 	project.EndDate = time.Unix(endDateInt, 0)
 	project.Enabled = pRequest.Enabled
 	project.ProjectType = buildType(pRequest.ProjectType)
+
+	if pRequest.Cost > 0 {
+		cost := pRequest.Cost
+		project.Cost = &cost
+	}
 
 	return project
 }
@@ -487,7 +503,7 @@ func MappingTrainingResources(idTraining int, pRequest []*domain.TrainingResourc
 func MappingType(pRequest *domain.TypeRQ) *domain.Type {
 	types := new(domain.Type)
 	types.Name = pRequest.Name
-	types.TypeOf = pRequest.TypeOf
+	types.ApplyTo = pRequest.ApplyTo
 	return types
 }
 
@@ -518,6 +534,216 @@ func MappingFiltersTraining(pRequest *domain.TrainingRQ) *domain.Training {
 		}
 		if pRequest.TypeId != 0 {
 			filters.TypeId = pRequest.TypeId
+		}
+		return &filters
+	}
+	return nil
+}
+
+/**
+* Function to mapping create project forecast request to business entity projectForecast.
+ */
+func MappingCreateProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.ProjectForecast {
+	projectForecast := new(domain.ProjectForecast)
+	projectForecast.Name = pRequest.Name
+	projectForecast.BusinessUnit = pRequest.BusinessUnit
+	projectForecast.Region = pRequest.Region
+	projectForecast.Description = pRequest.Description
+	startDate := new(string)
+	startDate = &pRequest.StartDate
+	endDate := new(string)
+	endDate = &pRequest.EndDate
+	if startDate != nil && endDate != nil && *startDate != "" && *endDate != "" {
+		startDateInt, endDateInt, err := ConvertirFechasPeticion(startDate, endDate)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
+		projectForecast.StartDate = time.Unix(startDateInt, 0)
+		projectForecast.EndDate = time.Unix(endDateInt, 0)
+	}
+	projectForecast.Hours = pRequest.Hours
+	projectForecast.NumberSites = pRequest.NumberSites
+	projectForecast.NumberProcessPerSite = pRequest.NumberProcessPerSite
+	projectForecast.NumberProcessTotal = pRequest.NumberProcessTotal
+	projectForecast.EstimateCost = pRequest.EstimateCost
+	billingDate := new(string)
+	billingDate = &pRequest.BillingDate
+	if billingDate != nil && *billingDate != "" {
+		billingDateInt := GetDateInt64FromString(*billingDate)
+		projectForecast.BillingDate = time.Unix(billingDateInt, 0)
+	}
+
+	projectForecast.Status = pRequest.Status
+
+	return projectForecast
+
+}
+
+/**
+* Function to mapping project forecast assign request to business entity projectForecastAssigns.
+ */
+func MappingSetProjectForecastAssigns(pRequest *domain.ProjectForecastAssignsRQ) *domain.ProjectForecastAssigns {
+	projectForecastAssigns := new(domain.ProjectForecastAssigns)
+	projectForecastAssigns.ID = pRequest.ID
+	projectForecastAssigns.ProjectForecastId = pRequest.ProjectForecastId
+	projectForecastAssigns.ProjectForecastName = pRequest.ProjectForecastName
+	projectForecastAssigns.TypeId = pRequest.TypeId
+	projectForecastAssigns.TypeName = pRequest.TypeName
+	projectForecastAssigns.NumberResources = pRequest.NumberResources
+
+	return projectForecastAssigns
+}
+
+/**
+* Function to mapping request to get projectsForecastRQ in a projectForecast entity.
+ */
+func MappingFiltersProjectForecast(pRequest *domain.ProjectForecastRQ) *domain.ProjectForecast {
+	if pRequest != nil {
+		filters := domain.ProjectForecast{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.Name != "" {
+			filters.Name = pRequest.Name
+		}
+		if pRequest.BusinessUnit != "" {
+			filters.BusinessUnit = pRequest.BusinessUnit
+		}
+		if pRequest.Region != "" {
+			filters.Region = pRequest.Region
+		}
+		if pRequest.Description != "" {
+			filters.Description = pRequest.Description
+		}
+		if pRequest.StartDate != "" {
+			startDate, err := time.Parse("2006-01-02", pRequest.StartDate)
+			if err == nil {
+				filters.StartDate = startDate
+			}
+		}
+		if pRequest.EndDate != "" {
+			endDate, err := time.Parse("2006-01-02", pRequest.EndDate)
+			if err == nil {
+				filters.EndDate = endDate
+			}
+		}
+		if pRequest.Hours != 0 {
+			filters.Hours = pRequest.Hours
+		}
+		if pRequest.NumberSites != 0 {
+			filters.NumberSites = pRequest.NumberSites
+		}
+		if pRequest.NumberProcessPerSite != 0 {
+			filters.NumberProcessPerSite = pRequest.NumberProcessPerSite
+		}
+		if pRequest.NumberProcessTotal != 0 {
+			filters.NumberProcessTotal = pRequest.NumberProcessTotal
+		}
+		if pRequest.EstimateCost != 0 {
+			filters.EstimateCost = pRequest.EstimateCost
+		}
+		if pRequest.BillingDate != "" {
+			billingDate, err := time.Parse("2006-01-02", pRequest.BillingDate)
+			if err == nil {
+				filters.EndDate = billingDate
+			}
+		}
+		if pRequest.Status != "" {
+			filters.Status = pRequest.Status
+		}
+
+		return &filters
+	}
+	return nil
+}
+
+/**
+* Function to mapping request to get settings in a Settings entity.
+ */
+func MappingFiltersSettings(pRequest *domain.SettingsRQ) *domain.Settings {
+	if pRequest != nil {
+		filters := domain.Settings{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.Name != "" {
+			filters.Name = pRequest.Name
+		}
+		if pRequest.Value != "" {
+			filters.Value = pRequest.Value
+		}
+		if pRequest.Type != "" {
+			filters.Type = pRequest.Type
+		}
+		if pRequest.Description != "" {
+			filters.Description = pRequest.Description
+		}
+		return &filters
+	}
+	return nil
+}
+
+func MappingProductivityTasksRQ(pDomain *domain.ProductivityTasksRQ) *domain.ProductivityTasks {
+	productivityTasks := new(domain.ProductivityTasks)
+	productivityTasks.ID = pDomain.ID
+	productivityTasks.ProjectID = pDomain.ProjectID
+	productivityTasks.Name = pDomain.Name
+	productivityTasks.TotalExecute = pDomain.TotalExecute
+	productivityTasks.TotalBillable = pDomain.TotalBillable
+	productivityTasks.Scheduled = pDomain.Scheduled
+	productivityTasks.Progress = pDomain.Progress
+	productivityTasks.IsOutOfScope = pDomain.IsOutOfScope
+
+	return productivityTasks
+}
+
+/**
+* Function to mapping request to get productivityTasks in a ProductivityTasks entity.
+ */
+func MappingFiltersProductivityTasks(pRequest *domain.ProductivityTasksRQ) *domain.ProductivityTasks {
+	if pRequest != nil {
+		filters := domain.ProductivityTasks{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.ProjectID != 0 {
+			filters.ProjectID = pRequest.ProjectID
+		}
+		return &filters
+	}
+	return nil
+}
+
+func MappingProductivityReportRQ(pDomain *domain.ProductivityReportRQ) *domain.ProductivityReport {
+	productivityReport := new(domain.ProductivityReport)
+	productivityReport.ID = pDomain.ID
+	productivityReport.TaskID = pDomain.TaskID
+	productivityReport.ResourceID = pDomain.ResourceID
+	productivityReport.Hours = pDomain.Hours
+	productivityReport.HoursBillable = pDomain.HoursBillable
+
+	return productivityReport
+}
+
+/**
+* Function to mapping request to get productivityReport in a ProductivityReport entity.
+ */
+func MappingFiltersProductivityReport(pRequest *domain.ProductivityReportRQ) *domain.ProductivityReport {
+	if pRequest != nil {
+		filters := domain.ProductivityReport{}
+
+		if pRequest.ID != 0 {
+			filters.ID = pRequest.ID
+		}
+		if pRequest.TaskID != 0 {
+			filters.TaskID = pRequest.TaskID
+		}
+		if pRequest.ResourceID != 0 {
+			filters.ResourceID = pRequest.ResourceID
 		}
 		return &filters
 	}

@@ -9,7 +9,8 @@
   
 	<script src="/static/js/JQuery/jquery.js"></script>
 	<script src="/static/js/DataTables/datatables.min.js"></script>
-	<script src="/static/js/DataTables/DataTables-1.10.15/js/dataTables.bootstrap4.min.js"></script>
+	<script src="/static/js/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script src="/static/js/DataTables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
 	<script src="/static/js/JQueryUI/jquery-ui.min.js"></script>
 	<script src="/static/js/Bootstrap/js/popper.min.js"></script>
 	<script src="/static/js/Bootstrap/js/bootstrap.min.js"></script>
@@ -18,13 +19,21 @@
 	<script src="/static/js/Angular/angular-sanitize.js"></script>
 	<script src="/static/js/Utils.js"></script>
 	<script src="/static/js/functions.js"></script>
+	<script src="/static/js/palette/palette.js"></script>
+	<script src="/static/js/jquery.jeditable.js"></script>
+	<script src="/static/js/jquery.jeditable.mini.js"></script>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
 	
+	<script src="/static/js/Editor-1.7.0/js/dataTables.editor.min.js"></script>
+	
 	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	
-	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.15/css/dataTables.bootstrap4.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/Editor-1.7.0/css/editor.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.16/css/jquery.dataTables.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css">
@@ -175,6 +184,7 @@
 		<div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
           <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">Home</a>
+		  <a ng-click="link('projectsForecast')" onclick="toNav();sendTitle($(this).html());" style="width: 250px;">Forecast Projects</a>
 		  <a class="accordion">Manage</a>
 			<div class="panel-accordion">
 				<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
@@ -187,6 +197,8 @@
 		  <a  ng-click="link('reports')" onclick="toNav();sendTitle($(this).html())">Reports</a>
 		  <a  ng-click="link('dashboard')" onclick="toNav();sendTitle($(this).html())">Status</a>
 		  <a  ng-click="link('trainings/resources')" onclick="toNav();sendTitle($(this).html())">Trainings</a>
+		  <a  ng-click="link('productivity')" onclick="toNav();sendTitle($(this).html())">Productivity Report</a>
+		  <a  ng-click="link('settings')" onclick="toNav();sendTitle($(this).html())">Settings</a>
 		  <!--a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a-->
 		</div>
 		<div id="sidebar">

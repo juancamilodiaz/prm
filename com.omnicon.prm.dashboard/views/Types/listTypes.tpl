@@ -29,9 +29,9 @@
 				{{range $key, $types := .Types}}
 					row += '<tr>' +
 						'<td>{{$types.Name}}</td>' +
-						'<td>{{$types.TypeOf}}</td>' +
+						'<td>{{$types.ApplyTo}}</td>' +
 						'<td>' +
-							'<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="'+ "configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.TypeOf}}')" +'" data-dismiss="modal">Update</button>' +
+							'<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="'+ "configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.ApplyTo}}')" +'" data-dismiss="modal">Update</button>' +
 							'<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="'+$("#nameDelete").html("{{$types.Name}}")+ ';'+ $("#typeID").val({{$types.ID}}) + ';" data-dismiss="modal">Delete</button>' +
 							'<button class="buttonTable button2" onclick="' + "getSkillsByType({{$types.ID}}, '{{$types.Name}}');" + '" data-dismiss="modal">Skills</button>' +
 						'</td>' +
@@ -39,12 +39,12 @@
 				{{end}}	
 			}else {	
 				{{range $key, $types := .Types}}
-						if($('#typesValue option:selected').attr("id") == {{$types.TypeOf}}){
+						if($('#typesValue option:selected').attr("id") == {{$types.ApplyTo}}){
 							row += '<tr>' +
 								'<td>{{$types.Name}}</td>' +
-								'<td>{{$types.TypeOf}}</td>' +
+								'<td>{{$types.ApplyTo}}</td>' +
 								'<td>' +
-									'<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="'+ "configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.TypeOf}}')" +'" data-dismiss="modal">Update</button>' +
+									'<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="'+ "configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.ApplyTo}}')" +'" data-dismiss="modal">Update</button>' +
 									'<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="'+$("#nameDelete").html("{{$types.Name}}")+ ';'+ $("#typeID").val({{$types.ID}}) + ';" data-dismiss="modal">Delete</button>' +
 									'<button class="buttonTable button2" onclick="' + "getSkillsByType({{$types.ID}}, '{{$types.Name}}');" + '" data-dismiss="modal">Skills</button>' +
 								'</td>' +
@@ -91,7 +91,7 @@
 			},
 			data: { 
 				"Name": $('#typeName').val(),
-				"TypeOf": $('#typesTo option:selected').attr("id")
+				"ApplyTo": $('#typesTo option:selected').attr("id")
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -110,7 +110,7 @@
 			data: { 
 				"ID": $('#typeID').val(),
 				"Name": $('#typeName').val(),
-				"TypeOf": $('#typesTo option:selected').attr("id")
+				"ApplyTo": $('#typesTo option:selected').attr("id")
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -162,8 +162,8 @@
             <label for="typesValue">Types to:</label>
             <select class="form-control" id="typesValue">
                <option id="">All types</option>
-               {{range $index, $typeOf := .TypesOf}}
-               <option id="{{$typeOf}}">{{$typeOf}}</option>
+               {{range $index, $applyTo := .ListApplyTo}}
+               <option id="{{$applyTo}}">{{$applyTo}}</option>
                {{end}}
             </select>
          </div>
@@ -184,7 +184,7 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>Type to</th>
+			<th>Apply To</th>
 			<th>Options</th>
 		</tr>
 	</thead>
@@ -192,9 +192,9 @@
 	 	{{range $key, $types := .Types}}
 		<tr>
 			<td>{{$types.Name}}</td>
-			<td>{{$types.TypeOf}}</td>
+			<td>{{$types.ApplyTo}}</td>
 			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.TypeOf}}')" data-dismiss="modal">Update</button>
+				<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.ApplyTo}}')" data-dismiss="modal">Update</button>
 				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$types.Name}}');$('#typeID').val({{$types.ID}});" data-dismiss="modal">Delete</button>
 				<button class="buttonTable button2" onclick="getSkillsByType({{$types.ID}}, '{{$types.Name}}');" data-dismiss="modal">Skills</button>
 			</td>
@@ -226,11 +226,11 @@
         </div>
 		<div class="row-box col-sm-12" style="padding-bottom: 1%;">        	
 			<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Type To"> Type To </label>
+        		<label class="control-label col-sm-4 translatable" data-i18n="Apply To"> Apply To </label>
               	<div class="col-sm-8">
 					<select id="typesTo" style="border-radius: 8px; width: 174px;">
-		               {{range $index, $typeOf := .TypesOf}}
-		               <option id="{{$typeOf}}">{{$typeOf}}</option>
+		               {{range $index, $applyTo := .ListApplyTo}}
+		               <option id="{{$applyTo}}">{{$applyTo}}</option>
 		               {{end}}
 		            </select>
         		</div>

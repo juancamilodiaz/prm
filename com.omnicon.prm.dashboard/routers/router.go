@@ -25,6 +25,11 @@ func init() {
 	beego.Router("/resources/types", &controllers.ResourceController{}, "post:GetTypesByResource")
 	beego.Router("/resources/types/unassign", &controllers.ResourceController{}, "post:DeleteTypesByResource")
 	beego.Router("/resources/settype", &controllers.ResourceController{}, "post:SetTypesToResource")
+	// Forecast Projects
+	beego.Router("/projectsForecast", &controllers.ProjectForecastController{}, "post:ListProjectsForecast")
+	beego.Router("/projectsForecast/create", &controllers.ProjectForecastController{}, "post:CreateProjectForecast")
+	beego.Router("/projectsForecast/update", &controllers.ProjectForecastController{}, "post:UpdateProjectForecast")
+	beego.Router("/projectsForecast/delete", &controllers.ProjectForecastController{}, "post:DeleteProjectForecast")
 	// Projects
 	beego.Router("/projects", &controllers.ProjectController{}, "post:ListProjects")
 	beego.Router("/projects/create", &controllers.ProjectController{}, "post:CreateProject")
@@ -78,4 +83,17 @@ func init() {
 	beego.Router("/trainings/settraining", &controllers.TrainingController{}, "post:SetTrainingToResource")
 	beego.Router("/trainings/resources", &controllers.TrainingController{}, "post:GetTrainingResources")
 	beego.Router("/trainings/deletetraining", &controllers.TrainingController{}, "post:DeleteTrainingToResource")
+
+	// Settings
+	beego.Router("/settings", &controllers.SettingsController{}, "post:ListSettings")
+	beego.Router("/settings/update", &controllers.SettingsController{}, "post:UpdateSettings")
+
+	// Report productivity
+	beego.Router("/productivity", &controllers.ProductivityController{}, "post:ListProductivity")
+	beego.Router("/productivity/createtask", &controllers.ProductivityController{}, "post:CreateTask")
+	beego.Router("/productivity/updatetask", &controllers.ProductivityController{}, "post:UpdateTask")
+	beego.Router("/productivity/deletetask", &controllers.ProductivityController{}, "post:DeleteTask")
+	beego.Router("/productivity/createreport", &controllers.ProductivityController{}, "post:CreateReport")
+	beego.Router("/productivity/updatereport", &controllers.ProductivityController{}, "post:UpdateReport")
+	beego.Router("/productivity/deletereport", &controllers.ProductivityController{}, "post:DeleteReport")
 }

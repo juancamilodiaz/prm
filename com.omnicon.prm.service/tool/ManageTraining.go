@@ -159,12 +159,18 @@ func GetTrainingResources(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Training
 
 	response.TrainingResources = trainingResourcesBreakdown
 
-	resources := dao.GetAllResources()
+	resourcesBD := dao.GetAllResources()
+	resources := []*DOMAIN.Resource{}
+	for _, resource := range resourcesBD {
+		if resource.Enabled {
+			resources = append(resources, resource)
+		}
+	}
 	response.Resources = resources
 
 	types := dao.GetAllTypes()
 	for _, _type := range types {
-		if _type.TypeOf == "Project" {
+		if _type.ApplyTo == "Project" {
 			response.Types = append(response.Types, _type)
 		}
 	}
@@ -201,7 +207,7 @@ func GetTrainings(pRequest *DOMAIN.TrainingRQ) *DOMAIN.TrainingRS {
 	// get all types
 	types := dao.GetAllTypes()
 	for _, _type := range types {
-		if _type.TypeOf == "Project" {
+		if _type.ApplyTo == "Project" {
 			response.Types = append(response.Types, _type)
 		}
 	}
@@ -365,14 +371,14 @@ func SetTrainingToResource(pRequest *DOMAIN.TrainingResourcesRQ) *DOMAIN.Trainin
 				return &response
 			}
 
-			maxHours := 0
+			maxHours := 0.0
 			for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
 				if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
 					maxHours += HoursOfWork
 				}
 			}
-			if pRequest.Duration > maxHours {
-				message := "Maximum hours of training " + strconv.Itoa(maxHours)
+			if float64(pRequest.Duration) > maxHours {
+				message := "Maximum hours of training " + strconv.FormatFloat(maxHours, 'f', -1, 64)
 				log.Error(message)
 				response.Message = message
 				response.Status = "Error"
