@@ -12,6 +12,8 @@ func init() {
 	beego.SetStaticPath("/pdf", "static/pdf")
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/about", &controllers.AboutController{}, "post:About")
+	beego.Router("/azure/", &controllers.AzureController{})
+	beego.Router("/azure/authorize", &controllers.AzureController{}, "post:Authorize")
 
 	// Resources
 	beego.Router("/resources", &controllers.ResourceController{}, "post:ListResources")
