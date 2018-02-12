@@ -1,11 +1,15 @@
 package controllers
 
 import (
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/smtp"
 	"os"
 	"strings"
+	"time"
+
+	"net/http"
 
 	"github.com/astaxie/beego"
 
@@ -23,47 +27,84 @@ type LoginController struct {
 	BaseController
 }
 
+/*
+func handler(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte("This is an example server.\n"))
+}*/
+
 func (c *LoginController) Login() {
 
+	/*************/
+	tr := &http.Transport{
+		MaxIdleConns:       10,
+		IdleConnTimeout:    30 * time.Second,
+		DisableCompression: true,
+	}
+	client := &http.Client{
+		Transport: tr,
+		//CheckRedirect: redirectPolicyFunc,
+	}
+	//resp, err :=
+	client.Get("http://localhost:4180/oauth2/sign_in/")
+	fmt.Println("Login***++++************")
+
+	fmt.Println("Login***++++************", c.IsLogin)
 	if c.IsLogin {
 		c.Ctx.Redirect(302, c.URLFor("UsersController.Index"))
 		return
 	}
+	/*
+		c.TplName = "login/login.tpl"
+		c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
 
-	c.TplName = "login/login.tpl"
-	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
-
-	if !c.Ctx.Input.IsPost() {
-		return
-	}
+			if !c.Ctx.Input.IsPost() {
+				return
+			}*/
 
 	flash := beego.NewFlash()
-	email := c.GetString("Email")
-	password := c.GetString("Password")
+	//email := c.GetString("Email")
+	//password := c.GetString("Password")
 
-	user, err := lib.Authenticate(email, password)
-	if err != nil || user.Id < 1 {
-		flash.Warning(err.Error())
-		flash.Store(&c.Controller)
-		return
+	//user, err := lib.Authenticate(email, password)
+	fmt.Println(c.GetString("code"))
+	user, err := lib.AuthenticateSession(c.GetString("session_state"))
+	if user != nil {
+		fmt.Println("Success logged in", user.SessionState, " id: ", user.Id)
+		if err != nil || user.Id < 1 {
+			fmt.Println("Error login")
+			flash.Warning(err.Error())
+			flash.Store(&c.Controller)
+			return
+		}
 	}
 
+	fmt.Println("Success logged in")
 	flash.Success("Success logged in")
 	flash.Store(&c.Controller)
 
-	c.SetLogin(user)
+	if user != nil {
+		c.SetLogin(user)
+		c.Redirect(c.URLFor("UsersController.Index"), 303)
+	} else {
+		c.Redirect("localhost:4180/oauth2/sign_in/", 303)
+	}
 
-	c.Redirect(c.URLFor("UsersController.Index"), 303)
 }
 
 func (c *LoginController) Logout() {
+	fmt.Println("Logout")
 	c.DelLogin()
 	flash := beego.NewFlash()
 	flash.Success("Success logged out")
+	fmt.Println("Success logged out")
 	flash.Store(&c.Controller)
 
-	c.Ctx.Redirect(302, "/")
+	//c.Ctx.Redirect(302, c.URLFor("localhost:4180/oauth2/sign_in"))
+	//c.Ctx.Redirect(302, "localhost:4180")
 	//c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
+
+	c.Redirect(c.URLFor("localhost:4180/oauth2/sign_in"), 303)
 }
 
 func (c *LoginController) Signup() {
