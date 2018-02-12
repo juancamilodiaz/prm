@@ -61,8 +61,8 @@ func (c *BaseController) SetLogin(user *models.User) {
 	c.SetSession("userinfo", user.Id)
 }
 
-func (c *BaseController) LoginPath() string {
-	return c.URLFor("LoginController.Login")
+func (c *BaseController) LoginPath(code string) string {
+	return c.URLFor("LoginController.Login", "session_state", code)
 }
 
 func (c *BaseController) SetParams() {
