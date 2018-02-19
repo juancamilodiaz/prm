@@ -7,7 +7,7 @@ import (
 	"prm/com.omnicon.prm.dashboard/convert"
 	"prm/com.omnicon.prm.dashboard/models"
 	//Oauth
-	"github.com/bitly/oauth2_proxy/providers"
+	"prm/com.omnicon.prm.oauth2_proxy/providers"
 )
 
 type BaseController struct {

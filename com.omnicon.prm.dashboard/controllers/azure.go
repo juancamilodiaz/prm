@@ -9,7 +9,7 @@ import (
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
-	"github.com/bitly/oauth2_proxy/providers"
+	"prm/com.omnicon.prm.oauth2_proxy/providers"
 	//	"prm/com.omnicon.prm.dashboard/convert"
 	"encoding/json"
 
