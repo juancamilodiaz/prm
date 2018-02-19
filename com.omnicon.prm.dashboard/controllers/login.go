@@ -38,12 +38,12 @@ func (this *LoginController) Callback() {
 	fmt.Println("session_state", this.GetString("session_state"))
 
 	var err error
-	//http://localhost:8080/oauth2/callback?code=AQABAAIAAABHh4kmS_aKT5XrjzxRAtHzvNxZCIZR0QqBI8cYlh5_aKgq4uhHDNKEINLHCuZqHkRlN36jUUHUik4WgSvMXir3xPXJU-T00kaeog4aefikGtYrvlfRjRM3ijWTJF1yiT2NKzBZemD--fpEu20G_a2Ujzw1HntofxiE76Hf7G2uDektH-YOgzl1GFo4KdFGSOTcnMcvr0JL2ygg7nY9JWyMp91IF2yxk52XqYVL5evFSYOHoNRWbF6DwMneJUjgsglfpaiu8y3nYAq0UMuthSdoKE9jh8fDdYNHQNUc837e9FlrtK-zGI-ek-DvmyMMyJnqmPLYl2uq01Jj1v1JIvmAekqqA7rwfVhWB1-teOzHbsj5J8cfhCehFFBciL78SYUrrSlq0b9ylcaXxEN-Nrt-PxH28NROybI5pn0yFzc5s6mxvjR2se354N6qikZXl1k-HWvxjxTrIoxTnYFWuImhZP4jJz4dBX3qBG8-x6wzpITtKBQ2664kEbUKq1qHiTflSU2mh-A91RyV2surracp4-kk4fuJgZFSNJ1vg6oopiAA&state=204658ec347489b39517173e8801adb0%3a%2foauth2%2fsign_in%2f&session_state=8be49d97-5e59-4203-b228-f2c3df24a400
+	//http://localhost:8081/oauth2/callback?code=AQABAAIAAABHh4kmS_aKT5XrjzxRAtHzvNxZCIZR0QqBI8cYlh5_aKgq4uhHDNKEINLHCuZqHkRlN36jUUHUik4WgSvMXir3xPXJU-T00kaeog4aefikGtYrvlfRjRM3ijWTJF1yiT2NKzBZemD--fpEu20G_a2Ujzw1HntofxiE76Hf7G2uDektH-YOgzl1GFo4KdFGSOTcnMcvr0JL2ygg7nY9JWyMp91IF2yxk52XqYVL5evFSYOHoNRWbF6DwMneJUjgsglfpaiu8y3nYAq0UMuthSdoKE9jh8fDdYNHQNUc837e9FlrtK-zGI-ek-DvmyMMyJnqmPLYl2uq01Jj1v1JIvmAekqqA7rwfVhWB1-teOzHbsj5J8cfhCehFFBciL78SYUrrSlq0b9ylcaXxEN-Nrt-PxH28NROybI5pn0yFzc5s6mxvjR2se354N6qikZXl1k-HWvxjxTrIoxTnYFWuImhZP4jJz4dBX3qBG8-x6wzpITtKBQ2664kEbUKq1qHiTflSU2mh-A91RyV2surracp4-kk4fuJgZFSNJ1vg6oopiAA&state=204658ec347489b39517173e8801adb0%3a%2foauth2%2fsign_in%2f&session_state=8be49d97-5e59-4203-b228-f2c3df24a400
 	provider := this.Provider
 	session := this.Session
 	fmt.Println("callback this.Session==nil", this.Session == nil)
 	if session == nil {
-		session, err = this.Provider.Redeem("http://localhost:8080/oauth2/callback", code)
+		session, err = this.Provider.Redeem("http://localhost:8081/oauth2/callback", code)
 		if err != nil {
 			fmt.Println("errorrrr", err)
 		}
@@ -175,7 +175,7 @@ func (c *LoginController) Logout() {
 
 	//c.Ctx.Redirect(302, "/")
 
-	c.Ctx.Redirect(302, "https://login.microsoftonline.com/labmilanes.com/oauth2/logout?post_logout_redirect_uri=http://localhost:8080")
+	c.Ctx.Redirect(302, "https://login.microsoftonline.com/labmilanes.com/oauth2/logout?post_logout_redirect_uri=http://localhost:8081")
 	//c.Ctx.Redirect(302, "http://localhost:4180/")
 	//c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
 }

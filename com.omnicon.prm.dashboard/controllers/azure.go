@@ -77,7 +77,7 @@ func (this *AzureController) Callback() {
 	fmt.Println("session_state", this.GetString("session_state"))
 
 	var err error
-	session, err = provider.Redeem("http://localhost:8080/oauth2/callback", code)
+	session, err = provider.Redeem("http://localhost:8081/oauth2/callback", code)
 	if err != nil {
 		fmt.Println("errorrrr", err)
 	} else {
@@ -162,7 +162,7 @@ func (this *AzureController) Get() {
 			//this.TplName = "index.tpl"
 		}
 
-		this.Redirect("http://localhost:8080/", 307)
+		this.Redirect("http://localhost:8081/", 307)
 		//this.Redirect(this.URLFor("UsersController.Index"), 303)
 
 		//	provider.GetLoginURL()
