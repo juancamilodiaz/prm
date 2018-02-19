@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"net/http"
 	"net/smtp"
+	//	"net/url"
 	"os"
 	"strings"
 	"time"
-
-	"net/http"
 
 	"github.com/astaxie/beego"
 
@@ -19,6 +19,7 @@ import (
 	"prm/com.omnicon.prm.service/util"
 )
 
+//req &{POST https://login.microsoftonline.com/labmilanes.com/oauth2/token
 const fileNameValidEmails = "conf/validEmails"
 
 var superusers = beego.AppConfig.String("superusers")
@@ -28,83 +29,155 @@ type LoginController struct {
 }
 
 /*
-func handler(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("This is an example server.\n"))
-}*/
+func (this *LoginController) Callback() {
 
+	fmt.Println("****Callback-Get**")
+
+	code := this.GetString("code")
+	fmt.Println("code", code)
+	fmt.Println("session_state", this.GetString("session_state"))
+
+	var err error
+	//http://localhost:8080/oauth2/callback?code=AQABAAIAAABHh4kmS_aKT5XrjzxRAtHzvNxZCIZR0QqBI8cYlh5_aKgq4uhHDNKEINLHCuZqHkRlN36jUUHUik4WgSvMXir3xPXJU-T00kaeog4aefikGtYrvlfRjRM3ijWTJF1yiT2NKzBZemD--fpEu20G_a2Ujzw1HntofxiE76Hf7G2uDektH-YOgzl1GFo4KdFGSOTcnMcvr0JL2ygg7nY9JWyMp91IF2yxk52XqYVL5evFSYOHoNRWbF6DwMneJUjgsglfpaiu8y3nYAq0UMuthSdoKE9jh8fDdYNHQNUc837e9FlrtK-zGI-ek-DvmyMMyJnqmPLYl2uq01Jj1v1JIvmAekqqA7rwfVhWB1-teOzHbsj5J8cfhCehFFBciL78SYUrrSlq0b9ylcaXxEN-Nrt-PxH28NROybI5pn0yFzc5s6mxvjR2se354N6qikZXl1k-HWvxjxTrIoxTnYFWuImhZP4jJz4dBX3qBG8-x6wzpITtKBQ2664kEbUKq1qHiTflSU2mh-A91RyV2surracp4-kk4fuJgZFSNJ1vg6oopiAA&state=204658ec347489b39517173e8801adb0%3a%2foauth2%2fsign_in%2f&session_state=8be49d97-5e59-4203-b228-f2c3df24a400
+	provider := this.Provider
+	session := this.Session
+	fmt.Println("callback this.Session==nil", this.Session == nil)
+	if session == nil {
+		session, err = this.Provider.Redeem("http://localhost:8080/oauth2/callback", code)
+		if err != nil {
+			fmt.Println("errorrrr", err)
+		}
+		this.Session = session
+	}
+	fmt.Println("callback this.Session==nil", this.Session == nil)
+
+	if session != nil {
+		fmt.Println("session", session.AccessToken)
+		fmt.Println("s.Email", session.Email)
+		this.IsLogin = true
+		fmt.Println("this.IsLogin", this.IsLogin)
+
+		if session.Email == "" {
+			session.Email, err = provider.GetEmailAddress(session)
+			fmt.Println("s.Email", session.Email)
+
+			fmt.Println("this.IsLogin", this.IsLogin)
+		}
+
+		if session.User == "" {
+			fmt.Println("s.User", session.User)
+			session.User, err = provider.GetUserName(session)
+			if err != nil && err.Error() == "not implemented" {
+				err = nil
+			}
+			fmt.Println("s.User", session.User)
+		}
+	}
+
+	this.Ctx.Redirect(302, this.URLFor("UsersController.Index"))
+
+}
+*/
+func (this *LoginController) Login() {
+
+	fmt.Println("login.Login --  ****, this.IsLogin", this.IsLogin, "Session is Empty *****", this.Session == nil)
+
+	if this.IsLogin {
+		this.Ctx.Redirect(302, this.URLFor("UsersController.Index"))
+		return
+	}
+
+	///oauth2/start
+	session := this.Session
+	if session != nil {
+		fmt.Println("session2", session.AccessToken)
+		fmt.Println("s.Email", session.Email)
+		//	provider.GetLoginURL()
+		sr, _ := this.Provider.GetEmailAddress(session)
+
+		fmt.Println("SDFSDFSDFSDFSDFSDFSDF::::::::", sr)
+		//this.Ctx.Redirect(302, this.URLFor("UsersController.Index"))
+		this.TplName = "Projects/listResourceByProjectToday.tpl"
+	} else {
+		//code := "code"
+		//session, _ = provider.Redeem("http://localhost:4180/oauth2/start", code)
+		/******** *****/
+		tr := &http.Transport{
+			MaxIdleConns:       10,
+			IdleConnTimeout:    30 * time.Second,
+			DisableCompression: true,
+		}
+
+		//cookieJar, _ := cookiejar.New(nil)
+
+		client := &http.Client{
+			//	Jar:       cookieJar,
+			Transport: tr,
+			//CheckRedirect: redirectPolicyFunc,
+		}
+
+		rs, err := client.Get("http://localhost:4180/oauth2/start") //?rd=/oauth2/sign_in
+		if rs != nil {
+			fmt.Println("Login***++++************", rs.Status, rs.Body)
+		} else {
+			fmt.Println("Login***++++************", err.Error())
+		}
+
+		this.Redirect("http://localhost:4180/oauth2/start", 307)
+
+	}
+
+	this.TplName = "Projects/listResourceByProjectToday.tpl"
+}
+
+/*
 func (c *LoginController) Login() {
 
-	/*************/
-	tr := &http.Transport{
-		MaxIdleConns:       10,
-		IdleConnTimeout:    30 * time.Second,
-		DisableCompression: true,
-	}
-	client := &http.Client{
-		Transport: tr,
-		//CheckRedirect: redirectPolicyFunc,
-	}
-	//resp, err :=
-	client.Get("http://localhost:4180/oauth2/sign_in/")
-	fmt.Println("Login***++++************")
-
-	fmt.Println("Login***++++************", c.IsLogin)
+	fmt.Println("***LoginController****", c.IsLogin)
 	if c.IsLogin {
 		c.Ctx.Redirect(302, c.URLFor("UsersController.Index"))
 		return
 	}
-	/*
-		c.TplName = "login/login.tpl"
-		c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
 
-			if !c.Ctx.Input.IsPost() {
-				return
-			}*/
+	c.TplName = "login/login.tpl"
+	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
+	//c.Data["ProxyPrefix"] =
+	c.Data["Redirect"] = "sign_in"
 
-	flash := beego.NewFlash()
-	//email := c.GetString("Email")
-	//password := c.GetString("Password")
-
-	//user, err := lib.Authenticate(email, password)
-	fmt.Println(c.GetString("code"))
-	user, err := lib.AuthenticateSession(c.GetString("session_state"))
-	if user != nil {
-		fmt.Println("Success logged in", user.SessionState, " id: ", user.Id)
-		if err != nil || user.Id < 1 {
-			fmt.Println("Error login")
-			flash.Warning(err.Error())
-			flash.Store(&c.Controller)
-			return
-		}
+	if !c.Ctx.Input.IsPost() {
+		return
 	}
 
-	fmt.Println("Success logged in")
+	flash := beego.NewFlash()
+	email := c.GetString("Email")
+	password := c.GetString("Password")
+
+	user, err := lib.Authenticate(email, password)
+	if err != nil || user.Id < 1 {
+		flash.Warning(err.Error())
+		flash.Store(&c.Controller)
+		return
+	}
+
 	flash.Success("Success logged in")
 	flash.Store(&c.Controller)
 
-	if user != nil {
-		c.SetLogin(user)
-		c.Redirect(c.URLFor("UsersController.Index"), 303)
-	} else {
-		c.Redirect("localhost:4180/oauth2/sign_in/", 303)
-	}
+	c.SetLogin(user)
 
-}
+	c.Redirect(c.URLFor("UsersController.Index"), 303)
+}*/
 
 func (c *LoginController) Logout() {
-	fmt.Println("Logout")
 	c.DelLogin()
 	flash := beego.NewFlash()
 	flash.Success("Success logged out")
-	fmt.Println("Success logged out")
 	flash.Store(&c.Controller)
 
-	//c.Ctx.Redirect(302, c.URLFor("localhost:4180/oauth2/sign_in"))
-	//c.Ctx.Redirect(302, "localhost:4180")
-	//c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
+	//c.Ctx.Redirect(302, "/")
 
-	c.Redirect(c.URLFor("localhost:4180/oauth2/sign_in"), 303)
+	c.Ctx.Redirect(302, "https://login.microsoftonline.com/labmilanes.com/oauth2/logout?post_logout_redirect_uri=http://localhost:8080")
+	//c.Ctx.Redirect(302, "http://localhost:4180/")
+	//c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
 }
 
 func (c *LoginController) Signup() {
