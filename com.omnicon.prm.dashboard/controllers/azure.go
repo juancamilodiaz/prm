@@ -30,12 +30,12 @@ var session *providers.SessionState
 func init() {
 	fmt.Println("init init")
 
-	provider = getAzureProvider("login.microsoftonline.com/labmilanes.com")
-	provider.ProtectedResource, _ = url.Parse("https://labmilanes.com/prm_backend")
-	provider.ClientID = "00de0f7e-4398-41e4-a31b-1de5e30132b7"
-	provider.ClientSecret = "jALo1T7WN7EzPXbxi0VqAvrlOI8sQKeoITdu5JTlDvo="
+	provider = getAzureProvider("login.microsoftonline.com/omnicon.cc")
+	provider.ProtectedResource, _ = url.Parse("https://omnicon.cc/prm_backend")
+	provider.ClientID = "883b28e9-8d57-4b30-ba84-fac66a5ab933"
+	provider.ClientSecret = "WPcgq52QJEjDKN9HTZGHm5J5TsiMe5HxHBAmKiymM2A="
 
-	provider.Configure("labmilanes.com")
+	provider.Configure("omnicon.cc")
 }
 
 func getAzureProvider(hostname string) *providers.AzureProvider {
@@ -77,7 +77,7 @@ func (this *AzureController) Callback() {
 	fmt.Println("session_state", this.GetString("session_state"))
 
 	var err error
-	session, err = provider.Redeem("http://localhost:8081/oauth2/callback", code)
+	session, err = provider.Redeem("http://localhost:8080/oauth2/callback", code)
 	if err != nil {
 		fmt.Println("errorrrr", err)
 	} else {
@@ -162,7 +162,7 @@ func (this *AzureController) Get() {
 			//this.TplName = "index.tpl"
 		}
 
-		this.Redirect("http://localhost:8081/", 307)
+		this.Redirect("http://localhost:8080/", 307)
 		//this.Redirect(this.URLFor("UsersController.Index"), 303)
 
 		//	provider.GetLoginURL()
