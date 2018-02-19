@@ -175,7 +175,7 @@ func (c *LoginController) Logout() {
 
 	//c.Ctx.Redirect(302, "/")
 
-	c.Ctx.Redirect(302, "https://login.microsoftonline.com/labmilanes.com/oauth2/logout?post_logout_redirect_uri=http://localhost:8081")
+	c.Ctx.Redirect(302, "https://login.microsoftonline.com/labmilanes.com/oauth2/logout?post_logout_redirect_uri=http://localhost:8080")
 	//c.Ctx.Redirect(302, "http://localhost:4180/")
 	//c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
 }
