@@ -12,7 +12,8 @@ type ResourceController struct {
 	beego.Controller
 }
 
-var URL string = "http://localhost:10104/"
+var URL string = "http://" + serverip + ":10104/"
+var URLProxy string = "http://" + serverip + ":" + proxyip + "/"
 
 /*Index*/
 func (this *ResourceController) Get() {

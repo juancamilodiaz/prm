@@ -23,61 +23,29 @@ import (
 const fileNameValidEmails = "conf/validEmails"
 
 var superusers = beego.AppConfig.String("superusers")
+var adminusers = beego.AppConfig.String("adminusers")
+var planusers = beego.AppConfig.String("planusers")
+var trainerusers = beego.AppConfig.String("trainerusers")
+
+var serverip = beego.AppConfig.String("serverip")
+var proxyip = beego.AppConfig.String("proxyip")
+var httpport = beego.AppConfig.String("httpport")
+var azureprovider = beego.AppConfig.String("azureprovider")
+var protectedresource = beego.AppConfig.String("protectedresource")
+var clientid = beego.AppConfig.String("clientid")
+var clientsecret = beego.AppConfig.String("clientsecret")
+var tenantid = beego.AppConfig.String("tenantid")
+
+var su, _ = beego.AppConfig.Int("superuser")
+var au, _ = beego.AppConfig.Int("adminuser")
+var pu, _ = beego.AppConfig.Int("planuser")
+var tu, _ = beego.AppConfig.Int("traineruser")
+var du, _ = beego.AppConfig.Int("defaultuser")
 
 type LoginController struct {
 	BaseController
 }
 
-/*
-func (this *LoginController) Callback() {
-
-	fmt.Println("****Callback-Get**")
-
-	code := this.GetString("code")
-	fmt.Println("code", code)
-	fmt.Println("session_state", this.GetString("session_state"))
-
-	var err error
-	//http://localhost:8081/oauth2/callback?code=AQABAAIAAABHh4kmS_aKT5XrjzxRAtHzvNxZCIZR0QqBI8cYlh5_aKgq4uhHDNKEINLHCuZqHkRlN36jUUHUik4WgSvMXir3xPXJU-T00kaeog4aefikGtYrvlfRjRM3ijWTJF1yiT2NKzBZemD--fpEu20G_a2Ujzw1HntofxiE76Hf7G2uDektH-YOgzl1GFo4KdFGSOTcnMcvr0JL2ygg7nY9JWyMp91IF2yxk52XqYVL5evFSYOHoNRWbF6DwMneJUjgsglfpaiu8y3nYAq0UMuthSdoKE9jh8fDdYNHQNUc837e9FlrtK-zGI-ek-DvmyMMyJnqmPLYl2uq01Jj1v1JIvmAekqqA7rwfVhWB1-teOzHbsj5J8cfhCehFFBciL78SYUrrSlq0b9ylcaXxEN-Nrt-PxH28NROybI5pn0yFzc5s6mxvjR2se354N6qikZXl1k-HWvxjxTrIoxTnYFWuImhZP4jJz4dBX3qBG8-x6wzpITtKBQ2664kEbUKq1qHiTflSU2mh-A91RyV2surracp4-kk4fuJgZFSNJ1vg6oopiAA&state=204658ec347489b39517173e8801adb0%3a%2foauth2%2fsign_in%2f&session_state=8be49d97-5e59-4203-b228-f2c3df24a400
-	provider := this.Provider
-	session := this.Session
-	fmt.Println("callback this.Session==nil", this.Session == nil)
-	if session == nil {
-		session, err = this.Provider.Redeem("http://localhost:8081/oauth2/callback", code)
-		if err != nil {
-			fmt.Println("errorrrr", err)
-		}
-		this.Session = session
-	}
-	fmt.Println("callback this.Session==nil", this.Session == nil)
-
-	if session != nil {
-		fmt.Println("session", session.AccessToken)
-		fmt.Println("s.Email", session.Email)
-		this.IsLogin = true
-		fmt.Println("this.IsLogin", this.IsLogin)
-
-		if session.Email == "" {
-			session.Email, err = provider.GetEmailAddress(session)
-			fmt.Println("s.Email", session.Email)
-
-			fmt.Println("this.IsLogin", this.IsLogin)
-		}
-
-		if session.User == "" {
-			fmt.Println("s.User", session.User)
-			session.User, err = provider.GetUserName(session)
-			if err != nil && err.Error() == "not implemented" {
-				err = nil
-			}
-			fmt.Println("s.User", session.User)
-		}
-	}
-
-	this.Ctx.Redirect(302, this.URLFor("UsersController.Index"))
-
-}
-*/
 func (this *LoginController) Login() {
 
 	fmt.Println("login.Login --  ****, this.IsLogin", this.IsLogin, "Session is Empty *****", this.Session == nil)
@@ -91,81 +59,29 @@ func (this *LoginController) Login() {
 	session := this.Session
 	if session != nil {
 		fmt.Println("session2", session.AccessToken)
-		fmt.Println("s.Email", session.Email)
-		//	provider.GetLoginURL()
-		sr, _ := this.Provider.GetEmailAddress(session)
+		fmt.Println("s.Email 4", session.Email)
+		this.Provider.GetEmailAddress(session)
 
-		fmt.Println("SDFSDFSDFSDFSDFSDFSDF::::::::", sr)
-		//this.Ctx.Redirect(302, this.URLFor("UsersController.Index"))
 		this.TplName = "Projects/listResourceByProjectToday.tpl"
 	} else {
-		//code := "code"
-		//session, _ = provider.Redeem("http://localhost:4180/oauth2/start", code)
-		/******** *****/
 		tr := &http.Transport{
 			MaxIdleConns:       10,
 			IdleConnTimeout:    30 * time.Second,
 			DisableCompression: true,
 		}
 
-		//cookieJar, _ := cookiejar.New(nil)
-
 		client := &http.Client{
-			//	Jar:       cookieJar,
 			Transport: tr,
-			//CheckRedirect: redirectPolicyFunc,
 		}
+		uri := BuildURI(false, serverip, proxyip, "oauth2", "start")
+		client.Get(uri) //?rd=/oauth2/sign_in
 
-		rs, err := client.Get("http://localhost:4180/oauth2/start") //?rd=/oauth2/sign_in
-		if rs != nil {
-			fmt.Println("Login***++++************", rs.Status, rs.Body)
-		} else {
-			fmt.Println("Login***++++************", err.Error())
-		}
-
-		this.Redirect("http://localhost:4180/oauth2/start", 307)
+		this.Redirect(uri, 307)
 
 	}
 
 	this.TplName = "Projects/listResourceByProjectToday.tpl"
 }
-
-/*
-func (c *LoginController) Login() {
-
-	fmt.Println("***LoginController****", c.IsLogin)
-	if c.IsLogin {
-		c.Ctx.Redirect(302, c.URLFor("UsersController.Index"))
-		return
-	}
-
-	c.TplName = "login/login.tpl"
-	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
-	//c.Data["ProxyPrefix"] =
-	c.Data["Redirect"] = "sign_in"
-
-	if !c.Ctx.Input.IsPost() {
-		return
-	}
-
-	flash := beego.NewFlash()
-	email := c.GetString("Email")
-	password := c.GetString("Password")
-
-	user, err := lib.Authenticate(email, password)
-	if err != nil || user.Id < 1 {
-		flash.Warning(err.Error())
-		flash.Store(&c.Controller)
-		return
-	}
-
-	flash.Success("Success logged in")
-	flash.Store(&c.Controller)
-
-	c.SetLogin(user)
-
-	c.Redirect(c.URLFor("UsersController.Index"), 303)
-}*/
 
 func (c *LoginController) Logout() {
 	c.DelLogin()
@@ -173,11 +89,10 @@ func (c *LoginController) Logout() {
 	flash.Success("Success logged out")
 	flash.Store(&c.Controller)
 
-	//c.Ctx.Redirect(302, "/")
-
-	c.Ctx.Redirect(302, "https://login.microsoftonline.com/labmilanes.com/oauth2/logout?post_logout_redirect_uri=http://localhost:8080")
-	//c.Ctx.Redirect(302, "http://localhost:4180/")
-	//c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
+	uriLogout := BuildURI(true, "login.microsoftonline.com", "", "labmilanes.com", "oauth2", "logout")
+	uriRedirect := BuildURI(false, serverip, httpport)
+	uriLogout = uriLogout + "?post_logout_redirect_uri=" + uriRedirect
+	c.Ctx.Redirect(302, uriLogout)
 }
 
 func (c *LoginController) Signup() {
