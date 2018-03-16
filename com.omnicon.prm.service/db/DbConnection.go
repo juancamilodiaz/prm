@@ -11,12 +11,13 @@ import (
 )
 
 var (
-	debug          = flag.Bool("debug", true, "enable debugging")
-	password       = flag.String("password", "admin", "the database password")
-	port      *int = flag.Int("port", 1433, "the database port")
-	server         = flag.String("server", "OMNCND5035B21\\SQLEXPRESS", "the database server")
-	user           = flag.String("user", "admin", "the database user")
-	serverSPN      = flag.String("ServerSPN", "MSSQLSvc/"+*server+":"+strconv.Itoa(*port), "the server SPN label")
+	debug         = flag.Bool("debug", true, "enable debugging")
+	password      = flag.String("password", "admin", "the database password")
+	port     *int = flag.Int("port", 1433, "the database port")
+	//server         = flag.String("server", "OMNCND5035B21\\SQLEXPRESS", "the database server")
+	server    = flag.String("server", "OMN4QFVNJ2\\SQLEXPRESS", "the database server")
+	user      = flag.String("user", "admin", "the database user")
+	serverSPN = flag.String("ServerSPN", "MSSQLSvc/"+*server+":"+strconv.Itoa(*port), "the server SPN label")
 )
 
 func Connect() *sql.DB {

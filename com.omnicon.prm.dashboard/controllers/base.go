@@ -6,6 +6,8 @@ import (
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.dashboard/convert"
 	"prm/com.omnicon.prm.dashboard/models"
+	//Oauth
+	"prm/com.omnicon.prm.oauth2_proxy/providers"
 )
 
 type BaseController struct {
@@ -13,6 +15,8 @@ type BaseController struct {
 
 	Userinfo *models.User
 	IsLogin  bool
+	Provider *providers.AzureProvider
+	Session  *providers.SessionState
 }
 
 type NestPreparer interface {
@@ -24,8 +28,11 @@ type NestFinisher interface {
 }
 
 func (c *BaseController) Prepare() {
+	fmt.Println("base.Prepare")
+
 	c.SetParams()
 
+	fmt.Println("this.Session!=nil", c.Session != nil)
 	c.IsLogin = c.GetSession("userinfo") != nil
 	if c.IsLogin {
 		c.Userinfo = c.GetLogin()

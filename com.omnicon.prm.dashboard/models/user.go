@@ -16,6 +16,7 @@ type User struct {
 	Lastlogintime time.Time `orm:"type(datetime);null" form:"-"`
 	Created       time.Time `orm:"auto_now_add;type(datetime)"`
 	Updated       time.Time `orm:"auto_now;type(datetime)"`
+	SessionState  string
 }
 
 func (u *User) Valid(v *validation.Validation) {

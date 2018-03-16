@@ -6,12 +6,23 @@ import (
 )
 
 func init() {
-	beego.SetStaticPath("/css", "static/css")
-	beego.SetStaticPath("/js", "static/js")
-	beego.SetStaticPath("/img", "static/img")
-	beego.SetStaticPath("/pdf", "static/pdf")
+	beego.SetStaticPath("/oauth2/css", "static/css")
+	beego.SetStaticPath("/oauth2/js", "static/js")
+	beego.SetStaticPath("/oauth2/img", "static/img")
+	beego.SetStaticPath("/oauth2/pdf", "static/pdf")
+
+	beego.Router("/callback", &controllers.AzureController{})
+
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/about", &controllers.AboutController{}, "post:About")
+
+	beego.Router("/start/", &controllers.AzureController{})
+
+	beego.Router("/oauth2/", &controllers.AzureController{})
+	beego.Router("/oauth2/callback", &controllers.AzureController{}, "get:Callback")
+	//beego.Router("/azure/", &controllers.AzureController{})
+	//beego.Router("/azure/authorize", &controllers.AzureController{}, "post:Authorize")
+	//beego.Router("/oauth2/callback", &controllers.AzureController{}, "post:Callback")
 
 	// Resources
 	beego.Router("/resources", &controllers.ResourceController{}, "post:ListResources")
