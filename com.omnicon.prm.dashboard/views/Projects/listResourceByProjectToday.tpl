@@ -337,7 +337,7 @@ function setResourceToProjectExc(){
 													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
 													<td style="font-size:11px;text-align: -webkit-center;">{{$resProj.Hours}}</td>
 													
-													<td style="text-align: -webkit-center;"><img style="padding:0px;" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn button3" src="/img/rubbish-bin.png" onclick="$('#ID').val('{{$resProj.ID}}'); $('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
+													<td style="text-align: -webkit-center;"><img style="padding:0px;" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn button3" src="/static/img/rubbish-bin.png" onclick="$('#ID').val('{{$resProj.ID}}'); $('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
 												</tr>
 												{{end}}
 											{{end}}
