@@ -1,11 +1,15 @@
 package controllers
 
 import (
+	"fmt"
 	"html/template"
 	"io/ioutil"
+	"net/http"
 	"net/smtp"
+	//	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 
@@ -15,45 +19,68 @@ import (
 	"prm/com.omnicon.prm.service/util"
 )
 
+//req &{POST https://login.microsoftonline.com/labmilanes.com/oauth2/token
 const fileNameValidEmails = "conf/validEmails"
 
 var superusers = beego.AppConfig.String("superusers")
+var adminusers = beego.AppConfig.String("adminusers")
+var planusers = beego.AppConfig.String("planusers")
+var trainerusers = beego.AppConfig.String("trainerusers")
+
+var serverip = beego.AppConfig.String("serverip")
+var proxyip = beego.AppConfig.String("proxyip")
+var httpport = beego.AppConfig.String("httpport")
+var azureprovider = beego.AppConfig.String("azureprovider")
+var protectedresource = beego.AppConfig.String("protectedresource")
+var clientid = beego.AppConfig.String("clientid")
+var clientsecret = beego.AppConfig.String("clientsecret")
+var tenantid = beego.AppConfig.String("tenantid")
+
+var su, _ = beego.AppConfig.Int("superuser")
+var au, _ = beego.AppConfig.Int("adminuser")
+var pu, _ = beego.AppConfig.Int("planuser")
+var tu, _ = beego.AppConfig.Int("traineruser")
+var du, _ = beego.AppConfig.Int("defaultuser")
 
 type LoginController struct {
 	BaseController
 }
 
-func (c *LoginController) Login() {
+func (this *LoginController) Login() {
 
-	if c.IsLogin {
-		c.Ctx.Redirect(302, c.URLFor("UsersController.Index"))
+	fmt.Println("login.Login --  ****, this.IsLogin", this.IsLogin, "Session is Empty *****", this.Session == nil)
+
+	if this.IsLogin {
+		this.Ctx.Redirect(302, this.URLFor("UsersController.Index"))
 		return
 	}
 
-	c.TplName = "login/login.tpl"
-	c.Data["xsrfdata"] = template.HTML(c.XSRFFormHTML())
+	///oauth2/start
+	session := this.Session
+	if session != nil {
+		fmt.Println("session2", session.AccessToken)
+		fmt.Println("s.Email 4", session.Email)
+		this.Provider.GetEmailAddress(session)
 
-	if !c.Ctx.Input.IsPost() {
-		return
+		this.TplName = "Projects/listResourceByProjectToday.tpl"
+	} else {
+		tr := &http.Transport{
+			MaxIdleConns:       10,
+			IdleConnTimeout:    30 * time.Second,
+			DisableCompression: true,
+		}
+
+		client := &http.Client{
+			Transport: tr,
+		}
+		uri := BuildURI(false, serverip, proxyip, "oauth2", "start")
+		client.Get(uri) //?rd=/oauth2/sign_in
+
+		this.Redirect(uri, 307)
+
 	}
 
-	flash := beego.NewFlash()
-	email := c.GetString("Email")
-	password := c.GetString("Password")
-
-	user, err := lib.Authenticate(email, password)
-	if err != nil || user.Id < 1 {
-		flash.Warning(err.Error())
-		flash.Store(&c.Controller)
-		return
-	}
-
-	flash.Success("Success logged in")
-	flash.Store(&c.Controller)
-
-	c.SetLogin(user)
-
-	c.Redirect(c.URLFor("UsersController.Index"), 303)
+	this.TplName = "Projects/listResourceByProjectToday.tpl"
 }
 
 func (c *LoginController) Logout() {
@@ -62,8 +89,10 @@ func (c *LoginController) Logout() {
 	flash.Success("Success logged out")
 	flash.Store(&c.Controller)
 
-	c.Ctx.Redirect(302, "/")
-	//c.Ctx.Redirect(302, c.URLFor("LoginController.Login"))
+	uriLogout := BuildURI(true, "login.microsoftonline.com", "", "labmilanes.com", "oauth2", "logout")
+	uriRedirect := BuildURI(false, serverip, httpport)
+	uriLogout = uriLogout + "?post_logout_redirect_uri=" + uriRedirect
+	c.Ctx.Redirect(302, uriLogout)
 }
 
 func (c *LoginController) Signup() {

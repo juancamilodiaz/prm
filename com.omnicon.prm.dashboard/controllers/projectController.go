@@ -19,105 +19,129 @@ type ProjectController struct {
 
 /* Projects */
 func (this *ProjectController) ListProjects() {
-	operation := "GetProjects"
-	res, err := PostData(operation, nil)
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetProjectsRS)
-		json.NewDecoder(res.Body).Decode(&message)
+		if level <= du {
+			operation := "GetProjects"
+			res, err := PostData(operation, nil)
 
-		operation = "GetTypes"
-		res, err = PostData(operation, nil)
-		messageTypes := new(domain.TypeRS)
-		json.NewDecoder(res.Body).Decode(&messageTypes)
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
 
-		typesProject := []*domain.Type{}
-		for _, _type := range messageTypes.Types {
-			if _type.ApplyTo == "Project" {
-				typesProject = append(typesProject, _type)
+				operation = "GetTypes"
+				res, err = PostData(operation, nil)
+				messageTypes := new(domain.TypeRS)
+				json.NewDecoder(res.Body).Decode(&messageTypes)
+
+				typesProject := []*domain.Type{}
+				for _, _type := range messageTypes.Types {
+					if _type.ApplyTo == "Project" {
+						typesProject = append(typesProject, _type)
+					}
+				}
+				this.Data["Types"] = typesProject
+
+				operation = "GetResources"
+
+				input := domain.GetResourcesRQ{}
+				enabled := true
+				input.Enabled = &enabled
+
+				inputBuffer := EncoderInput(input)
+				res, _ = PostData(operation, inputBuffer)
+
+				messageResources := new(domain.GetResourcesRS)
+				json.NewDecoder(res.Body).Decode(&messageResources)
+
+				this.Data["Resources"] = messageResources.Resources
+
+				this.Data["Projects"] = message.Projects
+
+				if this.GetString("Template") == "select" {
+					this.TplName = "Projects/listProjectsToDropDown.tpl"
+				} else {
+					this.TplName = "Projects/listProjects.tpl"
+				}
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
 			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-		this.Data["Types"] = typesProject
 
-		operation = "GetResources"
-
-		input := domain.GetResourcesRQ{}
-		enabled := true
-		input.Enabled = &enabled
-
-		inputBuffer := EncoderInput(input)
-		res, _ = PostData(operation, inputBuffer)
-
-		messageResources := new(domain.GetResourcesRS)
-		json.NewDecoder(res.Body).Decode(&messageResources)
-
-		this.Data["Resources"] = messageResources.Resources
-
-		this.Data["Projects"] = message.Projects
-
-		if this.GetString("Template") == "select" {
-			this.TplName = "Projects/listProjectsToDropDown.tpl"
-		} else {
-			this.TplName = "Projects/listProjects.tpl"
-		}
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 	//body, _ := ioutil.ReadAll(res.Body)
 }
 
 func (this *ProjectController) CreateProject() {
 
-	operation := "CreateProject"
-	input := domain.CreateProjectRQ{}
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	err := this.ParseForm(&input)
+		if level <= au {
 
-	idstrg := this.GetString("ProjectType")
-	if len(idstrg) > 0 {
-		ids := strings.Split(idstrg, ",")
-		input.ProjectType = ids
-	}
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	if input.Name == "" {
-		this.Data["Type"] = "Error"
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = "The name is empty."
-		this.TplName = "Common/message.tpl"
-		return
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+			operation := "CreateProject"
+			input := domain.CreateProjectRQ{}
 
-	inputBuffer := EncoderInput(input)
-	res, err := PostData(operation, inputBuffer)
+			err := this.ParseForm(&input)
 
-	if err != nil {
-		log.Error(err.Error())
-	}
+			idstrg := this.GetString("ProjectType")
+			if len(idstrg) > 0 {
+				ids := strings.Split(idstrg, ",")
+				input.ProjectType = ids
+			}
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			if input.Name == "" {
+				this.Data["Type"] = "Error"
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = "The name is empty."
+				this.TplName = "Common/message.tpl"
+				return
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	defer res.Body.Close()
-	message := new(domain.CreateProjectRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
-	if err != nil {
-		log.Error(err.Error())
-	}
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			inputBuffer := EncoderInput(input)
+			res, err := PostData(operation, inputBuffer)
+
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			defer res.Body.Close()
+			message := new(domain.CreateProjectRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
+			if err != nil {
+				log.Error(err.Error())
+			}
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 

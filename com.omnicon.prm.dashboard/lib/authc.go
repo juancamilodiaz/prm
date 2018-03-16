@@ -34,3 +34,22 @@ func Authenticate(email string, password string) (user *models.User, err error) 
 		return user, nil
 	}
 }
+
+func AuthenticateSession(pSessionState string) (user *models.User, err error) {
+	msg := "invalid session."
+	//	sessionState := ""
+
+	//values := strings.Split(pSessionState, "session_state")
+	/*if len(pSessionState) > 0 {
+		sessionState = values[1]
+	}*/
+
+	if pSessionState == "" {
+		// No user
+		return user, errors.New(msg)
+	}
+	user = &models.User{SessionState: pSessionState}
+	user.Id = 1
+
+	return user, nil
+}

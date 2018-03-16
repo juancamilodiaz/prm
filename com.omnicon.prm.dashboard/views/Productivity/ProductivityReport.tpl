@@ -311,8 +311,8 @@
 		//creates image
 		var canvasTaskExecutedImg = canvasTaskExecuted.toDataURL("image/jpg", 1.0);
 		
-		var canvasBarCollaborators = document.querySelector('#chartjsBarCollaborators');
-		var canvasBarCollaboratorsImg = canvasBarCollaborators.toDataURL("image/jpg", 1.0);
+		var canvasBarCollab = document.querySelector('#chartjsBarCollab');
+		var canvasBarCollabImg = canvasBarCollab.toDataURL("image/jpg", 1.0);
 		
 		var canvasBar = document.querySelector('#chartjsBar');
 		var canvasBarImg = canvasBar.toDataURL("image/jpg", 1.0);
@@ -320,7 +320,7 @@
 		var canvasOutOfScope = document.querySelector('#chartjsOutOfScope');
 		var canvasOutOfScopeImg = canvasOutOfScope.toDataURL("image/jpg", 1.0);
 		
-		canvasBillable = document.querySelector('#chartjsBillable');
+		var canvasBillable = document.querySelector('#chartjsBillable');
 		var canvasBillableImg = canvasBillable.toDataURL("image/jpg", 1.0);
 	  
 		//creates PDF from img
@@ -360,15 +360,16 @@
 		doc.addPage();
 		
 		doc.text("Total Hours Per Engineers", 139.5, 20, 'center' );
-		//doc.addImage(canvasBarImg, 'JPEG', 10, 60, 200, 100);
-		//doc.addImage(canvasBarCollaboratorsImg, 'JPEG', 10, 40, canvasBarCollaborators.width, canvasBarCollaborators.height);
+		//doc.addImage(canvasBillableImg, 'JPEG', 10, 40, 100, 100);
+		//doc.addImage(canvasBarImg, 'JPEG', 10, 40, 200, 100);
+		doc.addImage(canvasBarCollabImg, 'JPEG', 10, 40, 50, 50);
 		
 		doc.addPage();
 		
 		/*
 		doc.addImage(canvasTaskExecutedImg, 'JPEG', 10, 40, 100, 100);
 		
-		doc.addImage(canvasBarCollaboratorsImg, 'JPEG', 120, 40, 100, 100);
+		doc.addImage(canvasBarCollabImg, 'JPEG', 120, 40, 100, 100);
 		
 		doc.addImage(canvasBarImg, 'JPEG', 10, 140, 100, 200);
 		
@@ -599,34 +600,34 @@
 				</div>
 			</p>
 		</div>
-		<div id="chartBar_div" class="col-sm-6">
+		<div id="chart2_div" class="col-sm-6">
 			<p>
-			   	<div id="chartjsBarCollaborators-wrapper">
-					<h3 style="text-align: center;">Total Hours Per Engineers</h3>
-					<canvas id="chartjsBarCollaborators">
+				<div class="chart-container-complete" id="chartjsBarCollab-wrapper" style="width: 50%;">
+					<h3>Total Hours Per Engineers</h3>
+					<canvas id="chartjsBarCollab">
 					</canvas>
 				
 					<script>				
-						chart3=new Chart(document.getElementById("chartjsBarCollaborators"),
+						chart3=new Chart(document.getElementById("chartjsBarCollab"),
 						{
-						  type: 'bar',
-						  data: {
-						    labels: {{.ResourcesNames}},
-						    datasets: [{
-						      label: 'Hours',
-							  backgroundColor: window.chartColors.blue,
-						      yAxisID: 'collaborators-axis',
-						      data: {{.ResourceHours}}
-						    }]
+						  "type": "bar",
+						  "data": {
+							"labels": {{.ResourcesNames}},
+							"datasets": [{
+							  "label": "Hours",
+							  "backgroundColor": window.chartColors.blue,
+							  "yAxisID": "collaborators-axis",
+							  "data": {{.ResourceHours}}
+							}]
 						  },
 						  options: {
 							responsive: true,
-						    scales: {
-						      yAxes: [{
-						        id: 'collaborators-axis',
-						        type: 'linear'
-						      }]
-						    }
+							scales: {
+							  yAxes: [{
+								id: 'collaborators-axis',
+								type: 'linear'
+							  }]
+							}
 						  }
 						});
 					</script>
@@ -645,27 +646,27 @@
 				<script>				
 					chart4=new Chart(document.getElementById("chartjsBar"),
 					{
-						type: 'bar',
-					  	data: {
-					    labels: {{.TLabels}},
-					    datasets: [{
-							type: 'line',
-							label: 'Billable',
-							borderColor: window.chartColors.green,
-							data: {{.TValuesBillable}}
+						"type": "bar",
+					  	"data": {
+					    "labels": {{.TLabels}},
+					    "datasets": [{
+							"type": "line",
+							"label": "Billable",
+							"borderColor": window.chartColors.green,
+							"data": {{.TValuesBillable}}
 				        },
 						{
-							type: 'bar',
-							label: 'Executed',
-							backgroundColor: window.chartColors.greenclear,
-							yAxisID: 'executed-axis',
-							data: {{.TValues}}
+							"type": "bar",
+							"label": "Executed",
+							"backgroundColor": window.chartColors.greenclear,
+							"yAxisID": "executed-axis",
+							"data": {{.TValues}}
 					    }, {
-							type: 'bar',
-							label: 'Scheduled',
-							backgroundColor: window.chartColors.greendark,
-							yAxisID: 'scheduled-axis',
-							data: {{.TValuesScheduled}}
+							"type": "bar",
+							"label": "Scheduled",
+							"backgroundColor": window.chartColors.greendark,
+							"yAxisID": "scheduled-axis",
+							"data": {{.TValuesScheduled}}
 					    }]
 					  },
 					  options: {
