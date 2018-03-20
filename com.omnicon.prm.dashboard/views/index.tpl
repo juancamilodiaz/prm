@@ -165,7 +165,7 @@
 			</div-->
 		</div>
 		<div id="NavCenter" class="NavItem col-sm-8">
-			<img src="/static/img/PRM-LOGO.svg" onclick="getResourcesByProjectToday();" style="cursor: pointer;height:100%;">
+			<img src="/static/img/PRM-LOGO-BETA.svg" onclick="getResourcesByProjectToday();" style="cursor: pointer;height:100%;">
 		</div>
 		<div id="NavRight" class="NavItem col-sm-2" style="padding-right: 3%;padding-top: 20px;text-align: right;">
 			<a style="color: white;" itemprop="url" href='{{urlfor "LoginController.Logout"}}'>
