@@ -12,32 +12,76 @@ type ReportController struct {
 
 /*Index*/
 func (this *ReportController) Reports() {
-	this.Data["PDF"] = ""
-	this.Data["Projects"] = report.GetAllProjects(domain.GetProjectsRQ{})
-	this.Data["Resources"] = report.GetAllResources()
-	this.TplName = "Reports/reports.tpl"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
+
+		if level <= au {
+			this.Data["PDF"] = ""
+			this.Data["Projects"] = report.GetAllProjects(domain.GetProjectsRQ{})
+			this.Data["Resources"] = report.GetAllResources()
+			this.TplName = "Reports/reports.tpl"
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
+	}
 }
 
 func (this *ReportController) ProjectAssign() {
-	input := domain.GetResourcesToProjectsRQ{}
-	this.ParseForm(&input)
-	fileName := report.ProjectAssign(input)
-	this.Data["PDF"] = "/static/pdf/" + fileName
-	this.TplName = "Reports/report.tpl"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
+
+		if level <= au {
+			input := domain.GetResourcesToProjectsRQ{}
+			this.ParseForm(&input)
+			fileName := report.ProjectAssign(input)
+			this.Data["PDF"] = "/static/pdf/" + fileName
+			this.TplName = "Reports/report.tpl"
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
+	}
 }
 
 func (this *ReportController) ResourceAssign() {
-	input := domain.GetResourcesToProjectsRQ{}
-	this.ParseForm(&input)
-	fileName := report.ResourceAssign(input)
-	this.Data["PDF"] = "/static/pdf/" + fileName
-	this.TplName = "Reports/report.tpl"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
+
+		if level <= au {
+			input := domain.GetResourcesToProjectsRQ{}
+			this.ParseForm(&input)
+			fileName := report.ResourceAssign(input)
+			this.Data["PDF"] = "/static/pdf/" + fileName
+			this.TplName = "Reports/report.tpl"
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
+	}
 }
 
 func (this *ReportController) MatrixOfAssign() {
-	input := domain.GetResourcesToProjectsRQ{}
-	this.ParseForm(&input)
-	fileName := report.MatrixOfAssign(input)
-	this.Data["PDF"] = "/static/pdf/" + fileName
-	this.TplName = "Reports/report.tpl"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
+
+		if level <= au {
+			input := domain.GetResourcesToProjectsRQ{}
+			this.ParseForm(&input)
+			fileName := report.MatrixOfAssign(input)
+			this.Data["PDF"] = "/static/pdf/" + fileName
+			this.TplName = "Reports/report.tpl"
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
+	}
 }

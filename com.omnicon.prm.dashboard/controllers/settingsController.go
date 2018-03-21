@@ -13,64 +13,85 @@ type SettingsController struct {
 }
 
 func (this *SettingsController) ListSettings() {
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	operation := "GetSettings"
+		if level <= au {
 
-	res, err := PostData(operation, nil)
+			operation := "GetSettings"
 
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.SettingsRS)
-		json.NewDecoder(res.Body).Decode(&message)
+			res, err := PostData(operation, nil)
 
-		this.Data["Settings"] = message.Settings
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.SettingsRS)
+				json.NewDecoder(res.Body).Decode(&message)
 
-		this.TplName = "Settings/listSettings.tpl"
+				this.Data["Settings"] = message.Settings
 
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
+				this.TplName = "Settings/listSettings.tpl"
+
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *SettingsController) UpdateSettings() {
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	operation := "UpdateSettings"
+		if level <= au {
+			operation := "UpdateSettings"
 
-	input := domain.SettingsRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+			input := domain.SettingsRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	inputBuffer := EncoderInput(input)
+			inputBuffer := EncoderInput(input)
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	defer res.Body.Close()
-	message := new(domain.SettingsRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			defer res.Body.Close()
+			message := new(domain.SettingsRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if err != nil {
-		log.Error(err.Error())
-	}
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }

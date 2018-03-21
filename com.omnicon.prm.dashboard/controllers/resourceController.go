@@ -25,299 +25,365 @@ func (this *ResourceController) Get() {
 
 /* Resources */
 func (this *ResourceController) ListResources() {
-	operation := "GetResources"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	res, err := PostData(operation, nil)
+		if level <= au {
+			operation := "GetResources"
 
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesRS)
-		json.NewDecoder(res.Body).Decode(&message)
-
-		this.Data["Resources"] = message.Resources
-
-		mapTypePerResource := make(map[int]map[int]string)
-
-		for _, resource := range message.Resources {
-			operation = "GetTypesByResource"
-			input := domain.GetResourcesRQ{}
-			input.ID = resource.ID
-
-			inputBuffer := EncoderInput(input)
-			res, err := PostData(operation, inputBuffer)
+			res, err := PostData(operation, nil)
 
 			if err == nil {
 				defer res.Body.Close()
-				message := new(domain.ResourceTypesRS)
+				message := new(domain.GetResourcesRS)
 				json.NewDecoder(res.Body).Decode(&message)
-				mapOfTypes := make(map[int]string)
-				for _, resourceType := range message.ResourceTypes {
-					mapOfTypes[resourceType.TypeId] = resourceType.Name
-				}
-				mapTypePerResource[resource.ID] = mapOfTypes
-			}
-		}
 
-		this.Data["TypesResource"] = mapTypePerResource
-		if this.GetString("Template") == "select" {
-			this.TplName = "Projects/listResourceToDropDown.tpl"
-		} else {
-			this.TplName = "Resources/listResources.tpl"
+				this.Data["Resources"] = message.Resources
+
+				mapTypePerResource := make(map[int]map[int]string)
+
+				for _, resource := range message.Resources {
+					operation = "GetTypesByResource"
+					input := domain.GetResourcesRQ{}
+					input.ID = resource.ID
+
+					inputBuffer := EncoderInput(input)
+					res, err := PostData(operation, inputBuffer)
+
+					if err == nil {
+						defer res.Body.Close()
+						message := new(domain.ResourceTypesRS)
+						json.NewDecoder(res.Body).Decode(&message)
+						mapOfTypes := make(map[int]string)
+						for _, resourceType := range message.ResourceTypes {
+							mapOfTypes[resourceType.TypeId] = resourceType.Name
+						}
+						mapTypePerResource[resource.ID] = mapOfTypes
+					}
+				}
+
+				this.Data["TypesResource"] = mapTypePerResource
+				if this.GetString("Template") == "select" {
+					this.TplName = "Projects/listResourceToDropDown.tpl"
+				} else {
+					this.TplName = "Resources/listResources.tpl"
+				}
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 }
 
 func (this *ResourceController) CreateResource() {
-	operation := "CreateResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.CreateResourceRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= au {
+			operation := "CreateResource"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.CreateResourceRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			inputBuffer := EncoderInput(input)
 
-	message := new(domain.CreateResourceRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.CreateResourceRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ResourceController) ReadResource() {
-	operation := "GetResources"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.GetResourcesRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
+		if level <= au {
+			operation := "GetResources"
+
+			input := domain.GetResourcesRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["Resources"] = message.Resources
+				this.TplName = "Resources/viewResources.tpl"
+			} else {
+				log.Error(err.Error())
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+			//body, _ := ioutil.ReadAll(res.Body)
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
-
-	inputBuffer := EncoderInput(input)
-
-	res, err := PostData(operation, inputBuffer)
-
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["Resources"] = message.Resources
-		this.TplName = "Resources/viewResources.tpl"
-	} else {
-		log.Error(err.Error())
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
-	}
-	//body, _ := ioutil.ReadAll(res.Body)
 }
 
 func (this *ResourceController) UpdateResource() {
-	operation := "UpdateResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.UpdateResourceRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= au {
+			operation := "UpdateResource"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.UpdateResourceRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			inputBuffer := EncoderInput(input)
 
-	message := new(domain.UpdateResourceRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.UpdateResourceRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ResourceController) DeleteResource() {
-	operation := "DeleteResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.DeleteResourceRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= au {
+			operation := "DeleteResource"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.DeleteResourceRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			inputBuffer := EncoderInput(input)
 
-	message := new(domain.DeleteResourceRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.DeleteResourceRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ResourceController) GetSkillsByResource() {
-	operation := "GetSkillsByResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.GetSkillByResourceRQ{}
+		if level <= au {
+			operation := "GetSkillsByResource"
 
-	mapTypesResourceStr := this.GetString("MapTypesResource")
+			input := domain.GetSkillByResourceRQ{}
 
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+			mapTypesResourceStr := this.GetString("MapTypesResource")
 
-	inputBuffer := EncoderInput(input)
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
+			inputBuffer := EncoderInput(input)
 
-	var mapTypesResource map[int]string
+			res, err := PostData(operation, inputBuffer)
 
-	err = json.Unmarshal([]byte(mapTypesResourceStr), &mapTypesResource)
+			var mapTypesResource map[int]string
 
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetSkillByResourceRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		data := buildChartMessage(message)
-
-		this.Data["ResourceId"] = input.ID
-		this.Data["Skills"] = message.Skills
-		this.Data["Title"] = this.GetString("ResourceName")
-
-		//Request skills by type
-		operation = "GetSkillsByType"
-		mapSkillsTypes := make(map[int]Datasets)
-		for typeId, typeName := range mapTypesResource {
-			inputType := domain.TypeRQ{}
-			inputType.ID = typeId
-
-			inputBuffer = EncoderInput(inputType)
-			res, err = PostData(operation, inputBuffer)
+			err = json.Unmarshal([]byte(mapTypesResourceStr), &mapTypesResource)
 
 			if err == nil {
 				defer res.Body.Close()
-				message := new(domain.TypeSkillsRS)
+				message := new(domain.GetSkillByResourceRS)
 				json.NewDecoder(res.Body).Decode(&message)
+				data := buildChartMessage(message)
 
-				dataFromType := buildChartMessageType(message)
-				dataFromType.TypeName = typeName
-				mapSkillsTypes[typeId] = dataFromType
+				this.Data["ResourceId"] = input.ID
+				this.Data["Skills"] = message.Skills
+				this.Data["Title"] = this.GetString("ResourceName")
+
+				//Request skills by type
+				operation = "GetSkillsByType"
+				mapSkillsTypes := make(map[int]Datasets)
+				for typeId, typeName := range mapTypesResource {
+					inputType := domain.TypeRQ{}
+					inputType.ID = typeId
+
+					inputBuffer = EncoderInput(inputType)
+					res, err = PostData(operation, inputBuffer)
+
+					if err == nil {
+						defer res.Body.Close()
+						message := new(domain.TypeSkillsRS)
+						json.NewDecoder(res.Body).Decode(&message)
+
+						dataFromType := buildChartMessageType(message)
+						dataFromType.TypeName = typeName
+						mapSkillsTypes[typeId] = dataFromType
+					}
+				}
+
+				//Add data from resource
+				data.TypeName = this.GetString("ResourceName")
+				mapSkillsTypes[0] = data
+
+				mapSkillsAndValues, listTypesName := buildChartMessageWithType(mapSkillsTypes)
+				this.Data["MapSkillsAndValues"] = mapSkillsAndValues
+
+				var listSkills []string
+				var listSkillsValue [][]int
+				for skillName, _ := range mapSkillsAndValues {
+					listSkills = append(listSkills, skillName)
+				}
+
+				for index, _ := range listTypesName {
+					var listTemp []int
+					for _, nameSkill := range listSkills {
+						listValues := mapSkillsAndValues[nameSkill]
+						listTemp = append(listTemp, listValues[index])
+					}
+					listSkillsValue = append(listSkillsValue, listTemp)
+				}
+				this.Data["ListSkills"] = listSkills
+				this.Data["ListValues"] = listSkillsValue
+				this.Data["ListTypesName"] = listTypesName
+
+				listColors := []string{"Green", "Purple", "Blue", "Red", "Black", "Brown", "Gray", "Yellow", "Pink", "Aqua", "DarkCyan"}
+				listBackgroundColors := []string{"rgba(31, 221, 40, 0.2)", "rgba(237, 21, 226, 0.2)", "rgba(80, 169, 224, 0.2)", "rgba(124, 124, 124, 0.2)", "rgba(244, 48, 48, 0.2)", "rgba(135, 115, 77, 0.2)", "rgba(196, 194, 190, 0.2)", "rgba(255, 255, 91, 0.2)", "rgba(249, 159, 239, 0.2)", "rgba(144, 244, 249, 0.2)", "rgba(18, 139, 145, 0.2)"}
+				/*Set color again*/
+				// TODO refactor this to assign ramdom colors.
+				listColors = append(listColors, listColors...)
+				listColors = append(listColors, listColors...)
+
+				listBackgroundColors = append(listBackgroundColors, listBackgroundColors...)
+				listBackgroundColors = append(listBackgroundColors, listBackgroundColors...)
+				this.Data["ListColor"] = listColors
+				this.Data["ListColorBkg"] = listBackgroundColors
+				this.Data["MapTypesResource"] = mapTypesResource
+
+				this.TplName = "Resources/listSkillsByResource.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
 			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-
-		//Add data from resource
-		data.TypeName = this.GetString("ResourceName")
-		mapSkillsTypes[0] = data
-
-		mapSkillsAndValues, listTypesName := buildChartMessageWithType(mapSkillsTypes)
-		this.Data["MapSkillsAndValues"] = mapSkillsAndValues
-
-		var listSkills []string
-		var listSkillsValue [][]int
-		for skillName, _ := range mapSkillsAndValues {
-			listSkills = append(listSkills, skillName)
-		}
-
-		for index, _ := range listTypesName {
-			var listTemp []int
-			for _, nameSkill := range listSkills {
-				listValues := mapSkillsAndValues[nameSkill]
-				listTemp = append(listTemp, listValues[index])
-			}
-			listSkillsValue = append(listSkillsValue, listTemp)
-		}
-		this.Data["ListSkills"] = listSkills
-		this.Data["ListValues"] = listSkillsValue
-		this.Data["ListTypesName"] = listTypesName
-
-		listColors := []string{"Green", "Purple", "Blue", "Red", "Black", "Brown", "Gray", "Yellow", "Pink", "Aqua", "DarkCyan"}
-		listBackgroundColors := []string{"rgba(31, 221, 40, 0.2)", "rgba(237, 21, 226, 0.2)", "rgba(80, 169, 224, 0.2)", "rgba(124, 124, 124, 0.2)", "rgba(244, 48, 48, 0.2)", "rgba(135, 115, 77, 0.2)", "rgba(196, 194, 190, 0.2)", "rgba(255, 255, 91, 0.2)", "rgba(249, 159, 239, 0.2)", "rgba(144, 244, 249, 0.2)", "rgba(18, 139, 145, 0.2)"}
-		/*Set color again*/
-		// TODO refactor this to assign ramdom colors.
-		listColors = append(listColors, listColors...)
-		listColors = append(listColors, listColors...)
-
-		listBackgroundColors = append(listBackgroundColors, listBackgroundColors...)
-		listBackgroundColors = append(listBackgroundColors, listBackgroundColors...)
-		this.Data["ListColor"] = listColors
-		this.Data["ListColorBkg"] = listBackgroundColors
-		this.Data["MapTypesResource"] = mapTypesResource
-
-		this.TplName = "Resources/listSkillsByResource.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 }
 
@@ -378,168 +444,223 @@ func buildChartMessageWithType(pMapSkillsTypes map[int]Datasets) (map[string][]i
 }
 
 func (this *ResourceController) SetSkillsToResource() {
-	operation := "SetSkillToResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.SetSkillToResourceRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= au {
+			operation := "SetSkillToResource"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.SetSkillToResourceRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
+			inputBuffer := EncoderInput(input)
 
-	if err == nil {
-		defer res.Body.Close()
+			res, err := PostData(operation, inputBuffer)
 
-		this.Data["Title"] = this.GetString("ResourceName")
-		this.TplName = "Resources/listSkillsByResource.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
+			if err == nil {
+				defer res.Body.Close()
+
+				this.Data["Title"] = this.GetString("ResourceName")
+				this.TplName = "Resources/listSkillsByResource.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ResourceController) DeleteSkillsToResource() {
-	operation := "DeleteSkillToResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.DeleteSkillToResourceRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
+		if level <= au {
+			operation := "DeleteSkillToResource"
+
+			input := domain.DeleteSkillToResourceRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			defer res.Body.Close()
+			message := new(domain.DeleteSkillToResourceRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
+			if err == nil {
+				this.Data["SkillName"] = message.SkillName
+				this.Data["ResourceName"] = message.ResourceName
+				this.Data["Title"] = this.GetString("ResourceName")
+			} else {
+				log.Error(err.Error())
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+			}
+			this.TplName = "Common/message.tpl"
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
-
-	inputBuffer := EncoderInput(input)
-
-	res, err := PostData(operation, inputBuffer)
-
-	defer res.Body.Close()
-	message := new(domain.DeleteSkillToResourceRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
-	if err == nil {
-		this.Data["SkillName"] = message.SkillName
-		this.Data["ResourceName"] = message.ResourceName
-		this.Data["Title"] = this.GetString("ResourceName")
-	} else {
-		log.Error(err.Error())
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-	}
-	this.TplName = "Common/message.tpl"
 }
 
 func (this *ResourceController) GetTypesByResource() {
-	operation := "GetTypesByResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.GetResourcesRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= au {
+			operation := "GetTypesByResource"
 
-	inputBuffer := EncoderInput(input)
-
-	res, err := PostData(operation, inputBuffer)
-
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.ResourceTypesRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["ResourceTypes"] = message.ResourceTypes
-		typesResource := []*domain.Type{}
-		for _, _types := range message.Types {
-			if _types.ApplyTo == "Resource" {
-				typesResource = append(typesResource, _types)
+			input := domain.GetResourcesRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
 			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.ResourceTypesRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["ResourceTypes"] = message.ResourceTypes
+				typesResource := []*domain.Type{}
+				for _, _types := range message.Types {
+					if _types.ApplyTo == "Resource" {
+						typesResource = append(typesResource, _types)
+					}
+				}
+				this.Data["Types"] = typesResource
+				this.Data["ResourceID"] = input.ID
+				this.Data["Title"] = this.GetString("Description")
+				this.TplName = "Resources/listResourceTypes.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-		this.Data["Types"] = typesResource
-		this.Data["ResourceID"] = input.ID
-		this.Data["Title"] = this.GetString("Description")
-		this.TplName = "Resources/listResourceTypes.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 }
 
 func (this *ResourceController) DeleteTypesByResource() {
-	operation := "DeleteTypesByResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.ResourceTypesRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= au {
+			operation := "DeleteTypesByResource"
 
-	inputBuffer := EncoderInput(input)
-	res, err := PostData(operation, inputBuffer)
+			input := domain.ResourceTypesRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	message := new(domain.ResourceTypesRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			inputBuffer := EncoderInput(input)
+			res, err := PostData(operation, inputBuffer)
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.ResourceTypesRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ResourceController) SetTypesToResource() {
-	operation := "SetTypesToResource"
-	input := domain.ResourceTypesRQ{}
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
+		if level <= au {
+			operation := "SetTypesToResource"
+			input := domain.ResourceTypesRQ{}
 
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
 
-	inputBuffer := EncoderInput(input)
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	message := new(domain.ResourceTypesRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			inputBuffer := EncoderInput(input)
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			message := new(domain.ResourceTypesRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > au {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }

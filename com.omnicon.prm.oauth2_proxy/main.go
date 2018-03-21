@@ -25,7 +25,7 @@ func main() {
 	config := flagSet.String("config", "", "path to config file")
 	showVersion := flagSet.Bool("version", false, "print version string")
 
-	flagSet.String("http-address", "172.16.33.195:4180", "[http://]<addr>:<port> or unix://<path> to listen on for HTTP clients")
+	flagSet.String("http-address", "localhost:4180", "[http://]<addr>:<port> or unix://<path> to listen on for HTTP clients")
 	flagSet.String("https-address", ":443", "<addr>:<port> to listen on for HTTPS clients")
 	flagSet.String("tls-cert", "", "path to certificate file")
 	flagSet.String("tls-key", "", "path to private key file")
