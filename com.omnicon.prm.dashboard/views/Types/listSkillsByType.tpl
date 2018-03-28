@@ -12,7 +12,8 @@
 		
 		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
-		$('#backButton').html("Types");
+		$('#backButtonIcon').html("arrow_back");
+		$('#backButtonTooltip').html("Back to types");
 		$('#backButton').prop('onclick',null).off('click');
 		$('#backButton').click(function(){
 			reload('/types',{});
@@ -28,7 +29,8 @@
 		
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("Set New Skill");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new skill to type");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#loadSkillModal");
 		$('#buttonOption').attr("onclick", "configureCreateTypeModal();");	

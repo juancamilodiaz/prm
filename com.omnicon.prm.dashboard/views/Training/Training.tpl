@@ -23,7 +23,8 @@
 		});
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Resource Training");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new session training");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#trainingModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");

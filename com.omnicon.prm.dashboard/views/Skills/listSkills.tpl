@@ -17,7 +17,8 @@
 		
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Skill");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new skill");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#skillModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");
@@ -112,20 +113,30 @@
 	
 </script>
 <div>
-<table id="viewSkills" class="table table-striped table-bordered">
+<table id="viewSkills" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 	<thead>
 		<tr>
-			<th>Name</th>
-			<th>Options</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Name</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Options</th>
 		</tr>
 	</thead>
 	<tbody>
 	 	{{range $key, $skilll := .Skills}}
 		<tr>
-			<td>{{$skilll.Name}}</td>
-			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">Delete</button>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$skilll.Name}}</td>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">
+				<button id="editButton{{$skilll.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">
+					<i class="material-icons" style="vertical-align: inherit;">mode_edit</i>
+				</button>
+				<div class="mdl-tooltip" for="editButton{{$skilll.ID}}">
+					Edit skill	
+				</div>	
+				<button id="deleteButton{{$skilll.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">
+					<i class="material-icons" style="vertical-align: inherit;">delete</i>
+				</button>
+				<div class="mdl-tooltip" for="deleteButton{{$skilll.ID}}">
+					Delete skill	
+				</div>	
 			</td>
 		</tr>
 		{{end}}	

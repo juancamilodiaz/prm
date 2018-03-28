@@ -10,7 +10,8 @@
 
 		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
-		$('#backButton').html("Projects");
+		$('#backButtonIcon').html("arrow_back");
+		$('#backButtonTooltip').html("Back to projects");
 		$('#backButton').prop('onclick',null).off('click');
 		$('#backButton').click(function(){
 			reload('/projects',{});
@@ -23,25 +24,31 @@
 		}); 
 		
 		$('#buttonOption').css("display", "inline-block");
-		$('#buttonOption').html("Set Type");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new type to project");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#loadTypesModal");
 	});
 </script>
 
-<table id="viewSkillsByType" class="table table-striped table-bordered">
+<table id="viewSkillsByType" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 	<thead>
 		<tr>
-			<th>Type</th>
-			<th>Options</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Type</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Options</th>
 		</tr>
 	</thead>
 	<tbody>
 	 	{{range $key, $projectType := .ProjectTypes}}
 		<tr>
-			<td>{{$projectType.Name}}</td>
-			<td>
-				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#projectIDToDelete').val({{$projectType.ProjectId}});$('#typeIDToDelete').val({{$projectType.TypeId}});$('#nameDelete').html({{$projectType.Name}});" data-dismiss="modal">Unassign</button>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$projectType.Name}}</td>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">
+				<button id="deleteButton{{$projectType.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#confirmUnassignModal" onclick="$('#projectIDToDelete').val({{$projectType.ProjectId}});$('#typeIDToDelete').val({{$projectType.TypeId}});$('#nameDelete').html({{$projectType.Name}});" data-dismiss="modal">
+					<i class="material-icons" style="vertical-align: inherit;">delete</i>
+				</button>
+				<div class="mdl-tooltip" for="deleteButton{{$projectType.ID}}">
+					Remove type from project	
+				</div>	
 			</td>
 		</tr>
 		{{end}}

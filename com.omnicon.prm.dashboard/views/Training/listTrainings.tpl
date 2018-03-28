@@ -19,7 +19,8 @@
 		
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Training");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new training");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#trainingModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");

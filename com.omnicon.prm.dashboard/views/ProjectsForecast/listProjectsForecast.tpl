@@ -36,8 +36,8 @@
 		});
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Forecast Project");
-		//$('#buttonOption').attr("onclick","createForecastProject()");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new forecast project");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#projectForecastModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");

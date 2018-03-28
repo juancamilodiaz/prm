@@ -18,7 +18,8 @@
 		
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Type");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new type");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#typeModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");
@@ -152,8 +153,8 @@
 	}
 	
 </script>
-<button class="buttonHeader button2" data-toggle="collapse" data-target="#filters">
-<span class="glyphicon glyphicon-filter"></span> Filter 
+<button class="mdl-button" data-toggle="collapse" data-target="#filters">
+	<i class="material-icons">tune</i>
 </button>
 <div id="filters" class="collapse">
    <div class="row">

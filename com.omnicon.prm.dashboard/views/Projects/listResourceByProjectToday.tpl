@@ -68,12 +68,10 @@
 		$(".btnCollapse").click(
 			function(){
 				if($(this).hasClass('collapsed')){
-					$(this).removeClass('glyphicon-collapse-down');
-					$(this).addClass('glyphicon-collapse-up');
+					$(this).html('arrow_drop_up');
 				}
 				else{
-					$(this).removeClass('glyphicon-collapse-up');
-					$(this).addClass('glyphicon-collapse-down');
+					$(this).html('arrow_drop_down');
 				}
 			}
 		);
@@ -277,8 +275,6 @@ function setResourceToProjectExc(){
 	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val(), $("#estimatedHours").val(), $("#createHoursPerDay").val(), $("#checkHoursPerDay").is(":checked"));
 }
 </script>
-
-
 <tr id="tempResource" style="display:none"></tr>
 </div>
 
@@ -290,13 +286,13 @@ function setResourceToProjectExc(){
 			<div class="panel-group" >
 				<div class="panel panel-default">
 					<div id="resources" class="panel-body">
-						<table id="viewResourcesHome" class="table table-striped table-bordered pull-left">
+						<table id="viewResourcesHome" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp pull-left">
 							<thead>
-								<th style="text-align: -webkit-center;">Resources</th>
+								<th class="mdl-data-table__cell--non-numeric" style="text-align: -webkit-center;">Resources</th>
 							</thead>
 							<tbody>
 								{{range $key, $resource := .Resources}}
-									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab;" class="sorting_1 button3">{{$resource.Name}} {{$resource.LastName}}</td></tr>
+									<tr><td id="drag{{$key}}" draggable="true" ondragstart="drag(event,'{{$resource.ID}}')" style="cursor:-webkit-grab; text-align: -webkit-center;"  class="mdl-data-table__cell--non-numeric sorting_1">{{$resource.Name}} {{$resource.LastName}}</td></tr>
 								{{end}}	
 							</tbody>
 						</table>
@@ -316,28 +312,34 @@ function setResourceToProjectExc(){
 									{{$project.OperationCenter}}-{{$project.WorkOrder}} {{$project.Name}}
 									<div class="pull-right">
 										{{dateformat $project.StartDate "2006-01-02"}} to {{dateformat $project.EndDate "2006-01-02"}} 
-										<button id="collapseButton{{$key}}" class="btnCollapse glyphicon glyphicon-collapse-up" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
+										<button id="collapseButton{{$key}}" class="btnCollapse material-icons" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;">
+											arrow_drop_up
+										</button>
 									</div>
 								</div>
 								<div id="collapse{{$key}}" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
-									<table id="viewResourcesPerProject{{$project.ID}}" class="table table-striped table-bordered">
+									<table id="viewResourcesPerProject{{$project.ID}}" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp" style="width:  -webkit-fill-available;">
 										<thead>
-											<th style="font-size:12px;text-align: -webkit-center;">Name</th>
-											<th style="font-size:12px;text-align: -webkit-center;">Start date</th>
-											<th style="font-size:12px;text-align: -webkit-center;">End date</th>
-											<th style="font-size:12px;text-align: -webkit-center;">Hours</th>
-											<th style="font-size:12px;text-align: -webkit-center;">Options</th>
+											<th class="mdl-data-table__cell--non-numeric" style="font-size:12px;text-align: -webkit-center;">Name</th>
+											<th class="mdl-data-table__cell--non-numeric" style="font-size:12px;text-align: -webkit-center;">Start date</th>
+											<th class="mdl-data-table__cell--non-numeric" style="font-size:12px;text-align: -webkit-center;">End date</th>
+											<th class="mdl-data-table__cell--numeric" style="font-size:12px;text-align: -webkit-center;">Hours</th>
+											<th class="mdl-data-table__cell--non-numeric" style="font-size:12px;text-align: -webkit-center;">Options</th>
 										</thead>
 										<tbody>
 											{{range $keyR, $resProj := $resourcesProject}}
 												{{if eq  $resProj.ProjectId $project.ID}}
 												<tr draggable ="false">
-													<td id="res{{$keyR}}" style="font-size:11px;text-align: -webkit-center;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
-													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
-													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
-													<td style="font-size:11px;text-align: -webkit-center;">{{$resProj.Hours}}</td>
+													<td class="mdl-data-table__cell--non-numeric sorting_1" id="res{{$keyR}}" style="font-size:11px;text-align: -webkit-center;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
+													<td class="mdl-data-table__cell--non-numeric sorting_1" style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
+													<td class="mdl-data-table__cell--non-numeric sorting_1" style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
+													<td class="mdl-data-table__cell--numeric sorting_1" style="font-size:11px;text-align: -webkit-center;">{{$resProj.Hours}}</td>
 													
-													<td style="text-align: -webkit-center;"><img style="padding:0px;" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn button3" src="/static/img/rubbish-bin.png" onclick="$('#ID').val('{{$resProj.ID}}'); $('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
+													<td class="mdl-data-table__cell--non-numeric sorting_1" style="text-align: -webkit-center;padding-top: 1%;">
+														<button data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="mdl-button mdl-js-button mdl-button--blue" onclick="$('#ID').val('{{$resProj.ID}}'); $('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')">
+															<i class="material-icons" style="padding:0px;vertical-align: inherit;">delete</i>
+														</button>
+													</td>
 												</tr>
 												{{end}}
 											{{end}}
@@ -362,10 +364,10 @@ function setResourceToProjectExc(){
 					</div>
 				</div>
 				<div id="collapseUnassign" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px;">
-					<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
+					<table id="viewResourcesPerProjectUnassign" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 						<thead id="availabilityTableHead">
-							<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-10">Resource Name</th>
-							<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-1">Hours</th>
+							<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-10 mdl-data-table__cell--non-numeric">Resource Name</th>
+							<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-1 mdl-data-table__cell--numeric">Hours</th>
 						</thead>
 						<tbody id="unassignBody">
 							{{$availBreakdown := .AvailBreakdownPerRange}}
@@ -375,8 +377,8 @@ function setResourceToProjectExc(){
 									{{if $avail}}
 										{{if gt $avail.TotalHours 0.0}}
 											<tr draggable=false>
-												<td style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
-												<td style="font-size:11px;text-align: -webkit-center;">{{$avail.TotalHours}}</td>
+												<td class="mdl-data-table__cell--non-numeric" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+												<td class="mdl-data-table__cell--numeric" style="font-size:11px;text-align: -webkit-center;">{{$avail.TotalHours}}</td>
 											</tr>
 										{{end}}
 									{{end}}	

@@ -21,7 +21,7 @@
 				var startDateCreate = new Date($("#projectStartDate").val());
 				var endDateCreate = new Date($("#projectEndDate").val());
 				var projectHours = workingHoursBetweenDates(startDateCreate, endDateCreate, 0, false);
-		      	$("div.toolbar").html('<label>Project Duration (h): '+projectHours+'</label><button type="button" data-toggle="modal" data-target="#spiderModal" class="pull-right buttonTable button2" id="compare" style="border-radius:8px;">Compare</button>');         
+		      	$("div.toolbar").html('<label>Project Duration (h): '+projectHours+'</label><button type="button" data-toggle="modal" data-target="#spiderModal" class="pull-right mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" id="compare" style="border-radius:8px;"><i class="material-icons" style="vertical-align: inherit;">compare_arrows</i></button><div class="mdl-tooltip" for="compare">Compare resource\'s skills</div>');         
 		   	}       
 		});
 		if (!$('#skillsActive').prop("checked")) {
@@ -66,19 +66,19 @@
 	    // `d` is the original data object for the row
 		var insert = '';
 		for (index = 0; index < d.length; index++) {
-			insert += '<td class="col-sm-5" style="font-size:12px;text-align: -webkit-center;">'+d[index].StartDate+'</td>'+
-	            '<td class="col-sm-5" style="font-size:12px;text-align: -webkit-center;">'+d[index].EndDate+'</td>'+
-				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].Hours+'</td>'+	            
+			insert += '<td class="col-sm-5 mdl-data-table__cell--non-numeric" style="font-size:12px;text-align: -webkit-center;">'+d[index].StartDate+'</td>'+
+	            '<td class="col-sm-5 mdl-data-table__cell--non-numeric" style="font-size:12px;text-align: -webkit-center;">'+d[index].EndDate+'</td>'+
+				'<td class="col-sm-2 mdl-data-table__cell--numeric" style="font-size:12px;text-align: -webkit-center;">'+d[index].Hours+'</td>'+	            
 	        '</tr>';
 		}
 	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
 	}
 </script>
 <div class="col-sm-12" style="padding: 1%;">
-	<table id="availabilityTable" class="table table-striped table-bordered">
+	<table id="availabilityTable" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 		<thead id="availabilityTableHead">
-			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-9">Resource Name</th>
-			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-2">Hours</th>
+			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-9 mdl-data-table__cell--non-numeric">Resource Name</th>
+			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-2 mdl-data-table__cell--numeric">Hours</th>
 		</thead>
 		<tbody id="availabilityTableBody">
 			{{$availBreakdownPerRange := .AvailBreakdownPerRange}}
@@ -92,7 +92,7 @@
 								{{$totalHours := $resourceAvailabilityInfo.TotalHours}}
 								{{if ne $totalHours 0.0}}
 									<tr>
-										<td class="col-sm-9" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
+										<td class="col-sm-9 mdl-data-table__cell--non-numeric" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
 											<span class="glyphicon glyphicon-collapse-down" style="float:left;"></span>
 											{{if gt $resourceSkillValue 3.0}}
 												<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
@@ -108,7 +108,7 @@
 											{{end}}
 											{{$resource.Name}} {{$resource.LastName}}
 										</td>
-										<td id="totalHours" class="col-sm-2" style="font-size:11px;text-align: -webkit-center; background-color: aliceblue;">{{$totalHours}}</td>
+										<td id="totalHours" class="col-sm-2 mdl-data-table__cell--numeric" style="font-size:11px;text-align: -webkit-center; background-color: aliceblue;">{{$totalHours}}</td>
 									</tr>
 								{{end}}
 							{{end}}

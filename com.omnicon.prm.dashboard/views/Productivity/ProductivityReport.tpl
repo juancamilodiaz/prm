@@ -35,7 +35,8 @@
 	
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Task");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new task");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#taskModal");
 		$('#buttonOption').attr("onclick", "configureCreateModal()");

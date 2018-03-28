@@ -16,7 +16,8 @@
 		$('#datePicker').css("display", "none");
 		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
-		$('#backButton').html("Resources");
+		$('#backButtonIcon').html("arrow_back");
+		$('#backButtonTooltip').html("Back to resources");
 		$('#backButton').prop('onclick',null).off('click');
 		$('#backButton').click(function(){
 			reload('/resources',{});
@@ -33,7 +34,8 @@
 		
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("Set New Skill");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new skill to resource");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#resourceSkillModal");
 		$('#buttonOption').attr("onclick","configureCreateModal();getSkills()");
@@ -299,22 +301,32 @@ body {font-family: Verdana,sans-serif;margin:0}
 <body>
 <div class="col-sm-12">
 	<div class="col-sm-6">
-		<table id="viewSkillsInResource" class="table table-striped table-bordered">
+		<table id="viewSkillsInResource" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Value</th>
-					<th>Options</th>
+					<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Name</th>
+					<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Value</th>
+					<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Options</th>
 				</tr>
 			</thead>
 			<tbody>
 			 	{{range $key, $skill := .Skills}}
 				<tr>
-					<td>{{$skill.Name}}</td>
-					<td>{{$skill.Value}}</td>
-					<td>
-						<button class="buttonTable button2" data-toggle="modal" data-target="#updateResourceSkillModal" onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})" data-dismiss="modal">Update</button>
-						<button data-toggle="modal" data-target="#confirmDeleteSkillResourceModal" class="buttonTable button2" onclick="configureDeleteSkillResourceModal({{$skill.SkillId}});$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.SkillId}});" data-dismiss="modal">Delete</button>
+					<td class="mdl-data-table__cell--non-numeric" style="text-align:center;">{{$skill.Name}}</td>
+					<td class="mdl-data-table__cell--non-numeric" style="text-align:center;">{{$skill.Value}}</td>
+					<td class="mdl-data-table__cell--non-numeric" style="text-align:center;">
+						<button id="editButton{{$skill.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#updateResourceSkillModal" onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})" data-dismiss="modal">
+							<i class="material-icons" style="vertical-align: inherit;">mode_edit</i>
+						</button>
+						<div class="mdl-tooltip" for="editButton{{$skill.ID}}">
+							Edit skill	
+						</div>	
+						<button id="deleteButton{{$skill.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#confirmDeleteSkillResourceModal" onclick="configureDeleteSkillResourceModal({{$skill.SkillId}});$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.SkillId}});" data-dismiss="modal">
+							<i class="material-icons" style="vertical-align: inherit;">delete</i>
+						</button>
+						<div class="mdl-tooltip" for="deleteButton{{$skill.ID}}">
+							Delete skill	
+						</div>
 					</td>
 				</tr>
 				{{end}}	
@@ -376,7 +388,12 @@ body {font-family: Verdana,sans-serif;margin:0}
 				        <div class="col-sm-5">
 				        </div>
 				        <div class="col-sm-2">
-							<button class="buttonTable button2" id="download-pdf" onclick="downloadPDF({{$indexTypes}})" >Download PDF</button>
+							<button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" id="download-pdf" onclick="downloadPDF({{$indexTypes}})" >
+								<i class="material-icons" style="vertical-align: inherit;">file_download</i>
+							</button>
+							<div class="mdl-tooltip" for="download-pdf">
+								Download PDF	
+							</div>	
 				        </div>
 				        <div class="col-sm-5">
 				        </div>

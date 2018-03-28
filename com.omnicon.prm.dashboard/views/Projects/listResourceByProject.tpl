@@ -11,12 +11,13 @@
 			],
 			"dom": '<"col-sm-2"<"toolbar">><"col-sm-4"f><"col-sm-6"l><rtip>',
 			initComplete: function(){
-		      $("div.toolbar").html('<button id="multiDelete" disabled data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="' + "$('#projectID').val({{.ProjectId}}); $('#nameDelete').html('the marked elements')" + '" data-dismiss="modal"> Delete </button>');     
+		      $("div.toolbar").html('<button id="multiDelete" disabled data-toggle="modal" data-target="#confirmUnassignModal" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="' + "$('#projectID').val({{.ProjectId}}); $('#nameDelete').html('the marked elements')" + '" data-dismiss="modal"> <i class="material-icons" style="vertical-align: inherit;">delete_sweep</i> </button><div class="mdl-tooltip" for="multiDelete">Remove selected assigns</div>');     
 		   	} 
 		});
 		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
-		$('#backButton').html("Projects");
+		$('#backButtonIcon').html("arrow_back");
+		$('#backButtonTooltip').html("Back to projects");
 		$('#backButton').prop('onclick',null).off('click');
 		$('#backButton').click(function(){
 			reload('/projects',{});
@@ -58,7 +59,8 @@
 				
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("Set New Resource");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new resource assign to project");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#resourceProjectModal");
 		$('#buttonOption').attr("onclick","$('#resourceProjectId').val({{.ProjectId}});getResources();configureShowCreateModal()");
@@ -197,29 +199,44 @@
 <div class="row">
 <p class="pull-right" style="padding-right: 0%;"> <label type="text" id="dates"/></p>
 </div>
-<table id="viewResourceInProject" class="table table-striped table-bordered">
+<table id="viewResourceInProject" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 	<thead>
 		<tr>
-			<th>To Delete</th>
-			<th>Resource Name</th>
-			<th>Start Date</th>
-			<th>End Date</th>
-			<th>Hours</th>
-			<th>Options</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">To Delete</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Resource Name</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Start Date</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">End Date</th>
+			<th class="mdl-data-table__cell--numeric" style="text-align:center;">Hours</th>
+			<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Options</th>
 		</tr>
 	</thead>
 	<tbody>
 	 	{{range $key, $resourceToProject := .ResourcesToProjects}}
 		<tr>
-			<td><input type="checkbox" value="{{$resourceToProject.ID}}" class="checkToDelete"></td>
-			<td>{{$resourceToProject.ResourceName}}</td>
-			<td>{{dateformat $resourceToProject.StartDate "2006-01-02"}}</td>
-			<td>{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>
-			<td>{{$resourceToProject.Hours}}</td>
-			<td>
-				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceProjectIDDelete').val({{$resourceToProject.ID}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">Unassign</button>
-				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Hours}});$("#resourceProjectIDUpdate").val({{$resourceToProject.ID}});' data-dismiss="modal">Update assign</button>
-				<button data-toggle="modal" class="buttonTable button2" onclick='configureShowModal({{$resourceToProject.ResourceId}}, "{{$resourceToProject.ResourceName}}");getResource({{$resourceToProject.ResourceId}})' data-dismiss="modal">Resource Info.</button>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric"><input type="checkbox" value="{{$resourceToProject.ID}}" class="checkToDelete"></td>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$resourceToProject.ResourceName}}</td>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{dateformat $resourceToProject.StartDate "2006-01-02"}}</td>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--numeric">{{$resourceToProject.Hours}}</td>
+			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">
+				<button id="deleteAssign{{$resourceToProject.ID}}" data-toggle="modal" data-target="#confirmUnassignModal" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="$('#nameDelete').html('{{$resourceToProject.ResourceName}}');$('#resourceProjectIDDelete').val({{$resourceToProject.ID}});$('#projectID').val({{$resourceToProject.ProjectId}});" data-dismiss="modal">
+					<i class="material-icons" style="vertical-align: inherit;">delete</i>
+				</button>
+				<div class="mdl-tooltip" for="deleteAssign{{$resourceToProject.ID}}">
+					Unassign	
+				</div>
+				<button id="updateAssign{{$resourceToProject.ID}}" data-toggle="modal" data-target="#resourceProjectUpdateModal" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Hours}});$("#resourceProjectIDUpdate").val({{$resourceToProject.ID}});' data-dismiss="modal">
+					<i class="material-icons" style="vertical-align: inherit;">mode_edit</i>
+				</button>
+				<div class="mdl-tooltip" for="updateAssign{{$resourceToProject.ID}}">
+					Update assign	
+				</div>	
+				<button id="respurceInfo{{$resourceToProject.ID}}" data-toggle="modal" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick='configureShowModal({{$resourceToProject.ResourceId}}, "{{$resourceToProject.ResourceName}}");getResource({{$resourceToProject.ResourceId}})' data-dismiss="modal">
+					<i class="material-icons" style="vertical-align: inherit;">account_box</i>
+				</button>
+				<div class="mdl-tooltip" for="respurceInfo{{$resourceToProject.ID}}">
+					Resource information
+				</div>
 			</td>
 		</tr>
 		{{end}}	

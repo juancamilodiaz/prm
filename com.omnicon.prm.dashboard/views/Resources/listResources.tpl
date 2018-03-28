@@ -23,7 +23,8 @@
 		
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Resource");
+		$('#buttonOptionIcon').html("add");
+		$('#buttonOptionTooltip').html("Add new resource");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#resourceModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");
@@ -200,49 +201,73 @@
 		
 </script>
 <div>
-<table id="viewResources" class="table table-striped table-bordered">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Last Name</th>
-			<th>Profile(s)</th>
-			<th>Email</th>
-			<th>Engineer Rank</th>
-			<th>Visa US</th>
-			<th>Enabled</th>
-			<th>Options</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{$typesResource := .TypesResource}}
-	 	{{range $key, $resource := .Resources}}
-		<tr>
-			<td>{{$resource.Name}}</td>
-			<td>{{$resource.LastName}}</td>
-			<td>
-			{{$mapOfTypes := index $typesResource $resource.ID}}
-			<ul>
-			{{range $key, $type := $mapOfTypes}}
-				<li>{{$type}}</li>
-			{{end}}
-			</ul>
-			</td>
-			<td>{{$resource.Email}}</td>
-			<td>{{$resource.EngineerRange}}</td>
-			<td>{{if $resource.VisaUS}} {{$resource.VisaUS}} {{end}}</td>
-			<td><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
-			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}},{{$resource.VisaUS}})" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">Delete</button>
-				<button class="buttonTable button2" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}', {{$mapOfTypes}});" data-dismiss="modal">Skill Matrix</button>
-				<button class="buttonTable button2" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}},'{{$resource.Name}}'+' '+'{{$resource.LastName}}');" data-dismiss="modal">Assignations</button>
-				<button class="buttonTable button2" onclick="getTypesByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">Types</button>
-			</td>
-		</tr>
-		{{end}}	
-	</tbody>
-</table>
-
+	<table id="viewResources" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+		<thead>
+			<tr>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Name</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Last Name</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Profile(s)</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Email</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Engineer Rank</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Visa US</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Enabled</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Options</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{$typesResource := .TypesResource}}
+		 	{{range $key, $resource := .Resources}}
+			<tr>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$resource.Name}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$resource.LastName}}</td>
+				<td style="vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">
+				{{$mapOfTypes := index $typesResource $resource.ID}}
+				<ul style="margin-bottom: auto;">
+				{{range $key, $type := $mapOfTypes}}
+					<li>{{$type}}</li>
+				{{end}}
+				</ul>
+				</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$resource.Email}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$resource.EngineerRange}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{if $resource.VisaUS}} {{$resource.VisaUS}} {{end}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric"><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
+				<td style="vertical-align: inherit;text-align: center;" class="mdl-data-table__cell--non-numeric">
+					<button id="editButton{{$resource.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}},{{$resource.VisaUS}})" data-dismiss="modal">
+						<i class="material-icons" style="vertical-align: inherit;">mode_edit</i>
+					</button>
+					<div class="mdl-tooltip" for="editButton{{$resource.ID}}">
+						Edit resource	
+					</div>	
+					<button id="deleteButton{{$resource.ID}}" data-toggle="modal" data-target="#confirmModal" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">
+						<i class="material-icons" style="vertical-align: inherit;">delete</i>
+					</button>
+					<div class="mdl-tooltip" for="deleteButton{{$resource.ID}}">
+						Delete resource	
+					</div>	
+					<button id="skillButton{{$resource.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" ng-click="link('/resources/skills')" onclick="getSkillsByResource({{$resource.ID}}, '{{$resource.Name}}', {{$mapOfTypes}});" data-dismiss="modal">
+						<i class="material-icons" style="vertical-align: inherit;">trending_up</i>
+					</button>
+					<div class="mdl-tooltip" for="skillButton{{$resource.ID}}">
+						Resource's skills	
+					</div>	
+					<button id="asignButton{{$resource.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" ng-click="link('/projects/resources/assignation')" onclick="getAssignationsByResource({{$resource.ID}},'{{$resource.Name}}'+' '+'{{$resource.LastName}}');" data-dismiss="modal">
+						<i class="material-icons" style="vertical-align: inherit;">assignment_ind</i>
+					</button>
+					<div class="mdl-tooltip" for="asignButton{{$resource.ID}}">
+						Asign to projects	
+					</div>	
+					<button id="typeButton{{$resource.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="getTypesByResource({{$resource.ID}}, '{{$resource.Name}}');" data-dismiss="modal">
+						<i class="material-icons" style="vertical-align: inherit;">style</i>
+					</button>
+					<div class="mdl-tooltip" for="typeButton{{$resource.ID}}">
+						Resource's types	
+					</div>	
+				</td>
+			</tr>
+			{{end}}	
+		</tbody>
+	</table>
 </div>
 
 	<!-- Modal -->

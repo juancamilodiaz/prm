@@ -2,7 +2,10 @@
 
 <html>
 <head>
+	<!--link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css"-->
 	<title>PRM</title>
+	<!--script src="https://code.getmdl.io/1.3.0/material.min.js"></script-->
+    
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="shortcut icon" src="/static/img/favicon.ico">
 	<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
@@ -20,12 +23,23 @@
 	<script src="/static/js/Utils.js"></script>
 	<script src="/static/js/functions.js"></script>
 	<script src="/static/js/palette/palette.js"></script>
-	<script src="/static/js/jquery.jeditable.js"></script>
-	<script src="/static/js/jquery.jeditable.mini.js"></script>
+	<!--script src="/static/js/jquery.jeditable.js"></script>
+	<script src="/static/js/jquery.jeditable.mini.js"></script-->
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>	
 	
+	<script src="/static/js/code.getmdl.io/1.0.2/material.min.js"></script>
+	<script src="/static/js/kybarg/mdl-selectfield/mdl-menu-implementation/mdl-selectfield.min.js"></script>
+	
+	<!---->
+	<!--link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons"-->
+	<!--link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"-->
+	<link rel="stylesheet" type="text/css" href="/static/css/code.getmdl.io/1.0.2/material.teal-red.min.css" />
+	<link rel="stylesheet" href="https://cdn.rawgit.com/kybarg/mdl-selectfield/mdl-menu-implementation/mdl-selectfield.min.css" />
+	<!--link rel="stylesheet" href="https://code.getmdl.io/1.0.2/material.indigo-pink.min.css" /-->
+	<!--script src="//storage.googleapis.com/code.getmdl.io/1.0.1/material.min.js"></script-->
+	<!---->
 	<link rel="stylesheet" type="text/css" href="/static/css/JQueryUI/jquery-ui.min.css">
 	
 	<link rel="stylesheet" type="text/css" href="/static/js/DataTables/DataTables-1.10.16/css/jquery.dataTables.min.css">
@@ -168,9 +182,12 @@
 			<img src="/static/img/PRM-LOGO-BETA.svg" onclick="getResourcesByProjectToday();" style="cursor: pointer;height:100%;">
 		</div>
 		<div id="NavRight" class="NavItem col-sm-2" style="padding-right: 3%;padding-top: 20px;text-align: right;">
-			<a style="color: white;" itemprop="url" href='{{urlfor "LoginController.Logout"}}'>
-                <span class='glyphicon glyphicon-log-out'></span> Sign out
+			<a id="exit_session" class="mdl-js-button mdl-js-ripple-effect" style="color: white;" itemprop="url" href='{{urlfor "LoginController.Logout"}}'>
+               <i class="material-icons">exit_to_app</i>
 			</a>
+			<div class="mdl-tooltip mdl-tooltip--large" for="exit_session">
+				Sign out your session
+			</div>
 		</div>
 	</div>
 	
@@ -202,24 +219,49 @@
 			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>
 		</div>
 		<div class="content container-fluid">
-			<h1>
+			<h1><form action="#">		
+			<div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+				<select  id="leaderID" class="mdl-selectfield__select">
+					<option value="0"></option>
+					<option value="1">yo</option>
+				</select>
+			  <label class="mdl-selectfield__label" for="leaderID">Leader...</label>
+			</div>
+		</form>
 				<div id="titlePag">Home</div>
-				<button id="backButton" class="button button2" style="display: none;"></button>				
-				<button id="refreshButton" class="buttonImg button2" style="display: inline-block;">
-					<img src="/static/img/progress-arrows.png">
-				</button>				
+				<button id="backButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--blue" style="display: none;">
+					<i id="backButtonIcon" class="material-icons"></i>
+				</button>	
+				<div id="backButtonTooltip" class="mdl-tooltip mdl-tooltip--large" for="backButton">
+				</div>				
+				<button id="refreshButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--blue" style="display: inline-block;">
+					<i class="material-icons">refresh</i>
+					<!--img src="/static/img/progress-arrows.png"-->
+				</button>
+				<div class="mdl-tooltip mdl-tooltip--large" for="refreshButton">
+					Refresh data
+				</div>				
 				
 				<div id="datePicker" class="pull-right" style="padding-right: 0%;">
 					<h5>
-						<label for="dateFrom">Start Date:</label>
-						<input id=dateFrom type=date style="border-radius:8px;inline-size: 24%;">
-						<label for="dateTo">End Date:</label>
-						<input id=dateTo type=date style="border-radius:8px;inline-size: 24%;">
-						<button id="filterByDateRange" class="buttonHeader button2">Filter</button>
+						<!--label class="mdl-textfield__label" for="dateFrom">Start Date:</label-->
+						<input class="mdl-textfield__input" id=dateFrom type=date style="inline-size: 35%;">
+						<!--label class="mdl-textfield__label" for="dateTo">End Date:</label-->
+						<input class="mdl-textfield__input" id=dateTo type=date style="inline-size: 35%;">
+						<button id="filterByDateRange" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--blue">
+							<i class="material-icons">search</i>
+						</button>
+						<div class="mdl-tooltip mdl-tooltip--large" for="filterByDateRange">
+							Filter by date range	
+						</div>		
 					</h5>
 				</div>
 				
-				<button id="buttonOption" class="button button2" style="display: none;"></button>
+				<button id="buttonOption" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--blue" style="display: none;">
+					<i id="buttonOptionIcon" class="material-icons"></i>
+				</button>
+				<div id="buttonOptionTooltip" class="mdl-tooltip mdl-tooltip--large" for="buttonOption">
+				</div>
 			</h1>
 			<div id="errorMessage">
 			</div>

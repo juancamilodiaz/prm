@@ -4,7 +4,8 @@
 		$("#projectEndDate").val(getDateToday());
 			
 		$('#backButton').css("display", "inline-block");
-		$('#backButton').html("Go to projects");
+		$('#backButtonIcon').html("arrow_back");
+		$('#backButtonTooltip').html("Back to projects");
 		$('#backButton').prop('onclick',null).off('click');
 		$('#backButton').click(function(){
 			reload('/projects',{});
@@ -15,7 +16,8 @@
 				
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("Save Project");
+		$('#buttonOptionIcon').html("save");
+		$('#buttonOptionTooltip').html("Save simulation as new project");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("onclick","createProject();");
 		
