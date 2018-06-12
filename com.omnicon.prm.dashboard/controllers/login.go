@@ -48,15 +48,17 @@ type LoginController struct {
 
 func (this *LoginController) Login() {
 
-	fmt.Println("login.Login --  ****, this.IsLogin", this.IsLogin, "Session is Empty *****", this.Session == nil)
+	fmt.Println("------------------LOGIN.LOGIN()------------------------")
+	fmt.Println("Session is Empty *****", session == nil)
 
 	if this.IsLogin {
 		this.Ctx.Redirect(302, this.URLFor("UsersController.Index"))
 		return
 	}
 
+	fmt.Println("SESSION", this.GetString("session_state"))
 	///oauth2/start
-	session := this.Session
+	//session := this.Session
 	if session != nil {
 		fmt.Println("session2", session.AccessToken)
 		fmt.Println("s.Email 4", session.Email)
@@ -75,7 +77,6 @@ func (this *LoginController) Login() {
 		}
 		uri := BuildURI(false, serverip, proxyip, "oauth2", "start")
 		client.Get(uri) //?rd=/oauth2/sign_in
-
 		this.Redirect(uri, 307)
 
 	}
@@ -92,6 +93,7 @@ func (c *LoginController) Logout() {
 	uriLogout := BuildURI(true, "login.microsoftonline.com", "", "labmilanes.com", "oauth2", "logout")
 	uriRedirect := BuildURI(false, serverip, httpport)
 	uriLogout = uriLogout + "?post_logout_redirect_uri=" + uriRedirect
+	session = nil
 	c.Ctx.Redirect(302, uriLogout)
 }
 

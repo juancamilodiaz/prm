@@ -70,7 +70,8 @@ type AzureController struct {
 
 func (this *AzureController) Callback() {
 
-	fmt.Println("Azure.Callback -- *****, Session is Empty:", this.Session)
+	fmt.Println("------------------AZURE.CALLBACK()------------------------")
+	fmt.Println("Session is Empty:", this.Session)
 
 	code := this.GetString("code")
 
@@ -104,6 +105,7 @@ func (this *AzureController) Callback() {
 }
 
 func (this *AzureController) Get() {
+	fmt.Println("------------------AZURE.GET()------------------------")
 	if session != nil {
 		fmt.Println("s.AccessToken", session.AccessToken)
 		fmt.Println("s.Email 3", session.Email)

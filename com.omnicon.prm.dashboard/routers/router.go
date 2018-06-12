@@ -14,10 +14,9 @@ func init() {
 	beego.Router("/callback", &controllers.AzureController{})
 
 	beego.Router("/", &controllers.MainController{})
-	beego.Router("/about", &controllers.AboutController{}, "post:About")
 
-	beego.Router("/start/", &controllers.AzureController{})
-
+	beego.Router("/start", &controllers.AzureController{}, "get:Get")
+	//beego.Router("/start/", &controllers.ProjectController{}, "get:Get")
 	beego.Router("/oauth2/", &controllers.AzureController{})
 	beego.Router("/oauth2/callback", &controllers.AzureController{}, "get:Callback")
 	//beego.Router("/azure/", &controllers.AzureController{})

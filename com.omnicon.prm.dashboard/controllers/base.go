@@ -27,13 +27,13 @@ type NestFinisher interface {
 	NestFinish()
 }
 
-func (c *BaseController) Prepare() {
+func (c *BaseController) _Prepare() {
 	fmt.Println("base.Prepare")
 
 	c.SetParams()
 
-	fmt.Println("this.Session!=nil", c.Session != nil)
-	c.IsLogin = c.GetSession("userinfo") != nil
+	fmt.Println("IsLogin", c.IsLogin)
+	/*c.IsLogin = c.GetSession("userinfo") != nil
 	if c.IsLogin {
 		c.Userinfo = c.GetLogin()
 	}
@@ -45,19 +45,31 @@ func (c *BaseController) Prepare() {
 
 	if app, ok := c.AppController.(NestPreparer); ok {
 		app.NestPrepare()
+	}*/
+	c.Layout = "base.tpl"
+	if !c.IsLogin {
+		c.Ctx.Redirect(302, c.LoginPath())
 	}
+	//c.Userinfo = c.GetLogin()
+	c.Data["IsLogin"] = c.IsLogin
+	c.Data["Userinfo"] = c.Userinfo
+
+	//	c.AppController.Login
 }
 
-func (c *BaseController) Finish() {
+func (c *BaseController) _Finish() {
 	if app, ok := c.AppController.(NestFinisher); ok {
 		app.NestFinish()
 	}
 }
 
-func (c *BaseController) GetLogin() *models.User {
-	u := &models.User{Id: c.GetSession("userinfo").(int64)}
-	u.Read()
-	return u
+func (c *BaseController) _GetLogin() *models.User {
+	if c.GetSession("userinfo") != nil {
+		u := &models.User{Id: c.GetSession("userinfo").(int64)}
+		u.Read()
+		return u
+	}
+	return nil
 }
 
 func (c *BaseController) DelLogin() {
@@ -79,7 +91,7 @@ func (c *BaseController) SetParams() {
 	}
 }
 
-func (c *BaseController) BuildRequestUrl(uri string) string {
+func (c *BaseController) _BuildRequestUrl(uri string) string {
 	if uri == "" {
 		uri = c.Ctx.Input.URI()
 	}
