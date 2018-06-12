@@ -90,7 +90,29 @@ function unassignTypeSkills(typeId, typeSkillId, description){
 }
 
 
-function addSkillToType(typeId, skillId, value, typeName){
+function addSkillToType(typeId, skillId, value, typeName, skillIdUpdate, isUpdate){
+	
+	componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+	componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+	componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+	componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+	componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+	getmdlSelect.init(".getmdl-select");
+	
+	
+	$('#skillIdList').children().each(
+		function(param){
+			if(this.classList.length >1 && this.classList[1] == "selected"){
+				skillId = this.getAttribute("data-val");
+			}
+		});
+	
+	var skillIdMain = skillId.split("-")[0];
+	var skillIdName = skillId.split("-")[1];
+	if (isUpdate){
+		skillIdMain = skillIdUpdate.split("-")[0];
+		skillIdName = skillIdUpdate.split("-")[1];
+	}
 	var settings = {
 		method: 'POST',
 		url: '/types/setskill',
@@ -99,8 +121,8 @@ function addSkillToType(typeId, skillId, value, typeName){
 		},
 		data: { 
 			"TypeId": typeId,
-			"SkillId": skillId.split("-")[0],
-			"Name": skillId.split("-")[1],
+			"SkillId": skillIdMain,
+			"Name": skillIdName,
 			"Value": value
 		}
 	}
@@ -115,6 +137,15 @@ function addSkillToType(typeId, skillId, value, typeName){
 }
 
 function addTypeToProject(projectId, typeId, description){
+	
+	$('#typeIDList').children().each(
+		function(param){
+			if(this.classList.length >1 && this.classList[1] == "selected"){
+				typeId = this.getAttribute("data-val");
+			}
+		}
+	);
+		
 	var settings = {
 		method: 'POST',
 		url: '/projects/settype',
@@ -174,6 +205,13 @@ function unassignResourceType(resourceId, typeId, description){
 }
 
 function addTypeToResource(resourceId, typeId, description){
+	$('#typeIDList').children().each(
+		function(param){
+			if(this.classList.length >1 && this.classList[1] == "selected"){
+				typeId = this.getAttribute("data-val");
+			}
+		}
+	);
 	var settings = {
 		method: 'POST',
 		url: '/resources/settype',

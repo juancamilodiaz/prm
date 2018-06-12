@@ -1,5 +1,13 @@
 <script>
 	$(document).ready(function(){
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-menu'));
+		getmdlSelect.init(".getmdl-select");
+		
 		$('#viewSkills').DataTable({
 			"columns":[
 				null,
@@ -19,9 +27,19 @@
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
 		$('#buttonOptionIcon').html("add");
 		$('#buttonOptionTooltip').html("Add new skill");
-		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("data-target", "#skillModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");
+		
+		var dialogSkills = document.querySelector('#skillModal');
+		dialogSkills.querySelector('#cancelSkillDialogButton')
+		    .addEventListener('click', function() {
+		      dialogSkills.close();	
+    	});
+		
+		var dialogSkillDelete = document.querySelector('#confirmModal');
+		dialogSkillDelete.querySelector('#cancelSkillDeleteDialogButton')
+		    .addEventListener('click', function() {
+		      dialogSkillDelete.close();	
+    	});
 	});
 	
 	configureCreateModal = function(){
@@ -32,6 +50,20 @@
 		$("#modalTitle").html("Create Skill");
 		$("#skillUpdate").css("display", "none");
 		$("#skillCreate").css("display", "inline-block");
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
+		$('.mdl-textfield>input').each(function(param){
+			$(this).parent().addClass('is-invalid');
+			$(this).parent().removeClass('is-dirty');
+		});
+		
+		var dialog = document.querySelector('#skillModal');
+		dialog.showModal();
 	}
 	
 	configureUpdateModal = function(pID, pName){
@@ -42,23 +74,59 @@
 		$("#modalTitle").html("Update Skill");
 		$("#skillCreate").css("display", "none");
 		$("#skillUpdate").css("display", "inline-block");
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
+		
+		$('.mdl-textfield>input').each(function(param){
+			if($(this).val() != ""){
+				$(this).parent().addClass('is-dirty');
+				$(this).parent().removeClass('is-invalid');
+			}
+			if($(this).val() == "" && $(this).prop("required")){
+				$(this).parent().removeClass('is-dirty');
+				$(this).parent().addClass('is-invalid');
+			}
+		});
+		
+		var dialog = document.querySelector('#skillModal');
+		dialog.showModal();
+	}
+	
+	configureDeleteModal = function(){
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
+		
+		var dialog = document.querySelector('#confirmModal');
+		dialog.showModal();
 	}
 
 	createSkill = function(){
-		var settings = {
-			method: 'POST',
-			url: '/skills/create',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"Name": $('#skillName').val()
+		if (document.getElementById("formCreateUpdate").checkValidity()) {
+			var settings = {
+				method: 'POST',
+				url: '/skills/create',
+				headers: {
+					'Content-Type': undefined
+				},
+				data: { 
+					"Name": $('#skillName').val()
+				}
 			}
+			$.ajax(settings).done(function (response) {
+				validationError(response);
+				reload('/skills', {});
+			});
 		}
-		$.ajax(settings).done(function (response) {
-			validationError(response);
-			reload('/skills', {});
-		});
 	}
 	
 	updateSkill = function(){
@@ -125,13 +193,13 @@
 		<tr>
 			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$skilll.Name}}</td>
 			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">
-				<button id="editButton{{$skilll.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#skillModal" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">
+				<button id="editButton{{$skilll.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="configureUpdateModal({{$skilll.ID}},'{{$skilll.Name}}')" data-dismiss="modal">
 					<i class="material-icons" style="vertical-align: inherit;">mode_edit</i>
 				</button>
 				<div class="mdl-tooltip" for="editButton{{$skilll.ID}}">
 					Edit skill	
 				</div>	
-				<button id="deleteButton{{$skilll.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});" data-dismiss="modal">
+				<button id="deleteButton{{$skilll.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="$('#nameDelete').html('{{$skilll.Name}}');$('#skillID').val({{$skilll.ID}});configureDeleteModal()" data-dismiss="modal">
 					<i class="material-icons" style="vertical-align: inherit;">delete</i>
 				</button>
 				<div class="mdl-tooltip" for="deleteButton{{$skilll.ID}}">
@@ -146,53 +214,35 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="skillModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTitle" class="modal-title">Create/Update Skill</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="skillID">
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-              <div class="col-sm-8">
-              	<input type="text" id="skillName" style="border-radius: 8px;">
-        		</div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="skillCreate" class="btn btn-default" onclick="createSkill()" data-dismiss="modal">Create</button>
-        <button type="button" id="skillUpdate" class="btn btn-default" onclick="updateSkill()" data-dismiss="modal">Update</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
+<dialog class="mdl-dialog" id="skillModal">
+	<h4 id="modalTitle" class="mdl-dialog__title"></h4>
+	<div class="mdl-dialog__content">
+		<form id="formCreateUpdate" action="#">
+			<input type="hidden" id="skillID">
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			  <input class="mdl-textfield__input" type="text" id="skillName" required>
+			  <label class="mdl-textfield__label" for="skillName">Name...</label>
+			</div>	
+		</from>
+	</div>
+	<div class="mdl-dialog__actions">
+		<button type="button" id="skillCreate" class="mdl-button" onclick="createSkill()" data-dismiss="modal">Create</button>
+		<button type="button" id="skillUpdate" class="mdl-button" onclick="updateSkill()" data-dismiss="modal">Update</button>
+      	<button id="cancelSkillDialogButton" type="button" class="mdl-button close" data-dismiss="modal">Cancel</button>
     </div>
-    
-  </div>
-</div>
-<div class="modal fade" id="confirmModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to remove <b id="nameDelete"></b> from skills?
+</dialog>
+
+<dialog class="mdl-dialog" id="confirmModal">
+	<h4 id="modalTitle" class="mdl-dialog__title">Delete Confirmation</h4>
+	<div class="mdl-dialog__content">
+		Are you sure you want to remove <b id="nameDelete"></b> from skills?
 		<br>
 		<li>The resources will lose this skill assignment.</li>
 		<li>The types will lose this skill assignment.</li>
 		<li>The training and the training's assignations will lose this skill assignment and they will be eliminated.</li>
-      </div>
-      <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="skillDelete" class="btn btn-default" onclick="deleteSkill()" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-      </div>
+	</div>
+	<div class="mdl-dialog__actions">
+		<button type="button" id="skillDelete" class="mdl-button" onclick="deleteSkill()" data-dismiss="modal">Yes</button>
+		<button id="cancelSkillDeleteDialogButton" type="button" class="mdl-button close" data-dismiss="modal">No</button>
     </div>
-  </div>
-</div>
+</dialog>

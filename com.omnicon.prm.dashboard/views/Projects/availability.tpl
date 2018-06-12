@@ -37,7 +37,7 @@
 					{{if (ne $xx 0)}}
 						,
 					{{end}}
-					[{{$project.Name}}, {{$project.Name}}+{{$project.Lead}}, parseDate({{$project.StartDate}}), parseDate({{$project.EndDate}}), 0, {{$project.Percent}},""]
+					[{{$project.Name}}, {{$project.Name}}+" "+{{$project.Lead}}, parseDate({{$project.StartDate}}), parseDate({{$project.EndDate}}), 0, {{$project.Percent}},""]
 					
 			{{end}}
 			]);
@@ -99,22 +99,22 @@
 
 <div class="row">
 		<div class="col-sm-6" style="padding-bottom: 10px;">				
-			<table id="viewProjects" class="table table-striped table-bordered">
+			<table id="viewProjects" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 			<thead>
 				<tr>
-					<th class="col-sm-4"><p style="font-size:12px;text-align: -webkit-center">Name</p></th>
-					<th class="col-sm-2"> <p style="font-size:12px;text-align: -webkit-center">Start Date</p></th>
-					<th class="col-sm-2"><p style="font-size:12px;text-align: -webkit-center">End Date</p></th>
-					<th class="col-sm-4"><p style="font-size:12px;text-align: -webkit-center">Leader</p></th>
+					<th class="mdl-data-table__cell--non-numeric col-sm-4"><p style="font-size:12px;text-align: -webkit-center">Name</p></th>
+					<th class="mdl-data-table__cell--non-numeric col-sm-2"> <p style="font-size:12px;text-align: -webkit-center">Start Date</p></th>
+					<th class="mdl-data-table__cell--non-numeric col-sm-2"><p style="font-size:12px;text-align: -webkit-center">End Date</p></th>
+					<th class="mdl-data-table__cell--non-numeric col-sm-4"><p style="font-size:12px;text-align: -webkit-center">Leader</p></th>
 				</tr>
 			</thead>
 			<tbody>
 			 	{{range $key, $project := .Projects}}
 				<tr>
-					<td>{{$project.Name}}</td>
-					<td>{{dateformat $project.StartDate "2006-01-02"}}</td>
-					<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
-					<td>{{$project.Lead}}</td>
+					<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$project.Name}}</td>
+					<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{dateformat $project.StartDate "2006-01-02"}}</td>
+					<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{dateformat $project.EndDate "2006-01-02"}}</td>
+					<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$project.Lead}}</td>
 				</tr>
 				{{end}}	
 			</tbody>
@@ -133,7 +133,7 @@
 					</p>
 				</div>
 				
-				<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
+				<table id="viewResourcesPerProjectUnassign" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
 				</table>
 			</div>														
 		</div>

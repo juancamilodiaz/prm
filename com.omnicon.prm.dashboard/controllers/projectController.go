@@ -87,7 +87,7 @@ func (this *ProjectController) CreateProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 
 			operation := "CreateProject"
 			input := domain.CreateProjectRQ{}
@@ -136,7 +136,7 @@ func (this *ProjectController) CreateProject() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -186,7 +186,7 @@ func (this *ProjectController) UpdateProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "UpdateProject"
 
 			input := domain.UpdateProjectRQ{}
@@ -223,7 +223,7 @@ func (this *ProjectController) UpdateProject() {
 				this.TplName = "Common/empty.tpl"
 			}
 
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -237,7 +237,7 @@ func (this *ProjectController) DeleteProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteProject"
 
 			input := domain.DeleteProjectRQ{}
@@ -275,7 +275,7 @@ func (this *ProjectController) DeleteProject() {
 				this.TplName = "Common/empty.tpl"
 			}
 
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -288,7 +288,7 @@ func (this *ProjectController) GetResourcesByProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetResourcesToProjects"
 
 			input := domain.GetResourcesToProjectsRQ{}
@@ -328,7 +328,7 @@ func (this *ProjectController) GetResourcesByProject() {
 				this.TplName = "Common/message.tpl"
 			}
 			//body, _ := ioutil.ReadAll(res.Body)
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -341,7 +341,7 @@ func (this *ProjectController) DeleteResourceToProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteResourceToProject"
 
 			input := domain.DeleteResourceToProjectRQ{}
@@ -376,7 +376,7 @@ func (this *ProjectController) DeleteResourceToProject() {
 				this.TplName = "Common/message.tpl"
 			}
 			//body, _ := ioutil.ReadAll(res.Body)
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -389,7 +389,7 @@ func (this *ProjectController) SetResourceToProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "SetResourceToProject"
 
 			input := domain.SetResourceToProjectRQ{}
@@ -427,7 +427,7 @@ func (this *ProjectController) SetResourceToProject() {
 				this.TplName = "Common/message.tpl"
 			}
 			//body, _ := ioutil.ReadAll(res.Body)
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -440,7 +440,7 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetResourcesToProjects"
 
 			input := domain.GetResourcesToProjectsRQ{}
@@ -473,7 +473,7 @@ func (this *ProjectController) GetResourcesByProjectToday() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -486,7 +486,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetResourcesToProjects"
 
 			input := domain.GetResourcesToProjectsRQ{}
@@ -691,7 +691,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -704,7 +704,7 @@ func (this *ProjectController) GetTypesByProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetTypesByProject"
 
 			input := domain.GetProjectsRQ{}
@@ -740,7 +740,7 @@ func (this *ProjectController) GetTypesByProject() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -753,7 +753,7 @@ func (this *ProjectController) DeleteTypesByProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteTypesByProject"
 
 			input := domain.ProjectTypesRQ{}
@@ -786,7 +786,7 @@ func (this *ProjectController) DeleteTypesByProject() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -799,7 +799,7 @@ func (this *ProjectController) SetTypesToProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "SetTypesToProject"
 			input := domain.ProjectTypesRQ{}
 
@@ -835,7 +835,7 @@ func (this *ProjectController) SetTypesToProject() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -848,7 +848,7 @@ func (this *ProjectController) GetAssignationByResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetResourcesToProjects"
 
 			input := domain.GetResourcesToProjectsRQ{}
@@ -883,7 +883,7 @@ func (this *ProjectController) GetAssignationByResource() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -896,7 +896,7 @@ func (this *ProjectController) Availability() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetResourcesToProjects"
 			y, w := time.Now().ISOWeek()
 			dateFrom := FirstDayOfISOWeek(y, w, time.UTC)
@@ -963,7 +963,7 @@ func (this *ProjectController) Availability() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -976,7 +976,7 @@ func (this *ProjectController) AvailabileHours() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetResourcesToProjects"
 			dateFrom, _ := time.Parse("2006-01-02", this.GetString("dateFrom"))
 			dateTo := dateFrom.AddDate(0, 0, 5)
@@ -1017,7 +1017,7 @@ func (this *ProjectController) AvailabileHours() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"

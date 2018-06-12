@@ -4,7 +4,30 @@
 
 
 <script>
+	getSkillsDropDown = function(){
+		var settings = {
+			method: 'POST',
+			url: '/skills',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"Template": "select",				
+			}
+		}
+		$.ajax(settings).done(function (response) {
+		  $('#resourceNameSkillList').html(response);
+		});
+	}
+	
 	$(document).ready(function(){
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
 		$('#viewSkillsInResource').DataTable({
 			"lengthMenu": [[8, 16, 32, -1], [8, 16, 32, "All"]],
 			"columns":[
@@ -38,49 +61,130 @@
 		$('#buttonOptionTooltip').html("Add new skill to resource");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#resourceSkillModal");
-		$('#buttonOption').attr("onclick","configureCreateModal();getSkills()");
+		$('#buttonOption').attr("onclick","configureCreateModal()");
+				
+		var dialogConfirm = document.querySelector('#confirmDeleteSkillResourceModal');
+		dialogConfirm.querySelector('#cancelConfirmButton')
+		    .addEventListener('click', function() {
+		      dialogConfirm.close();	
+    	});
+		
+		var dialogConfirmCreate = document.querySelector('#resourceSkillModal');
+		dialogConfirmCreate.querySelector('#cancelDialogButton')
+		    .addEventListener('click', function() {
+		      dialogConfirmCreate.close();	
+    	});
+		
+		var dialogConfirmUpdate = document.querySelector('#updateResourceSkillModal');
+		dialogConfirmUpdate.querySelector('#cancelDialogButton')
+		    .addEventListener('click', function() {
+		      dialogConfirmUpdate.close();	
+    	});
+		
+		var dialogPDF = document.querySelector('#showDocument');
+		dialogPDF.querySelector('#cancelPDFButton')
+		    .addEventListener('click', function() {
+		      dialogPDF.close();	
+    	});
 		
 		{{if not .Skills}}
 			$('#chartjs-wrapper').css("display", "none");
 		{{end}}	
-	});
+		getSkillsDropDown();
+	});;	
+	
+	
+	
+	configureCreateModal = function(){
+		
+		$("#modalResourceSkillTitle").html("Create Skill to Resource");
+		$("#resourceSkillCreate").css("display", "inline-block");
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
+		$('.mdl-textfield>input').each(function(param){if($(this).val() != ""){$(this).parent().addClass('is-dirty');$(this).parent().removeClass('is-invalid')}})
+		
+		var dialog = document.querySelector('#resourceSkillModal');
+		dialog.showModal();
+	}
 	
 	configureUpdateSkillResourceModal = function(pSkillId, pName, pValue){
 		$("#updateResourceSkillId").val(pSkillId);
 		$("#updateResourceNameSkill").val(pName);
 		$("#updateResourceValueSkill").val(pValue);
-		$("#deleteResourceSkillId").val(pSkillId);
 		
-		$("#modalTitle").html("Update Skill to Resource");
+		$("#modalUpdateResourceSkillTitle").html("Update Skill to Resource");
 		$("#resourceCreate").css("display", "none");
 		$("#resourceUpdate").css("display", "inline-block");
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		$('.mdl-textfield>input').each(function(param){if($(this).val() != ""){$(this).parent().addClass('is-dirty');$(this).parent().removeClass('is-invalid')}})
+		
+		var dialog = document.querySelector('#updateResourceSkillModal');
+		dialog.showModal();
 	}
 	
-	configureDeleteSkillResourceModal = function(pSkillId){
+	configureDeleteSkillResourceModal = function(pSkillId, pSkillName){
 		$("#deleteResourceSkillId").val(pSkillId);
+		$("#nameDelete").html(pSkillName);
+		$("#skillID").val(pSkillId);
 		
 		$("#modalTitle").html("Delete Skill to Resource");
 		$("#resourceCreate").css("display", "none");
 		$("#resourceUpdate").css("display", "inline-block");
+		
+		var dialog = document.querySelector('#confirmDeleteSkillResourceModal');
+		dialog.showModal();
 	}
 
 	
-	setSkillToResource = function(resourceId, resourceName, value, mapTypesResource){
-		var settings = {
-			method: 'POST',
-			url: '/resources/setskill',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"ResourceId": resourceId,
-				"SkillId": resourceName,
-				"Value": value
+	setSkillToResource = function(resourceId, resourceName, value, mapTypesResource, isUpdate){
+		var skillId;
+		
+		var isFormValid = false;
+		if (isUpdate){
+			skillId = resourceName
+			if (document.getElementById("formUpdate").checkValidity()) {
+				isFormValid = true;
+			} 
+		} else {
+			$('#resourceNameSkillList').children().each(
+			function(param){
+				if(this.classList.length >1 && this.classList[1] == "selected"){
+					skillId = this.getAttribute("data-val");
+				}
+			});
+			if(document.getElementById("formCreate").checkValidity()) {
+				isFormValid = true;
 			}
 		}
-		$.ajax(settings).done(function (response) {
-		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}, "MapTypesResource" : JSON.stringify(mapTypesResource)});
-		});
+		if (isFormValid){
+			var settings = {
+				method: 'POST',
+				url: '/resources/setskill',
+				headers: {
+					'Content-Type': undefined
+				},
+				data: { 
+					"ResourceId": resourceId,
+					"SkillId": skillId,
+					"Value": value
+				}
+			}
+			$.ajax(settings).done(function (response) {
+			  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}, "MapTypesResource" : JSON.stringify(mapTypesResource)});
+			});
+		}		
 	}
 	
 	deleteSkillToResource = function(resourceId, skillId, mapTypesResource){
@@ -97,22 +201,6 @@
 		}
 		$.ajax(settings).done(function (response) {
 		  reload('/resources/skills', {"ID": {{.ResourceId}},"ResourceName": {{.Title}}, "MapTypesResource" : JSON.stringify(mapTypesResource)});
-		});
-	}
-	
-	getSkills = function(){
-		var settings = {
-			method: 'POST',
-			url: '/skills',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"Template": "select",				
-			}
-		}
-		$.ajax(settings).done(function (response) {
-		  $('#resourceNameSkill').html(response);
 		});
 	}
 	
@@ -166,7 +254,8 @@
 		});
 		
 		$('#objectPdf').attr('data', doc.output('datauristring'));
-		$('#showDocument').modal('show');
+		var dialogPDF = document.querySelector('#showDocument');
+		dialogPDF.showModal();
 	}
 	
 	var slideIndex = 1;
@@ -315,13 +404,13 @@ body {font-family: Verdana,sans-serif;margin:0}
 					<td class="mdl-data-table__cell--non-numeric" style="text-align:center;">{{$skill.Name}}</td>
 					<td class="mdl-data-table__cell--non-numeric" style="text-align:center;">{{$skill.Value}}</td>
 					<td class="mdl-data-table__cell--non-numeric" style="text-align:center;">
-						<button id="editButton{{$skill.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#updateResourceSkillModal" onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})" data-dismiss="modal">
+						<button id="editButton{{$skill.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})">
 							<i class="material-icons" style="vertical-align: inherit;">mode_edit</i>
 						</button>
 						<div class="mdl-tooltip" for="editButton{{$skill.ID}}">
 							Edit skill	
 						</div>	
-						<button id="deleteButton{{$skill.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#confirmDeleteSkillResourceModal" onclick="configureDeleteSkillResourceModal({{$skill.SkillId}});$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.SkillId}});" data-dismiss="modal">
+						<button id="deleteButton{{$skill.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="configureDeleteSkillResourceModal({{$skill.SkillId}}, '{{$skill.Name}}');">
 							<i class="material-icons" style="vertical-align: inherit;">delete</i>
 						</button>
 						<div class="mdl-tooltip" for="deleteButton{{$skill.ID}}">
@@ -419,115 +508,74 @@ body {font-family: Verdana,sans-serif;margin:0}
 	</div>
 </div>
 <!-- Modal -->
-	<div class="modal fade" id="resourceSkillModal" role="dialog">
-  		<div class="modal-dialog">
-    		<!-- Modal content-->
-    		<div class="modal-content">
-      			<div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal">&times;</button>
-			        <h4 id="modalResourceSkillTitle" class="modal-title"></h4>
-			    </div>
-		    	<div class="modal-body">
-					<input type="hidden" id="resourceIDSkills">
-        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="Skill Name"> Skill Name </label>
-          					<div class="col-sm-8">
-          						<select id="resourceNameSkill" style="width: 174px; border-radius: 8px;">
-								</select>
-    						</div>
-          				</div>
-        			</div>
-        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
-             				<div class="col-sm-8">
-              					<input type="number" id="resourceValueSkill" min="1" max="100" value="1" style="border-radius: 8px;">
-        					</div>
-          				</div>
-        			</div>
-      			</div>
-      			<div class="modal-footer">
-			        <button type="button" id="resourceSkillCreate" class="btn btn-default" onclick="setSkillToResource({{.ResourceId}}, $('#resourceNameSkill').val(),$('#resourceValueSkill').val(), {{.MapTypesResource}})" data-dismiss="modal">Set</button>
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			    </div>
-    		</div>    
-  		</div>
-	</div>
-	<!-- Modal -->
-	<div class="modal fade" id="updateResourceSkillModal" role="dialog">
-  		<div class="modal-dialog">
-    		<!-- Modal content-->
-    		<div class="modal-content">
-      			<div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal">&times;</button>
-			        <h4 id="modalUpdateResourceSkillTitle" class="modal-title"></h4>
-			    </div>
-		    	<div class="modal-body">
-					<input type="hidden" id="updateResourceSkillId">
-        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="Skill Name"> Skill Name </label>
-          					<div class="col-sm-8">
-          						<input type="text" id="updateResourceNameSkill" disabled style="border-radius: 8px;">
-    						</div>
-          				</div>
-        			</div>
-        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
-             				<div class="col-sm-8">
-              					<input type="number" id="updateResourceValueSkill" min="1" max="100" style="border-radius: 8px;">
-        					</div>
-          				</div>
-        			</div>
-      			</div>
-      			<div class="modal-footer">
-			        <button type="button" id="updateResourceSkill" class="btn btn-default" onclick="setSkillToResource({{.ResourceId}}, $('#updateResourceSkillId').val(), $('#updateResourceValueSkill').val(), {{.MapTypesResource}})" data-dismiss="modal">Set</button>
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			    </div>
-    		</div>    
-  		</div>
-	</div>
-	<div class="modal fade" id="confirmDeleteSkillResourceModal" role="dialog">
-		<div class="modal-dialog">
-	    	<!-- Modal content-->
-		    <div class="modal-content">
-	     		<div class="modal-header">
-	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
-	        		<h4 class="modal-title">Delete Confirmation</h4>
-	      		</div>
-		      	<div class="modal-body">
-					<input type="hidden" id="deleteResourceSkillId">
-		      		Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
-		      	</div>
-		      	<div class="modal-footer" style="text-align:center;">
-			        <button type="button" id="resourceSkillDelete" class="btn btn-default" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val(), {{.MapTypesResource}})" data-dismiss="modal">Yes</button>
-			        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-		      	</div>
+	<dialog class="mdl-dialog" id="resourceSkillModal">
+		<h4 id="modalResourceSkillTitle" class="mdl-dialog__title"></h4>
+		<form id="formCreate" action="#">
+			<div class="mdl-dialog__content">	
+				<input type="hidden" id="resourceIDSkills">	
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+			        <input type="text" value="" class="mdl-textfield__input" id="resourceNameSkill" readonly>
+			        <input type="hidden" value="" name="resourceNameSkill" required>
+			        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+			        <label for="resourceNameSkill" class="mdl-textfield__label">Skill Name...</label>
+			        <ul id="resourceNameSkillList" for="resourceNameSkill" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+			        </ul>
+			    </div>	
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" pattern="(100|([1-9][0-9])|[0-9])" id="resourceValueSkill" required>
+					<label class="mdl-textfield__label" for="resourceValueSkill">Value...</label>
+					<span class="mdl-textfield__error">Input is not a number or exceed the limit!</span>
+				</div>				
 			</div>
-	    </div>
-	</div>
+			<div class="mdl-dialog__actions">
+				<button type="button" id="resourceSkillCreate" class="mdl-button" onclick="setSkillToResource({{.ResourceId}}, $('#resourceIDSkills').val(),$('#resourceValueSkill').val(), {{.MapTypesResource}}, false)">Set</button>
+		      	<button type="button" id="cancelDialogButton" class="mdl-button close" data-dismiss="modal">Cancel</button>
+		    </div>  
+		</form>
+	</dialog>
 	<!-- Modal -->
-	<div id="showDocument" class="modal fade" role="dialog">
-	  <div class="modal-dialog" style="width: 95%;height: 90%;padding: 0;">
-	
+	<dialog class="mdl-dialog" id="updateResourceSkillModal">
+		<h4 id="modalUpdateResourceSkillTitle" class="mdl-dialog__title"></h4>
+		<form id="formUpdate" action="#">
+			<div class="mdl-dialog__content">			
+			    <input type="hidden" id="updateResourceSkillId">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+				  <input class="mdl-textfield__input" type="text" id="updateResourceNameSkill" required disabled>
+				  <label class="mdl-textfield__label" for="updateResourceNameSkill">Skill Name...</label>
+				</div>		
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" pattern="(100|([1-9][0-9])|[0-9])" id="updateResourceValueSkill" required>
+					<label class="mdl-textfield__label" for="updateResourceValueSkill">Value...</label>
+					<span class="mdl-textfield__error">Input is not a number or exceed the limit!</span>
+				</div>				
+			</div>
+			<div class="mdl-dialog__actions">
+				<button type="button" id="updateResourceSkill" class="mdl-button" onclick="setSkillToResource({{.ResourceId}}, $('#updateResourceSkillId').val(), $('#updateResourceValueSkill').val(), {{.MapTypesResource}}, true)">Set</button>
+		      	<button type="button" id="cancelDialogButton" class="mdl-button close" data-dismiss="modal">Cancel</button>
+		    </div>  
+		</form> 
+	</dialog>
+	<dialog class="mdl-dialog" id="confirmDeleteSkillResourceModal">
+		<h4 class="mdl-dialog__title">Delete Confirmation</h4>
+		<div class="mdl-dialog__content">
+			<input type="hidden" id="deleteResourceSkillId">
+		    Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
+		</div>
+		<div class="mdl-dialog__actions">
+			<button type="button" id="resourceSkillDelete" class="mdl-button" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val(), {{.MapTypesResource}})" data-dismiss="modal">Yes</button>
+		    <button id="cancelConfirmButton" type="button" class="mdl-button close" data-dismiss="modal">No</button>
+	    </div> 
+	</dialog>
+	<!-- Modal -->
+	<dialog class="mdl-dialog" id="showDocument" style="width: 95%;height: 90%;">
+		<h4 class="mdl-dialog__title">Preview Skills</h4>
 	    <!-- Modal content-->
-	    <div class="modal-content" style="height: 100%;">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal">&times;</button>
-	        <h4 class="modal-title">Preview Skills</h4>
-	      </div>
-	      <div class="modal-body" style="height: 80%">
-			<object id="objectPdf" type="application/pdf" width="100%" height="100%">
-			   
+		<div class="mdl-dialog__content" style="height: 85%">
+			<object id="objectPdf" type="application/pdf" width="100%" height="100%">			   
 			</object>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	      </div>
 	    </div>
-	
-	  </div>
-	</div>
+		<div class="mdl-dialog__actions">
+			<button id="cancelPDFButton" type="button" class="mdl-button close" data-dismiss="modal">Close</button>
+	    </div>
+	</dialog>
 </body>

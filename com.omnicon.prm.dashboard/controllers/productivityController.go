@@ -16,7 +16,7 @@ func (this *ProductivityController) ListProductivity() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 
 			input := domain.ProductivityTasksRQ{}
 			this.ParseForm(&input)
@@ -162,7 +162,7 @@ func (this *ProductivityController) ListProductivity() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -175,7 +175,7 @@ func (this *ProductivityController) CreateTask() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "CreateProductivityTasks"
 
 			input := domain.ProductivityTasksRQ{}
@@ -202,7 +202,7 @@ func (this *ProductivityController) CreateTask() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -215,7 +215,7 @@ func (this *ProductivityController) UpdateTask() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "UpdateProductivityTasks"
 
 			input := domain.ProductivityTasksRQ{}
@@ -242,7 +242,7 @@ func (this *ProductivityController) UpdateTask() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -255,7 +255,7 @@ func (this *ProductivityController) DeleteTask() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "DeleteProductivityTasks"
 
 			input := domain.ProductivityTasksRQ{}
@@ -282,7 +282,7 @@ func (this *ProductivityController) DeleteTask() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -295,7 +295,7 @@ func (this *ProductivityController) CreateReport() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "CreateProductivityReport"
 
 			input := domain.ProductivityReportRQ{}
@@ -322,7 +322,7 @@ func (this *ProductivityController) CreateReport() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -335,7 +335,7 @@ func (this *ProductivityController) UpdateReport() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "UpdateProductivityReport"
 
 			input := domain.ProductivityReportRQ{}
@@ -361,7 +361,7 @@ func (this *ProductivityController) UpdateReport() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -374,7 +374,7 @@ func (this *ProductivityController) DeleteReport() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "DeleteProductivityReport"
 
 			input := domain.ProductivityReportRQ{}
@@ -401,7 +401,7 @@ func (this *ProductivityController) DeleteReport() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"

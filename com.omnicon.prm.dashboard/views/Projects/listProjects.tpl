@@ -3,8 +3,10 @@
 		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
 		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
 		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
-		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
 		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-menu'));
+		getmdlSelect.init(".getmdl-select");
 		$('#viewProjects').DataTable({
 			"columns":[
 				null,
@@ -60,7 +62,8 @@
 		$("#projectStartDate").val(null);		
 		$("#projectEndDate").val(null);
 		$("#projectActiveCheckbox").removeClass('is-checked');
-		$("#leaderID").val(0);
+		$("#leaderID").val(null);
+		$("#realLeadID").val(0);
 		$("#projectCost").val(null);
 		
 		$("#modalProjectTitle").html("Create Project");
@@ -78,7 +81,7 @@
 		dialog.showModal();
 	}
 	
-	configureUpdateModal = function(pID, pOperationCenter, pWorkOrder, pName, pStartDate, pEndDate, pActive, pLeaderID, pCost){
+	configureUpdateModal = function(pID, pOperationCenter, pWorkOrder, pName, pStartDate, pEndDate, pActive, pLeaderID, pLeader, pCost){
 		
 		$("#projectID").val(pID);
 		$("#projectOperationCenter").val(pOperationCenter);
@@ -96,10 +99,13 @@
 			$("#projectActiveCheckbox").prop('checked', pActive);
 		}
 		
-		
-		$("#leaderID").val(0);
-		if (pLeaderID != null) {
-			$("#leaderID").val(pLeaderID);
+		if (pLeader != null) {
+			var leader = document.getElementById("select"+pLeaderID);
+			var att = document.createAttribute("data-selected");
+			att.value = "true";
+			leader.setAttributeNode(att);  
+			//$("#leaderID").val(pLeader);
+			//$("#realLeadID").val(pLeaderID);
 		}
 		$("#projectCost").val(pCost);
 		
@@ -113,7 +119,18 @@
 		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
 		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
 		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
-		$('.mdl-textfield>input').each(function(param){if($(this).val() != ""){$(this).parent().addClass('is-dirty');$(this).parent().removeClass('is-invalid')}})
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
+		$('.mdl-textfield>input').each(function(param){
+			if($(this).val() != ""){
+				$(this).parent().addClass('is-dirty');
+				$(this).parent().removeClass('is-invalid');
+			}
+			if($(this).val() == "" && $(this).prop("required")){
+				$(this).parent().removeClass('is-dirty');
+				$(this).parent().addClass('is-invalid');
+			}
+		});
 		
 		var dialog = document.querySelector('#projectModal');
 		dialog.showModal();
@@ -128,67 +145,71 @@
 	}
 	
 	createProject = function(){
-		var values = "";
-		var projectType = [];
-		{{range $key, $types := .Types}}
-			if($('#{{$types.ID}}').is(":checked")){
-				projectType.push({{$types.ID}});
-			}			
-		{{end}}	
-		for (i =0; i<projectType.length; i++){
-			if (values != ""){
-				values = values + ",";
-			}	
-			values = values + projectType[i];
-		}
-		var settings = {
-			method: 'POST',
-			url: '/projects/create',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"OperationCenter": $('#projectOperationCenter').val(),
-				"WorkOrder": $('#projectWorkOrder').val(),
-				"Name": $('#projectName').val(),
-				"ProjectType": values,
-				"StartDate": $('#projectStartDate').val(),
-				"EndDate": $('#projectEndDate').val(),
-				"Enabled": $('#projectActiveCheckbox').is(":checked"),
-				"LeaderID": $('#leaderID').val(),
-				"Cost": $('#projectCost').val()
+		if (document.getElementById("formCreateUpdate").checkValidity() && document.getElementById("formTypes").checkValidity()) {
+			var values = "";
+			var projectType = [];
+			{{range $key, $types := .Types}}
+				if($('#{{$types.ID}}').is(":checked")){
+					projectType.push({{$types.ID}});
+				}			
+			{{end}}	
+			for (i =0; i<projectType.length; i++){
+				if (values != ""){
+					values = values + ",";
+				}	
+				values = values + projectType[i];
 			}
+			var settings = {
+				method: 'POST',
+				url: '/projects/create',
+				headers: {
+					'Content-Type': undefined
+				},
+				data: { 
+					"OperationCenter": $('#projectOperationCenter').val(),
+					"WorkOrder": $('#projectWorkOrder').val(),
+					"Name": $('#projectName').val(),
+					"ProjectType": values,
+					"StartDate": $('#projectStartDate').val(),
+					"EndDate": $('#projectEndDate').val(),
+					"Enabled": $('#projectActiveCheckbox').is(":checked"),
+					"LeaderID": $('#realLeadID').val(),
+					"Cost": $('#projectCost').val()
+				}
+			}
+			$.ajax(settings).done(function (response) {
+			  validationError(response);
+			  reload('/projects', {})
+			});
 		}
-		$.ajax(settings).done(function (response) {
-		  validationError(response);
-		  reload('/projects', {})
-		});
 	}
 	
 	updateProject = function(){
-		var settings = {
-			method: 'POST',
-			url: '/projects/update',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"ID": $('#projectID').val(),
-				"OperationCenter": $('#projectOperationCenter').val(),
-				"WorkOrder": $('#projectWorkOrder').val(),
-				"Name": $('#projectName').val(),
-				"ProjectType": $('#projectType').val(),
-				"StartDate": $('#projectStartDate').val(),
-				"EndDate": $('#projectEndDate').val(),
-				"Enabled": $('#projectActiveCheckbox').is(":checked"),
-				"LeaderID": $('#leaderID').val(),
-				"Cost": $('#projectCost').val()
+		if (document.getElementById("formCreateUpdate").checkValidity()) {
+			var settings = {
+				method: 'POST',
+				url: '/projects/update',
+				headers: {
+					'Content-Type': undefined
+				},
+				data: { 
+					"ID": $('#projectID').val(),
+					"OperationCenter": $('#projectOperationCenter').val(),
+					"WorkOrder": $('#projectWorkOrder').val(),
+					"Name": $('#projectName').val(),
+					"ProjectType": $('#projectType').val(),
+					"StartDate": $('#projectStartDate').val(),
+					"EndDate": $('#projectEndDate').val(),
+					"Enabled": $('#projectActiveCheckbox').is(":checked"),
+					"LeaderID": $('#realLeadID').val(),
+					"Cost": $('#projectCost').val()
+				}
 			}
+			$.ajax(settings).done(function (response) {
+			  validationError(response);
+			  reload('/projects', {})
+			});
 		}
-		$.ajax(settings).done(function (response) {
-		  validationError(response);
-		  reload('/projects', {})
-		});
 	}
 	
 	read = function(){
@@ -240,7 +261,6 @@
 		  $('.modal-backdrop').remove();
 		});
 	}
-	
 </script>
 
 <div>
@@ -272,7 +292,7 @@
 			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric"><input id="checkbox{{$project.ID}}" type="checkbox" {{if $project.Enabled}}checked{{end}} class="mdl-checkbox mdl-checkbox__input" disabled></td>
 			
 			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">
-				<button id="editButton{{$project.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})'>
+				<button id="editButton{{$project.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Lead}}, {{$project.Cost}})'>
 					<i class="material-icons" style="vertical-align: inherit;">mode_edit</i>
 				</button>
 				<div class="mdl-tooltip" for="editButton{{$project.ID}}">
@@ -309,33 +329,25 @@
     <!-- Modal content-->        
     <h4 id="modalProjectTitle" class="mdl-dialog__title"></h4>
     <div class="mdl-dialog__content">	
-		<form action="#">		
+		<form id="formCreateUpdate" action="#">		
 		    <input type="hidden" id="projectID">
 			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 			  <input class="mdl-textfield__input" type="text" id="projectOperationCenter">
 			  <label class="mdl-textfield__label" for="projectOperationCenter">Operation Center...</label>
-			</div>
-		</form>
-		<form action="#">		
+			</div>	
 			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 				<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="projectWorkOrder">
 				<label class="mdl-textfield__label" for="projectWorkOrder">Work Order...</label>
 				<span class="mdl-textfield__error">Input is not a number!</span>
-			</div>
-		</form>
-		<form action="#">		
+			</div>	
 			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 			  <input class="mdl-textfield__input" type="text" id="projectName" required>
 			  <label class="mdl-textfield__label" for="projectName">Project Name...</label>
-			</div>
-		</form>
-		<form action="#">		
+			</div>	
 			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 			  <input class="mdl-textfield__input" type="date" id="projectStartDate" required>
 			  <label class="mdl-textfield__label" for="projectStartDate">Start Date...</label>
-			</div>
-		</form>
-		<form action="#">		
+			</div>		
 			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 			  <input class="mdl-textfield__input" type="date" id="projectEndDate" required>
 			  <label class="mdl-textfield__label" for="projectEndDate">End Date...</label>
@@ -368,99 +380,19 @@
 			    <span class="mdl-switch__label">Active</span>
 			</label>
 		</form>
-		<form action="#">		
-			<div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-				<select  id="leaderID" class="mdl-selectfield__select">
-					<option value="0"></option>
-					{{range $key, $resource := .Resources}}
-					<option value="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
+		<form action="#">
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+		        <input type="text" value="" class="mdl-textfield__input" id="leaderID" readonly>
+		        <input type="hidden" value="" name="leaderID" id="realLeadID">
+		        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+		        <label for="leaderID" class="mdl-textfield__label">Leader...</label>
+		        <ul for="leaderID" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+		            {{range $key, $resource := .Resources}}
+					<li id="select{{$resource.ID}}" class="mdl-menu__item" data-val="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</li>
 					{{end}}
-				</select>
-			  <label class="mdl-selectfield__label" for="leaderID">Leader...</label>
-			</div>
-		</form>
-		    <!--div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		      	<div class="form-group form-group-sm">
-		      		<label class="control-label col-sm-4 translatable" data-i18n="Operation Center"> Operation Center </label>
-		            <div class="col-sm-8">
-		            	<input type="text" id="projectOperationCenter" style="border-radius: 8px;">
-		      		</div>
-		        </div>
-		    </div-->
-		    <!--div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		      	<div class="form-group form-group-sm">
-		      		<label class="control-label col-sm-4 translatable" data-i18n="Work Order"> Work Order </label>
-		            <div class="col-sm-8">
-		            	<input type="number" id="projectWorkOrder" style="border-radius: 8px;">
-		      		</div>
-		        </div>
+		        </ul>
 		    </div>
-		    <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		      	<div class="form-group form-group-sm">
-		      		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-		            <div class="col-sm-8">
-		            	<input type="text" id="projectName" style="border-radius: 8px;">
-		      		</div>
-		        </div>
-		    </div>
-		    <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		      	<div class="form-group form-group-sm">
-		      		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
-		            <div class="col-sm-8">
-		            	<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;">
-		      		</div>
-		        </div>
-		    </div>
-		    <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		    	<div class="form-group form-group-sm">
-		    		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
-		          	<div class="col-sm-8">
-		          		<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;">
-		    		</div>
-		      	</div>
-		    </div>
-			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		    	<div id="divProjectType" class="form-group form-group-sm">
-		    		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
-		         	<div class="col-sm-8">
-		    	      	<select  id="projectType" multiple style="width: 174px; border-radius: 8px;">
-						{{range $key, $types := .Types}}
-							<option value="{{$types.ID}}">{{$types.Name}}</option>
-						{{end}}
-						</select>
-		          	</div>    
-		      	</div>
-		    </div>
-		    <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		    	<div class="form-group form-group-sm">
-		    		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-		         	<div class="col-sm-8">
-		          		<input type="checkbox" id="projectActive"><br/>
-		          	</div>    
-		     	</div>
-		    </div>
-			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-				<div id="divProjectType" class="form-group form-group-sm">
-					<label class="control-label col-sm-4 translatable" data-i18n="Leader"> Leader </label> 
-					<div class="col-sm-8">
-						<select  id="leaderID" style="width: 174px; border-radius: 8px;">
-							<option value="0">Without leader</option>
-							{{range $key, $resource := .Resources}}
-							<option value="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
-							{{end}}
-						</select>
-					</div>    
-				</div>
-			</div>
-			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		    	<div class="form-group form-group-sm">
-		      		<label class="control-label col-sm-4 translatable" data-i18n="Cost"> Cost </label>
-		        	<div class="col-sm-8">
-		           		<input type="number" id="projectCost" min="0" step="1000" class="currency" style="border-radius: 8px;">
-		       		</div>
-		      	</div>
-		    </div-->
-		
+		</form>		
     </div>
 	<div class="mdl-dialog__actions">
 		<button type="button" id="projectCreate" class="mdl-button" onclick="createProject()" data-dismiss="modal">Create</button>

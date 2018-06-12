@@ -1,4 +1,3 @@
-<option value="">Please select an option</option>
 {{range $key, $skill := .Skills}}
-	<option value={{$skill.ID}}>{{$skill.Name}}</option>
+	<li id="select{{$skill.ID}}" class="mdl-menu__item" data-val="{{$skill.ID}}">{{$skill.Name}}</li>
 {{end}}	

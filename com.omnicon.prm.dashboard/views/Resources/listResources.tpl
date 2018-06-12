@@ -1,5 +1,12 @@
 <script>
 	$(document).ready(function(){
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-menu'));
+		getmdlSelect.init(".getmdl-select");
 		$('#viewResources').DataTable({
 			"columns":[
 				null,
@@ -24,11 +31,21 @@
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
 		$('#buttonOptionIcon').html("add");
-		$('#buttonOptionTooltip').html("Add new resource");
-		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("data-target", "#resourceModal");
+		$('#buttonOptionTooltip').html("Add new resource");		
 		$('#buttonOption').attr("onclick","configureCreateModal()");
 		
+		var dialog = document.querySelector('#resourceModal');
+		dialog.querySelector('#cancelDialogButton')
+		    .addEventListener('click', function() {
+		      dialog.close();	
+    	});
+		
+		var dialogConfirm = document.querySelector('#confirmModal');
+		dialogConfirm.querySelector('#cancelConfirmButton')
+		    .addEventListener('click', function() {
+		      dialogConfirm.close();	
+    	});
+		/*
 		$("#resourceEmail").keyup(function(){
 
 	        var email = $("#resourceEmail").val();
@@ -51,7 +68,7 @@
 	            });         
 	        }
 	
-	    });
+	    });*/
 	});
 
 	
@@ -62,12 +79,27 @@
 		$("#resourceLastName").val(null);
 		$("#resourceEmail").val(null);
 		$("#resourceRank").val(null);
-		$("#resourceActive").prop('checked', false);
+		$("#resourceRankLabel").val(null);
+		$("#resourceActiveCheckbox").removeClass('is-checked');
 		$("#resourceVisaUS").val(null);
 		
 		$("#modalResourceTitle").html("Create Resource");
 		$("#resourceUpdate").css("display", "none");
 		$("#resourceCreate").css("display", "inline-block");
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		$('.mdl-textfield>input').each(function(param){
+			if($(this)[0].id == "resourceName" || $(this)[0].id == "resourceLastName" || $(this)[0].id == "resourceEmail"){
+				$(this).parent().addClass('is-invalid');
+			}
+			$(this).parent().removeClass('is-dirty');
+		});
+		var dialog = document.querySelector('#resourceModal');
+		dialog.showModal();
 	}
 	
 	configureUpdateModal = function(pID, pName, pLastName, pEmail, pRank, pActive, pVisaUS){
@@ -76,60 +108,104 @@
 		$("#resourceName").val(pName);
 		$("#resourceLastName").val(pLastName);
 		$("#resourceEmail").val(pEmail);
-		$("#resourceRank").val(pRank);
-		$("#resourceActive").prop('checked', pActive);
+		var rank = document.getElementById("select"+pRank);
+		var att = document.createAttribute("data-selected");
+		att.value = "true";
+		rank.setAttributeNode(att); 
+		//$("#resourceRank").val(pRank);
+		//$("#resourceRankLabel").val(pRank);
+		if(pActive){
+			$("#resourceActive").addClass('is-checked');
+			$("#resourceActiveCheckbox").prop('checked', pActive);
+		}else{
+			$("#resourceActive").removeClass('is-checked');
+			$("#resourceActiveCheckbox").prop('checked', pActive);
+		}
 		$("#resourceVisaUS").val(pVisaUS);
 		
 		$("#modalResourceTitle").html("Update Resource");
 		$("#resourceCreate").css("display", "none");
 		$("#resourceUpdate").css("display", "inline-block");
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
+		$('.mdl-textfield>input').each(function(param){
+			if($(this).val() != ""){
+				$(this).parent().addClass('is-dirty');
+				$(this).parent().removeClass('is-invalid');
+			}
+			if($(this).val() == "" && $(this).prop("required")){
+				$(this).parent().removeClass('is-dirty');
+				$(this).parent().addClass('is-invalid');
+			}
+		});
+		
+		var dialog = document.querySelector('#resourceModal');
+		dialog.showModal();
+	}
+	
+	configureDeleteModal = function(pID, pName, pLastName){
+		$("#resourceID").val(pID);
+		$("#nameDelete").html(pName + " " + pLastName);
+		
+		var dialog = document.querySelector('#confirmModal');
+		dialog.showModal();
 	}
 
 	createResource = function(){
-		var settings = {
-			method: 'POST',
-			url: '/resources/create',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"Name": $('#resourceName').val(),
-				"LastName": $('#resourceLastName').val(),
-				"Email": $('#resourceEmail').val(),
-				"Photo": 'test',
-				"EngineerRange": $('#resourceRank').val(),
-				"Enabled": $('#resourceActive').is(":checked"),
-				"VisaUS": $('#resourceVisaUS').val()
+		if (document.getElementById("formCreateUpdate").checkValidity()) {
+			var settings = {
+				method: 'POST',
+				url: '/resources/create',
+				headers: {
+					'Content-Type': undefined
+				},
+				data: { 
+					"Name": $('#resourceName').val(),
+					"LastName": $('#resourceLastName').val(),
+					"Email": $('#resourceEmail').val(),
+					"Photo": 'test',
+					"EngineerRange": $('#resourceRank').val(),
+					"Enabled": $('#resourceActiveCheckbox').is(":checked"),
+					"VisaUS": $('#resourceVisaUS').val()
+				}
 			}
+			$.ajax(settings).done(function (response) {
+				validationError(response);
+				reload('/resources', {});
+			});
 		}
-		$.ajax(settings).done(function (response) {
-			validationError(response);
-			reload('/resources', {});
-		});
 	}
 	
 	updateResource = function(){
-		var settings = {
-			method: 'POST',
-			url: '/resources/update',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"ID": $('#resourceID').val(),
-				"Name": $('#resourceName').val(),
-				"LastName": $('#resourceLastName').val(),
-				"Email": $('#resourceEmail').val(),
-				"Photo": 'test',
-				"EngineerRange": $('#resourceRank').val(),
-				"Enabled": $('#resourceActive').is(":checked"),
-				"VisaUS": $('#resourceVisaUS').val()
+		if (document.getElementById("formCreateUpdate").checkValidity()) {
+			var settings = {
+				method: 'POST',
+				url: '/resources/update',
+				headers: {
+					'Content-Type': undefined
+				},
+				data: { 
+					"ID": $('#resourceID').val(),
+					"Name": $('#resourceName').val(),
+					"LastName": $('#resourceLastName').val(),
+					"Email": $('#resourceEmail').val(),
+					"Photo": 'test',
+					"EngineerRange": $('#resourceRank').val(),
+					"Enabled": $('#resourceActiveCheckbox').is(":checked"),
+					"VisaUS": $('#resourceVisaUS').val()
+				}
 			}
+			$.ajax(settings).done(function (response) {
+				validationError(response);
+				reload('/resources', {});
+			});
 		}
-		$.ajax(settings).done(function (response) {
-			validationError(response);
-			reload('/resources', {});
-		});
 	}
 	
 	read = function(){
@@ -231,7 +307,7 @@
 				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$resource.Email}}</td>
 				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$resource.EngineerRange}}</td>
 				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{if $resource.VisaUS}} {{$resource.VisaUS}} {{end}}</td>
-				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric"><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric"><input type="checkbox" {{if $resource.Enabled}}checked{{end}} class="mdl-checkbox mdl-checkbox__input" disabled></td>
 				<td style="vertical-align: inherit;text-align: center;" class="mdl-data-table__cell--non-numeric">
 					<button id="editButton{{$resource.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="modal" data-target="#resourceModal" onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}},{{$resource.VisaUS}})" data-dismiss="modal">
 						<i class="material-icons" style="vertical-align: inherit;">mode_edit</i>
@@ -239,7 +315,7 @@
 					<div class="mdl-tooltip" for="editButton{{$resource.ID}}">
 						Edit resource	
 					</div>	
-					<button id="deleteButton{{$resource.ID}}" data-toggle="modal" data-target="#confirmModal" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="$('#nameDelete').html('{{$resource.Name}} {{$resource.LastName}}');$('#resourceID').val({{$resource.ID}});">
+					<button id="deleteButton{{$resource.ID}}" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick='configureDeleteModal("{{$resource.ID}}", "{{$resource.Name}}", "{{$resource.LastName}}")'>
 						<i class="material-icons" style="vertical-align: inherit;">delete</i>
 					</button>
 					<div class="mdl-tooltip" for="deleteButton{{$resource.ID}}">
@@ -270,94 +346,72 @@
 	</table>
 </div>
 
-	<!-- Modal -->
-	<div class="modal fade" id="resourceModal" role="dialog">
-	  <div class="modal-dialog">
-	    <!-- Modal content-->
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal">&times;</button>
-	        <h4 id="modalResourceTitle" class="modal-title"></h4>
-	      </div>
-	      <div class="modal-body">
-			<input type="hidden" id="resourceID">
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-	              <div class="col-sm-8">
-	              	<input type="text" id="resourceName" class="style-input" style="border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
-	              <div class="col-sm-8">
-	              	<input type="text" id="resourceLastName" class="style-input" style="border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
-	              <div class="col-sm-8">
-	              	<input type="text" id="resourceEmail" class="style-input" style="border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
-	              <div class="col-sm-8">
-	              	<select id="resourceRank" class="style-input" style="width: 174px; border-radius: 8px;"><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option><option value="PM">PM</option></select>
-	        		</div>
-	          </div>
-	        </div>
-			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Visa US"> Visa US </label>
-	              <div class="col-sm-8">
-	              	<input type="text" id="resourceVisaUS" class="style-input" style="border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-	              <div class="col-sm-8">
-	              	<input type="checkbox" id="resourceActive" class="style-input"><br/>
-	              </div>    
-	          </div>
-	        </div>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" id="resourceCreate" class="btn btn-default" onclick="createResource()" data-dismiss="modal">Create</button>
-	        <button type="button" id="resourceUpdate" class="btn btn-default" onclick="updateResource()" data-dismiss="modal">Update</button>
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	      </div>
-	    </div>    
-	  </div>
+<!-- Modal -->
+<dialog class="mdl-dialog" id="resourceModal">
+	<!-- Modal content-->        
+    <h4 id="modalResourceTitle" class="mdl-dialog__title"></h4>
+	<div class="mdl-dialog__content">
+		<form id="formCreateUpdate" action="#">		
+		    <input type="hidden" id="resourceID">
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			  <input class="mdl-textfield__input" type="text" id="resourceName" required>
+			  <label class="mdl-textfield__label" for="resourceName">Name...</label>
+			</div>	
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			  <input class="mdl-textfield__input" type="text" id="resourceLastName" required>
+			  <label class="mdl-textfield__label" for="resourceLastName">Last Name...</label>
+			</div>	
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+				<input class="mdl-textfield__input" type="text" pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" id="resourceEmail" required>
+				<label class="mdl-textfield__label" for="resourceEmail">Email...</label>
+				<span class="mdl-textfield__error">Input is not a email!</span>
+			</div>	
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+		        <input type="text" value="" class="mdl-textfield__input" id="resourceRankLabel" readonly>
+		        <input type="hidden" value="" name="resourceRankLabel" id="resourceRank">
+		        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+		        <label for="resourceRankLabel" class="mdl-textfield__label">Enginer Rank...</label>
+		        <ul for="resourceRankLabel" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+					<li class="mdl-menu__item" data-val="E1" id="selectE1">E1</li>
+					<li class="mdl-menu__item" data-val="E2" id="selectE2">E2</li>
+					<li class="mdl-menu__item" data-val="E3" id="selectE3">E3</li>
+					<li class="mdl-menu__item" data-val="E4" id="selectE4">E4</li>
+					<li class="mdl-menu__item" data-val="PM" id="selectPM">PM</li>
+		        </ul>
+		    </div>
+		</form>
+		<hr>
+		<form action="#">		
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			  <input class="mdl-textfield__input" type="text" id="resourceVisaUS">
+			  <label class="mdl-textfield__label" for="resourceVisaUS">Visa US...</label>
+			</div>
+		</form>
+		<form action="#">						
+			<label id="resourceActive" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="resourceActiveCheckbox">
+			    <input type="checkbox" id="resourceActiveCheckbox" class="mdl-switch__input">
+			    <span class="mdl-switch__label">Active</span>
+			</label>
+		</form>
 	</div>
-	<div class="modal fade" id="confirmModal" role="dialog">
-		<div class="modal-dialog">
-	    	<!-- Modal content-->
-		    <div class="modal-content">
-	     		<div class="modal-header">
-	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
-	        		<h4 class="modal-title">Delete Confirmation</h4>
-	      		</div>
-	      	<div class="modal-body">
-	      		Are you sure you want to remove <b id="nameDelete"></b> from resources?
-				<br>
-				<li>The projects will lose this resource assignment.</li>
-				<li>The skills will lose this resource assignment.</li>
-				<li>The trainings will lose this resource assignment.</li>
-				<li>The projects will lose this resource assignment as leader.</li>
-	      	</div>
-	      	<div class="modal-footer" style="text-align:center;">
-		        <button type="button" id="resourceDelete" class="btn btn-default" onclick="deleteResource()" data-dismiss="modal">Yes</button>
-		        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-	      	</div>
-	    </div>
+  	<div class="mdl-dialog__actions">
+		<button type="button" id="resourceCreate" class="mdl-button" onclick="createResource()" data-dismiss="modal">Create</button>
+		<button type="button" id="resourceUpdate" class="mdl-button" onclick="updateResource()" data-dismiss="modal">Update</button>
+      	<button id="cancelDialogButton" type="button" class="mdl-button close" data-dismiss="modal">Cancel</button>
+    </div>   
+</dialog>
+<dialog class="mdl-dialog" id="confirmModal">
+	<h4 class="mdl-dialog__title">Delete Confirmation</h4>
+    <div class="mdl-dialog__content">
+		Are you sure you want to remove <b id="nameDelete"></b> from resources?
+		<br>
+		<li>The projects will lose this resource assignment.</li>
+		<li>The skills will lose this resource assignment.</li>
+		<li>The trainings will lose this resource assignment.</li>
+		<li>The projects will lose this resource assignment as leader.</li>
 	</div>
-</div>
+	<div class="mdl-dialog__actions">
+		<button type="button" id="resourceDelete" class="mdl-button" onclick="deleteResource()" data-dismiss="modal">Yes</button>
+	    <button id="cancelConfirmButton" type="button" class="mdl-button close" data-dismiss="modal">No</button>
+    </div> 
+</dialog>

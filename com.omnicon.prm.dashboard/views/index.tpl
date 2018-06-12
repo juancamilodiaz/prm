@@ -30,13 +30,15 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>	
 	
 	<script src="/static/js/code.getmdl.io/1.0.2/material.min.js"></script>
-	<script src="/static/js/kybarg/mdl-selectfield/mdl-menu-implementation/mdl-selectfield.min.js"></script>
+	<!--script src="/static/js/kybarg/mdl-selectfield/mdl-menu-implementation/mdl-selectfield.min.js"></script-->
+	<script src="/static/js/getmdl-select/getmdl-select.js"></script>
 	
 	<!---->
 	<!--link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons"-->
 	<!--link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"-->
 	<link rel="stylesheet" type="text/css" href="/static/css/code.getmdl.io/1.0.2/material.teal-red.min.css" />
-	<link rel="stylesheet" href="https://cdn.rawgit.com/kybarg/mdl-selectfield/mdl-menu-implementation/mdl-selectfield.min.css" />
+	<!--link rel="stylesheet" href="https://cdn.rawgit.com/kybarg/mdl-selectfield/mdl-menu-implementation/mdl-selectfield.min.css" /-->
+	<link rel="stylesheet" type="text/css" href="/static/css/getmdl-select/getmdl-select.min.css" />
 	<!--link rel="stylesheet" href="https://code.getmdl.io/1.0.2/material.indigo-pink.min.css" /-->
 	<!--script src="//storage.googleapis.com/code.getmdl.io/1.0.1/material.min.js"></script-->
 	<!---->
@@ -219,7 +221,7 @@
 			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>
 		</div>
 		<div class="content container-fluid">
-			<h1><form action="#">		
+			<h1><!--form action="#">		
 			<div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
 				<select  id="leaderID" class="mdl-selectfield__select">
 					<option value="0"></option>
@@ -227,7 +229,7 @@
 				</select>
 			  <label class="mdl-selectfield__label" for="leaderID">Leader...</label>
 			</div>
-		</form>
+		</form-->
 				<div id="titlePag">Home</div>
 				<button id="backButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--blue" style="display: none;">
 					<i id="backButtonIcon" class="material-icons"></i>

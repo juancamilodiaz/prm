@@ -1,5 +1,12 @@
 <script>
 	$(document).ready(function(){
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-menu'));
+		getmdlSelect.init(".getmdl-select");
 		$('#viewSkillsResourceByType').DataTable({
 			"columns":[
 				null,
@@ -26,9 +33,44 @@
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOptionIcon').html("add");
 		$('#buttonOptionTooltip').html("Add new type to resource");
-		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("data-target", "#loadTypesResourceModal");
+		$('#buttonOption').attr("onclick","configureLoadTypesResourceModal()");
+		
+		var dialogLoadTypesResourceModal = document.querySelector('#loadTypesResourceModal');
+		dialogLoadTypesResourceModal.querySelector('#cancelTypeDialogButton')
+		    .addEventListener('click', function() {
+		      dialogLoadTypesResourceModal.close();	
+    	});
+		
+		var dialogUnassignTypeConfirm = document.querySelector('#confirmUnassignModal');
+		dialogUnassignTypeConfirm.querySelector('#cancelUnassignDialogButton')
+		    .addEventListener('click', function() {
+		      dialogUnassignTypeConfirm.close();	
+    	});
 	});
+	
+	configureLoadTypesResourceModal = function(){	
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-menu'));
+		getmdlSelect.init(".getmdl-select");	
+		var dialog = document.querySelector('#loadTypesResourceModal');
+		dialog.showModal();
+	}
+	
+	configureUnassignTypeModal = function(){	
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-menu'));
+		getmdlSelect.init(".getmdl-select");	
+		var dialog = document.querySelector('#confirmUnassignModal');
+		dialog.showModal();
+	}
 </script>
 
 <table id="viewSkillsResourceByType" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
@@ -43,11 +85,11 @@
 		<tr>
 			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$resourceType.Name}}</td>
 			<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">
-				<button id="deleteButton" data-toggle="modal" data-target="#confirmUnassignModal" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="$('#resourceIDToDelete').val({{$resourceType.ResourceId}});$('#typeIDToDelete').val({{$resourceType.TypeId}});$('#nameDelete').html({{$resourceType.Name}});" data-dismiss="modal">
+				<button id="deleteButton" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="$('#resourceIDToDelete').val({{$resourceType.ResourceId}});$('#typeIDToDelete').val({{$resourceType.TypeId}});$('#nameDelete').html({{$resourceType.Name}});configureUnassignTypeModal()">
 					<i class="material-icons" style="vertical-align: inherit;">delete</i>
 				</button>
 				<div class="mdl-tooltip" for="deleteButton">
-					Delete project	
+					Delete type	
 				</div>	
 			</td>
 		</tr>
@@ -55,55 +97,41 @@
 	</tbody>
 </table>
 
-
-<div class="modal fade" id="loadTypesResourceModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTitle" class="modal-title">Create/Update Type</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="typeeID">
-		<div id="divSkillType" class="form-group form-group-sm">
-      		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
-           	<div class="col-sm-8">
-            	<select  id="typeID">
-					<option value="">Please select an option</option>
+<dialog class="mdl-dialog" id="loadTypesResourceModal">
+	<h4 id="modalTitle" class="mdl-dialog__title">Add Type</h4>
+	<!-- Modal content-->
+	<div class="mdl-dialog__content">
+		<form id="formCreateUpdate" action="#">		
+			<input type="hidden" id="typeeID">
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+		        <input type="text" value="" class="mdl-textfield__input" id="typeID" readonly>
+		        <input type="hidden" value="" name="typeID" required>
+		        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+		        <label for="typeID" class="mdl-textfield__label">Types...</label>
+		        <ul id="typeIDList" for="typeID" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
 					{{range $key, $type := .Types}}
-						<option value="{{$type.ID}}">{{$type.Name}}</option>
+					<li id="{{$type.ID}}" class="mdl-menu__item" data-val="{{$type.ID}}">{{$type.Name}}</li>
 					{{end}}
-			</select>
-             </div>    
-         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="typeCreate" class="btn btn-default" onclick="addTypeToResource({{.ResourceID}}, $('#typeID').val(), {{.Title}})" data-dismiss="modal">Add</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-    
-  </div>
-</div>
-
-<div class="modal fade" id="confirmUnassignModal" role="dialog">
-	<div class="modal-dialog">
-    <!-- Modal content-->
-    	<div class="modal-content">
-      		<div class="modal-header">
-        		<button type="button" class="close" data-dismiss="modal">&times;</button>
-        		<h4 class="modal-title">Unassign Confirmation</h4>
-      		</div>
-      		<div class="modal-body">
-				<input type="hidden" id="resourceIDToDelete">
-				<input type="hidden" id="typeIDToDelete">        		
-					Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> resource?
-      		</div>
-			<div class="modal-footer" style="text-align:center;">
-				<button type="button" id="resourceUnassign" class="btn btn-default" onclick="unassignResourceType($('#resourceIDToDelete').val(),$('#typeIDToDelete').val(),{{.Title}})" data-dismiss="modal">Yes</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-			</div>
-		</div>
+		        </ul>
+		    </div>	
+		</form>  
 	</div>
-</div>
+	<div class="mdl-dialog__actions">
+		<button type="button" id="typeCreate" class="mdl-button" onclick="addTypeToResource({{.ResourceID}}, $('#typeID').val(), {{.Title}})">Add</button>
+      	<button type="button" id="cancelTypeDialogButton" class="mdl-button close" data-dismiss="modal">Cancel</button>
+    </div>	
+</dialog>
+
+<dialog class="mdl-dialog" id="confirmUnassignModal">
+	<h4 id="modalTitle" class="mdl-dialog__title">Unassign Confirmation</h4>
+	<!-- Modal content-->
+	<div class="mdl-dialog__content">    
+		<input type="hidden" id="resourceIDToDelete">
+		<input type="hidden" id="typeIDToDelete">        		
+		Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> resource?
+	</div>
+	<div class="mdl-dialog__actions">
+		<button type="button" id="resourceUnassign" class="mdl-button" onclick="unassignResourceType($('#resourceIDToDelete').val(),$('#typeIDToDelete').val(),{{.Title}})">Yes</button>
+      	<button type="button" id="cancelUnassignDialogButton" class="mdl-button close" data-dismiss="modal">No</button>
+    </div>	
+</dialog>

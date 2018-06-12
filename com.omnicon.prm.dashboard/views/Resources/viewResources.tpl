@@ -1,42 +1,35 @@
+<script>
+	$(document).ready(function(){
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-menu'));
+		getmdlSelect.init(".getmdl-select");
+	});
+</script>
+<input type="hidden" id="showResourceID">
 {{range $key, $resource := .Resources}}
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-		  <div class="col-sm-8">
-			 <input type="text" id="showResourceName" value="{{$resource.Name}}" readonly style="border-radius: 8px;">
-		  </div>
-	   </div>
+	<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+		<input class="mdl-textfield__input" type="text" id="showResourceName" value="{{$resource.Name}}" required disabled>
+		<label class="mdl-textfield__label" for="showResourceName">Name...</label>
 	</div>
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
-		  <div class="col-sm-8">
-			 <input type="text" id="showResourceLastName" value="{{$resource.LastName}}" readonly style="border-radius: 8px;">
-		  </div>
-	   </div>
+	<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+		<input class="mdl-textfield__input" type="text" id="showResourceLastName" value="{{$resource.LastName}}" required disabled>
+		<label class="mdl-textfield__label" for="showResourceLastName">Last Name...</label>
 	</div>
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
-		  <div class="col-sm-8">
-			 <input type="text" id="showResourceEmail" value="{{$resource.Email}}" readonly style="border-radius: 8px;">
-		  </div>
-	   </div>
+	<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+		<input class="mdl-textfield__input" type="text" pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" id="showResourceEmail" value="{{$resource.Email}}"  required>
+		<label class="mdl-textfield__label" for="showResourceEmail">Email...</label>
+		<span class="mdl-textfield__error">Input is not a email!</span>
 	</div>
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
-		  <div class="col-sm-8">
-			 <input type="text" id="showResourceRank" value="{{$resource.EngineerRange}}" readonly style="border-radius: 8px;">
-		  </div>
-	   </div>
+	<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+		<input class="mdl-textfield__input" type="text" id="showResourceRank" value="{{$resource.EngineerRange}}" required disabled>
+		<label class="mdl-textfield__label" for="showResourceRank">Enginer Rank...</label>
 	</div>
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-		  <div class="col-sm-8">
-			 <input type="checkbox" id="showResourceActive" {{if $resource.Enabled}}checked{{end}} disabled><br/>
-		  </div>
-	   </div>
-	</div>
+	<label id="showResourceActive" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="showResourceActiveCheckbox">
+	    <input type="checkbox" id="showResourceActiveCheckbox" class="mdl-switch__input"{{if $resource.Enabled}}checked{{end}} disabled>
+	    <span class="mdl-switch__label">Active</span>
+	</label>
 {{end}}

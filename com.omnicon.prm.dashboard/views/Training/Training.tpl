@@ -13,6 +13,14 @@
 	}
 		
 	$(document).ready(function(){
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-menu'));
+		getmdlSelect.init(".getmdl-select");
+
 		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
 		
@@ -25,8 +33,6 @@
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
 		$('#buttonOptionIcon').html("add");
 		$('#buttonOptionTooltip').html("Add new session training");
-		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("data-target", "#trainingModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");
 		
 		Training.table = $('#viewTraining').DataTable({
@@ -56,6 +62,19 @@
 				}
 			}
 		);
+		
+		var dialogTraining = document.querySelector('#trainingModal');
+		dialogTraining.querySelector('#cancelTrainingDialogButton')
+		    .addEventListener('click', function() {
+		      dialogTraining.close();	
+    	});
+		
+		var dialogCancelTraining = document.querySelector('#confirmModal');
+		dialogCancelTraining.querySelector('#cancelTrainingResourceDelete')
+		    .addEventListener('click', function() {
+		      dialogCancelTraining.close();	
+    	});
+		
 	});
 	
 	$('#viewTraining tbody').on('click', 'td.details-control', function(){
@@ -70,19 +89,33 @@
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
-			$(pObjBody).children('span').addClass('glyphicon-collapse-down');
-			$(pObjBody).children('span').removeClass('glyphicon-expand');
+			$(pObjBody).children('i').html('arrow_drop_down');
+			//$(pObjBody).children('span').removeClass('glyphicon-expand');
         }
         else {
             // Open this row
             row.child( format(tDetails) ).show();
             tr.addClass('shown');
-			$(pObjBody).children('span').addClass('glyphicon-expand');
-			$(pObjBody).children('span').removeClass('glyphicon-collapse-down');
+			$(pObjBody).children('i').html('arrow_drop_up');
+			//$(pObjBody).children('span').removeClass('glyphicon-collapse-down');
         }
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
 	}
 	/* Formatting function for row details - modify as you need */
 	function format ( d ) {
+		/*componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");*/
 	    // `d` is the original data object for the row
 		var insert = '';
 		for (index = 0; index < d.length; index++) {
@@ -94,7 +127,7 @@
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].Progress+'</td>'+	            
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].TestResult+'</td>'+	            
 				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].ResultStatus+'</td>'+
-				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;"><a id="updateTrainingResource" onclick="'+
+				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;"><button id="updateTrainingResource" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="'+
 					"$('#trainingResourceID').val(" + d[index].ID + ");" + 
 					"$('#trainingStartDate').val('" + d[index].StartDate.substring(0, 10) + "');"+
 					"$('#trainingEndDate').val('" + d[index].EndDate.substring(0, 10) + "');"+
@@ -102,13 +135,13 @@
 					"$('#progress').val(" + d[index].Progress + ");"+
 					"$('#testResult').val(" + d[index].TestResult + ");"+
 					"$('#resultStatus').val('" + d[index].ResultStatus + "');"+					
-				'"><span class="glyphicon glyphicon-edit"></span></a><a id="deleteTrainingResource" onclick="'+
+				'"><i class="material-icons" style="vertical-align: inherit;">mode_edit</i></button><div class="mdl-tooltip" for="updateTrainingResource">Edit record</div><button id="deleteTrainingResource" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" onclick="'+
 					"$('#trainingResourceID').val("+ d[index].ID + ");" +
 					"$('#nameDelete').html('"+ d[index].TrainingName + "')" +
-				'"> <span class="glyphicon glyphicon-trash"></span></a></td>'+	            
+				'"><i class="material-icons" style="vertical-align: inherit;">delete</i></button><div class="mdl-tooltip" for="deleteTrainingResource">Delete record</div></td>'+	            
 	        '</tr>';
 		}
-	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable"><thead><tr><th>Resource Name</th><th>Training Name</th><th>Start Date</th><th>End Date</th><th>Duration</th><th>Progress</th><th>Test Result</th><th>Result Status</th><th>Options</th></tr></thead>'+insert+'</table>';
+	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp"><thead><tr><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Resource Name</th><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Training Name</th><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Start Date</th><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">End Date</th><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Duration</th><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Progress</th><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Test Result</th><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Result Status</th><th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Options</th></tr></thead>'+insert+'</table>';
 	}
 	
 	configureCreateModal = function(){
@@ -124,21 +157,55 @@
 		$('#duration').val(null);
 		$('#progress').val(null);
 		$('#testResult').val(null);
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
+		$('.mdl-textfield>input').each(function(param){if($(this).val() != ""){$(this).parent().addClass('is-dirty');$(this).parent().removeClass('is-invalid')}})
+		
+		var dialog = document.querySelector('#trainingModal');
+		dialog.showModal();		
 	}
 	
 	$(document).on('click','#updateTrainingResource',function(){
 		$('#modalTrainingTitle').html('Update Resource Training');
-    	$('#trainingModal').modal('show');
 		$('#inputCreateResourcesValue').hide();
 		$('#inputCreateTypeValue').hide();
 		$('#inputCreateSkillValue').hide();
 		$('#inputCreateTrainingValue').hide();
 		$('#trainingCreate').hide();
 		$('#trainingUpdate').show();
+		
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-textfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-switch'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-checkbox'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-selectfield'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-tooltip'));
+		componentHandler.upgradeElements(document.getElementsByClassName('mdl-dialog'));
+		getmdlSelect.init(".getmdl-select");
+		
+		$('.mdl-textfield>input').each(function(param){
+			if($(this).val() != ""){
+				$(this).parent().addClass('is-dirty');
+				$(this).parent().removeClass('is-invalid');
+			}
+			if($(this).val() == "" && $(this).prop("required")){
+				$(this).parent().removeClass('is-dirty');
+				$(this).parent().addClass('is-invalid');
+			}
+		});
+		
+		var dialogUpdate = document.querySelector('#trainingModal');
+		dialogUpdate.showModal();	
 	});
 	
 	$(document).on('click','#deleteTrainingResource',function(){
-    	$('#confirmModal').modal('show');
+		var dialogDelete = document.querySelector('#confirmModal');
+		dialogDelete.showModal();	
 	});
 	
 	function deleteTrainingResource(){
@@ -190,22 +257,71 @@
 	}
 	
 	$('#createTypeValue').change(function() {
-		$('#createSkillValue').html('<option id="">Skill...</option>');
+		var typeValue;
+		$('#createTypeValueList').children().each(
+			function(param){
+				if(this.classList.length >1 && this.classList[1] == "selected"){
+					typeValue = this.getAttribute("data-val");
+				}
+			});
+			
+		$('#createSkillValueList').html('');
         {{range $index, $typeSkill := .TypesSkills}}
-			if ({{$typeSkill.TypeId}} == $('#createTypeValue option:selected').attr('id')) {
-        		$('#createSkillValue').append('<option id="{{$typeSkill.SkillId}}">{{$typeSkill.Name}}</option>');
+			if ({{$typeSkill.TypeId}} == typeValue) {
+        		$('#createSkillValueList').append('<li id="skill{{$typeSkill.SkillId}}" class="mdl-menu__item" data-val="{{$typeSkill.SkillId}}">{{$typeSkill.Name}}</li>');
 			}
         {{end}}
+		
+		var type = document.getElementById("type"+typeValue);
+		var att = document.createAttribute("data-selected");
+		att.value = "true";
+		if(type != null) {
+			type.setAttributeNode(att);
+			getmdlSelect.init("#inputCreateSkillValue");
+		}
+		
 	});
 	
-	$('#createTypeValue, #createSkillValue').change(function() {
-		$('#createTrainingValue').html('<option id="">Training...</option>');
+	$('#createSkillValue').change(function() {
+		var typeValue;
+		var skillValue;
+		$('#createTypeValueList').children().each(
+			function(param){
+				if(this.classList.length >1 && this.classList[1] == "selected"){
+					typeValue = this.getAttribute("data-val");
+				}
+			});
+		$('#createSkillValueList').children().each(
+			function(param){
+				if(this.classList.length >1 && this.classList[1] == "selected"){
+					skillValue = this.getAttribute("data-val");
+				}
+			});
+		$('#createTrainingValueList').html('');
         {{range $index, $training := .Trainings}}
-			if ({{$training.TypeId}} == $('#createTypeValue option:selected').attr('id') &&
-				{{$training.SkillId}} == $('#createSkillValue option:selected').attr('id')) {
-        		$('#createTrainingValue').append('<option id="{{$training.ID}}">{{$training.Name}}</option>');
+			if ({{$training.TypeId}} == typeValue &&
+				{{$training.SkillId}} == skillValue) {
+        		$('#createTrainingValueList').append('<li id="{{$training.ID}}" class="mdl-menu__item" data-val="{{$training.ID}}">{{$training.Name}}</li>');
 			}
         {{end}}
+		
+		var type = document.getElementById("type"+typeValue);
+		var skill = document.getElementById("skill"+skillValue);
+		console.log("skillValue " + skillValue);
+		
+		
+		/*if(type != null) {
+			var attType = document.createAttribute("data-selected");
+			attType.value = "true";
+			type.setAttributeNode(attType);
+			getmdlSelect.init("#inputCreateSkillValue");
+		}*/
+		if(skill != null) {
+			var attSkill = document.createAttribute("data-selected");
+			attSkill.value = "true";
+			skill.setAttributeNode(attSkill);
+			getmdlSelect.init("#inputCreateTrainingValue");
+		}	
 	});
 	
 	setTrainingToResource = function(){
@@ -372,23 +488,31 @@
 		{{end}}
 		
 		$('#objectPdf').attr('data', doc.output('datauristring'));
-		$('#showDocument').modal('show');
+		var dialogPDF = document.querySelector('#showDocument');
+		dialogPDF.showModal();
 	}
 
-
+	var dialogPDF = document.querySelector('#showDocument');
+	dialogPDF.querySelector('#cancelPDFButton')
+	    .addEventListener('click', function() {
+	      dialogPDF.close();	
+   	});
 </script>
 
 
 <div class="row">
-	<div class="col-sm-5">
-		<button class="buttonHeader button2" data-toggle="collapse" data-target="#filters">
-			<span class="glyphicon glyphicon-filter"></span> Filter 
+	<div class="col-sm-5">		
+		<button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" data-toggle="collapse" data-target="#filters">
+			<i class="material-icons" style="vertical-align: inherit;">tune</i>
 		</button>
 	</div>
 	<div class="col-sm-5">
 	</div>
 	<div class="col-sm-2">
-		<button class="buttonHeader button2" id="download-pdf" onclick="downloadPDF()" >Download PDF</button>
+		<button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" id="download-pdf" onclick="downloadPDF()" >
+			<i class="material-icons" style="vertical-align: inherit;">picture_as_pdf</i>
+		</button>
+		<div class="mdl-tooltip" for="download-pdf">Preview PDF</div>
 	</div>
 </div>
 	
@@ -430,39 +554,39 @@
 
 <div class="col-sm-12" id="tableInfo" style="background-color: #F5F5F5;">
 	<h3 id="titleSearch">All resources (All trainings)</h3>
-	<table id="viewTraining" class="table table-striped table-bordered dt-responsive nowrap" width="100%">
+	<table id="viewTraining" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp" width="100%">
 		<thead>
 			<tr>
-				<th>Type Name</th>
-				<th>Training Name</th>
-				<th>Start Date</th>
-				<th>End Date</th>
-				<th>Duration</th>
-				<th>Progress</th>
-				<th>Test Result</th>
-				<th>Result Status</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Type Name</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Training Name</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Start Date</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">End Date</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Duration</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Progress</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Test Result</th>
+				<th class="mdl-data-table__cell--non-numeric" style="text-align:center;">Result Status</th>
 			</tr>
 		</thead>
 		<tbody id="detailBody">
 		 	{{range $key, $tResource := .TResources}}
 			<tr>
-				<td style="background-position-x: 1%;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this), {{$tResource.TrainingResources}})"><span class="glyphicon glyphicon-collapse-down" style="float:left;"></span>{{$tResource.TypeName}}</td>
-				<td>{{$tResource.SkillName}}</td>
-				<td>{{dateformat $tResource.StartDate "2006-01-02"}}</td>
-				<td>{{dateformat $tResource.EndDate "2006-01-02"}}</td>
-				<td>{{$tResource.Duration}} d.</td>
-				<td>{{$tResource.Progress}}</td>
-				<td>{{$tResource.TestResult}}</td>
-				<td style="padding: unset;">
+				<td style="background-position-x: 1%;text-align: -webkit-center;margin:0 0 0px;vertical-align: inherit;" onclick="showDetails($(this), {{$tResource.TrainingResources}})"><i class="material-icons pull-left">arrow_drop_down</i>{{$tResource.TypeName}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$tResource.SkillName}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{dateformat $tResource.StartDate "2006-01-02"}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{dateformat $tResource.EndDate "2006-01-02"}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$tResource.Duration}} d.</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$tResource.Progress}}</td>
+				<td style="text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$tResource.TestResult}}</td>
+				<td style="padding: unset;text-align: -webkit-center;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">
 					<table style="border: 1px solid black;border-collapse: collapse;text-align: center;width: -webkit-fill-available;">
 						<tr style="border: 1px solid black;">
 							{{range $key, $result := $tResource.ResultStatus}}
-								<th class="style-color-{{$result.Key}}" style="border: 1px solid #DDDDDD; padding: 3px;text-align: -webkit-center;">{{$result.Key}}</th>
+								<th class="mdl-data-table__cell--non-numeric style-color-{{$result.Key}}" style="border: 1px solid #DDDDDD; padding: 3px;text-align: -webkit-center;">{{$result.Key}}</th>
 							{{end}}
 						</tr>
 						<tr style="border: 1px solid black;">
 							{{range $key, $result := $tResource.ResultStatus}}
-								<td style="border: 1px solid #DDDDDD;text-align: center; padding: 3px;">{{$result.Value}}</td>
+								<td style="border: 1px solid #DDDDDD;text-align: center; padding: 3px;vertical-align: inherit;" class="mdl-data-table__cell--non-numeric">{{$result.Value}}</td>
 							{{end}}
 						</tr>
 					</table>
@@ -512,157 +636,108 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="trainingModal" role="dialog">
-   <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 id="modalTrainingTitle" class="modal-title"></h4>
-         </div>
-         <div class="modal-body">
-            <input type="hidden" id="trainingResourceID">
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="inputCreateResourcesValue">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col-sm-4 translatable" data-i18n="Select Resource"> Select Resource </label>
-                  <div class="col-sm-8">
-		            <select id="createResourcesValue" style="width: 174px; border-radius: 8px;">
-		               <option id="">Resource...</option>
-		               {{range $index, $resource := .Resources}}
-		               <option id="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
-		               {{end}}
-		            </select>
-                  </div>
-               </div>
-            </div>
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="inputCreateTypeValue">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col-sm-4 translatable" data-i18n="Select Type"> Select Type </label>
-                  <div class="col-sm-8">
-		            <select id="createTypeValue" style="width: 174px; border-radius: 8px;">
-		               <option id="">Type...</option>
-		               {{range $index, $type := .Types}}
-		               <option id="{{$type.ID}}">{{$type.Name}}</option>
-		               {{end}}
-		            </select>
-                  </div>
-               </div>
-            </div>
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="inputCreateSkillValue">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col-sm-4 translatable" data-i18n="Select Skill"> Select Skill </label>
-                  <div class="col-sm-8">
-		            <select id="createSkillValue" style="width: 174px; border-radius: 8px;">
-		               <option id="">Skill...</option>
-		            </select>
-                  </div>
-               </div>
-            </div>
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="inputCreateTrainingValue">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col-sm-4 translatable" data-i18n="Select Training"> Select Training </label>
-                  <div class="col-sm-8">
-		            <select id="createTrainingValue" style="width: 174px; border-radius: 8px;">
-		               <option id="">Training...</option>
-		            </select>
-                  </div>
-               </div>
-            </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
-	              <div class="col-sm-8">
-	              	<input type="date" id="trainingStartDate" style="inline-size: 174px; border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	        	<div class="form-group form-group-sm">
-	        		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
-	              <div class="col-sm-8">
-	              	<input type="date" id="trainingEndDate" style="inline-size: 174px; border-radius: 8px;">
-	        		</div>
-	          </div>
-	        </div>
-			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-				<div class="form-group form-group-sm">
-					<label class="control-label col-sm-4 translatable" data-i18n="Duration"> Duration (hrs) </label> 
-					<div class="col-sm-8">
-						<input type="number" id="duration" value="0" style="border-radius: 8px;">
-					</div>
-				</div>
+<dialog class="mdl-dialog" id="trainingModal">
+	<h4 id="modalTrainingTitle" class="mdl-dialog__title"></h4>
+	<div class="mdl-dialog__content">
+		<input type="hidden" id="trainingResourceID">
+		<form id="formCreateUpdate" action="#">
+			<div id="inputCreateResourcesValue" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+		        <input type="text" value="" class="mdl-textfield__input" id="createResourcesValue" readonly required>
+		        <input type="hidden" value="" name="createResourcesValue" id="realCreateResourcesValue">
+		        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+		        <label for="createResourcesValue" class="mdl-textfield__label">Resource...</label>
+		        <ul id="createResourcesValueList" for="createResourcesValue" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+		        	{{range $index, $resource := .Resources}}
+					<li id="resource{{$resource.ID}}" class="mdl-menu__item" data-val="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</li>
+		        	{{end}}
+				</ul>
+		    </div>
+			<div id="inputCreateTypeValue" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+		        <input type="text" value="" class="mdl-textfield__input" id="createTypeValue" readonly required>
+		        <input type="hidden" value="" name="createTypeValue" id="realCreateTypeValue">
+		        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+		        <label for="createTypeValue" class="mdl-textfield__label">Type...</label>
+		        <ul id="createTypeValueList" for="createTypeValue" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+		        	{{range $index, $type := .Types}}
+					<li id="type{{$type.ID}}" class="mdl-menu__item" data-val="{{$type.ID}}">{{$type.Name}}</li>
+		        	{{end}}
+				</ul>
+		    </div>
+			<div id="inputCreateSkillValue" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+		        <input type="text" value="" class="mdl-textfield__input" id="createSkillValue" readonly required>
+		        <input type="hidden" value="" name="createSkillValue" id="realSkillValue">
+		        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+		        <label for="createSkillValue" class="mdl-textfield__label">Skill...</label>
+		        <ul id="createSkillValueList" for="createSkillValue" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+		        	
+				</ul>
+		    </div>
+			<div id="inputCreateTrainingValue" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+		        <input type="text" value="" class="mdl-textfield__input" id="createTrainingValue" readonly required>
+		        <input type="hidden" value="" name="createTrainingValue" id="realCreateTrainingValue">
+		        <i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+		        <label for="createTrainingValue" class="mdl-textfield__label">Training...</label>
+		        <ul id="createTrainingValueList" for="createTrainingValue" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+		        	
+				</ul>
+		    </div>
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			  <input class="mdl-textfield__input" type="date" id="trainingStartDate" required>
+			  <label class="mdl-textfield__label" for="trainingStartDate">Start Date...</label>
+			</div>		
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			  <input class="mdl-textfield__input" type="date" id="trainingEndDate" required>
+			  <label class="mdl-textfield__label" for="trainingEndDate">End Date...</label>
 			</div>
-			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-				<div class="form-group form-group-sm">
-					<label class="control-label col-sm-4 translatable" data-i18n="Progress"> Progress </label> 
-					<div class="col-sm-8">
-						<input type="number" id="progress" value="0" style="border-radius: 8px;">
-					</div>
-				</div>
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+				<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="duration">
+				<label class="mdl-textfield__label" for="duration">Duration...</label>
+				<span class="mdl-textfield__error">Input is not a number!</span>
 			</div>
-			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-				<div class="form-group form-group-sm">
-					<label class="control-label col-sm-4 translatable" data-i18n="Test Result"> Test Result </label> 
-					<div class="col-sm-8">
-						<input type="number" id="testResult" value="0" style="border-radius: 8px;">
-					</div>
-				</div>
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+				<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="progress">
+				<label class="mdl-textfield__label" for="progress">Progress...</label>
+				<span class="mdl-textfield__error">Input is not a number!</span>
 			</div>
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col-sm-4 translatable" data-i18n="Results Status"> Results Status </label>
-                  <div class="col-sm-8">
-					<input type="text" id="resultStatus" disabled style="width: 174px; border-radius: 8px;" value="Pending">
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <button type="button" id="trainingCreate" class="btn btn-default" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" data-dismiss="modal">Create</button>
-            <button type="button" id="trainingUpdate" class="btn btn-default" onclick="setTrainingToResource()" data-dismiss="modal">Update</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-         </div>
-      </div>
-   </div>
-</div>
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+				<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="testResult">
+				<label class="mdl-textfield__label" for="testResult">Test Result...</label>
+				<span class="mdl-textfield__error">Input is not a number!</span>
+			</div>
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			  <input class="mdl-textfield__input" type="text" id="resultStatus" value="Pending" required>
+			  <label class="mdl-textfield__label" for="resultStatus">Result Status...</label>
+			</div>	
+		</form>
+	</div>
+	<div class="mdl-dialog__actions">
+		<button type="button" id="trainingCreate" class="mdl-button" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" data-dismiss="modal">Create</button>
+		<button type="button" id="trainingUpdate" class="mdl-button" onclick="setTrainingToResource()" data-dismiss="modal">Update</button>
+      	<button id="cancelTrainingDialogButton" type="button" class="mdl-button close" data-dismiss="modal">Cancel</button>
+    </div>
+</dialog>
 
-<div class="modal fade" id="confirmModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to remove <b id="nameDelete"></b> from trainings?
+<dialog class="mdl-dialog" id="confirmModal">
+	<h4 id="modalDeleteTrainingTitle" class="mdl-dialog__title">Delete Confirmation</h4>
+	<div class="mdl-dialog__content">
+		Are you sure you want to remove <b id="nameDelete"></b> from trainings?
 		<br>
-		<li>The resource will lose this training assignment.</li>
-      </div>
-      <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="trainingResourceDelete" class="btn btn-default" onclick="deleteTrainingResource()" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-      </div>
-    </div>
-  </div>
-</div>
+		<li>The resource will lose this training assignment.</li>	
+	</div>
+	<div class="mdl-dialog__actions">
+	 	<button type="button" id="trainingResourceDelete" class="mdl-button" onclick="deleteTrainingResource()" data-dismiss="modal">Yes</button>
+		<button type="button" id="cancelTrainingResourceDelete" class="mdl-button close" data-dismiss="modal">No</button>
+   </div>
+</dialog>
 
-<div id="showDocument" class="modal fade" role="dialog">
-  <div class="modal-dialog" style="width: 95%;height: 90%;padding: 0;">
-    <!-- Modal content-->
-    <div class="modal-content" style="height: 100%;">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Preview Skills</h4>
-      </div>
-      <div class="modal-body" style="height: 80%">
-		<object id="objectPdf" type="application/pdf" width="100%" height="100%">
-		   
+<dialog class="mdl-dialog" id="showDocument" style="width: 95%;height: 90%;">
+	<h4 class="mdl-dialog__title">Preview Trainings</h4>
+	<!-- Modal content-->
+	<div class="mdl-dialog__content" style="height: 85%">
+		<object id="objectPdf" type="application/pdf" width="100%" height="100%">			   
 		</object>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
     </div>
-  </div>
-</div>
+	<div class="mdl-dialog__actions">
+		<button id="cancelPDFButton" type="button" class="mdl-button close" data-dismiss="modal">Close</button>
+    </div>
+</dialog>

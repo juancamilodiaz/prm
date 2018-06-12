@@ -20,7 +20,7 @@ func (this *ProjectForecastController) ListProjectsForecast() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "GetProjectsForecast"
 
 			res, err := PostData(operation, nil)
@@ -301,7 +301,7 @@ func (this *ProjectForecastController) ListProjectsForecast() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -314,7 +314,7 @@ func (this *ProjectForecastController) CreateProjectForecast() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "CreateProjectForecast"
 			input := domain.ProjectForecastRQ{}
 
@@ -356,7 +356,7 @@ func (this *ProjectForecastController) CreateProjectForecast() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -369,7 +369,7 @@ func (this *ProjectForecastController) ReadProjectForecast() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "GetProjectsForecast"
 
 			input := domain.ProjectForecastRQ{}
@@ -403,7 +403,7 @@ func (this *ProjectForecastController) ReadProjectForecast() {
 				this.TplName = "Common/message.tpl"
 			}
 			//body, _ := ioutil.ReadAll(res.Body)
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -416,7 +416,7 @@ func (this *ProjectForecastController) UpdateProjectForecast() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "UpdateProjectForecast"
 
 			input := domain.ProjectForecastRQ{}
@@ -453,7 +453,7 @@ func (this *ProjectForecastController) UpdateProjectForecast() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -466,7 +466,7 @@ func (this *ProjectForecastController) DeleteProjectForecast() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteProjectForecast"
 
 			input := domain.ProjectForecastRQ{}
@@ -503,7 +503,7 @@ func (this *ProjectForecastController) DeleteProjectForecast() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -516,7 +516,7 @@ func (this *ProjectForecastController) GetAssignsByProjectForecast() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "GetAssignsToProjectsForecast"
 
 			input := domain.GetResourcesToProjectsRQ{}
@@ -556,7 +556,7 @@ func (this *ProjectForecastController) GetAssignsByProjectForecast() {
 				this.TplName = "Common/message.tpl"
 			}
 			//body, _ := ioutil.ReadAll(res.Body)
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -569,7 +569,7 @@ func (this *ProjectForecastController) DeleteAssignsToProjectForecast() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteAssignsToProjectForecast"
 
 			input := domain.DeleteResourceToProjectRQ{}
@@ -604,7 +604,7 @@ func (this *ProjectForecastController) DeleteAssignsToProjectForecast() {
 				this.TplName = "Common/message.tpl"
 			}
 			//body, _ := ioutil.ReadAll(res.Body)
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -617,7 +617,7 @@ func (this *ProjectForecastController) SetResourceToProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "SetResourceToProject"
 
 			input := domain.SetResourceToProjectRQ{}
@@ -655,7 +655,7 @@ func (this *ProjectForecastController) SetResourceToProject() {
 				this.TplName = "Common/message.tpl"
 			}
 			//body, _ := ioutil.ReadAll(res.Body)
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
