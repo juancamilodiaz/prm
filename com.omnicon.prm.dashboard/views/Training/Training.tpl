@@ -381,8 +381,21 @@
 	});
 	
 	searchTrainingResources = function(){
-		var resourceID = $('#resourcesValue option:selected').attr('id');
-		var typeID = $('#typeValue option:selected').attr('id');
+		var resourceID ="";
+		$('#resourcesValueList').children().each(
+			function(param){
+				if(this.classList.length >1 && this.classList[1] == "selected"){
+					resourceID = this.getAttribute("data-val");
+				}
+			});
+				
+		var typeID = "";
+		$('#typeValueList').children().each(
+			function(param){
+				if(this.classList.length >1 && this.classList[1] == "selected"){
+					typeID = this.getAttribute("data-val");
+				}
+			});
 		var settings = {
 			method: 'POST',
 			url: '/trainings/resources',
@@ -397,9 +410,17 @@
 		$.ajax(settings).done(function (response) {
 			$("#content").html(response);
 			$("#filters").collapse("show");
-			$("#resourcesValue option[id="+resourceID+"]").attr("selected", "selected");
-			$("#typeValue option[id="+typeID+"]").attr("selected", "selected");
-			$("#titleSearch").html($("#resourcesValue").val() + " ("+ $("#typeValue").val()+")");
+			var resource = document.getElementById("selectResource"+resourceID);
+			var attResource = document.createAttribute("data-selected");
+			attResource.value = "true";
+			resource.setAttributeNode(attResource);
+			
+			var type = document.getElementById("selectType"+typeID);
+			var attType = document.createAttribute("data-selected");
+			attType.value = "true";			
+			type.setAttributeNode(attType);
+			$("#titleSearch").html($("#selectResource"+resourceID).html() + " ("+ $("#selectType"+typeID).html()+")");
+			getmdlSelect.init(".getmdl-select");
 		});
 	}
 
@@ -517,39 +538,50 @@
 </div>
 	
 
-<div id="filters" class="collapse">
-   <div class="row">
-      <div class="col-md-4">
-         <div class="form-group">
-            <label for="resourcesValue">Resources list:</label>
-            <select class="form-control" id="resourcesValue">
-               <option id="0">All resources</option>
-               {{range $index, $resource := .Resources}}
-               <option id="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
-               {{end}}
-            </select>
-         </div>
-      </div>
-      <div class="col-md-4">
-         <div class="form-group">
-            <label for="typeValue">Training list:</label>
-            <select class="form-control" id="typeValue">
-               <option id="0">All trainings</option>
-               {{range $index, $type := .Types}}
-               <option id="{{$type.ID}}">{{$type.Name}}</option>
-               {{end}}
-            </select>
-         </div>
-      </div>
-      <div class="col-md-4">
-         <div class="form-group">
-			<br>
-			<button class="buttonHeader button2" onclick="searchTrainingResources()">
-			<span class="glyphicon glyphicon-search"></span> Search 
-			</button>
-         </div>
-      </div>
-   </div>
+<div id="filters" class="collapse" style="max-height: 75px;">
+   	<div class="row">
+		<div class="col-md-2">
+			<div class="form-group">		
+				<div id="divResource" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+					<input type="text" value="" class="mdl-textfield__input" id="resourcesValue" readonly>
+					<input type="hidden" value="" name="resourcesValue">
+					<i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+					<label for="resourcesValue" class="mdl-textfield__label">Resources list...</label>
+					<ul id="resourcesValueList" for="resourcesValue" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+						<li id="selectResource0" class="mdl-menu__item" data-val="0" data-selected="true">All resources</li>
+						{{range $index, $resource := .Resources}}
+						<li id="selectResource{{$resource.ID}}" class="mdl-menu__item" data-val="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</li>
+						{{end}}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-group">
+				<div id="divType" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+					<input type="text" value="" class="mdl-textfield__input" id="typeValue" readonly>
+					<input type="hidden" value="" name="typeValue">
+					<i class="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+					<label for="typeValue" class="mdl-textfield__label">Training list...</label>
+					<ul id="typeValueList" for="typeValue" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+						<li id="selectType0" class="mdl-menu__item" data-val="0" data-selected="true">All trainings</li>
+						{{range $index, $type := .Types}}
+						<li id="selectType{{$type.ID}}" class="mdl-menu__item" data-val="{{$type.ID}}">{{$type.Name}}</li>
+						{{end}}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8">
+		   	<div class="form-group">
+				<br>
+				<button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--blue" id="searchTraining" onclick="searchTrainingResources()" >
+					<i class="material-icons" style="vertical-align: inherit;">search</i>
+				</button>
+				<div class="mdl-tooltip" for="searchTraining">Search Trainings</div>
+			</div>
+		</div>
+   	</div>
 </div>
 
 <div class="col-sm-12" id="tableInfo" style="background-color: #F5F5F5;">

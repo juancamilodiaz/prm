@@ -262,7 +262,7 @@
 <button class="mdl-button" data-toggle="collapse" data-target="#filters">
 	<i class="material-icons">tune</i>
 </button>
-<div id="filters" class="collapse">
+<div id="filters" class="collapse" style="max-height: 70px;">
   	<div class="row">
       	<div class="col-md-12">
 			<div id="divSkillType" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
