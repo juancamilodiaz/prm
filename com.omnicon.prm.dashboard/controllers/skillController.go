@@ -17,7 +17,7 @@ func (this *SkillController) ListSkills() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetSkills"
 
 			res, err := PostData(operation, nil)
@@ -40,7 +40,7 @@ func (this *SkillController) ListSkills() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -53,7 +53,7 @@ func (this *SkillController) CreateSkill() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "CreateSkill"
 
 			input := domain.CreateSkillRQ{}
@@ -90,7 +90,7 @@ func (this *SkillController) CreateSkill() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -103,7 +103,7 @@ func (this *SkillController) ReadSkill() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetSkills"
 
 			input := domain.GetSkillsRQ{}
@@ -131,7 +131,7 @@ func (this *SkillController) ReadSkill() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -144,7 +144,7 @@ func (this *SkillController) UpdateSkill() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "UpdateSkill"
 
 			input := domain.UpdateSkillRQ{}
@@ -181,7 +181,7 @@ func (this *SkillController) UpdateSkill() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -194,7 +194,7 @@ func (this *SkillController) DeleteSkill() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteSkill"
 
 			input := domain.DeleteSkillRQ{}
@@ -231,7 +231,7 @@ func (this *SkillController) DeleteSkill() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"

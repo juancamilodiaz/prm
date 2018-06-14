@@ -16,7 +16,7 @@ func (this *TrainingController) ListTrainings() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetTrainings"
 
 			res, err := PostData(operation, nil)
@@ -53,7 +53,7 @@ func (this *TrainingController) ListTrainings() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -67,7 +67,7 @@ func (this *TrainingController) GetTrainingResources() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetTrainingResources"
 			input := domain.TrainingResourcesRQ{}
 			err := this.ParseForm(&input)
@@ -101,7 +101,7 @@ func (this *TrainingController) GetTrainingResources() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -149,7 +149,7 @@ func (this *TrainingController) CreateTraining() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= tu {
 			operation := "CreateTraining"
 
 			input := domain.TrainingRQ{}
@@ -186,7 +186,7 @@ func (this *TrainingController) CreateTraining() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > tu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -199,7 +199,7 @@ func (this *TrainingController) UpdateTraining() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= tu {
 			operation := "UpdateTraining"
 
 			input := domain.TrainingRQ{}
@@ -236,7 +236,7 @@ func (this *TrainingController) UpdateTraining() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > tu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -249,7 +249,7 @@ func (this *TrainingController) DeleteTraining() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= tu {
 			operation := "DeleteTraining"
 
 			input := domain.TrainingRQ{}
@@ -286,7 +286,7 @@ func (this *TrainingController) DeleteTraining() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > tu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -299,7 +299,7 @@ func (this *TrainingController) SetTrainingToResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= tu {
 			operation := "SetTrainingToResource"
 
 			input := domain.TrainingResourcesRQ{}
@@ -337,7 +337,7 @@ func (this *TrainingController) SetTrainingToResource() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > tu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -350,7 +350,7 @@ func (this *TrainingController) DeleteTrainingToResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= tu {
 			operation := "DeleteTrainingToResource"
 
 			input := domain.TrainingResourcesRQ{}
@@ -388,7 +388,7 @@ func (this *TrainingController) DeleteTrainingToResource() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > tu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"

@@ -28,7 +28,7 @@ func (this *ResourceController) ListResources() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetResources"
 
 			res, err := PostData(operation, nil)
@@ -74,7 +74,7 @@ func (this *ResourceController) ListResources() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -87,7 +87,7 @@ func (this *ResourceController) CreateResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "CreateResource"
 
 			input := domain.CreateResourceRQ{}
@@ -127,7 +127,7 @@ func (this *ResourceController) CreateResource() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -140,7 +140,7 @@ func (this *ResourceController) ReadResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetResources"
 
 			input := domain.GetResourcesRQ{}
@@ -168,7 +168,7 @@ func (this *ResourceController) ReadResource() {
 				this.TplName = "Common/message.tpl"
 			}
 			//body, _ := ioutil.ReadAll(res.Body)
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -181,7 +181,7 @@ func (this *ResourceController) UpdateResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "UpdateResource"
 
 			input := domain.UpdateResourceRQ{}
@@ -218,7 +218,7 @@ func (this *ResourceController) UpdateResource() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -231,7 +231,7 @@ func (this *ResourceController) DeleteResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteResource"
 
 			input := domain.DeleteResourceRQ{}
@@ -268,7 +268,7 @@ func (this *ResourceController) DeleteResource() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -281,7 +281,7 @@ func (this *ResourceController) GetSkillsByResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetSkillsByResource"
 
 			input := domain.GetSkillByResourceRQ{}
@@ -378,7 +378,7 @@ func (this *ResourceController) GetSkillsByResource() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -447,7 +447,7 @@ func (this *ResourceController) SetSkillsToResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "SetSkillToResource"
 
 			input := domain.SetSkillToResourceRQ{}
@@ -472,7 +472,7 @@ func (this *ResourceController) SetSkillsToResource() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -485,7 +485,7 @@ func (this *ResourceController) DeleteSkillsToResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteSkillToResource"
 
 			input := domain.DeleteSkillToResourceRQ{}
@@ -513,7 +513,7 @@ func (this *ResourceController) DeleteSkillsToResource() {
 				this.Data["Type"] = "Error"
 			}
 			this.TplName = "Common/message.tpl"
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -526,7 +526,7 @@ func (this *ResourceController) GetTypesByResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetTypesByResource"
 
 			input := domain.GetResourcesRQ{}
@@ -561,7 +561,7 @@ func (this *ResourceController) GetTypesByResource() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -574,7 +574,7 @@ func (this *ResourceController) DeleteTypesByResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteTypesByResource"
 
 			input := domain.ResourceTypesRQ{}
@@ -607,7 +607,7 @@ func (this *ResourceController) DeleteTypesByResource() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -620,7 +620,7 @@ func (this *ResourceController) SetTypesToResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "SetTypesToResource"
 			input := domain.ResourceTypesRQ{}
 
@@ -656,7 +656,7 @@ func (this *ResourceController) SetTypesToResource() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"

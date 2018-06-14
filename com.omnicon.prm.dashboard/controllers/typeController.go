@@ -18,7 +18,7 @@ func (this *TypeController) ListTypes() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetTypes"
 			res, err := PostData(operation, nil)
 
@@ -55,7 +55,7 @@ func (this *TypeController) ListTypes() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -68,7 +68,7 @@ func (this *TypeController) CreateType() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "CreateType"
 
 			input := domain.TypeRQ{}
@@ -105,7 +105,7 @@ func (this *TypeController) CreateType() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -118,7 +118,7 @@ func (this *TypeController) UpdateType() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "UpdateType"
 
 			input := domain.TypeRQ{}
@@ -155,7 +155,7 @@ func (this *TypeController) UpdateType() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -168,7 +168,7 @@ func (this *TypeController) DeleteType() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteType"
 
 			input := domain.TypeRQ{}
@@ -205,7 +205,7 @@ func (this *TypeController) DeleteType() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -218,7 +218,7 @@ func (this *TypeController) GetSkillsByType() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= du {
 			operation := "GetSkillsByType"
 
 			input := domain.TypeRQ{}
@@ -253,7 +253,7 @@ func (this *TypeController) GetSkillsByType() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
-		} else if level > au {
+		} else if level > du {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -266,7 +266,7 @@ func (this *TypeController) DeleteSkillsByType() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "DeleteSkillsByType"
 			input := domain.TypeSkillsRQ{}
 			err := this.ParseForm(&input)
@@ -300,7 +300,7 @@ func (this *TypeController) DeleteSkillsByType() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -313,7 +313,7 @@ func (this *TypeController) SetSkillToType() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 			operation := "SetSkillsToType"
 			input := domain.TypeSkillsRQ{}
 			err := this.ParseForm(&input)
@@ -347,7 +347,7 @@ func (this *TypeController) SetSkillToType() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
