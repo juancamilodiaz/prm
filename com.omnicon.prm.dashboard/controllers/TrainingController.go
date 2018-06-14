@@ -13,78 +13,100 @@ type TrainingController struct {
 }
 
 func (this *TrainingController) ListTrainings() {
-	operation := "GetTrainings"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	res, err := PostData(operation, nil)
+		if level <= du {
+			operation := "GetTrainings"
 
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.TrainingRS)
-		json.NewDecoder(res.Body).Decode(&message)
+			res, err := PostData(operation, nil)
 
-		// Set names for type and skill
-		for _, training := range message.Trainings {
-			for _, skill := range message.Skills {
-				if skill.ID == training.SkillId {
-					training.SkillName = skill.Name
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.TrainingRS)
+				json.NewDecoder(res.Body).Decode(&message)
+
+				// Set names for type and skill
+				for _, training := range message.Trainings {
+					for _, skill := range message.Skills {
+						if skill.ID == training.SkillId {
+							training.SkillName = skill.Name
+						}
+					}
+					for _, _type := range message.Types {
+						if _type.ID == training.TypeId {
+							training.TypeName = _type.Name
+						}
+					}
 				}
+
+				this.Data["Trainings"] = message.Trainings
+				this.Data["Types"] = message.Types
+				this.Data["Skills"] = message.Skills
+				this.Data["TypesSkills"] = message.TypesSkills
+
+				this.TplName = "Training/listTrainings.tpl"
+
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
 			}
-			for _, _type := range message.Types {
-				if _type.ID == training.TypeId {
-					training.TypeName = _type.Name
-				}
-			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-
-		this.Data["Trainings"] = message.Trainings
-		this.Data["Types"] = message.Types
-		this.Data["Skills"] = message.Skills
-		this.Data["TypesSkills"] = message.TypesSkills
-
-		this.TplName = "Training/listTrainings.tpl"
-
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 }
 
 /* Training Resources */
 func (this *TrainingController) GetTrainingResources() {
-	operation := "GetTrainingResources"
-	input := domain.TrainingResourcesRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error(err.Error())
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	inputBuffer := EncoderInput(input)
-	res, err := PostData(operation, inputBuffer)
-	message := new(domain.TrainingResourcesRS)
-	json.NewDecoder(res.Body).Decode(&message)
+		if level <= du {
+			operation := "GetTrainingResources"
+			input := domain.TrainingResourcesRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error(err.Error())
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	if err == nil {
-		defer res.Body.Close()
-		this.Data["FilteredTrainings"] = message.FilteredTrainings
-		this.Data["Trainings"] = message.Trainings
-		this.Data["TResources"] = message.TrainingResources
-		data := buildPieMessage(message.TrainingResources)
-		this.Data["TStatus"] = data.SkillsName
-		this.Data["TValues"] = data.SkillsValue
+			inputBuffer := EncoderInput(input)
+			res, err := PostData(operation, inputBuffer)
+			message := new(domain.TrainingResourcesRS)
+			json.NewDecoder(res.Body).Decode(&message)
 
-		this.Data["Resources"] = message.Resources
-		this.Data["Types"] = message.Types
-		this.Data["TypesSkills"] = message.TypesSkills
+			if err == nil {
+				defer res.Body.Close()
+				this.Data["FilteredTrainings"] = message.FilteredTrainings
+				this.Data["Trainings"] = message.Trainings
+				this.Data["TResources"] = message.TrainingResources
+				data := buildPieMessage(message.TrainingResources)
+				this.Data["TStatus"] = data.SkillsName
+				this.Data["TValues"] = data.SkillsValue
 
-		this.TplName = "Training/Training.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
+				this.Data["Resources"] = message.Resources
+				this.Data["Types"] = message.Types
+				this.Data["TypesSkills"] = message.TypesSkills
+
+				this.TplName = "Training/Training.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
@@ -124,198 +146,253 @@ func buildPieMessage(pMessage map[int]*domain.TrainingBreakdown) Datasets {
 }
 
 func (this *TrainingController) CreateTraining() {
-	operation := "CreateTraining"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.TrainingRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= tu {
+			operation := "CreateTraining"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.TrainingRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			inputBuffer := EncoderInput(input)
 
-	message := new(domain.TrainingRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.TrainingRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > tu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *TrainingController) UpdateTraining() {
-	operation := "UpdateTraining"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.TrainingRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= tu {
+			operation := "UpdateTraining"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.TrainingRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			inputBuffer := EncoderInput(input)
 
-	defer res.Body.Close()
-	message := new(domain.TrainingRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	if err != nil {
-		log.Error(err.Error())
-	}
+			defer res.Body.Close()
+			message := new(domain.TrainingRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > tu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *TrainingController) DeleteTraining() {
-	operation := "DeleteTraining"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.TrainingRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= tu {
+			operation := "DeleteTraining"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.TrainingRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			inputBuffer := EncoderInput(input)
 
-	message := new(domain.TrainingRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.TrainingRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > tu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *TrainingController) SetTrainingToResource() {
-	operation := "SetTrainingToResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.TrainingResourcesRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= tu {
+			operation := "SetTrainingToResource"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.TrainingResourcesRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
+			inputBuffer := EncoderInput(input)
 
-	if err != nil {
-		log.Error(err.Error())
-	}
+			res, err := PostData(operation, inputBuffer)
 
-	message := new(domain.TrainingResourcesRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.TrainingResourcesRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > tu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *TrainingController) DeleteTrainingToResource() {
-	operation := "DeleteTrainingToResource"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.TrainingResourcesRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= tu {
+			operation := "DeleteTrainingToResource"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.TrainingResourcesRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
+			inputBuffer := EncoderInput(input)
 
-	if err != nil {
-		log.Error(err.Error())
-	}
+			res, err := PostData(operation, inputBuffer)
 
-	message := new(domain.TrainingResourcesRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.TrainingResourcesRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > tu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }

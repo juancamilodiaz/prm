@@ -96,7 +96,7 @@ type SignatureData struct {
 func NewOptions() *Options {
 	return &Options{
 		ProxyPrefix:          "/oauth2",
-		HttpAddress:          "172.16.32.109:4180",
+		HttpAddress:          "172.16.32.47:4180",
 		HttpsAddress:         ":443",
 		DisplayHtpasswdForm:  true,
 		CookieName:           "_oauth2_proxy",
