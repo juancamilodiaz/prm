@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.dashboard/convert"
 	"prm/com.omnicon.prm.dashboard/models"
+
 	//Oauth
 	"prm/com.omnicon.prm.oauth2_proxy/providers"
 )
