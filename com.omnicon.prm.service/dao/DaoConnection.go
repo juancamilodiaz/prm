@@ -14,8 +14,8 @@ var session sqlbuilder.Database
 var settings = mssql.ConnectionURL{
 	User:     "admin",
 	Password: "admin",
-	//Host:     "localhost",
-	Host: "OMN77076",
+	Host:     "OMN77076",
+	//Host: "OMNdd77076", // MALO, para pruebas de no conexión
 	//	Host:     "OMN4QFVNJ2",
 	Database: "prm",
 }

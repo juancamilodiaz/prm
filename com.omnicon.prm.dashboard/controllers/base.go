@@ -36,7 +36,7 @@ func (c *BaseController) Prepare() {
 	fmt.Println("this.Session!=nil", c.Session != nil)
 	c.IsLogin = c.GetSession("userinfo") != nil
 	if c.IsLogin {
-		c.Userinfo = c.GetLogin()
+		//c.Userinfo = c.GetLogin()
 	}
 
 	c.Data["IsLogin"] = c.IsLogin
