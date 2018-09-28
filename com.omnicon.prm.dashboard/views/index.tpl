@@ -51,7 +51,8 @@
 	<link rel="stylesheet" type="text/css" href="/static/js/Bootstrap/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/font-awesome-4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/css/Site.css">
-
+	
+	<link rel="stylesheet" type="text/css" href="/static/css/Custom/custom.css">
 	<script>
 		var app = angular.module('index', ['ngSanitize']);
 		
@@ -75,11 +76,11 @@
 		function toNav() {
 			if (document.getElementById("mySidenav").style.width == '250px') {
 				document.getElementById("mySidenav").style.width = "0";
-			    document.getElementById("sidebar").style.marginLeft= "0";
+			   // document.getElementById("sidebar").style.marginLeft= "0";
 				$("#mask").css("display","none");
 			} else {
 				document.getElementById("mySidenav").style.width = "250px";
-			    document.getElementById("sidebar").style.marginLeft = "250px";
+			    //document.getElementById("sidebar").style.marginLeft = "250px";
 				$("#mask").css("display","block");
 			}
 		}
@@ -197,7 +198,7 @@
 	
 	<div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
 			
-		<div id="mySidenav" class="sidenav">
+		<!--- <div id="mySidenav" class="sidenav">
 		  <a href="javascript:void(0)" class="closebtn" onclick="toNav()">&times;</a>
           <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">Home</a>
 		  <a ng-click="link('projectsForecast')" onclick="toNav();sendTitle($(this).html());" style="width: 250px;">Forecast Projects</a>
@@ -215,11 +216,84 @@
 		  <a  ng-click="link('trainings/resources')" onclick="toNav();sendTitle($(this).html())">Trainings</a>
 		  <a  ng-click="link('productivity')" onclick="toNav();sendTitle($(this).html())">Productivity Report</a>
 		  <a  ng-click="link('settings')" onclick="toNav();sendTitle($(this).html())">Settings</a>
-		  <!--a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a-->
-		</div>
+		  <!- a  ng-click="link('about')" onclick="toNav();sendTitle($(this).html())">About</a
+		</div> --->
+		<!--- BootstrapSidenav -->
 		<div id="sidebar">
 			<span style="font-size:30px;cursor:pointer" onclick="toNav()">&#9776;</span>
+		</div> 
+		<div class="nav-side-menu" id="mySidenav">
+			
+		    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+		  
+		        <div class="menu-list">
+		  
+		            <ul id="menu-content" class="menu-content collapse out">
+		                <li>
+		                  <a onclick="toNav();sendTitle($(this).html());getResourcesByProjectToday();">
+		                  <i class="fa fa-home fa-lg"></i> Home
+		                  </a>
+		                </li>
+						
+						<li>
+		                  <a ng-click="link('projectsForecast')" onclick="toNav();sendTitle($(this).html());">
+		                  <i class="fa fa-line-chart fa-lg"></i> Forecast Projects
+		                  </a>
+		                </li>		
+		
+		                <li data-toggle="collapse" data-target="#manage" class="collapsed">
+		                  <a href="#"><i class="fa fa-cog fa-lg"></i> Manage <span class="arrow"></span></a>
+		                </li>  
+		                <ul class="sub-menu collapse" id="manage">
+		                  <li>
+							<a ng-click="link('projects')" onclick="toNav();sendTitle($(this).html())">Projects</a>
+						  </li>
+		                  <li><a ng-click="link('resources')" onclick="toNav();sendTitle($(this).html())">Resources</a></li>
+		                  <li><a ng-click="link('skills')" onclick="toNav();sendTitle($(this).html())">Skills</a></li>
+						  <li><a ng-click="link('types')" onclick="toNav();sendTitle($(this).html())">Types</a></li>
+		                  <li><a ng-click="link('trainings')" onclick="toNav();sendTitle($(this).html())">Trainings</a></li>
+		                </ul>
+						
+						<li>
+		                  <a onclick="toNav();getTypes();">
+		                  <i class="fa fa-rocket fa-lg"></i> Simulator
+		                  </a>
+		                </li>
+		
+						<li>
+		                  <a ng-click="link('reports')" onclick="toNav();sendTitle($(this).html())">
+		                  <i class="fa fa-file-text fa-lg"></i> Reports
+		                  </a>
+		                </li>
+						
+						<li>
+		                  <a ng-click="link('dashboard')" onclick="toNav();sendTitle($(this).html())">
+		                  <i class="fa fa-check-circle fa-lg"></i> Status
+		                  </a>
+		                </li>
+						
+						<li>
+		                  <a ng-click="link('trainings/resources')" onclick="toNav();sendTitle($(this).html())">
+		                  <i class="fa fa-graduation-cap fa-lg"></i> Trainings
+		                  </a>
+		                </li>
+						
+						<li>
+		                  <a ng-click="link('productivity')" onclick="toNav();sendTitle($(this).html())">
+		                  <i class="fa fa-bar-chart fa-lg"></i> Productivity Report
+		                  </a>
+		                </li>
+						
+						<li>
+		                  <a  ng-click="link('settings')" onclick="toNav();sendTitle($(this).html())">
+		                  <i class="fa fa-cogs fa-lg"></i> Settings
+		                  </a>
+		                </li>
+		     </div>
 		</div>
+		
+		<!--- /BootstrapSidenav ---> 
+		
 		<div class="content container-fluid">
 			<h1><!--form action="#">		
 			<div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
