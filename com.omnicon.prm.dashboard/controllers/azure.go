@@ -150,11 +150,10 @@ func (this *AzureController) Get() {
 			this.Data["Title"] = input.ProjectName
 		}
 
-		//		uri := BuildURI(false, serverip, httpport) // Review if missing last /
+		uri := BuildURI(false, serverip, httpport) // Review if missing last /
+//		fmt.Println("test - 9-1") // ---------------------------------------------
 
-		//		fmt.Println("test - 9-1") // ---------------------------------------------
-
-		//		this.Redirect(uri, 307)
+		this.Redirect(uri, 307)
 
 	} else {
 		tr := &http.Transport{
@@ -174,7 +173,8 @@ func (this *AzureController) Get() {
 
 	}
 
-	this.TplName = "Projects/listResourceByProjectToday.tpl"
+	this.TplName = "index.tpl" //
+	//this.TplName = "Projects/listResourceByProjectToday.tpl"
 
 }
 
