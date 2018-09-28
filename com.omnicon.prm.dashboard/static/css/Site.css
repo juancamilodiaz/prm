@@ -147,6 +147,10 @@ input{
   left: -200px;
   margin-right: -200px;
 }
+
+#sidebar span {
+	color: white;
+}
 /* datatables */
 div.dataTables_wrapper {
   width: 100%;
@@ -223,6 +227,8 @@ a {
 #sidebar {
     transition: margin-left .5s;
     padding: 16px;
+	z-index: 999;
+    background-color: #23282e;
 }
 
 @media screen and (max-height: 450px) {
