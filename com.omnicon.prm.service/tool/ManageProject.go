@@ -13,7 +13,7 @@ import (
 var HoursOfWork, EpsilonValue float64
 
 func init() {
-	UpdateSettingsVariables()
+	//UpdateSettingsVariables()
 }
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
@@ -567,8 +567,10 @@ func DeleteResourceToProject(pRequest *DOMAIN.DeleteResourceToProjectRQ) *DOMAIN
 }
 
 func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
+	fmt.Println("CAMILO MANAGE GETPROJECTS ....................................................1")
 	timeResponse := time.Now()
 	response := DOMAIN.GetProjectsRS{}
+	fmt.Println("CAMILO MANAGE GETPROJECTS ....................................................2")
 
 	isValid, message := util.ValidateDates(&pRequest.StartDate, &pRequest.EndDate, false)
 	if !isValid {
@@ -576,9 +578,11 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 		response.Status = "Error"
 		return &response
 	}
+	fmt.Println("CAMILO MANAGE GETPROJECTS ....................................................3")
 
 	filters := util.MappingFiltersProject(pRequest)
 	projects, filterString := dao.GetProjectsByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Enabled)
+	fmt.Println("CAMILO MANAGE GETPROJECTS ....................................................4")
 
 	if len(projects) == 0 && filterString == "" {
 		projects = dao.GetAllProjects()

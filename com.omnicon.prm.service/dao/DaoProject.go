@@ -19,7 +19,12 @@ func getProjectCollection() db.Collection {
 	// Get a session
 	session = GetSession()
 	// Return table project in the session
-	return session.Collection("Project")
+	if session != nil {
+		return session.Collection("Project")
+	} else {
+		return nil
+	}
+
 }
 
 /**
@@ -30,13 +35,19 @@ func getProjectCollection() db.Collection {
 func GetAllProjects() []*DOMAIN.Project {
 	// Slice to keep all projects
 	var projects []*DOMAIN.Project
-	// Add all projects in projects variable
-	err := getProjectCollection().Find().All(&projects)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+	result_ini := getProjectCollection()
+
+	if result_ini != nil {
+		err := result_ini.Find().All(&projects)
+
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
+	// Add all projects in projects variable
+	// Close session when ends the method
+
 	return projects
 }
 
@@ -199,80 +210,91 @@ func DeleteProject(pProjectId int) (int, error) {
 func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
 	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
-	result := getProjectCollection().Find()
+	var string_response string
+	
 
-	// Close session when ends the method
-	defer session.Close()
+	result_ini := getProjectCollection()
 
-	var filters bytes.Buffer
-	if pProjectFilters.ID != 0 {
-		filters.WriteString("id = '")
-		filters.WriteString(strconv.Itoa(pProjectFilters.ID))
-		filters.WriteString("'")
-	}
-	if pProjectFilters.Name != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+	if result_ini != nil {
+		result := result_ini.Find()
+		fmt.Println(result)
+
+		defer session.Close()
+
+		var filters bytes.Buffer
+		if pProjectFilters.ID != 0 {
+			filters.WriteString("id = '")
+			filters.WriteString(strconv.Itoa(pProjectFilters.ID))
+			filters.WriteString("'")
 		}
-		filters.WriteString("name = '")
-		filters.WriteString(pProjectFilters.Name)
-		filters.WriteString("'")
-	}
-	/*
-		if pProjectFilters.ProjectType != "" {
+
+		if pProjectFilters.Name != "" {
 			if filters.String() != "" {
 				filters.WriteString(" and ")
 			}
-			filters.WriteString("type = '")
-			filters.WriteString(pProjectFilters.ProjectType)
+			filters.WriteString("name = '")
+			filters.WriteString(pProjectFilters.Name)
 			filters.WriteString("'")
 		}
-	*/
-	if pStartDate != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		/*
+			if pProjectFilters.ProjectType != "" {
+				if filters.String() != "" {
+					filters.WriteString(" and ")
+				}
+				filters.WriteString("type = '")
+				filters.WriteString(pProjectFilters.ProjectType)
+				filters.WriteString("'")
+			}
+		*/
+		if pStartDate != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("end_date >= '")
+			filters.WriteString(pStartDate)
+			filters.WriteString("'")
 		}
-		filters.WriteString("end_date >= '")
-		filters.WriteString(pStartDate)
-		filters.WriteString("'")
-	}
-	if pEndDate != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pEndDate != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("start_date <= '")
+			filters.WriteString(pEndDate)
+			filters.WriteString("'")
 		}
-		filters.WriteString("start_date <= '")
-		filters.WriteString(pEndDate)
-		filters.WriteString("'")
-	}
-	if pEnabled != nil {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pEnabled != nil {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("enabled = '")
+			filters.WriteString(strconv.FormatBool(*pEnabled))
+			filters.WriteString("'")
 		}
-		filters.WriteString("enabled = '")
-		filters.WriteString(strconv.FormatBool(*pEnabled))
-		filters.WriteString("'")
-	}
-	if pProjectFilters.OperationCenter != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pProjectFilters.OperationCenter != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("operation_center = '")
+			filters.WriteString(pProjectFilters.OperationCenter)
+			filters.WriteString("'")
 		}
-		filters.WriteString("operation_center = '")
-		filters.WriteString(pProjectFilters.OperationCenter)
-		filters.WriteString("'")
-	}
-	if pProjectFilters.WorkOrder != 0 {
-		filters.WriteString("work_order = '")
-		filters.WriteString(strconv.Itoa(pProjectFilters.WorkOrder))
-		filters.WriteString("'")
-	}
+		if pProjectFilters.WorkOrder != 0 {
+			filters.WriteString("work_order = '")
+			filters.WriteString(strconv.Itoa(pProjectFilters.WorkOrder))
+			filters.WriteString("'")
+		}
 
-	if filters.String() != "" {
-		err := result.Where(filters.String()).All(&projects)
+		if filters.String() != "" {
+			err := result.Where(filters.String()).All(&projects)
 
-		if err != nil {
-			log.Error(err)
+			if err != nil {
+				log.Error(err)
+			}
 		}
-	}
 
-	return projects, filters.String()
+		string_response = filters.String()
+
+	}
+	
+	return projects, string_response
 }
