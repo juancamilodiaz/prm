@@ -211,13 +211,11 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
 	var string_response string
-	
 
 	result_ini := getProjectCollection()
 
 	if result_ini != nil {
 		result := result_ini.Find()
-		fmt.Println(result)
 
 		defer session.Close()
 
@@ -295,6 +293,6 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 		string_response = filters.String()
 
 	}
-	
+
 	return projects, string_response
 }
