@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+
 	"prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/tool"
 )
@@ -96,6 +98,7 @@ func ProcessGetProjectsForecast(pRequest *domain.ProjectForecastRQ) *domain.GetP
 }
 
 func ProcessGetProjects(pRequest *domain.GetProjectsRQ) *domain.GetProjectsRS {
+	fmt.Println("CAMILO CONTROLLER GETPROJECTS ....................................................1")
 	response := tool.GetProjects(pRequest)
 	// Return response
 	return response
