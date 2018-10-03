@@ -60,20 +60,22 @@ func GetAllProjects() []*DOMAIN.Project {
 func GetProjectById(pId int) *DOMAIN.Project {
 	// Project structure
 	project := DOMAIN.Project{}
-	// Add in project variable, the project where ID is the same that the param
-	res := getProjectCollection().Find(db.Cond{"id": pId})
+	if getProjectCollection() != nil {
+		// Add in project variable, the project where ID is the same that the param
+		res := getProjectCollection().Find(db.Cond{"id": pId})
 
-	//project.ProjectType = GetTypesByProjectId(pId)
+		//project.ProjectType = GetTypesByProjectId(pId)
 
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&project)
-	if err != nil {
-		log.Error(err)
-		return nil
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&project)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
 	}
-
 	return &project
+
 }
 
 /**
@@ -87,14 +89,16 @@ func GetProjectsByDateRange(pStartDate, pEndDate int64) []*DOMAIN.Project {
 	projects := []*DOMAIN.Project{}
 	startDate := time.Unix(pStartDate, 0).Format("20060102")
 	endDate := time.Unix(pEndDate, 0).Format("20060102")
-	// Filter projects by date range
-	res := getProjectCollection().Find().Where("start_date >= ?", startDate).And("end_date <= ?", endDate)
-	// Close session when ends the method
-	defer session.Close()
-	// Add all projects in projects variable
-	err := res.All(&projects)
-	if err != nil {
-		log.Error(err)
+	if getProjectCollection() != nil {
+		// Filter projects by date range
+		res := getProjectCollection().Find().Where("start_date >= ?", startDate).And("end_date <= ?", endDate)
+		// Close session when ends the method
+		defer session.Close()
+		// Add all projects in projects variable
+		err := res.All(&projects)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return projects
 }
@@ -108,14 +112,16 @@ func GetProjectsByDateRange(pStartDate, pEndDate int64) []*DOMAIN.Project {
 func GetProjectsByLeaderID(pLeaderID int) []*DOMAIN.Project {
 	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
-	// Filter projects by leader id
-	res := getProjectCollection().Find().Where("leader_id = ?", pLeaderID)
-	// Close session when ends the method
-	defer session.Close()
-	// Add all projects in projects variable
-	err := res.All(&projects)
-	if err != nil {
-		log.Error(err)
+	if getProjectCollection() != nil {
+		// Filter projects by leader id
+		res := getProjectCollection().Find().Where("leader_id = ?", pLeaderID)
+		// Close session when ends the method
+		defer session.Close()
+		// Add all projects in projects variable
+		err := res.All(&projects)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return projects
 }
@@ -129,34 +135,37 @@ func GetProjectsByLeaderID(pLeaderID int) []*DOMAIN.Project {
 func AddProject(pProject *DOMAIN.Project) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert in DB
-	res, err := session.InsertInto("Project").Columns(
-		"name",
-		"start_date",
-		"end_date",
-		"enabled",
-		"operation_center",
-		"work_order",
-		"leader_id",
-		"cost").Values(
-		pProject.Name,
-		pProject.StartDate,
-		pProject.EndDate,
-		pProject.Enabled,
-		pProject.OperationCenter,
-		pProject.WorkOrder,
-		pProject.LeaderID,
-		pProject.Cost).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert in DB
+		res, err := session.InsertInto("Project").Columns(
+			"name",
+			"start_date",
+			"end_date",
+			"enabled",
+			"operation_center",
+			"work_order",
+			"leader_id",
+			"cost").Values(
+			pProject.Name,
+			pProject.StartDate,
+			pProject.EndDate,
+			pProject.Enabled,
+			pProject.OperationCenter,
+			pProject.WorkOrder,
+			pProject.LeaderID,
+			pProject.Cost).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-
-	return int(insertId), nil
 }
 
 /**
@@ -168,20 +177,24 @@ func AddProject(pProject *DOMAIN.Project) (int, error) {
 func UpdateProject(pProject *DOMAIN.Project) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update project in DB
-	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?, leader_id = ?, cost = ?",
-		pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder, pProject.LeaderID, pProject.Cost).Where("id = ?", int(pProject.ID))
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update project in DB
+		q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?, leader_id = ?, cost = ?",
+			pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder, pProject.LeaderID, pProject.Cost).Where("id = ?", int(pProject.ID))
 
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -193,18 +206,22 @@ func UpdateProject(pProject *DOMAIN.Project) (int, error) {
 func DeleteProject(pProjectId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete project in DB
-	q := session.DeleteFrom("Project").Where("id", pProjectId)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete project in DB
+		q := session.DeleteFrom("Project").Where("id", pProjectId)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
@@ -215,6 +232,7 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 	result_ini := getProjectCollection()
 
 	if result_ini != nil {
+
 		result := result_ini.Find()
 
 		defer session.Close()
@@ -289,10 +307,9 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 				log.Error(err)
 			}
 		}
-
 		string_response = filters.String()
 
 	}
-
+	// Close session when ends the method
 	return projects, string_response
 }
