@@ -14,8 +14,12 @@ import (
 func getTypesCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table resource in the session
-	return session.Collection("Type")
+	if session != nil {
+		// Return table resource in the session
+		return session.Collection("Type")
+	} else {
+		return nil
+	}
 }
 
 /**
@@ -26,13 +30,16 @@ func getTypesCollection() db.Collection {
 func GetAllTypes() []*DOMAIN.Type {
 	// Slice to keep all Types
 	var Types []*DOMAIN.Type
-	// Add all Types in resources variable
-	err := getTypesCollection().Find().All(&Types)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+	if getTypesCollection() != nil {
+		// Add all Types in resources variable
+		err := getTypesCollection().Find().All(&Types)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
+
 	return Types
 }
 
@@ -45,13 +52,15 @@ func GetAllTypes() []*DOMAIN.Type {
 func GetTypesById(pId int) *DOMAIN.Type {
 	// Types structure
 	Types := DOMAIN.Type{}
-	// Add in Types variable, the Types where ID is the same that the param
-	res := getTypesCollection().Find(db.Cond{"id": pId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&Types)
-	if err != nil {
-		log.Error(err)
+	if getTypesCollection() != nil {
+		// Add in Types variable, the Types where ID is the same that the param
+		res := getTypesCollection().Find(db.Cond{"id": pId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&Types)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return &Types
 }
@@ -65,19 +74,23 @@ func GetTypesById(pId int) *DOMAIN.Type {
 func AddType(pType *DOMAIN.Type) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert skill in DB
-	res, err := session.InsertInto("Type").Columns(
-		"name", "apply_to").Values(
-		pType.Name, pType.ApplyTo).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert skill in DB
+		res, err := session.InsertInto("Type").Columns(
+			"name", "apply_to").Values(
+			pType.Name, pType.ApplyTo).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-	return int(insertId), nil
 }
 
 /**
@@ -89,18 +102,22 @@ func AddType(pType *DOMAIN.Type) (int, error) {
 func UpdateType(pType *DOMAIN.Type) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update skill in DB
-	q := session.Update("Type").Set("name = ?, apply_to = ?", pType.Name, pType.ApplyTo).Where("id = ?", int(pType.ID))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update skill in DB
+		q := session.Update("Type").Set("name = ?, apply_to = ?", pType.Name, pType.ApplyTo).Where("id = ?", int(pType.ID))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -112,16 +129,20 @@ func UpdateType(pType *DOMAIN.Type) (int, error) {
 func DeleteType(pTypeId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete skill in DB
-	q := session.DeleteFrom("Type").Where("id", int(pTypeId))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete skill in DB
+		q := session.DeleteFrom("Type").Where("id", int(pTypeId))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }

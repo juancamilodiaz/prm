@@ -107,6 +107,7 @@ func (this *AzureController) Get() {
 	if session != nil {
 		fmt.Println("s.AccessToken", session.AccessToken)
 		fmt.Println("s.Email 3", session.Email)
+		fmt.Println("session", session)
 
 		flash := beego.NewFlash()
 		email := session.Email
@@ -124,9 +125,12 @@ func (this *AzureController) Get() {
 		input := domain.GetResourcesToProjectsRQ{}
 		input.Enabled = true
 		err := this.ParseForm(&input)
+
 		if err != nil {
+
 			log.Error("[ParseInput]", input)
 		}
+
 		log.Debugf("[ParseInput] Input: %+v \n", input)
 
 		inputBuffer := EncoderInput(input)
@@ -134,6 +138,7 @@ func (this *AzureController) Get() {
 		res, err := PostData(operation, inputBuffer)
 
 		if err == nil {
+
 			defer res.Body.Close()
 			message := new(domain.GetResourcesToProjectsRS)
 			json.NewDecoder(res.Body).Decode(&message)
@@ -146,7 +151,10 @@ func (this *AzureController) Get() {
 		}
 
 		uri := BuildURI(false, serverip, httpport) // Review if missing last /
+//		fmt.Println("test - 9-1") // ---------------------------------------------
+
 		this.Redirect(uri, 307)
+
 	} else {
 		tr := &http.Transport{
 			MaxIdleConns:       10,
@@ -165,7 +173,9 @@ func (this *AzureController) Get() {
 
 	}
 
-	this.TplName = "Projects/listResourceByProjectToday.tpl"
+	this.TplName = "index.tpl" //
+	//this.TplName = "Projects/listResourceByProjectToday.tpl"
+
 }
 
 func (this *AzureController) Authorize() {

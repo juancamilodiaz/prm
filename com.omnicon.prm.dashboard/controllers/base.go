@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.dashboard/convert"
 	"prm/com.omnicon.prm.dashboard/models"
+
 	//Oauth
 	"prm/com.omnicon.prm.oauth2_proxy/providers"
 )
@@ -35,7 +36,7 @@ func (c *BaseController) Prepare() {
 	fmt.Println("this.Session!=nil", c.Session != nil)
 	c.IsLogin = c.GetSession("userinfo") != nil
 	if c.IsLogin {
-		c.Userinfo = c.GetLogin()
+		//c.Userinfo = c.GetLogin()
 	}
 
 	c.Data["IsLogin"] = c.IsLogin
