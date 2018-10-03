@@ -14,8 +14,12 @@ import (
 func getProjectForecastTypesCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table project forecast in the session
-	return session.Collection("ProjectForecastTypes")
+	if session != nil {
+		// Return table project forecast in the session
+		return session.Collection("ProjectForecastTypes")
+	} else {
+		return nil
+	}
 }
 
 /**
@@ -26,12 +30,15 @@ func getProjectForecastTypesCollection() db.Collection {
 func GetAllProjectsForecastTypes() []*DOMAIN.ProjectForecastTypes {
 	// Slice to keep all projects forecast types
 	var projectsForecastTypes []*DOMAIN.ProjectForecastTypes
-	// Add all projects forecast types in projectsForecastTypes variable
-	err := getProjectForecastTypesCollection().Find().All(&projectsForecastTypes)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+
+	if getProjectForecastTypesCollection() != nil {
+		// Add all projects forecast types in projectsForecastTypes variable
+		err := getProjectForecastTypesCollection().Find().All(&projectsForecastTypes)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return projectsForecastTypes
 }
@@ -45,19 +52,21 @@ func GetAllProjectsForecastTypes() []*DOMAIN.ProjectForecastTypes {
 func GetProjectForecastTypesById(pId int) *DOMAIN.ProjectForecast {
 	// Project structure
 	projectForecast := DOMAIN.ProjectForecast{}
-	// Add in projectForecast variable, the projectForecast where ID is the same that the param
-	res := getProjectForecastTypesCollection().Find(db.Cond{"id": pId})
 
-	//project.ProjectType = GetTypesByProjectId(pId)
+	if getProjectForecastTypesCollection() != nil {
+		// Add in projectForecast variable, the projectForecast where ID is the same that the param
+		res := getProjectForecastTypesCollection().Find(db.Cond{"id": pId})
 
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&projectForecast)
-	if err != nil {
-		log.Error(err)
-		return nil
+		//project.ProjectType = GetTypesByProjectId(pId)
+
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&projectForecast)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
 	}
-
 	return &projectForecast
 }
 
@@ -70,22 +79,25 @@ func GetProjectForecastTypesById(pId int) *DOMAIN.ProjectForecast {
 func AddProjectForecastType(pProjectForecastTypes *DOMAIN.ProjectForecastTypes) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert in DB
-	res, err := session.InsertInto("ProjectForecastTypes").Columns(
-		"projectForecast_id",
-		"type_id").Values(
-		pProjectForecastTypes.ProjectForecastId,
-		pProjectForecastTypes.TypeId).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert in DB
+		res, err := session.InsertInto("ProjectForecastTypes").Columns(
+			"projectForecast_id",
+			"type_id").Values(
+			pProjectForecastTypes.ProjectForecastId,
+			pProjectForecastTypes.TypeId).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-
-	return int(insertId), nil
 }
 
 /**
@@ -97,19 +109,23 @@ func AddProjectForecastType(pProjectForecastTypes *DOMAIN.ProjectForecastTypes) 
 func UpdateProjectForecastTypes(pProjectForecastTypes *DOMAIN.ProjectForecastTypes) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update project in DB
-	q := session.Update("ProjectForecastTypes").Set("projectForecast_id = ?, type_id = ?", pProjectForecastTypes.ProjectForecastId, pProjectForecastTypes.TypeId).Where("id = ?", int(pProjectForecastTypes.ID))
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update project in DB
+		q := session.Update("ProjectForecastTypes").Set("projectForecast_id = ?, type_id = ?", pProjectForecastTypes.ProjectForecastId, pProjectForecastTypes.TypeId).Where("id = ?", int(pProjectForecastTypes.ID))
 
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -121,18 +137,22 @@ func UpdateProjectForecastTypes(pProjectForecastTypes *DOMAIN.ProjectForecastTyp
 func DeleteProjectForecastTypes(pProjectForecastTypesId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete projectForecastTypes in DB
-	q := session.DeleteFrom("ProjectForecastTypes").Where("id", pProjectForecastTypesId)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete projectForecastTypes in DB
+		q := session.DeleteFrom("ProjectForecastTypes").Where("id", pProjectForecastTypesId)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -144,12 +164,14 @@ func DeleteProjectForecastTypes(pProjectForecastTypesId int) (int, error) {
 func GetProjectForecastTypesByProjectId(pProjectForecastId int) []*DOMAIN.ProjectForecastTypes {
 	// Slice to keep all ProjectForecastTypes
 	var projectForecastTypes []*DOMAIN.ProjectForecastTypes
-	// Add all ProjectForecastTypes in ProjectForecastTypes variable
-	err := getProjectForecastTypesCollection().Find(db.Cond{"projectForecast_id": pProjectForecastId}).All(&projectForecastTypes)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Debug(err)
+	if getProjectForecastTypesCollection() != nil {
+		// Add all ProjectForecastTypes in ProjectForecastTypes variable
+		err := getProjectForecastTypesCollection().Find(db.Cond{"projectForecast_id": pProjectForecastId}).All(&projectForecastTypes)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Debug(err)
+		}
 	}
 	return projectForecastTypes
 }
@@ -163,12 +185,14 @@ func GetProjectForecastTypesByProjectId(pProjectForecastId int) []*DOMAIN.Projec
 func GetProjectForecastTypesByTypeId(pId int) []*DOMAIN.ProjectForecastTypes {
 	// Slice to keep all ProjectForecastTypes
 	var ProjectForecastTypes []*DOMAIN.ProjectForecastTypes
-	// Add all ProjectForecastTypes in ProjectForecastTypes variable
-	err := getProjectForecastTypesCollection().Find(db.Cond{"type_id": pId}).All(&ProjectForecastTypes)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Debug(err)
+	if getProjectForecastTypesCollection() != nil {
+		// Add all ProjectForecastTypes in ProjectForecastTypes variable
+		err := getProjectForecastTypesCollection().Find(db.Cond{"type_id": pId}).All(&ProjectForecastTypes)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Debug(err)
+		}
 	}
 	return ProjectForecastTypes
 }
@@ -182,13 +206,15 @@ func GetProjectForecastTypesByTypeId(pId int) []*DOMAIN.ProjectForecastTypes {
 func GetProjectForecastTypesByProjectForecastIdAndTypeId(pProjectForecastId, pTypeId int) *DOMAIN.ProjectForecastTypes {
 	// keep  ProjectForecastTypes
 	var projectForecastTypes *DOMAIN.ProjectForecastTypes
-	// Add all ProjectForecastTypes in ProjectForecastTypes variable
-	res := getProjectForecastTypesCollection().Find(db.Cond{"projectForecast_id": pProjectForecastId}).And(db.Cond{"type_id": pTypeId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&projectForecastTypes)
-	if err != nil {
-		log.Error(err)
+	if getProjectForecastTypesCollection() != nil {
+		// Add all ProjectForecastTypes in ProjectForecastTypes variable
+		res := getProjectForecastTypesCollection().Find(db.Cond{"projectForecast_id": pProjectForecastId}).And(db.Cond{"type_id": pTypeId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&projectForecastTypes)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return projectForecastTypes
 }
@@ -204,14 +230,19 @@ func DeleteProjectForecastTypesByProjectIdAndTypeId(pProjectForecastId, pTypeId 
 	session = GetSession()
 	// Close session when ends the method
 	defer session.Close()
-	// Delete ProjectForecastTypes in DB
-	q := session.DeleteFrom("ProjectForecastTypes").Where("projectForecast_id", pProjectForecastId).And("type_id", pTypeId)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Delete ProjectForecastTypes in DB
+		q := session.DeleteFrom("ProjectForecastTypes").Where("projectForecast_id", pProjectForecastId).And("type_id", pTypeId)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
+
 }

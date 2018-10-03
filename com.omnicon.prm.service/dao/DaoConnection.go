@@ -2,55 +2,60 @@ package dao
 
 import (
 	"fmt"
-	//"time"
 
+	gcfg "gopkg.in/gcfg.v1"
+	"prm/com.omnicon.prm.library/lib_conf"
 	"prm/com.omnicon.prm.service/log"
+	"prm/com.omnicon.prm.service/util"
 	"upper.io/db.v3/lib/sqlbuilder"
 	"upper.io/db.v3/mssql"
 )
 
-// Session class variable
+//Session class variable
 var session sqlbuilder.Database
 
-var settings = mssql.ConnectionURL{
+//configuration variable
+var cfgConfig util.Config
+
+/*var settings = mssql.ConnectionURL{
 	User:     "admin",
 	Password: "admin",
-	//Host:     "OMN77076",
-	Host: "OMNdd77076", // MALO, para pruebas de no conexión
+	Host:     "OMNdd77076", // MALO, para pruebas de no conexión
 	//	Host:     "OMN4QFVNJ2",
 	Database: "prm",
+}*/
+
+//function to deliver the configuration of the database
+func ConfigDBConnection() mssql.ConnectionURL {
+	return mssql.ConnectionURL{
+		User:     cfgConfig.ConfigMSSQL.User,
+		Password: cfgConfig.ConfigMSSQL.Password,
+		Host:     cfgConfig.ConfigMSSQL.Host,
+		Database: cfgConfig.ConfigMSSQL.Database,
+	}
 }
 
-func GetSession() sqlbuilder.Database {
-	fmt.Println("CAMILO DAOCONN ....................................................1")
-	var err error
-	var sess sqlbuilder.Database
-	//for sess == nil {
-	fmt.Println("CAMILO DAOCONN ....................................................2")
-	sess, err = mssql.Open(settings)
+//lee el archivo de configuración del servicio y se parsea en la variable cfgConfig
+func ReadFileIntoConfig() {
+	err := gcfg.ReadFileInto(&cfgConfig, lib_conf.CONF_PREFIX)
 	if err != nil {
-		fmt.Println("CAMILO DAOCONN ....................................................3")
-		log.Error(err)
-		//time.Sleep(5 * time.Second)
-		//sess = nil
+		panic(err)
 	}
-	//}
-	fmt.Println("CAMILO DAOCONN ....................................................4")
-
-	return sess
 }
 
-func ConnAvaible() bool {
+//function to generate the connection to the database
+func GetSession() sqlbuilder.Database {
 	var err error
 	var sess sqlbuilder.Database
-	for sess == nil {
-		sess, err = mssql.Open(settings)
-		if err != nil {
-			//log.Error(err)
-			//time.Sleep(5 * time.Second)
-			return false
-		}
+	fmt.Println("Starting the connection to Database...")
+	//Se lee el archivo de configuración
+	ReadFileIntoConfig()
+	fmt.Println("Trying to connect to Database...")
+	sess, err = mssql.Open(ConfigDBConnection())
+	if err != nil {
+		fmt.Println("Error Trying to connect to Database, check the log file for more information.")
+		log.Error(err)
 	}
-	return true
-
+	fmt.Println("Success connection to Database...")
+	return sess
 }

@@ -26,41 +26,30 @@ var cfgConfig util.Config
 func init() {
 	// Se establece la zona horaria local a UTC para que al utilizar
 	// los metodos de time.Parse o time.Unix cambie la fecha por la diferencia horaria
-	fmt.Println("CAMILO MAIN ....................................................0")
 	time.Local = time.UTC
 }
 
 func main() {
-	fmt.Println("CAMILO MAIN ....................................................1")
-
 	// Se utiliza para poder obtener el parametro del nombre del archivo
 	flag.Parse()
-	fmt.Println("CAMILO MAIN ....................................................2")
 
 	// Se lee el archivo de configuración del servicio y se parsea en la variable cfgConfig
 	err1 := gcfg.ReadFileInto(&cfgConfig, lib_conf.CONF_PREFIX)
 	if err1 != nil {
-		fmt.Println("CAMILO MAIN ....................................................3")
-
 		panic(err1)
 	}
-	fmt.Println("CAMILO MAIN ....................................................4")
 
 	// Se configura el log del servicio
 	log.ConfigureLog(cfgConfig.Logs.LogPath, cfgConfig.Logs.LogName, cfgConfig.Logs.LogLevel, cfgConfig.Logs.LogTimer)
-	fmt.Println("CAMILO MAIN ....................................................5")
 
 	// Configura todos los cores posibles en el servidor donde se ejecute el servicio
 	getSetUpCores()
-	fmt.Println("CAMILO MAIN ....................................................6")
 
 	// Print the GOGC variable
 	printGOGCEnvVariable()
-	fmt.Println("CAMILO MAIN ....................................................7")
 
 	// Conexion al redis
 	handleSignals()
-	fmt.Println("CAMILO MAIN ....................................................8")
 
 	handler.SetUpHandlers()
 	fmt.Println("Frontal HTTP arrancado....")
