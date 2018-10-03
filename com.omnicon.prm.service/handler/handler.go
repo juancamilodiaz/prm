@@ -829,7 +829,6 @@ Params :
 	  pRequest *http.Request :         Contain the user's request
 */
 func getProjects(pResponse http.ResponseWriter, pRequest *http.Request) {
-	fmt.Println("CAMILO GETPROJECTS ....................................................1")
 
 	startTime := time.Now()
 
@@ -847,10 +846,8 @@ func getProjects(pResponse http.ResponseWriter, pRequest *http.Request) {
 	}
 
 	log.Info("Process Get Projects", message)
-	fmt.Println("CAMILO GETPROJECTS ....................................................2")
 
 	response := controller.ProcessGetProjects(message)
-	fmt.Println("CAMILO GETPROJECTS ....................................................3")
 
 	// Set response time to all process.
 	if response != nil && response.Header != nil {
