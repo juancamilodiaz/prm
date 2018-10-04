@@ -13,7 +13,7 @@ import (
 var HoursOfWork, EpsilonValue float64
 
 func init() {
-	//UpdateSettingsVariables()
+	UpdateSettingsVariables()
 }
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {

@@ -28,8 +28,6 @@ var session *providers.SessionState
 //var url string
 
 func init() {
-	fmt.Println("init init")
-
 	provider = getAzureProvider(azureprovider)
 	provider.ProtectedResource, _ = url.Parse(protectedresource)
 	provider.ClientID = clientid
@@ -151,7 +149,7 @@ func (this *AzureController) Get() {
 		}
 
 		uri := BuildURI(false, serverip, httpport) // Review if missing last /
-//		fmt.Println("test - 9-1") // ---------------------------------------------
+		//		fmt.Println("test - 9-1") // ---------------------------------------------
 
 		this.Redirect(uri, 307)
 
