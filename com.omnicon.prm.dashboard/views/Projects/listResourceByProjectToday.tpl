@@ -1,6 +1,7 @@
 <script>
 	var MyProject = {};
 	$(document).ready(function(){
+
 		MyProject.table = $('#viewResourcesPerProjectUnassign').DataTable({
 			"columns": [
 				{"className":'details-control',"searchable":true},
@@ -175,7 +176,7 @@
 
 var evento;
 
-setResourceToProject = function(resourceId, projectId, startDate, endDate, estimatedHours, hoursPerDay, isHoursPerDay){
+getDateToday = function(resourceId, projectId, startDate, endDate, estimatedHours, hoursPerDay, isHoursPerDay){
 	var settings = {
 		method: 'POST',
 		url: '/projects/setresource',
@@ -286,7 +287,7 @@ function setResourceToProjectExc(){
 <var id="resourceIDInput"></var>
 
 	<div class="row">
-		<div class="col-sm-3">
+		<div class="col s3">
 			<div class="panel-group" >
 				<div class="panel panel-default">
 					<div id="resources" class="panel-body">
@@ -304,7 +305,7 @@ function setResourceToProjectExc(){
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-9" style="overflow-y: auto;height: -webkit-fill-available;">
+		<div class="col s9" style="overflow-y: auto;height: -webkit-fill-available;">
 			<div class="panel-group">
 	    		<div id="projects" class="panel">
 					{{$projectsLoop := .Projects}}
@@ -353,7 +354,7 @@ function setResourceToProjectExc(){
 	</div>
 	
 	<div class="row">
-		<div class="col-sm-12" style="padding-bottom: 10px;">											
+		<div class="col s9" style="padding-bottom: 10px;">											
 			<div id="panel-df-projectUnassign" class="panel panel-default">
 				<div id="unassign" class="panel-heading">
 					Available hours per resource

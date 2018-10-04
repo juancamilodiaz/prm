@@ -1,6 +1,10 @@
 <script>
 	$(document).ready(function(){
-		$('#viewProjects').DataTable({
+		$('.tooltipped').tooltip();
+		$('.modal-trigger').leanModal();
+		$('#viewProjects').DataTable({			
+		"iDisplayLength": 20,
+		"bLengthChange": false,
 			"columns":[
 				null,
 				null,
@@ -21,12 +25,6 @@
 		$('#refreshButton').click(function(){
 			reload('/projects',{});
 		});
-		$('#buttonOption').css("display", "inline-block");
-		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Project");
-		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("data-target", "#projectModal");
-		$('#buttonOption').attr("onclick","configureCreateModal()");
 		
 		sendTitle("Projects");
 		
@@ -187,10 +185,12 @@
 	}
 	
 </script>
-
-<div>
-
-<table id="viewProjects" class="table table-striped table-bordered">
+<div class="container" style="padding:20px;">
+<div id="pry_add">
+	<h4>Projects </h5>
+	<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" href="#projectModal" onclick="configureCreateModal()"><i class="mdi-action-note-add large"></i></a>
+</div>
+<table id="viewProjects" class="display" cellspacing="0" width="100%" >
 	<thead>
 		<tr>
 			<th>Operation Center</th>
@@ -209,18 +209,17 @@
 		<tr>
 			<td>{{$project.OperationCenter}}</td>
 			<td>{{$project.WorkOrder}}</td>
-			<td>{{$project.Name}}</td>
+			<td style="width:100px;">{{$project.Name}}</td>
 			<td>{{dateformat $project.StartDate "2006-01-02"}}</td>
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
 			<td>{{$project.Lead}}</td>
 			<td>{{if $project.Cost}} {{$project.Cost}} {{end}}</td>
-			<td><input type="checkbox" {{if $project.Enabled}}checked{{end}} disabled></td>
-			
-			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#projectModal" onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})' data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" data-dismiss="modal">Delete</button>
-				<button class="buttonTable button2" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Resources</button>
-				<button class="buttonTable button2" onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal">Types</button>
+			<td><input type="checkbox" {{if $project.Enabled}}checked{{end}} disabled></td>			
+			<td style="width:120px;">
+			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href='#projectModal' onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})'><i class="mdi-editor-mode-edit"></i></a>
+			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" ><i class="mdi-action-delete"></i></a>
+			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Get Resources"  ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-action-assignment-ind"></i></a>
+			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Get Types"  onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-image-style"></i></a>		
 			</td>
 		</tr>
 		{{end}}	
@@ -230,59 +229,58 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="projectModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
+<div class="modal" id="projectModal"> 
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalProjectTitle" class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
+				<h5 id="modalProjectTitle" class="modal-title"></h5>
+				<div class="divider"></div>
+			</div>
+		</div>		
+			<div class="modal-content">		
         <input type="hidden" id="projectID">
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        <div class="row-box col s12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Operation Center"> Operation Center </label>
+        		<label class="control-label col s4 translatable" data-i18n="Operation Center"> Operation Center </label>
               <div class="col-sm-8">
               	<input type="text" id="projectOperationCenter" style="border-radius: 8px;">
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        <div class="row-box col s12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Work Order"> Work Order </label>
+        		<label class="control-label col s4 translatable" data-i18n="Work Order"> Work Order </label>
               <div class="col-sm-8">
               	<input type="number" id="projectWorkOrder" style="border-radius: 8px;">
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        <div class="row-box col s12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
+        		<label class="control-label col s4 translatable" data-i18n="Name"> Name </label>
               <div class="col-sm-8">
               	<input type="text" id="projectName" style="border-radius: 8px;">
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        <div class="row-box col s12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
+        		<label class="control-label col s4 translatable" data-i18n="Start Date"> Start Date </label> 
               <div class="col-sm-8">
               	<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        <div class="row-box col s12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
+        		<label class="control-label col s4 translatable" data-i18n="End Date"> End Date </label> 
               <div class="col-sm-8">
               	<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;">
         		</div>
           </div>
         </div>
-		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+		<div class="row-box col s12" style="padding-bottom: 1%;">
         	<div id="divProjectType" class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
+        		<label class="control-label col s4 translatable" data-i18n="Types"> Types </label> 
              	<div class="col-sm-8">
 	             	<select  id="projectType" multiple style="width: 174px; border-radius: 8px;">
 					{{range $key, $types := .Types}}
@@ -292,17 +290,17 @@
               	</div>    
           	</div>
         </div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        <div class="row-box col s12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
+        		<label class="control-label col s4 translatable" data-i18n="Active"> Active </label> 
               <div class="col-sm-8">
               	<input type="checkbox" id="projectActive"><br/>
               </div>    
           </div>
         </div>
-		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+		<div class="row-box col s12" style="padding-bottom: 1%;">
 			<div id="divProjectType" class="form-group form-group-sm">
-			<label class="control-label col-sm-4 translatable" data-i18n="Leader"> Leader </label> 
+			<label class="control-label col s4 translatable" data-i18n="Leader"> Leader </label> 
 				<div class="col-sm-8">
 					<select  id="leaderID" style="width: 174px; border-radius: 8px;">
 					<option value="0">Without leader</option>
@@ -313,42 +311,40 @@
 				</div>    
 			</div>
 		</div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        <div class="row-box col s12" style="padding-bottom: 1%;">
         	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Cost"> Cost </label>
+        		<label class="control-label col s4 translatable" data-i18n="Cost"> Cost </label>
 	            <div class="col-sm-8">
 	            	<input type="number" id="projectCost" min="0" step="1000" class="currency" style="border-radius: 8px;">
 	        	</div>
           </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" id="projectCreate" class="btn btn-default" onclick="createProject()" data-dismiss="modal">Create</button>
-		<button type="button" id="projectUpdate" class="btn btn-default" onclick="updateProject()" data-dismiss="modal">Update</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      <div class="modal-footer">			
+			<a id="projectCreate" onclick="createProject()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
+			<a id="projectUpdate" onclick="updateProject()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
+			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
       </div>
-    </div>
-    
-  </div>
+    </div> 
 </div>
 
-<div class="modal fade" id="confirmModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
+
+<div class="modal" id="confirmModal">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
+        <h5 class="modal-title">Delete Confirmation</h5>
+      </div>			
+			<div class="divider"></div>
+		</div>
+    <div class="modal-content">
         Are you sure you want to remove <b id="nameDelete"></b> from projects?
 		<br>
 		<li>The resources will lose this project assignment.</li>
 		<li>The types will lose this project assignment.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="projectDelete" class="btn btn-default" onclick="deleteProject()" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+			<a id="projectCreate" onclick="deleteProject()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="deleteProject()" >Yes</a>
+				<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
       </div>
     </div>
   </div>

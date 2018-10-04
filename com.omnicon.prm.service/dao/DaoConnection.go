@@ -15,8 +15,8 @@ var settings = mssql.ConnectionURL{
 	User:     "admin",
 	Password: "admin",
 	//Host:     "localhost",
-	//Host: "OMN77076",
-	Host:     "OMN4QFVNJ2",
+	Host: "OMN77203",
+	//Host:     "OMN4QFVNJ2",
 	Database: "prm",
 }
 
