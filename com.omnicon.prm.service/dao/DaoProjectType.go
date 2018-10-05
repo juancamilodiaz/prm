@@ -14,8 +14,12 @@ import (
 func getProjectTypesCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table resource in the session
-	return session.Collection("ProjectTypes")
+	if session != nil {
+		// Return table resource in the session
+		return session.Collection("ProjectTypes")
+	} else {
+		return nil
+	}
 }
 
 /**
@@ -26,12 +30,15 @@ func getProjectTypesCollection() db.Collection {
 func GetAllProjectTypes() []*DOMAIN.ProjectTypes {
 	// Slice to keep all ProjectTypes
 	var ProjectTypes []*DOMAIN.ProjectTypes
-	// Add all ProjectTypes in resources variable
-	err := getProjectTypesCollection().Find().All(ProjectTypes)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+
+	if getProjectTypesCollection() != nil {
+		// Add all ProjectTypes in resources variable
+		err := getProjectTypesCollection().Find().All(ProjectTypes)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return ProjectTypes
 }
@@ -45,13 +52,15 @@ func GetAllProjectTypes() []*DOMAIN.ProjectTypes {
 func GetProjectTypesById(pId int) *DOMAIN.ProjectTypes {
 	// ProjectTypes structure
 	ProjectTypes := DOMAIN.ProjectTypes{}
-	// Add in ProjectTypes variable, the ProjectTypes where ID is the same that the param
-	res := getProjectTypesCollection().Find(db.Cond{"id": pId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&ProjectTypes)
-	if err != nil {
-		log.Error(err)
+	if getProjectTypesCollection() != nil {
+		// Add in ProjectTypes variable, the ProjectTypes where ID is the same that the param
+		res := getProjectTypesCollection().Find(db.Cond{"id": pId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&ProjectTypes)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return &ProjectTypes
 }
@@ -65,6 +74,7 @@ func GetProjectTypesById(pId int) *DOMAIN.ProjectTypes {
 func GetProjectTypesByProjectId(pProjectId int) []*DOMAIN.ProjectTypes {
 	// Slice to keep all ProjectTypes
 	var projectTypes []*DOMAIN.ProjectTypes
+	if getProjectTypesCollection() != nil {
 	// Add all ProjectTypes in ProjectTypes variable
 	err := getProjectTypesCollection().Find(db.Cond{"project_id": pProjectId}).All(&projectTypes)
 	// Close session when ends the method
@@ -72,6 +82,7 @@ func GetProjectTypesByProjectId(pProjectId int) []*DOMAIN.ProjectTypes {
 	if err != nil {
 		log.Debug(err)
 	}
+}
 	return projectTypes
 }
 
@@ -84,6 +95,7 @@ func GetProjectTypesByProjectId(pProjectId int) []*DOMAIN.ProjectTypes {
 func GetProjectTypesByTypeId(pId int) []*DOMAIN.ProjectTypes {
 	// Slice to keep all ProjectTypes
 	var ProjectTypes []*DOMAIN.ProjectTypes
+	if getProjectTypesCollection() != nil {
 	// Add all ProjectTypes in ProjectTypes variable
 	err := getProjectTypesCollection().Find(db.Cond{"type_id": pId}).All(&ProjectTypes)
 	// Close session when ends the method
@@ -91,6 +103,7 @@ func GetProjectTypesByTypeId(pId int) []*DOMAIN.ProjectTypes {
 	if err != nil {
 		log.Debug(err)
 	}
+}
 	return ProjectTypes
 }
 
@@ -103,6 +116,7 @@ func GetProjectTypesByTypeId(pId int) []*DOMAIN.ProjectTypes {
 func GetProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) *DOMAIN.ProjectTypes {
 	// keep  ProjectTypes
 	var projectTypes *DOMAIN.ProjectTypes
+	if getProjectTypesCollection() != nil {
 	// Add all ProjectTypes in ProjectTypes variable
 	res := getProjectTypesCollection().Find(db.Cond{"project_id": pProjectId}).And(db.Cond{"type_id": pTypeId})
 	// Close session when ends the method
@@ -111,6 +125,7 @@ func GetProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) *DOMAIN.Projec
 	if err != nil {
 		log.Error(err)
 	}
+}
 	return projectTypes
 }
 
@@ -123,6 +138,7 @@ func GetProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) *DOMAIN.Projec
 func AddTypeToProject(pProjectTypes *DOMAIN.ProjectTypes) (int, error) {
 	// Get a session
 	session = GetSession()
+	if session != nil {
 	// Close session when ends the method
 	defer session.Close()
 	// Insert in DB
@@ -140,6 +156,9 @@ func AddTypeToProject(pProjectTypes *DOMAIN.ProjectTypes) (int, error) {
 	// Get rows inserted
 	insertId, err := res.LastInsertId()
 	return int(insertId), nil
+	} else {
+		return 0, nil
+	}
 }
 
 /**
@@ -151,6 +170,7 @@ func AddTypeToProject(pProjectTypes *DOMAIN.ProjectTypes) (int, error) {
 func DeleteProjectTypes(pProjectTypesId int) (int, error) {
 	// Get a session
 	session = GetSession()
+	if session != nil {
 	// Close session when ends the method
 	defer session.Close()
 	// Delete ProjectTypes in DB
@@ -163,6 +183,9 @@ func DeleteProjectTypes(pProjectTypesId int) (int, error) {
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
 	return int(deleteCount), nil
+	} else {
+		return 0, nil
+	}
 }
 
 /**
@@ -174,6 +197,7 @@ func DeleteProjectTypes(pProjectTypesId int) (int, error) {
 func DeleteProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) (int, error) {
 	// Get a session
 	session = GetSession()
+	if session != nil {
 	// Close session when ends the method
 	defer session.Close()
 	// Delete ProjectTypes in DB
@@ -186,6 +210,9 @@ func DeleteProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) (int, error
 	// Get rows deleted
 	deleteCount, err := res.RowsAffected()
 	return int(deleteCount), nil
+	} else {
+		return 0, nil
+	}
 }
 
 /**
@@ -197,6 +224,7 @@ func DeleteProjectTypesByProjectIdAndTypeId(pProjectId, pTypeId int) (int, error
 func UpdateProjectType(pProjectTypes *DOMAIN.ProjectTypes) (int, error) {
 	// Get a session
 	session = GetSession()
+	if session != nil {
 	// Close session when ends the method
 	defer session.Close()
 	// Update ResourceSkills in DB
@@ -209,4 +237,7 @@ func UpdateProjectType(pProjectTypes *DOMAIN.ProjectTypes) (int, error) {
 	// Get rows updated
 	updateCount, err := res.RowsAffected()
 	return int(updateCount), nil
+	} else {
+		return 0, nil
+	}
 }

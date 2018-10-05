@@ -226,9 +226,9 @@
                             </div>
                         </div>
                     </li>
-                    <li class="bold"><a href="index.html" class="waves-effect waves-cyan"><i class="mdi-action-assignment"></i> Home</a>
+                    <li class="bold"><a href="" ng-click="link('productivity')"  class="waves-effect waves-cyan"><i class="mdi-action-assignment"></i> Home</a>
                     </li>
-                    <li class="bold"><a href="app-email.html" class="waves-effect waves-cyan"><i class="mdi-action-assignment-turned-in"></i> Forecast Projects</a>
+                    <li class="bold"><a href="" ng-click="link('projectsForecast')" class="waves-effect waves-cyan"><i class="mdi-action-assignment-turned-in"></i> Forecast Projects</a>
                     </li>                    
                     <li class="no-padding">
                         <ul class="collapsible collapsible-accordion">
@@ -250,7 +250,7 @@
                             </li>          
                         </ul>
                     </li>                    
-                    <li class="bold"><a href="app-email.html" class="waves-effect waves-cyan"><i class="mdi-communication-email"></i>Simulator</a>
+                    <li class="bold"><a href="" onclick="getTypes();" class="waves-effect waves-cyan"><i class="mdi-communication-email"></i>Simulator</a>
                     </li>
                     <li class="bold"><a href="app-email.html" class="waves-effect waves-cyan"><i class="mdi-action-assessment"></i>Reports</a>
                     </li>

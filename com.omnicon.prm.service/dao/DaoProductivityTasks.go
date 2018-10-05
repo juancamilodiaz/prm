@@ -18,7 +18,12 @@ func getProductivityTasksCollection() db.Collection {
 	// Get a session
 	session = GetSession()
 	// Return table ProductivityTasks in the session
-	return session.Collection("ProductivityTasks")
+	if session != nil {
+		return session.Collection("ProductivityTasks")
+	} else {
+		return nil
+	}
+
 }
 
 /**
@@ -29,12 +34,14 @@ func getProductivityTasksCollection() db.Collection {
 func GetAllProductivityTasks() []*DOMAIN.ProductivityTasks {
 	// Slice to keep all ProductivityTasks
 	var productivityTasks []*DOMAIN.ProductivityTasks
-	// Add all ProductivityTasks in productivityTasks variable
-	err := getProductivityTasksCollection().Find().All(&productivityTasks)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+	if getProductivityTasksCollection() != nil {
+		// Add all ProductivityTasks in productivityTasks variable
+		err := getProductivityTasksCollection().Find().All(&productivityTasks)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return productivityTasks
 }
@@ -48,17 +55,19 @@ func GetAllProductivityTasks() []*DOMAIN.ProductivityTasks {
 func GetProductivityTasksByID(pID int) *DOMAIN.ProductivityTasks {
 	// ProductivityTasks structure
 	productivityTasks := DOMAIN.ProductivityTasks{}
-	// Add in ProductivityTasks variable, the ProductivityTasks where ID is the same that the param
-	res := getProductivityTasksCollection().Find(db.Cond{"id": pID})
-	log.Debug("find ProductivityTasks by ID:", pID)
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&productivityTasks)
-	if err != nil {
-		log.Error(err)
-		return nil
+	if getProductivityTasksCollection() != nil {
+		// Add in ProductivityTasks variable, the ProductivityTasks where ID is the same that the param
+		res := getProductivityTasksCollection().Find(db.Cond{"id": pID})
+		log.Debug("find ProductivityTasks by ID:", pID)
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&productivityTasks)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
+		log.Debug("Result:", productivityTasks)
 	}
-	log.Debug("Result:", productivityTasks)
 	return &productivityTasks
 }
 
@@ -71,14 +80,16 @@ func GetProductivityTasksByID(pID int) *DOMAIN.ProductivityTasks {
 func GetProductivityTasksByProjectID(pProjectID int) []*DOMAIN.ProductivityTasks {
 	// ProductivityTasks structure
 	productivityTasks := []*DOMAIN.ProductivityTasks{}
-	// Add in ProductivityTasks variable, the ProductivityTasks where ID is the same that the param
-	res := getProductivityTasksCollection().Find().Where("project_id = ?", pProjectID)
-	// Close session when ends the method
-	defer session.Close()
-	err := res.All(&productivityTasks)
-	if err != nil {
-		log.Error(err)
-		return nil
+	if getProductivityTasksCollection() != nil {
+		// Add in ProductivityTasks variable, the ProductivityTasks where ID is the same that the param
+		res := getProductivityTasksCollection().Find().Where("project_id = ?", pProjectID)
+		// Close session when ends the method
+		defer session.Close()
+		err := res.All(&productivityTasks)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
 	}
 	return productivityTasks
 }
@@ -92,19 +103,23 @@ func GetProductivityTasksByProjectID(pProjectID int) []*DOMAIN.ProductivityTasks
 func AddProductivityTasks(pProductivityTasks *DOMAIN.ProductivityTasks) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert ProductivityTasks in DB
-	res, err := session.InsertInto("ProductivityTasks").Columns(
-		"project_id", "name", "total_execute", "total_billable", "scheduled", "progress", "is_out_of_scope").Values(
-		pProductivityTasks.ProjectID, pProductivityTasks.Name, pProductivityTasks.TotalExecute, pProductivityTasks.TotalBillable, pProductivityTasks.Scheduled, pProductivityTasks.Progress, pProductivityTasks.IsOutOfScope).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert ProductivityTasks in DB
+		res, err := session.InsertInto("ProductivityTasks").Columns(
+			"project_id", "name", "total_execute", "total_billable", "scheduled", "progress", "is_out_of_scope").Values(
+			pProductivityTasks.ProjectID, pProductivityTasks.Name, pProductivityTasks.TotalExecute, pProductivityTasks.TotalBillable, pProductivityTasks.Scheduled, pProductivityTasks.Progress, pProductivityTasks.IsOutOfScope).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-	return int(insertId), nil
 }
 
 /**
@@ -116,19 +131,23 @@ func AddProductivityTasks(pProductivityTasks *DOMAIN.ProductivityTasks) (int, er
 func UpdateProductivityTasks(pProductivityTasks *DOMAIN.ProductivityTasks) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update ProductivityTasks in DB
-	q := session.Update("ProductivityTasks").Set("name = ?, total_execute = ?, total_billable = ?, scheduled = ?, progress = ?, is_out_of_scope = ?",
-		pProductivityTasks.Name, pProductivityTasks.TotalExecute, pProductivityTasks.TotalBillable, pProductivityTasks.Scheduled, pProductivityTasks.Progress, pProductivityTasks.IsOutOfScope).Where("id = ?", pProductivityTasks.ID)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update ProductivityTasks in DB
+		q := session.Update("ProductivityTasks").Set("name = ?, total_execute = ?, total_billable = ?, scheduled = ?, progress = ?, is_out_of_scope = ?",
+			pProductivityTasks.Name, pProductivityTasks.TotalExecute, pProductivityTasks.TotalBillable, pProductivityTasks.Scheduled, pProductivityTasks.Progress, pProductivityTasks.IsOutOfScope).Where("id = ?", pProductivityTasks.ID)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -141,17 +160,21 @@ func DeleteProductivityTasks(pID int) (int, error) {
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
-	defer session.Close()
-	// Delete productivityTasks in DB
-	q := session.DeleteFrom("ProductivityTasks").Where("id", pID)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		defer session.Close()
+		// Delete productivityTasks in DB
+		q := session.DeleteFrom("ProductivityTasks").Where("id", pID)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -163,41 +186,46 @@ func DeleteProductivityTasks(pID int) (int, error) {
 func GetProductivityTasksByFilters(pProductivityTasksFilters *DOMAIN.ProductivityTasks) ([]*DOMAIN.ProductivityTasks, string) {
 	// Slice to keep all productivityTasks
 	productivityTasks := []*DOMAIN.ProductivityTasks{}
+	var string_response string
 	// Filter productivityTasks
-	result := getProductivityTasksCollection().Find()
+	if getProductivityTasksCollection() != nil {
+		result := getProductivityTasksCollection().Find()
 
-	// Close session when ends the method
-	defer session.Close()
+		// Close session when ends the method
+		defer session.Close()
 
-	var filters bytes.Buffer
-	if pProductivityTasksFilters.ID != 0 {
-		filters.WriteString("id = '")
-		filters.WriteString(strconv.Itoa(pProductivityTasksFilters.ID))
-		filters.WriteString("'")
-	}
-	if pProductivityTasksFilters.ProjectID != 0 {
+		var filters bytes.Buffer
+		if pProductivityTasksFilters.ID != 0 {
+			filters.WriteString("id = '")
+			filters.WriteString(strconv.Itoa(pProductivityTasksFilters.ID))
+			filters.WriteString("'")
+		}
+		if pProductivityTasksFilters.ProjectID != 0 {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("project_id = '")
+			filters.WriteString(strconv.Itoa(pProductivityTasksFilters.ProjectID))
+			filters.WriteString("'")
+		}
+		if pProductivityTasksFilters.Name != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("name = '")
+			filters.WriteString(pProductivityTasksFilters.Name)
+			filters.WriteString("'")
+		}
+
 		if filters.String() != "" {
-			filters.WriteString(" and ")
+			// Add all productivityTasks in productivityTasks variable
+			err := result.Where(filters.String()).All(&productivityTasks)
+			if err != nil {
+				log.Error(err)
+			}
 		}
-		filters.WriteString("project_id = '")
-		filters.WriteString(strconv.Itoa(pProductivityTasksFilters.ProjectID))
-		filters.WriteString("'")
+		string_response = filters.String()
 	}
-	if pProductivityTasksFilters.Name != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
-		}
-		filters.WriteString("name = '")
-		filters.WriteString(pProductivityTasksFilters.Name)
-		filters.WriteString("'")
-	}
+	return productivityTasks, string_response
 
-	if filters.String() != "" {
-		// Add all productivityTasks in productivityTasks variable
-		err := result.Where(filters.String()).All(&productivityTasks)
-		if err != nil {
-			log.Error(err)
-		}
-	}
-	return productivityTasks, filters.String()
 }

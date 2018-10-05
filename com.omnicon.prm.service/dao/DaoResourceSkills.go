@@ -14,8 +14,12 @@ import (
 func getResourceSkillsCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table resource in the session
-	return session.Collection("ResourceSkills")
+	if session != nil {
+		// Return table resource in the session
+		return session.Collection("ResourceSkills")
+	} else {
+		return nil
+	}
 }
 
 /**
@@ -26,12 +30,15 @@ func getResourceSkillsCollection() db.Collection {
 func GetAllResourceSkills() []*DOMAIN.ResourceSkills {
 	// Slice to keep all ResourceSkills
 	var resourceSkills []*DOMAIN.ResourceSkills
-	// Add all ResourceSkills in resources variable
-	err := getResourceSkillsCollection().Find().All(resourceSkills)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+
+	if getResourceSkillsCollection() != nil {
+		// Add all ResourceSkills in resources variable
+		err := getResourceSkillsCollection().Find().All(resourceSkills)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return resourceSkills
 }
@@ -45,13 +52,15 @@ func GetAllResourceSkills() []*DOMAIN.ResourceSkills {
 func GetResourceSkillsById(pId int) *DOMAIN.ResourceSkills {
 	// ResourceSkills structure
 	resourceSkills := DOMAIN.ResourceSkills{}
-	// Add in resourceSkills variable, the resourceSkills where ID is the same that the param
-	res := getResourceSkillsCollection().Find(db.Cond{"resource_id": pId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&resourceSkills)
-	if err != nil {
-		log.Error(err)
+	if getResourceSkillsCollection() != nil {
+		// Add in resourceSkills variable, the resourceSkills where ID is the same that the param
+		res := getResourceSkillsCollection().Find(db.Cond{"resource_id": pId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&resourceSkills)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return &resourceSkills
 }
@@ -65,12 +74,14 @@ func GetResourceSkillsById(pId int) *DOMAIN.ResourceSkills {
 func GetResourceSkillsByResourceId(pId int) []*DOMAIN.ResourceSkills {
 	// Slice to keep all ResourceSkills
 	var resourceSkills []*DOMAIN.ResourceSkills
-	// Add all ResourceSkills in resourceSkills variable
-	err := getResourceSkillsCollection().Find(db.Cond{"resource_id": pId}).All(&resourceSkills)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Debug(err)
+	if getResourceSkillsCollection() != nil {
+		// Add all ResourceSkills in resourceSkills variable
+		err := getResourceSkillsCollection().Find(db.Cond{"resource_id": pId}).All(&resourceSkills)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Debug(err)
+		}
 	}
 	return resourceSkills
 }
@@ -84,12 +95,14 @@ func GetResourceSkillsByResourceId(pId int) []*DOMAIN.ResourceSkills {
 func GetResourceSkillsBySkillId(pId int) []*DOMAIN.ResourceSkills {
 	// Slice to keep all ResourceSkills
 	var resourceSkills []*DOMAIN.ResourceSkills
-	// Add all ResourceSkills in resourceSkills variable
-	err := getResourceSkillsCollection().Find(db.Cond{"skill_id": pId}).All(&resourceSkills)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Debug(err)
+	if getResourceSkillsCollection() != nil {
+		// Add all ResourceSkills in resourceSkills variable
+		err := getResourceSkillsCollection().Find(db.Cond{"skill_id": pId}).All(&resourceSkills)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Debug(err)
+		}
 	}
 	return resourceSkills
 }
@@ -103,19 +116,20 @@ func GetResourceSkillsBySkillId(pId int) []*DOMAIN.ResourceSkills {
 func GetResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int) *DOMAIN.ResourceSkills {
 	// ResourceSkills structure
 	resourceSkills := DOMAIN.ResourceSkills{}
-	// Add in resourceSkills variable, the resourceSkills where ID is the same that the param
-	res := getResourceSkillsCollection().Find(db.Cond{"resource_id": pResourceId}).And(db.Cond{"skill_id": pSkillId})
-	// Close session when ends the method
-	defer session.Close()
-	count, err := res.Count()
-	if count > 0 {
-		err = res.One(&resourceSkills)
-		if err != nil {
-			log.Debug(err)
+	if getResourceSkillsCollection() != nil {
+		// Add in resourceSkills variable, the resourceSkills where ID is the same that the param
+		res := getResourceSkillsCollection().Find(db.Cond{"resource_id": pResourceId}).And(db.Cond{"skill_id": pSkillId})
+		// Close session when ends the method
+		defer session.Close()
+		count, err := res.Count()
+		if count > 0 {
+			err = res.One(&resourceSkills)
+			if err != nil {
+				log.Debug(err)
+			}
+			return &resourceSkills
 		}
-		return &resourceSkills
 	}
-
 	return nil
 }
 
@@ -128,25 +142,29 @@ func GetResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int) *DOMAIN.
 func AddResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert in DB
-	res, err := session.InsertInto("ResourceSkills").Columns(
-		"resource_id",
-		"skill_id",
-		"name",
-		"value").Values(
-		pResourceSkills.ResourceId,
-		pResourceSkills.SkillId,
-		pResourceSkills.Name,
-		pResourceSkills.Value).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert in DB
+		res, err := session.InsertInto("ResourceSkills").Columns(
+			"resource_id",
+			"skill_id",
+			"name",
+			"value").Values(
+			pResourceSkills.ResourceId,
+			pResourceSkills.SkillId,
+			pResourceSkills.Name,
+			pResourceSkills.Value).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-	return int(insertId), nil
 }
 
 /**
@@ -158,18 +176,22 @@ func AddResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int, error) {
 func UpdateResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update ResourceSkills in DB
-	q := session.Update("ResourceSkills").Set("name = ?, value = ?", pResourceSkills.Name, pResourceSkills.Value).Where("id = ?", pResourceSkills.ID)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update ResourceSkills in DB
+		q := session.Update("ResourceSkills").Set("name = ?, value = ?", pResourceSkills.Name, pResourceSkills.Value).Where("id = ?", pResourceSkills.ID)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -181,18 +203,22 @@ func UpdateResourceSkills(pResourceSkills *DOMAIN.ResourceSkills) (int, error) {
 func DeleteResourceSkills(pResourceSkillsId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete ResourceSkills in DB
-	q := session.DeleteFrom("ResourceSkills").Where("id", pResourceSkillsId)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete ResourceSkills in DB
+		q := session.DeleteFrom("ResourceSkills").Where("id", pResourceSkillsId)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -204,16 +230,21 @@ func DeleteResourceSkills(pResourceSkillsId int) (int, error) {
 func DeleteResourceSkillsByResourceIdAndSkillId(pResourceId, pSkillId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete ResourceSkills in DB
-	q := session.DeleteFrom("ResourceSkills").Where("resource_id", int(pResourceId)).And("skill_id", int(pSkillId))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+
+		// Close session when ends the method
+		defer session.Close()
+		// Delete ResourceSkills in DB
+		q := session.DeleteFrom("ResourceSkills").Where("resource_id", int(pResourceId)).And("skill_id", int(pSkillId))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }

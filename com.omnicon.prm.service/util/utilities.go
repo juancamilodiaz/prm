@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"prm/com.omnicon.prm.service/dao"
 	"prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 )
@@ -305,33 +304,6 @@ func MappingSkillsInAResource(pResource *domain.Resource, pSkills []*domain.Reso
 		mapSkills[resourceSkill.Name] = resourceSkill.Value
 	}
 	pResource.Skills = mapSkills
-}
-
-/**
-* Function to mapping resources in a project entity.
- */
-func MappingResourcesInAProject(pProject *domain.Project, pProjectResources []*domain.ProjectResources) string {
-	var lead string
-	mapResources := make(map[int]*domain.ResourceAssign, len(pProjectResources))
-	for _, projectResource := range pProjectResources {
-		resourceAssign := domain.ResourceAssign{}
-		resourceAssign.Resource = dao.GetResourceById(projectResource.ResourceId)
-		skills := dao.GetResourceSkillsByResourceId(projectResource.ResourceId)
-		MappingSkillsInAResource(resourceAssign.Resource, skills)
-		resourceAssign.StartDate = projectResource.StartDate
-		resourceAssign.EndDate = projectResource.EndDate
-		resourceAssign.Lead = projectResource.Lead
-		if projectResource.Lead {
-			lead = resourceAssign.Resource.Name
-		} else if pProject.Lead == resourceAssign.Resource.Name {
-			lead = ""
-		}
-		resourceAssign.Hours = projectResource.Hours
-		mapResources[projectResource.ID] = &resourceAssign
-	}
-	pProject.ResourceAssign = mapResources
-
-	return lead
 }
 
 /**

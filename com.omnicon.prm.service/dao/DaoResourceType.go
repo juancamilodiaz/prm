@@ -14,8 +14,12 @@ import (
 func getResourceTypesCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table resource in the session
-	return session.Collection("ResourceTypes")
+	if session != nil {
+		// Return table resource in the session
+		return session.Collection("ResourceTypes")
+	} else {
+		return nil
+	}
 }
 
 /**
@@ -26,12 +30,14 @@ func getResourceTypesCollection() db.Collection {
 func GetAllResourceTypes() []*DOMAIN.ResourceTypes {
 	// Slice to keep all ProjectTypes
 	var ResourceTypes []*DOMAIN.ResourceTypes
-	// Add all ResourceTypes in resources variable
-	err := getResourceTypesCollection().Find().All(ResourceTypes)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+	if getResourceTypesCollection() != nil {
+		// Add all ResourceTypes in resources variable
+		err := getResourceTypesCollection().Find().All(ResourceTypes)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return ResourceTypes
 }
@@ -45,13 +51,15 @@ func GetAllResourceTypes() []*DOMAIN.ResourceTypes {
 func GetResourceTypesById(pId int) *DOMAIN.ResourceTypes {
 	// ResourceTypes structure
 	ResourceTypes := DOMAIN.ResourceTypes{}
-	// Add in ResourceTypes variable, the ResourceTypes where ID is the same that the param
-	res := getResourceTypesCollection().Find(db.Cond{"id": pId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&ResourceTypes)
-	if err != nil {
-		log.Error(err)
+	if getResourceTypesCollection() != nil {
+		// Add in ResourceTypes variable, the ResourceTypes where ID is the same that the param
+		res := getResourceTypesCollection().Find(db.Cond{"id": pId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&ResourceTypes)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return &ResourceTypes
 }
@@ -65,12 +73,14 @@ func GetResourceTypesById(pId int) *DOMAIN.ResourceTypes {
 func GetResourceTypesByResourceId(pResourceId int) []*DOMAIN.ResourceTypes {
 	// Slice to keep all ResourceTypes
 	var resourceTypes []*DOMAIN.ResourceTypes
-	// Add all ResourceTypes in ResourceTypes variable
-	err := getResourceTypesCollection().Find(db.Cond{"resource_id": pResourceId}).All(&resourceTypes)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Debug(err)
+	if getResourceTypesCollection() != nil {
+		// Add all ResourceTypes in ResourceTypes variable
+		err := getResourceTypesCollection().Find(db.Cond{"resource_id": pResourceId}).All(&resourceTypes)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Debug(err)
+		}
 	}
 	return resourceTypes
 }
@@ -84,12 +94,14 @@ func GetResourceTypesByResourceId(pResourceId int) []*DOMAIN.ResourceTypes {
 func GetResourceTypesByTypeId(pId int) []*DOMAIN.ResourceTypes {
 	// Slice to keep all ResourceTypes
 	var ResourceTypes []*DOMAIN.ResourceTypes
-	// Add all ResourceTypes in ResourceTypes variable
-	err := getResourceTypesCollection().Find(db.Cond{"type_id": pId}).All(&ResourceTypes)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Debug(err)
+	if getResourceTypesCollection() != nil {
+		// Add all ResourceTypes in ResourceTypes variable
+		err := getResourceTypesCollection().Find(db.Cond{"type_id": pId}).All(&ResourceTypes)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Debug(err)
+		}
 	}
 	return ResourceTypes
 }
@@ -103,13 +115,15 @@ func GetResourceTypesByTypeId(pId int) []*DOMAIN.ResourceTypes {
 func GetResourceTypesByResourceIdAndTypeId(pResourceId, pTypeId int) *DOMAIN.ResourceTypes {
 	// keep  ResourceTypes
 	var resourceTypes *DOMAIN.ResourceTypes
-	// Add all ResourceTypes in ResourceTypes variable
-	res := getResourceTypesCollection().Find(db.Cond{"resource_id": pResourceId}).And(db.Cond{"type_id": pTypeId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&resourceTypes)
-	if err != nil {
-		log.Error(err)
+	if getResourceTypesCollection() != nil {
+		// Add all ResourceTypes in ResourceTypes variable
+		res := getResourceTypesCollection().Find(db.Cond{"resource_id": pResourceId}).And(db.Cond{"type_id": pTypeId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&resourceTypes)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return resourceTypes
 }
@@ -123,23 +137,28 @@ func GetResourceTypesByResourceIdAndTypeId(pResourceId, pTypeId int) *DOMAIN.Res
 func AddTypeToResource(pResourceTypes *DOMAIN.ResourceTypes) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert in DB
-	res, err := session.InsertInto("ResourceTypes").Columns(
-		"resource_id",
-		"type_id",
-		"type_name").Values(
-		pResourceTypes.ResourceId,
-		pResourceTypes.TypeId,
-		pResourceTypes.Name).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert in DB
+		res, err := session.InsertInto("ResourceTypes").Columns(
+			"resource_id",
+			"type_id",
+			"type_name").Values(
+			pResourceTypes.ResourceId,
+			pResourceTypes.TypeId,
+			pResourceTypes.Name).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-	return int(insertId), nil
+
 }
 
 /**
@@ -151,18 +170,22 @@ func AddTypeToResource(pResourceTypes *DOMAIN.ResourceTypes) (int, error) {
 func DeleteResourceTypes(pResourceTypesId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete ResourceTypes in DB
-	q := session.DeleteFrom("ResourceTypes").Where("id", int(pResourceTypesId))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete ResourceTypes in DB
+		q := session.DeleteFrom("ResourceTypes").Where("id", int(pResourceTypesId))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -174,18 +197,22 @@ func DeleteResourceTypes(pResourceTypesId int) (int, error) {
 func DeleteResourceTypesByResourceIdAndTypeId(pResourceId, pTypeId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete ResourceTypes in DB
-	q := session.DeleteFrom("ResourceTypes").Where("resource_id", pResourceId).And("type_id", pTypeId)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete ResourceTypes in DB
+		q := session.DeleteFrom("ResourceTypes").Where("resource_id", pResourceId).And("type_id", pTypeId)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -197,16 +224,20 @@ func DeleteResourceTypesByResourceIdAndTypeId(pResourceId, pTypeId int) (int, er
 func UpdateResourceType(pResourceTypes *DOMAIN.ResourceTypes) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update ResourceTypes in DB
-	q := session.Update("ResourceTypes").Set("type_name = ?", pResourceTypes.Name).Where("id = ?", pResourceTypes.ID)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update ResourceTypes in DB
+		q := session.Update("ResourceTypes").Set("type_name = ?", pResourceTypes.Name).Where("id = ?", pResourceTypes.ID)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }

@@ -13,7 +13,7 @@ import (
 var HoursOfWork, EpsilonValue float64
 
 func init() {
-	UpdateSettingsVariables()
+	//UpdateSettingsVariables()
 }
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
@@ -517,7 +517,7 @@ func getInsertedResource(pIdResProject int, pProject *DOMAIN.Project, pTimeRespo
 		// Get all resources to this project
 		resourcesOfProject := dao.GetProjectResourcesByProjectId(pProject.ID)
 		// Mapping resources in the project of the response
-		lead := util.MappingResourcesInAProject(pProject, resourcesOfProject)
+		lead := dao.MappingResourcesInAProject(pProject, resourcesOfProject)
 		pProject.Lead = lead
 		response.Project = pProject
 

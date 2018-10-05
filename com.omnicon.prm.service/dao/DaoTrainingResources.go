@@ -15,8 +15,13 @@ import (
 func getTrainingResourcesCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table resource in the session
-	return session.Collection("TrainingResources")
+	if session != nil {
+		// Return table resource in the session
+		return session.Collection("TrainingResources")
+	} else {
+		return nil
+	}
+
 }
 
 /**
@@ -27,13 +32,16 @@ func getTrainingResourcesCollection() db.Collection {
 func GetAllTrainingResources() []*DOMAIN.TrainingResources {
 	// Slice to keep all TrainingResources
 	var trainingResources []*DOMAIN.TrainingResources
-	// Add all TrainingResources in resources variable
-	err := getTrainingResourcesCollection().Find().All(&trainingResources)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+	if getTrainingResourcesCollection() != nil {
+		// Add all TrainingResources in resources variable
+		err := getTrainingResourcesCollection().Find().All(&trainingResources)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
+
 	return trainingResources
 }
 
@@ -46,13 +54,15 @@ func GetAllTrainingResources() []*DOMAIN.TrainingResources {
 func GetTrainingResourcesById(pId int) *DOMAIN.TrainingResources {
 	// TrainingResources structure
 	TrainingResources := DOMAIN.TrainingResources{}
-	// Add in TrainingResources variable, the TrainingResources where ID is the same that the param
-	res := getTrainingResourcesCollection().Find(db.Cond{"id": pId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&TrainingResources)
-	if err != nil {
-		log.Error(err)
+	if getTrainingResourcesCollection() != nil {
+		// Add in TrainingResources variable, the TrainingResources where ID is the same that the param
+		res := getTrainingResourcesCollection().Find(db.Cond{"id": pId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&TrainingResources)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return &TrainingResources
 }
@@ -66,28 +76,31 @@ func GetTrainingResourcesById(pId int) *DOMAIN.TrainingResources {
 func GetTrainingResourcesByTrainingId(pTrainingId int) []*DOMAIN.TrainingResources {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert in DB
-	q := session.Select("trn.id", "trn.training_id", "trn.resource_id", "resource.name resource_name",
-		"trn.start_date", "trn.end_date", "trn.duration", "trn.progress",
-		"trn.test_result", "trn.result_status").
-		From("TrainingResources AS trn").
-		Join("Resource AS resource").
-		On("resource.id = trn.resource_id").
-		And("training_id", pTrainingId)
-
-	rows, err := q.Query()
-	if err != nil {
-		log.Error(err)
-		return nil
-	}
-
 	trainingResources := []*DOMAIN.TrainingResources{}
-	iter := sqlbuilder.NewIterator(rows)
-	err = iter.All(&trainingResources)
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert in DB
+		q := session.Select("trn.id", "trn.training_id", "trn.resource_id", "resource.name resource_name",
+			"trn.start_date", "trn.end_date", "trn.duration", "trn.progress",
+			"trn.test_result", "trn.result_status").
+			From("TrainingResources AS trn").
+			Join("Resource AS resource").
+			On("resource.id = trn.resource_id").
+			And("training_id", pTrainingId)
 
+		rows, err := q.Query()
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
+
+		iter := sqlbuilder.NewIterator(rows)
+		err = iter.All(&trainingResources)
+
+	}
 	return trainingResources
+
 }
 
 /**
@@ -99,14 +112,16 @@ func GetTrainingResourcesByTrainingId(pTrainingId int) []*DOMAIN.TrainingResourc
 func GetTrainingResourcesByResourceId(pResourceId int) []*DOMAIN.TrainingResources {
 	// TrainingResources structure
 	trainingResources := []*DOMAIN.TrainingResources{}
-	// Add in trainingResources variable, the trainingResources where ID is the same that the param
-	res := getTrainingResourcesCollection().Find().Where("resource_id  = ?", pResourceId)
-	// Close session when ends the method
-	defer session.Close()
-	// Add all trainingResources in trainingResources variable
-	err := res.All(&trainingResources)
-	if err != nil {
-		log.Error(err)
+	if getTrainingResourcesCollection() != nil {
+		// Add in trainingResources variable, the trainingResources where ID is the same that the param
+		res := getTrainingResourcesCollection().Find().Where("resource_id  = ?", pResourceId)
+		// Close session when ends the method
+		defer session.Close()
+		// Add all trainingResources in trainingResources variable
+		err := res.All(&trainingResources)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return trainingResources
 }
@@ -120,20 +135,24 @@ func GetTrainingResourcesByResourceId(pResourceId int) []*DOMAIN.TrainingResourc
 func AddTrainingResources(pTrainingResources *DOMAIN.TrainingResources) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert trainingResources in DB
-	res, err := session.InsertInto("TrainingResources").Columns(
-		"training_id", "resource_id", "start_date", "end_date", "duration", "progress", "test_result", "result_status").Values(
-		pTrainingResources.TrainingId, pTrainingResources.ResourceId, pTrainingResources.StartDate, pTrainingResources.EndDate,
-		pTrainingResources.Duration, pTrainingResources.Progress, pTrainingResources.TestResult, pTrainingResources.ResultStatus).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert trainingResources in DB
+		res, err := session.InsertInto("TrainingResources").Columns(
+			"training_id", "resource_id", "start_date", "end_date", "duration", "progress", "test_result", "result_status").Values(
+			pTrainingResources.TrainingId, pTrainingResources.ResourceId, pTrainingResources.StartDate, pTrainingResources.EndDate,
+			pTrainingResources.Duration, pTrainingResources.Progress, pTrainingResources.TestResult, pTrainingResources.ResultStatus).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-	return int(insertId), nil
 }
 
 /**
@@ -145,28 +164,30 @@ func AddTrainingResources(pTrainingResources *DOMAIN.TrainingResources) (int, er
 func AddBulkTrainingResources(pTrainingResources []*DOMAIN.TrainingResources) error {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert trainingResources in DB
-	batch := session.InsertInto("TrainingResources").Columns(
-		"training_id", "resource_id", "start_date", "end_date",
-		"duration", "progress", "test_result", "result_status").Batch(len(pTrainingResources))
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert trainingResources in DB
+		batch := session.InsertInto("TrainingResources").Columns(
+			"training_id", "resource_id", "start_date", "end_date",
+			"duration", "progress", "test_result", "result_status").Batch(len(pTrainingResources))
 
-	go func() {
-		defer batch.Done()
-		for _, trSkill := range pTrainingResources {
-			batch.Values(
-				trSkill.TrainingId, trSkill.ResourceId, trSkill.StartDate, trSkill.EndDate,
-				trSkill.Duration, trSkill.Progress, trSkill.TestResult, trSkill.ResultStatus)
+		go func() {
+			defer batch.Done()
+			for _, trSkill := range pTrainingResources {
+				batch.Values(
+					trSkill.TrainingId, trSkill.ResourceId, trSkill.StartDate, trSkill.EndDate,
+					trSkill.Duration, trSkill.Progress, trSkill.TestResult, trSkill.ResultStatus)
+			}
+		}()
+		err := batch.Wait()
+		if err != nil {
+			log.Error(err)
+			return err
 		}
-	}()
-	err := batch.Wait()
-	if err != nil {
-		log.Error(err)
-		return err
+		return nil
 	}
 	return nil
-
 }
 
 /**
@@ -178,20 +199,24 @@ func AddBulkTrainingResources(pTrainingResources []*DOMAIN.TrainingResources) er
 func UpdateTrainingResources(pTrainingResources *DOMAIN.TrainingResources) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update trainingResources in DB
-	q := session.Update("TrainingResources").Set("training_id = ?, resource_id =?, start_date=?, end_date=?, duration=?, progress=?, test_result=?, result_status=?",
-		pTrainingResources.TrainingId, pTrainingResources.ResourceId, pTrainingResources.StartDate, pTrainingResources.EndDate,
-		pTrainingResources.Duration, pTrainingResources.Progress, pTrainingResources.TestResult, pTrainingResources.ResultStatus).Where("id = ?", pTrainingResources.ID)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update trainingResources in DB
+		q := session.Update("TrainingResources").Set("training_id = ?, resource_id =?, start_date=?, end_date=?, duration=?, progress=?, test_result=?, result_status=?",
+			pTrainingResources.TrainingId, pTrainingResources.ResourceId, pTrainingResources.StartDate, pTrainingResources.EndDate,
+			pTrainingResources.Duration, pTrainingResources.Progress, pTrainingResources.TestResult, pTrainingResources.ResultStatus).Where("id = ?", pTrainingResources.ID)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -203,18 +228,22 @@ func UpdateTrainingResources(pTrainingResources *DOMAIN.TrainingResources) (int,
 func DeleteTrainingResources(pTrainingResourcesId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete trainingResources in DB
-	q := session.DeleteFrom("TrainingResources").Where("id", int(pTrainingResourcesId))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete trainingResources in DB
+		q := session.DeleteFrom("TrainingResources").Where("id", int(pTrainingResourcesId))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -226,18 +255,22 @@ func DeleteTrainingResources(pTrainingResourcesId int) (int, error) {
 func DeleteTrainingResourcesByTrainingId(pTrainingId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete TrainingResources in DB
-	q := session.DeleteFrom("TrainingResources").Where("training_id", int(pTrainingId))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete TrainingResources in DB
+		q := session.DeleteFrom("TrainingResources").Where("training_id", int(pTrainingId))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -249,17 +282,19 @@ func DeleteTrainingResourcesByTrainingId(pTrainingId int) (int, error) {
 func GetTrainingResourcesByResourceIdAndTrainingId(pResourceId, pTrainingId int) *DOMAIN.TrainingResources {
 	// TrainingResources structure
 	trainingResources := DOMAIN.TrainingResources{}
-	// Add in trainingResources variable, the trainingResources where ID is the same that the param
-	res := getTrainingResourcesCollection().Find(db.Cond{"resource_id": pResourceId}).And(db.Cond{"training_id": pTrainingId})
-	// Close session when ends the method
-	defer session.Close()
-	count, err := res.Count()
-	if count > 0 {
-		err = res.One(&trainingResources)
-		if err != nil {
-			log.Debug(err)
+	if getTrainingResourcesCollection() != nil {
+		// Add in trainingResources variable, the trainingResources where ID is the same that the param
+		res := getTrainingResourcesCollection().Find(db.Cond{"resource_id": pResourceId}).And(db.Cond{"training_id": pTrainingId})
+		// Close session when ends the method
+		defer session.Close()
+		count, err := res.Count()
+		if count > 0 {
+			err = res.One(&trainingResources)
+			if err != nil {
+				log.Debug(err)
+			}
+			return &trainingResources
 		}
-		return &trainingResources
 	}
 
 	return nil

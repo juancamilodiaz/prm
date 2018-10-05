@@ -1,7 +1,7 @@
 <script>
 	$(document).ready(function(){
-		$("#projectStartDate").val(getDateToday());
-		$("#projectEndDate").val(getDateToday());
+		//$("#projectStartDate").val(getDateToday());
+		//$("#projectEndDate").val(getDateToday());
 			
 		$('#backButton').css("display", "inline-block");
 		$('#backButton').html("Go to projects");
@@ -20,15 +20,15 @@
 		$('#buttonOption').attr("onclick","createProject();");
 		
 		
-		var prjStartDate = formatDate({{.StartDate}});
+	/*	var prjStartDate = formatDate({{.StartDate}});
 		var prjEndDate = formatDate({{.EndDate}});
-		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);
+		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);*/
 		
 		$('#skillsActive').prop('checked', false);
 		$('#projectTypeSimulator').prop('disabled', true);
 		$('#projectHoursActive').prop('checked', false);
-		$('#projectHours').prop('disabled', true);
-		$('#personNumber').prop('disabled', true);
+		//$('#projectHours').prop('disabled', true);
+		//$('#personNumber').prop('disabled', true);
 		
 		$('#projectStartDate').change(function(){
 			$('#projectEndDate').attr("min", $("#projectStartDate").val());
@@ -113,103 +113,188 @@
 		$("#projectEndDate").prop('disabled', this.checked);
 	});
 	
-
 </script>
-<div class="col-sm-12" style="padding: unset;">
-	<div class="col-sm-4" style="padding: unset;">
-		<div class="col-sm-12" id="simulator" style="margin: 2%;padding: 2%;border-style: outset;border-radius: 8px;">
-		    <!-- Modal content-->
-		      <div>
-		        <input type="hidden" id="projectID">
-		        <div class="col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-7 form-group form-group-sm">
-		        		<label class="translatable" data-i18n="Operation Center" style="padding:1px"> Operation Center </label>
-		          	</div>
-					<div class="col-sm-5" style="padding-right:1px;">
-	              		<input type="text" id="projectOperationCenter" style="border-radius: 8px;width: -webkit-fill-available;">
-	        		</div>
-		        </div>
-		        <div class="col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-7 form-group form-group-sm">
-		        		<label class="translatable" data-i18n="Work Order" style="padding:1px"> Work Order </label>
-		          	</div>
-					<div class="col-sm-5" style="padding-right:1px;">
-	              		<input type="number" id="projectWorkOrder" style="border-radius: 8px;width: -webkit-fill-available;">
-	        		</div>
-		        </div>
-		        <div class="col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-7 form-group form-group-sm">
-		        		<label class="translatable" data-i18n="Name" style="padding:1px"> Name </label>
-		          	</div>
-					<div class="col-sm-5" style="padding-right:1px;">
-	              		<input type="text" id="projectName" style="border-radius: 8px;width: -webkit-fill-available;">
-	        		</div>
-		        </div>
-		        <div class="col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-7 form-group form-group-sm">
-	        			<label class="translatable" data-i18n="Start Date" style="padding:1px"> Start Date </label> 
-		          	</div>
-					<div class="col-sm-5" style="padding-right:1px;">
-	              		<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;width: -webkit-fill-available;">
-	        		</div>
-		        </div>
-		        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-7 form-group form-group-sm">
-		        		<label class="translatable" data-i18n="End Date" style="padding:1px"> End Date </label> 
-		          	</div>
-					<div class="col-sm-5" style="padding-right:1px;">
-	              		<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;width: -webkit-fill-available;">
-	        		</div>
-		        </div>
-				<div class="col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-6 form-group form-group-sm">
-		        		<label class="translatable" data-i18n="Hours" style="padding:1px"> Hours </label>
-		          	</div>
-					<div class="col-sm-1" style="padding-right:1px">
-		        		<input type="checkbox" id="projectHoursActive" style="width: -webkit-fill-available;"><br/>
-		          	</div>
-					<div class="col-sm-5" style="padding-right:1px;">
-	              		<input type="number" id="projectHours" style="border-radius: 8px;width: -webkit-fill-available;">
-	        		</div>
-		        </div>
-				<div class="col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-7 form-group form-group-sm">
-		        		<label class="translatable" data-i18n="Number of resources" style="padding:1px"> Number of resources </label>
-		          	</div>
-					<div class="col-sm-5" style="padding-right:1px;">
-	              		<input type="number" id="personNumber" style="border-radius: 8px;width: -webkit-fill-available;" value="1">
-	        		</div>
-		        </div>
-				<div class="col-sm-12" style="padding-bottom: 1%;">
-		        	<div class="col-sm-7 form-group form-group-sm">
-		        		<label class="translatable" data-i18n="Active" style="padding:1px"> Active </label>  
-		          	</div>
-					<div class="col-sm-5" style="padding-right:1px">
-		              	<input type="checkbox" id="projectActive" style="width: -webkit-fill-available;"><br/>
-		            </div>   
-		        </div>
-				<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-		        	<div id="divProjectType" class="col-sm-6 form-group form-group-sm">
-		        		<label class="translatable"  data-i18n="Types" style="padding:1px"> Types </label> 
-		          	</div>
-					<div class="col-sm-1" style="padding-right:1px">
-	              		<input type="checkbox" id="skillsActive" style="width: -webkit-fill-available;"><br/>
-	              	</div>
-					<div class="col-sm-5" style="padding-right:1px">
-		             	<select  id="projectTypeSimulator" multiple style="width: -webkit-fill-available; border-radius: 8px;">
-							{{range $key, $types := .Types}}
-								<option value={{$types.ID}}>{{$types.Name}}</option>
-							{{end}}	
-						</select>
-	              	</div>    
-		        </div>
-		      </div>
-		      <div style="text-align: center;">
-		        <button type="button" id="btnSimulate" class="btn btn-default" onclick="getResourcesByProjectAvail();">Simulate</button>
-		      </div>
+<div class="row">
+
+<div class="col s4">
+	<div class="card-panel">
+	<h5 class="header2">Simulator</h5>
+	<div class="row ">
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+			<input id="projectOperationCenter" type="text">
+			<label for="projectOperationCenter">Operation Center </label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+			<input id="projectWorkOrder" type="number">
+			<label for="projectWorkOrder">Work Order</label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+			<input id="projectName" type="text">
+			<label for="projectName">Name</label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12 ">
+			<input id="projectStartDate" type="date">
+			<label for="projectStartDate" class="active">Start Date</label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+			<input id="projectEndDate" type="date">
+			<label for="projectEndDate" class="active">End Date</label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+			<input id="projectWorkOrder" type="number">
+			<label for="projectWorkOrder">Work Order</label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+			<input id="projectHours" type="number">
+			<label for="projectHours">Hours</label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+			<input id="personNumber" type="number">
+			<label for="personNumber">Number of resources</label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+				<input id="projectActive" type="checkbox">
+				<label for="projectActive">Active</label>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+				<label for="projectTypeSimulator">Types</label>
+				<select  id="projectTypeSimulator" multiple>
+					{{range $key, $types := .Types}}
+						<option value={{$types.ID}}>{{$types.Name}}</option>
+					{{end}}	
+				</select>
+			</div>
+		</div>
+		<div class="row formSimulate">
+			<div class="input-field col s12">
+			<a onclick="getResourcesByProjectAvail();" class="btn waves-effect waves-light green">Simulate</a>
+
+			</div>
+		</div>
 		</div>
 	</div>
-	<div id="listResourceAble" class="col-sm-8">
-		
+	</div>
+</div>
+
+</div>
+
+
+
+
+<!--
+	<div class="col s12 m12 l12">
+			<div id="simulator" class="col s6 m6 l6">
+				<div>
+					<input type="hidden" id="projectID">
+					<div class="col s6 m6 l6" style="padding-bottom: 1%;">
+						<div class="col s6">
+							<label class="translatable" data-i18n="Operation Center" style="padding:1px"> Operation Center </label>
+						</div>
+						<div class="col s6">
+							<input type="text" id="projectOperationCenter" style="border-radius: 8px;width: -webkit-fill-available;">
+						</div>
+					</div>
+					<div class="col s6 m6 l6" style="padding-bottom: 1%;">
+						<div class="cols7 form-group form-group-sm">
+							<label class="translatable" data-i18n="Work Order" style="padding:1px"> Work Order </label>
+						</div>
+						<div class="col-sm-5" style="padding-right:1px;">
+							<input type="number" id="projectWorkOrder" style="border-radius: 8px;width: -webkit-fill-available;">
+						</div>
+					</div>
+					<div class="col-sm-12" style="padding-bottom: 1%;">
+						<div class="cols7 form-group form-group-sm">
+							<label class="translatable" data-i18n="Name" style="padding:1px"> Name </label>
+						</div>
+						<div class="col-sm-5" style="padding-right:1px;">
+							<input type="text" id="projectName" style="border-radius: 8px;width: -webkit-fill-available;">
+						</div>
+					</div>
+					<div class="col-sm-12" style="padding-bottom: 1%;">
+						<div class="cols7 form-group form-group-sm">
+							<label class="translatable" data-i18n="Start Date" style="padding:1px"> Start Date </label> 
+						</div>
+						<div class="col-sm-5" style="padding-right:1px;">
+							<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;width: -webkit-fill-available;">
+						</div>
+					</div>
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+						<div class="cols7 form-group form-group-sm">
+							<label class="translatable" data-i18n="End Date" style="padding:1px"> End Date </label> 
+						</div>
+						<div class="col-sm-5" style="padding-right:1px;">
+							<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;width: -webkit-fill-available;">
+						</div>
+					</div>
+					<div class="col-sm-12" style="padding-bottom: 1%;">
+						<div class="col-sm-6 form-group form-group-sm">
+							<label class="translatable" data-i18n="Hours" style="padding:1px"> Hours </label>
+						</div>
+						<div class="col-sm-1" style="padding-right:1px">
+							<input type="checkbox" id="projectHoursActive" style="width: -webkit-fill-available;"><br/>
+						</div>
+						<div class="col-sm-5" style="padding-right:1px;">
+							<input type="number" id="projectHours" style="border-radius: 8px;width: -webkit-fill-available;">
+						</div>
+					</div>					
+					<div class="col-sm-12" style="padding-bottom: 1%;">
+						<div class="cols7 form-group form-group-sm">
+							<label class="translatable" data-i18n="Number of resources" style="padding:1px"> Number of resources </label>
+						</div>
+						<div class="col-sm-5" style="padding-right:1px;">
+							<input type="number" id="personNumber" style="border-radius: 8px;width: -webkit-fill-available;" value="1">
+						</div>
+					</div>
+					<div class="col-sm-12" style="padding-bottom: 1%;">
+						<div class="cols7 form-group form-group-sm">
+							<label class="translatable" data-i18n="Active" style="padding:1px"> Active </label>  
+						</div>
+						<div class="col-sm-5" style="padding-right:1px">
+							<input type="checkbox" id="projectActive" style="width: -webkit-fill-available;"><br/>
+						</div>   
+					</div>
+					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+						<div id="divProjectType" class="col-sm-6 form-group form-group-sm">
+							<label class="translatable"  data-i18n="Types" style="padding:1px"> Types </label> 
+						</div>
+						<div class="col-sm-1" style="padding-right:1px">
+							<input type="checkbox" id="skillsActive" style="width: -webkit-fill-available;"><br/>
+						</div>
+						<div class="col-sm-5" style="padding-right:1px">
+							<select  id="projectTypeSimulator" multiple style="width: -webkit-fill-available; border-radius: 8px;">
+								{{range $key, $types := .Types}}
+									<option value={{$types.ID}}>{{$types.Name}}</option>
+								{{end}}	
+							</select>
+						</div>    
+					</div>
+				</div>
+				<div style="text-align: center;">
+					<button type="button" id="btnSimulate" class="btn btn-default" onclick="getResourcesByProjectAvail();">Simulate</button>
+				</div>
+			</div>	
+
+			-->	
+		 	<div id="listResourceAble" class="col s6 m6 l6">		
+			</div>
 	</div>
 </div>

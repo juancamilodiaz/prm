@@ -831,6 +831,9 @@ h5.breadcrumbs-header {
   padding: 2px 0;
   font-size: 0.9rem;
 }
+.formSimulate{
+  margin-bottom: 0px;
+}
 .doughnut-chart-legend li:before {
   content: "";
   width: 8px;
@@ -1435,6 +1438,27 @@ tr.group:hover {
 #viewProductivity{
   font-size:14px;
 }
+.TableConfig {
+  font-size:14px;
+}
+  
+.TableConfig th{
+text-align: left;
+padding: 8px 15px;
+}
+.TableConfig td{
+text-align:left;
+}
+
+.CardTable {
+
+margin: 20px;
+}
+
+.marginCard {
+margin-top: 50px;
+} 
+
 .progressInfo{
   display:none;
 }

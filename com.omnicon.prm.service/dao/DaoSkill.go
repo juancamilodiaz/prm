@@ -17,8 +17,12 @@ import (
 func getSkillCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table skill in the session
-	return session.Collection("Skill")
+	if session != nil {
+		// Return table skill in the session
+		return session.Collection("Skill")
+	} else {
+		return nil
+	}
 }
 
 /**
@@ -29,12 +33,14 @@ func getSkillCollection() db.Collection {
 func GetAllSkills() []*DOMAIN.Skill {
 	// Slice to keep all skills
 	var skills []*DOMAIN.Skill
-	// Add all skills in skills variable
-	err := getSkillCollection().Find().All(&skills)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+	if getSkillCollection() != nil {
+		// Add all skills in skills variable
+		err := getSkillCollection().Find().All(&skills)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return skills
 }
@@ -48,14 +54,16 @@ func GetAllSkills() []*DOMAIN.Skill {
 func GetSkillById(pId int) *DOMAIN.Skill {
 	// Skill structure
 	skill := DOMAIN.Skill{}
-	// Add in skill variable, the skill where ID is the same that the param
-	res := getSkillCollection().Find(db.Cond{"id": pId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&skill)
-	if err != nil {
-		log.Error(err)
-		return nil
+	if getSkillCollection() != nil {
+		// Add in skill variable, the skill where ID is the same that the param
+		res := getSkillCollection().Find(db.Cond{"id": pId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&skill)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
 	}
 	return &skill
 }
@@ -68,15 +76,18 @@ func GetSkillById(pId int) *DOMAIN.Skill {
  */
 func GetSkillsByName(pName string) []*DOMAIN.Skill {
 	// Slice to keep all skills
+
 	skills := []*DOMAIN.Skill{}
-	// Filter skills by name
-	res := getSkillCollection().Find().Where("name  = ?", pName)
-	// Close session when ends the method
-	defer session.Close()
-	// Add all skills in skills variable
-	err := res.All(&skills)
-	if err != nil {
-		log.Error(err)
+	if getSkillCollection() != nil {
+		// Filter skills by name
+		res := getSkillCollection().Find().Where("name  = ?", pName)
+		// Close session when ends the method
+		defer session.Close()
+		// Add all skills in skills variable
+		err := res.All(&skills)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return skills
 }
@@ -90,35 +101,40 @@ func GetSkillsByName(pName string) []*DOMAIN.Skill {
 func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
 	// Slice to keep all skills
 	skills := []*DOMAIN.Skill{}
-	// Filter skills by name
-	result := getSkillCollection().Find()
+	var string_response string
 
-	// Close session when ends the method
-	defer session.Close()
+	if getSkillCollection() != nil {
+		// Filter skills by name
+		result := getSkillCollection().Find()
 
-	var filters bytes.Buffer
-	if pSkillFilters.ID != 0 {
-		filters.WriteString("id = '")
-		filters.WriteString(strconv.Itoa(pSkillFilters.ID))
-		filters.WriteString("'")
-	}
-	if pSkillFilters.Name != "" {
+		// Close session when ends the method
+		defer session.Close()
+
+		var filters bytes.Buffer
+		if pSkillFilters.ID != 0 {
+			filters.WriteString("id = '")
+			filters.WriteString(strconv.Itoa(pSkillFilters.ID))
+			filters.WriteString("'")
+		}
+		if pSkillFilters.Name != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("name = '")
+			filters.WriteString(pSkillFilters.Name)
+			filters.WriteString("'")
+		}
+
 		if filters.String() != "" {
-			filters.WriteString(" and ")
+			// Add all skills in skills variable
+			err := result.Where(filters.String()).All(&skills)
+			if err != nil {
+				log.Error(err)
+			}
 		}
-		filters.WriteString("name = '")
-		filters.WriteString(pSkillFilters.Name)
-		filters.WriteString("'")
+		string_response = filters.String()
 	}
-
-	if filters.String() != "" {
-		// Add all skills in skills variable
-		err := result.Where(filters.String()).All(&skills)
-		if err != nil {
-			log.Error(err)
-		}
-	}
-	return skills, filters.String()
+	return skills, string_response
 }
 
 /**
@@ -130,19 +146,23 @@ func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
 func AddSkill(pSkill *DOMAIN.Skill) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert skill in DB
-	res, err := session.InsertInto("Skill").Columns(
-		"name").Values(
-		pSkill.Name).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert skill in DB
+		res, err := session.InsertInto("Skill").Columns(
+			"name").Values(
+			pSkill.Name).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-	return int(insertId), nil
 }
 
 /**
@@ -154,18 +174,22 @@ func AddSkill(pSkill *DOMAIN.Skill) (int, error) {
 func UpdateSkill(pSkill *DOMAIN.Skill) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update skill in DB
-	q := session.Update("Skill").Set("name = ?", pSkill.Name).Where("id = ?", pSkill.ID)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update skill in DB
+		q := session.Update("Skill").Set("name = ?", pSkill.Name).Where("id = ?", pSkill.ID)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -177,16 +201,20 @@ func UpdateSkill(pSkill *DOMAIN.Skill) (int, error) {
 func DeleteSkill(pSkillId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete skill in DB
-	q := session.DeleteFrom("Skill").Where("id", pSkillId)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete skill in DB
+		q := session.DeleteFrom("Skill").Where("id", pSkillId)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }

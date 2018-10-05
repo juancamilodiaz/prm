@@ -262,7 +262,7 @@ func (this *ProjectForecastController) ListProjectsForecast() {
 				referenceDate := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.Local)
 				actualTime := time.Now()
 				actualYear := actualTime.Year()
-				for year := actualYear - 1; year <= actualYear+1; year++ {
+				for year := actualYear - 1; year <= actualYear; year++ {
 					workLoad, exist := tableWorkLoad[year]
 					if exist {
 						for i := 0; i < 12; i++ {
@@ -283,6 +283,7 @@ func (this *ProjectForecastController) ListProjectsForecast() {
 							referenceDate = referenceDate.AddDate(0, 1, 0)
 						}
 					}
+					break
 				}
 				this.Data["MinLoad"] = minLoad
 				this.Data["MaxLoad"] = maxLoad

@@ -3,8 +3,9 @@ package util
 // Config estructura utilizada para guardar los datos del archivo
 // de configuración del servicio conf-1.ini
 type Config struct {
-	Service Service
-	Logs    Logs
+	Service     Service
+	Logs        Logs
+	ConfigMSSQL ConfigMSSQL
 }
 
 // Service estructura que guarda los datos de la sección service
@@ -24,6 +25,14 @@ type MSSQL struct {
 	TableName     string
 	IndexName     string
 	ValueForIndex string
+}
+
+//Database Structure connection
+type ConfigMSSQL struct {
+	User     string
+	Password string
+	Host     string
+	Database string
 }
 
 // Logs estructura utilizada para guardar los datos del archivo
