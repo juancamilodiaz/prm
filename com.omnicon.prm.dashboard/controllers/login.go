@@ -6,7 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/smtp"
+
 	//	"net/url"
+
 	"os"
 	"strings"
 	"time"
@@ -75,11 +77,9 @@ func (this *LoginController) Login() {
 		}
 		uri := BuildURI(false, serverip, proxyip, "oauth2", "start")
 		client.Get(uri) //?rd=/oauth2/sign_in
-
 		this.Redirect(uri, 307)
 
 	}
-
 	this.TplName = "Projects/listResourceByProjectToday.tpl"
 }
 
