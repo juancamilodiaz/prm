@@ -62,6 +62,7 @@ func (this *LoginController) Login() {
 		fmt.Println("session2", session.AccessToken)
 		fmt.Println("s.Email 4", session.Email)
 		this.Provider.GetEmailAddress(session)
+		this.Data["email"] = session.Email
 		//this.TplName = "Projects/listResourceByProjectToday.tpl"
 		this.TplName = "Projects/ProductivityReportNew.tpl"
 	} else {
