@@ -31,11 +31,10 @@ func (c *MainController) Get() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Json", string(personalInformation))
 	c.Data["Website"] = "beego.me"
 	c.Data["Email"] = "astaxie@gmail.com"
-	c.Data["personalInformation"] = string(personalInformation)
-	c.Data["profilePicture"] = string(profilePicture)
+	c.Data["PersonalInformation"] = string(personalInformation)
+	c.Data["ProfilePicture"] = string(profilePicture)
 	c.TplName = "index.tpl"
 }
 
