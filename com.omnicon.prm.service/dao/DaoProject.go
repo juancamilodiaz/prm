@@ -8,6 +8,7 @@ import (
 	DOMAIN "prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 	"upper.io/db.v3"
+	"upper.io/db.v3/lib/sqlbuilder"
 )
 
 /**
@@ -312,4 +313,29 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 	}
 	// Close session when ends the method
 	return projects, string_response
+}
+
+func GetProjectsByResourceId(pResourceId int) ([]*DOMAIN.Project, string) {
+	//Slice to keep all projects associated to a given resource id
+	defer session.Close()
+	var projects []*DOMAIN.Project
+	session = GetSession()
+	if session != nil {
+		rows, err := session.Query(`SELECT DISTINCT t2.id, t2.[name], t2.start_date, t2.end_date, t2.enabled, t2.operation_center, t2.work_order, t2.leader_id, t2.cost
+		from ProjectResources as t1
+		join Project as t2 on t1.project_id = t2.id
+		where resource_id = ? and t2.end_date > GETDATE()`, pResourceId)
+
+		if err != nil {
+			return projects, "An error has occurred"
+		}
+
+		iter := sqlbuilder.NewIterator(rows)
+		iter.All(&projects)
+		return projects, "OK"
+
+	} else {
+		return projects, "An error has occurred"
+	}
+
 }
