@@ -13,9 +13,8 @@
     <!-- For iPhone -->
     <meta name="msapplication-TileColor" content="#00bcd4">
     <meta name="msapplication-TileImage" content="images/favicon/nosotros-favicon.ico">
-    <!-- For Windows Phone -->
-
-    <!-- CORE CSS-->    
+    <!-- CORE CSS--> 
+    
     <link href="/static/css/Materialize/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="/static/css/Materialize/style.css" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="http://cdn.datatables.net/1.10.6/css/jquery.dataTables.min.css" type="text/css" rel="stylesheet" media="screen,projection">
@@ -158,15 +157,11 @@
 
 <body>
 <div id="BodyPlaceHolder" ng-app="index" ng-controller='indexCtrl'>
-    <!-- Start Page Loading -->
     <div id="loader-wrapper">
         <div id="loader"></div>        
         <div class="loader-section section-left"></div>
         <div class="loader-section section-right"></div>
     </div>
-    <!-- End Page Loading -->
-
-    <!-- //////////////////////////////////////////////////////////////////////////// -->
 
     <!-- START HEADER -->
     <header id="header" class="page-topbar">
@@ -183,7 +178,7 @@
                         <li class="search-out">
                             <input type="text" class="search-out-text">
                         </li>
-                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-exit-to-app"></i></a>
+                        <li><a  href='{{urlfor "LoginController.Logout"}}' class="waves-effect waves-block waves-light"><i class="mdi-action-exit-to-app"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -192,8 +187,6 @@
         <!-- end header nav-->
     </header>
     <!-- END HEADER -->
-
-    <!-- //////////////////////////////////////////////////////////////////////////// -->
 
     <!-- START MAIN -->
     <div id="main">
@@ -204,10 +197,11 @@
                 <ul id="slide-out" class="side-nav fixed leftside-navigation">
                     <li class="user-details cyan darken-2">
                         <div class="row">
-                            <div class="col col s4 m4 l4">
-                                <img src="/static/img/avatar.jpg" alt="" class="circle responsive-img valign profile-image">
-                            </div>
+                                <div class="col col s4 m4 l4">
+                                <img src="" id="ItemPreview" alt="" class="circle responsive-img valign profile-image">
+                                </div>                                
                             <div class="col col s8 m8 l8">
+                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><i class="mdi-navigation-arrow-drop-down right"></i><span id="userName"></span></a>
                                 <ul id="profile-dropdown" class="dropdown-content">
                                     <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
                                     </li>
@@ -220,9 +214,8 @@
                                     </li>
                                     <li><a href="#"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
                                     </li>
-                                </ul>
-                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">Daniel C.<i class="mdi-navigation-arrow-drop-down right"></i></a>
-                                <p class="user-roal">Administrator</p>
+                                </ul>  
+                                <div id="userRole" class="user-roal userRoleText"></div>
                             </div>
                         </div>
                     </li>
@@ -272,11 +265,10 @@
                 <!--start container-->
                 <div  id="content" ng-bind-html="content">
                 </div>
-
                 <div id="ImagesHidden">
                     <div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px; top: 0; right: 0; left: 0; bottom: 0; position: absolute; margin: auto;" src="/static/img/loading.gif"></div>
                 </div>
-
+                
                 <!--end container-->
             </section>
             <!-- END CONTENT -->
@@ -299,11 +291,6 @@
         </div>
     </footer>
     <!-- END FOOTER -->
-
-
-    <!-- ================================================
-    Scripts
-    ================================================ -->
     
     <!--materialize js-->
     <script type="text/javascript" src="/static/js/js/materialize.min.js"></script>
@@ -313,28 +300,22 @@
 
     <!-- chartist -->
     <script type="text/javascript" src="/static/js/js/plugins/chartist-js/chartist.min.js"></script>   
-    
     <script type="text/javascript" src="/static/js/js/plugins/data-tables/js/jquery.dataTables.min.js"></script>
     
     
     <!--plugins.js - Some Specific JS codes for Plugin Settings-->
     <script type="text/javascript" src="/static/js/js/plugins.js"></script>
 
+ <script>                                   
+    ProfilePicture = JSON.parse({{ .ProfilePicture}});
+    PersonalInformation = JSON.parse({{ .PersonalInformation}});
+    var JobTitleSplitted = PersonalInformation.JobTitle.split(",");
 
-    
- 
-   
-    <!-- Toast Notification -->
-    <script type="text/javascript">
-    // Toast Notification
-    $(window).load(function() {
-       /* setTimeout(function() {
-            Materialize.toast('<span>Hiya! I am a toast.</span>', 1500);
-        }, 3000);*/
-
-    });
-    
-    </script>
+    $("#userName").text(PersonalInformation.GivenName);
+    $("#userRole").text(JobTitleSplitted[0]);
+    document.getElementById("ItemPreview").src = "data:image/png;base64," + ProfilePicture.Picture;
+  
+  </script> 
 </body>
 
 </html>

@@ -409,12 +409,12 @@
 		
 		$('#objectPdf').attr('data', doc.output('datauristring'));
 		$('#showDocumentPDF').modal('show');
-	} 
+	}  
 </script>
 <div class="containerProductivity">
 <h4 id="titleSearch"></h4>
 		<div class="row">
-			<div class="col s6"> 
+			<div class="col s12"> 
 				<label for="projectValue">Projects list: </label>
 				<select class="form-control" id="projectValue">
 					<option id="0">Select a project...</option>
