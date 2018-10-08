@@ -31,7 +31,6 @@ func (c *MainController) Get() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Json", string(personalInformation))
 	c.Data["Website"] = "beego.me"
 	c.Data["Email"] = "astaxie@gmail.com"
 	c.Data["PersonalInformation"] = string(personalInformation)
