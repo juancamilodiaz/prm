@@ -59,8 +59,6 @@ type PersonalInfoGraph struct {
 //var url string
 
 func init() {
-	fmt.Println("init init")
-
 	provider = getAzureProvider(azureprovider)
 	provider.ProtectedResource, _ = url.Parse(protectedresource)
 	provider.ClientID = clientid
