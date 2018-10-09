@@ -261,10 +261,11 @@ func DeleteProjectResourcesByProjectIdAndResourceId(pProjectId int, pResourceId 
 	}
 }
 
+//GetProjectsResourcesByFilters gets prjects by filters at the struct
 func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResources, pStartDate, pEndDate string, pLead *bool) ([]*DOMAIN.ProjectResources, string) {
 	// Slice to keep all resources
 	projectsResources := []*DOMAIN.ProjectResources{}
-	var string_response string
+	var stringResponse string
 	if getProjectResourcesCollection() != nil {
 		result := getProjectResourcesCollection().Find()
 
@@ -349,7 +350,7 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 			}
 		}
 
-		string_response = filters.String()
+		stringResponse = filters.String()
 	}
-	return projectsResources, string_response
+	return projectsResources, stringResponse
 }

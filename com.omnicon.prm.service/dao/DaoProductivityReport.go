@@ -232,7 +232,7 @@ func DeleteProductivityReport(pID int) (int, error) {
 func GetProductivityReportByFilters(pProductivityReportFilters *DOMAIN.ProductivityReport) ([]*DOMAIN.ProductivityReport, string) {
 	// Slice to keep all productivityReport
 	productivityReport := []*DOMAIN.ProductivityReport{}
-	var string_response string
+	var stringResponse string
 	if getProductivityReportCollection() != nil {
 		// Filter productivityReport
 		result := getProductivityReportCollection().Find()
@@ -270,8 +270,8 @@ func GetProductivityReportByFilters(pProductivityReportFilters *DOMAIN.Productiv
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 
 	}
-	return productivityReport, string_response
+	return productivityReport, stringResponse
 }

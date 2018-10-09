@@ -208,7 +208,7 @@ func DeleteTraining(pTrainingId int) (int, error) {
 func GetTrainingsByFilters(pTrainingFilters *DOMAIN.Training) ([]*DOMAIN.Training, string) {
 	// Slice to keep all trainings
 	trainings := []*DOMAIN.Training{}
-	var string_response string
+	var stringResponse string
 	if getTrainingCollection() != nil {
 		// Filter trainings
 		result := getTrainingCollection().Find()
@@ -254,7 +254,7 @@ func GetTrainingsByFilters(pTrainingFilters *DOMAIN.Training) ([]*DOMAIN.Trainin
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 	}
-	return trainings, string_response
+	return trainings, stringResponse
 }

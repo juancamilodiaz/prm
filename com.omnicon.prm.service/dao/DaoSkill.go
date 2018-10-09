@@ -101,7 +101,7 @@ func GetSkillsByName(pName string) []*DOMAIN.Skill {
 func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
 	// Slice to keep all skills
 	skills := []*DOMAIN.Skill{}
-	var string_response string
+	var stringResponse string
 
 	if getSkillCollection() != nil {
 		// Filter skills by name
@@ -132,9 +132,9 @@ func GetSkillsByFilters(pSkillFilters *DOMAIN.Skill) ([]*DOMAIN.Skill, string) {
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 	}
-	return skills, string_response
+	return skills, stringResponse
 }
 
 /**

@@ -261,7 +261,7 @@ func DeleteProjectForecastAssignsByProjectForecastIdAndTypeId(pProjectForecastId
 func GetProjectsForecastAssignsByFilters(pProjectForecastAssignsFilters *DOMAIN.ProjectForecastAssigns) ([]*DOMAIN.ProjectForecastAssigns, string) {
 	// Slice to keep all resources
 	projectsForecastAssigns := []*DOMAIN.ProjectForecastAssigns{}
-	var string_response string
+	var stringResponse string
 	if getProjectForecastCollection() != nil {
 		result := getProjectForecastAssignsCollection().Find()
 
@@ -321,7 +321,7 @@ func GetProjectsForecastAssignsByFilters(pProjectForecastAssignsFilters *DOMAIN.
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 	}
-	return projectsForecastAssigns, string_response
+	return projectsForecastAssigns, stringResponse
 }

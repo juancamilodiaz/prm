@@ -229,7 +229,7 @@ func DeleteProject(pProjectId int) (int, error) {
 func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
 	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
-	var string_response string
+	var stringResponse string
 
 	result_ini := getProjectCollection()
 
@@ -309,11 +309,11 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 
 	}
 	// Close session when ends the method
-	return projects, string_response
+	return projects, stringResponse
 }
 
 func GetProjectsByResourceId(pResourceId int) ([]*DOMAIN.Project, string) {

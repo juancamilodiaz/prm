@@ -195,7 +195,7 @@ func DeleteResource(pResourceId int) (int, error) {
 func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([]*DOMAIN.Resource, string) {
 	// Slice to keep all resources
 	resources := []*DOMAIN.Resource{}
-	var string_response string
+	var stringResponse string
 
 	if getResourceCollection() != nil {
 		result := getResourceCollection().Find()
@@ -256,7 +256,7 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 	}
-	return resources, string_response
+	return resources, stringResponse
 }

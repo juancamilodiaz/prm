@@ -140,7 +140,7 @@ func UpdateSettings(pSettings *DOMAIN.Settings) (int, error) {
 func GetSettingsByFilters(pSettingsFilters *DOMAIN.Settings) ([]*DOMAIN.Settings, string) {
 	// Slice to keep all settings
 	settings := []*DOMAIN.Settings{}
-	var string_response string
+	var stringResponse string
 
 	if getSettingsCollection() != nil {
 		// Filter settings
@@ -195,7 +195,7 @@ func GetSettingsByFilters(pSettingsFilters *DOMAIN.Settings) ([]*DOMAIN.Settings
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 	}
-	return settings, string_response
+	return settings, stringResponse
 }
