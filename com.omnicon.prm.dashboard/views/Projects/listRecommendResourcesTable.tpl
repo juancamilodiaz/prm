@@ -3,6 +3,40 @@
 	var MyProject = {};
 	var chart;
 	$(document).ready(function(){
+
+		
+// Simple function that accepts two parameters and calculates
+// the number of hours worked within that range
+function workingHoursBetweenDates(startDate, endDate, workHoursUpdate, isHoursPerDay) {  
+    // Store minutes worked
+    var hoursWorked = 0;
+
+    // Validate input
+    if (endDate < startDate) { return 0; }
+
+    // Loop from your Start to End dates (by hour)
+    var current = startDate;
+
+    // Define work hours
+    var workHours = 8;
+	if (isHoursPerDay){
+		workHours = parseFloat(workHoursUpdate);
+	}
+	if (endDate.getDate() == startDate.getDate()) { return workHours; }
+	// Loop while currentDate is less than end Date (by minutes)
+    while(current <= endDate){
+		
+		if (current.getDay() !== 6 && current.getDay() !== 5) {
+			hoursWorked = hoursWorked + workHours;
+		}
+		current = addDays(current,1);
+	}
+	
+    // Return the number of hours
+    return hoursWorked;
+}
+
+
 		MyProject.table = $('#availabilityTable').DataTable({
 			"columns": [
 				{"className":'details-control',"searchable":true},

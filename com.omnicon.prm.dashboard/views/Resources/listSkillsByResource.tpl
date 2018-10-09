@@ -290,11 +290,12 @@ body {font-family: Verdana,sans-serif;margin:0}
 }
 </style>
 </head>
+
 <body>
 <div class="container" style="padding:15px;">
-	<h5>Skills by resource</h5>
+	<h6>Skills by resource</h6>
 	<div class="row">
-		<div class="col s12 m6 l6">
+		<div class="col s6">
 		<table id="viewSkillsInResource" class="display" cellspacing="0" width="100%">
 			<thead>
 				<tr>
@@ -320,9 +321,9 @@ body {font-family: Verdana,sans-serif;margin:0}
 			</tbody>
 		</table>
 		</div>
-		<div class="col s12 m6 l5 offset-l1">
+		<div class="col s6">
 			<p>
-			<div class="slideshow-container_">
+			<div class="slideshow-container">
 				{{$mapSkillsAndValues := .MapSkillsAndValues}}
 				{{$listTypesName := .ListTypesName}}
 				{{$listSkills := .ListSkills}}	
@@ -440,52 +441,53 @@ body {font-family: Verdana,sans-serif;margin:0}
     		<!-- Modal content-->
     		<div class="modal-content">
       			<div class="modal-header">
-			        <h5 id="modalUpdateResourceSkillTitle" class="modal-title">Update Resource Skill</h5>
-					<div class="divider"></div> 
+			        <h4 id="modalUpdateResourceSkillTitle" class="modal-title"></h4>
 			    </div>
 			</div>
-			<div class="modal-content">
-				<input type="hidden" id="updateResourceSkillId">
-				<div class="row-box col s12" style="padding-bottom: 1%;">
-					<div class="form-group form-group-sm">
-						<label class="control-label col s4 translatable" data-i18n="Skill Name"> Skill Name </label>
-						<div class="col s8">
-							<input type="text" id="updateResourceNameSkill" disabled style="border-radius: 8px;">
-						</div>
-					</div>
-				</div>
-				<div class="row-box col s12" style="padding-bottom: 1%;">
-					<div class="form-group form-group-sm">
-						<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
-						<div class="col s8">
-							<input type="number" id="updateResourceValueSkill" min="1" max="100" style="border-radius: 8px;">
-						</div>
-					</div>
-				</div>
-			</div>
-				<div class="modal-footer">
-					<a class="waves-effect waves-green btn-flat modal-action modal-close"  id="updateResourceSkill"   onclick="setSkillToResource({{.ResourceId}}, $('#updateResourceSkillId').val(), $('#updateResourceValueSkill').val(), {{.MapTypesResource}})">Set</a>
-					<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-				</div>
+		    	<div class="modal-body">
+					<input type="hidden" id="updateResourceSkillId">
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        				<div class="form-group form-group-sm">
+        					<label class="control-label col-sm-4 translatable" data-i18n="Skill Name"> Skill Name </label>
+          					<div class="col-sm-8">
+          						<input type="text" id="updateResourceNameSkill" disabled style="border-radius: 8px;">
+    						</div>
+          				</div>
+        			</div>
+        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
+        				<div class="form-group form-group-sm">
+        					<label class="control-label col-sm-4 translatable" data-i18n="Value"> Value </label> 
+             				<div class="col-sm-8">
+              					<input type="number" id="updateResourceValueSkill" min="1" max="100" style="border-radius: 8px;">
+        					</div>
+          				</div>
+        			</div>
+      			</div>
+      			<div class="modal-footer">
+			        <button type="button" id="updateResourceSkill" class="btn btn-default" onclick="setSkillToResource({{.ResourceId}}, $('#updateResourceSkillId').val(), $('#updateResourceValueSkill').val(), {{.MapTypesResource}})" data-dismiss="modal">Set</button>
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			    </div>
     		</div>    
   		</div>
 	</div>
-	<div class="modal" id="confirmDeleteSkillResourceModal">
-		<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Delete Confirmation</h5>
-					<div class="divider"></div> 
-				</div>
-			</div>
-			<div class="modal-content">
+	<div class="modal fade" id="confirmDeleteSkillResourceModal" role="dialog">
+		<div class="modal-dialog">
+	    	<!-- Modal content-->
+		    <div class="modal-content">
+	     		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+	        		<h4 class="modal-title">Delete Confirmation</h4>
+	      		</div>
+		      	<div class="modal-body">
 					<input type="hidden" id="deleteResourceSkillId">
-					Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
+		      		Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
+		      	</div>
+		      	<div class="modal-footer" style="text-align:center;">
+			        <button type="button" id="resourceSkillDelete" class="btn btn-default" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val(), {{.MapTypesResource}})" data-dismiss="modal">Yes</button>
+			        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+		      	</div>
 			</div>
-			<div class="modal-footer" style="text-align:center;">
-				<a  id="resourceSkillDelete"  class="waves-effect waves-green btn-flat modal-action modal-close"  id="updateResourceSkill" onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val(), {{.MapTypesResource}})" >Delete</a>
-				<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-			</div>	
+	    </div>
 	</div>
 	<!-- Modal -->
 	<div id="showDocument" class="modal fade" role="dialog">

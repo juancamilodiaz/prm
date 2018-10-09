@@ -409,13 +409,13 @@
 		
 		$('#objectPdf').attr('data', doc.output('datauristring'));
 		$('#showDocumentPDF').modal('show');
-	}  
+	} 
 </script>
 <div class="containerProductivity">
 <h4 id="titleSearch"></h4>
 		<div class="row">
-			<div class="col s12"> 
-				<label for="projectValue">Projects list: </label>
+			<div class="col s6"> 
+				<label for="projectValue">Projects list:</label>
 				<select class="form-control" id="projectValue">
 					<option id="0">Select a project...</option>
 					{{range $index, $project := .Projects}}
@@ -426,18 +426,18 @@
 		<div class="col s6"> 
 		<br><a class="btn waves-effect waves-light blue searchReport" onclick="searchProductivityReport()"><i class="mdi-action-search"></i></a>
 		
-			<div class="preloader-wrapper active loadingIcon">
-				<div class="spinner-layer spinner-blue-only">
-				<div class="circle-clipper left">
-					<div class="circle"></div>
-				</div><div class="gap-patch">
-					<div class="circle"></div>
-				</div><div class="circle-clipper right">
-					<div class="circle"></div>
-				</div>
-				</div>
+		<div class="preloader-wrapper active loadingIcon">
+			<div class="spinner-layer spinner-blue-only">
+			<div class="circle-clipper left">
+				<div class="circle"></div>
+			</div><div class="gap-patch">
+				<div class="circle"></div>
+			</div><div class="circle-clipper right">
+				<div class="circle"></div>
 			</div>
 			</div>
+		</div>
+		</div>
 	</div>
 
 <div id="main-content2">
@@ -484,8 +484,8 @@
 					</div>
 				</div>
 			</div>	
-		<div id="tableData"> 
-		   	<table  id="viewProductivity" class="display responsive-table" cellspacing="0" width="90%" >
+		<div id="tableData">
+		   	<table  id="viewProductivity" class="display" cellspacing="0" width="90%" >
 			    <thead>
 			    	<tr>
 			        	<th rowspan="2" style="text-align:center;">Task</th>
@@ -507,7 +507,6 @@
 			        	<th style="text-align:center;">Hours Billable</th>
 						{{end}}
 			      	</tr>
-
 			    </thead>
 		    	<tbody>
 				{{$resources := .Resources}}
@@ -522,12 +521,12 @@
 								{{$reportHours := index $reportByTask.ReportByTask $productivityTask.ID}}
 								{{if $reportHours}}
 									{{$reportHours.Hours}}
-									<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val({{$reportHours.Hours}})"> <i class="mdi-editor-mode-edit tiny"></i></a>
+									<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val({{$reportHours.Hours}})"> <i class="mdi-editor-mode-edit"></i></a>
 								{{else}}
-									<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"> <i class="mdi-editor-mode-edit tiny"></i></a>
+									<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"> <i class="mdi-editor-mode-edit"></i></a>
 								{{end}}
 							{{else}}
-								<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"><i class="mdi-editor-mode-edit tiny"></i></a>
+								<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"><i class="mdi-editor-mode-edit"></i></a>
 							{{end}}
 						</td>
 						<td>
@@ -536,12 +535,12 @@
 								{{$reportHours := index $reportByTask.ReportByTask $productivityTask.ID}}
 								{{if $reportHours}}
 									{{$reportHours.HoursBillable}}
-									<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val({{$reportHours.HoursBillable}})"> <i class="mdi-editor-mode-edit tiny"></i></a>
+									<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val({{$reportHours.HoursBillable}})"> <i class="mdi-editor-mode-edit"></i></a>
 								{{else}}
-									<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val(null)"> <i class="mdi-editor-mode-edit tiny"></i></a>
+									<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val(null)"> <i class="mdi-editor-mode-edit"></i></a>
 								{{end}}
 							{{else}}
-								<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val(null)"><i class="mdi-editor-mode-edit tiny"></i></a>
+								<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val(null)"><i class="mdi-editor-mode-edit"></i></a>
 							{{end}}
 						</td>
 						{{end}}
@@ -550,8 +549,8 @@
 						<td>{{$productivityTask.Progress}}%</td>
 						<td><input type="checkbox" {{if $productivityTask.IsOutOfScope}}checked{{end}} disabled></td>
 			            <td>
-							<a id="updateTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#taskModal" onclick="configureUpdateModal({{$productivityTask.ID}},'{{$productivityTask.Name}}',{{$productivityTask.Scheduled}},{{$productivityTask.Progress}}, {{$productivityTask.IsOutOfScope}})"><i class="mdi-editor-mode-edit tiny"></i></a>
-							<a id="deleteTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Delete" href="#confirmModal" onclick="$('#taskID').val({{$productivityTask.ID}})"> <i class="mdi-action-delete tiny"></i></a>
+							<a id="updateTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#taskModal" onclick="configureUpdateModal({{$productivityTask.ID}},'{{$productivityTask.Name}}',{{$productivityTask.Scheduled}},{{$productivityTask.Progress}}, {{$productivityTask.IsOutOfScope}})"><i class="mdi-editor-mode-edit"></i></a>
+							<a id="deleteTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Delete" href="#confirmModal" onclick="$('#taskID').val({{$productivityTask.ID}})"> <i class="mdi-action-delete"></i></a>
 			            </td>
 		         	</tr>
 		        {{end}}
@@ -564,8 +563,7 @@
 			   	<div class="chart-container" id="chartjs-wrapper">
 					<h5>Tasks Executed Distribution</h5>
 					<canvas id="chartjs">
-					</canvas>	
-
+					</canvas>				
 					<script>
 						var seq = 0;
 						{{if .TValues}}
@@ -575,7 +573,6 @@
 						colorF.fill("white", 0, seq);
 						chart2=new Chart(document.getElementById("chartjs"),
 						{	"type": "pie",
-							"responsive":true,
 							"data": {
 								"labels": {{.TLabels}},
 								"datasets": [{ 
@@ -812,10 +809,11 @@
 		</div>
 	</div>
 </div>
-
 <div class="modal" id="confirmModal">
       <div class="modal-content">
-            <h5 class="modal-title">Delete Confirmation</h5>   
+         <div class="modal-header">
+            <h5 class="modal-title">Delete Confirmation</h5>
+         </div>
 		</div>
 		<div class="modal-content">
             Are you sure you want to delete the task <b id="nameDelete"></b> from report?

@@ -399,12 +399,6 @@ ul.side-nav.fixed hr {
   z-index: 999;
   height: auto;
 }
-.userRoleText{
-    margin-top:-5px !important;
-    line-height: 20px;
-    font-size: 12px;
-    color: white;
-}
 #slide-out li a i {
   line-height: inherit;
   width: 2rem;
@@ -412,7 +406,7 @@ ul.side-nav.fixed hr {
   display: block;
   float: left;
   text-align: center;
-  /*margin-right: 1rem;*/
+  margin-right: 1rem;
 }
 #slide-out ul.side-nav li {
   padding: 0px !important;
@@ -471,8 +465,10 @@ ul.side-nav.fixed li.user-details {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  /*overflow: hidden;*/
+  
   margin-bottom: 15px;
-  padding: 25px 0px 15px 15px;
+  padding:25px 0px 0px 15px;
 }
 .user-details .row {
   margin: 0;
@@ -834,9 +830,6 @@ h5.breadcrumbs-header {
 .doughnut-chart-legend li{
   padding: 2px 0;
   font-size: 0.9rem;
-}
-.formSimulate{
-  margin-bottom: 0px;
 }
 .doughnut-chart-legend li:before {
   content: "";
@@ -1442,26 +1435,52 @@ tr.group:hover {
 #viewProductivity{
   font-size:14px;
 }
-.TableConfig {
+.TableConfig {
   font-size:14px;
 }
-  
+
 .TableConfig th{
-text-align: left;
-padding: 8px 15px;
+  text-align: left;
+  padding: 8px 15px;
 }
 .TableConfig td{
-text-align:left;
+  text-align:left;
 }
 
-.CardTable {
-
-margin: 20px;
+.CardTable {
+  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
-.marginCard {
-margin-top: 50px;
-} 
+.marginCard {
+  margin-top: 50px !important;
+}
+
+input[type=search] {
+  height: 1rem;
+  width: 68%;
+}
+
+.overflowModal {
+  overflow: visible;
+}
+
+select {
+  display: none;
+}
+
+.style-color-Passed {
+  color: green;
+}
+
+.style-color-Failed {
+  color: red;
+}
+
+.style-color-Pending {
+  color: orange;
+}
+
 
 .progressInfo{
   display:none;

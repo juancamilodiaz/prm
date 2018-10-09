@@ -8,7 +8,6 @@ import (
 	"net/smtp"
 
 	//	"net/url"
-
 	"os"
 	"strings"
 	"time"
@@ -63,7 +62,7 @@ func (this *LoginController) Login() {
 		fmt.Println("session2", session.AccessToken)
 		fmt.Println("s.Email 4", session.Email)
 		this.Provider.GetEmailAddress(session)
-
+		//this.TplName = "Projects/listResourceByProjectToday.tpl"
 		this.TplName = "Projects/ProductivityReportNew.tpl"
 	} else {
 		tr := &http.Transport{
@@ -77,6 +76,7 @@ func (this *LoginController) Login() {
 		}
 		uri := BuildURI(false, serverip, proxyip, "oauth2", "start")
 		client.Get(uri) //?rd=/oauth2/sign_in
+
 		this.Redirect(uri, 307)
 
 	}

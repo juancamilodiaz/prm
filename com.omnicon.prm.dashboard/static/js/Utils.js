@@ -70,17 +70,7 @@ function setHeaderSize(){
 
 $(document).ready(
 	function(){
-		setHeaderSize();
-		$('#sidebar').collapse();
-		$("#NavMenuButton").click(function(e) {
-		  	e.preventDefault();
-		  	$('#sidebar').toggleClass('collapsed');
-		});
-		$(window).resize(
-			function(){
-				setHeaderSize();
-			}
-		);
+
 	}
 );
 

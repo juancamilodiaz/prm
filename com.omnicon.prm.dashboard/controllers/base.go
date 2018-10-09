@@ -18,8 +18,6 @@ type BaseController struct {
 	IsLogin  bool
 	Provider *providers.AzureProvider
 	Session  *providers.SessionState
-	PInfo    *providers.PersonalInfo
-	ProfPic  *providers.ProfilePicture
 }
 
 type NestPreparer interface {

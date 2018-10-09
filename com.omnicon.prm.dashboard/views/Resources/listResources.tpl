@@ -318,8 +318,8 @@
 	        </div>
 	    </div>
 		<div class="modal-footer">		
-			<a onclick="createResource()" class="waves-effect waves-green btn-flat modal-action modal-close">Create</a>
-			<a onclick="updateResource()" class="waves-effect waves-blue btn-flat modal-action modal-close">Update</a>
+			<a onclick="createResource()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
+			<a onclick="updateResource()" class="waves-effect waves-blue btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
 			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
 		</div>
 	    </div>
