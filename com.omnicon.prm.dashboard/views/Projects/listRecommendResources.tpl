@@ -20,8 +20,8 @@
 		$('#buttonOption').attr("onclick","createProject();");
 		
 		
-		var prjStartDate = formatDate({{.StartDate}});
-		var prjEndDate = formatDate({{.EndDate}});
+		var prjStartDate = formatDate(getDateToday());
+		var prjEndDate = formatDate(getDateToday());
 		$('#dates').text("Date From: "+ prjStartDate + "  -  Date To: " + prjEndDate);
 		
 		$('#skillsActive').prop('checked', false);
@@ -63,9 +63,10 @@
 		});
 	}
 		
-	getResourcesByProjectAvail = function(){
+	getResourcesByProjectAvail = function(){ 
 		dateFrom = $('#projectStartDate').val();
 		dateTo = $('#projectEndDate').val();
+		console.warn(dateFrom);
 		skillsActive = $('#skillsActive').is(":checked");
 		hoursActive = $('#projectHoursActive').is(":checked");
 		hours = $('#projectHours').val();

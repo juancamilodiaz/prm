@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -13,7 +14,10 @@ import (
 var HoursOfWork, EpsilonValue float64
 
 func init() {
-	UpdateSettingsVariables()
+	if dao.GetSession() != nil {
+		UpdateSettingsVariables()
+	}
+
 }
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
@@ -875,6 +879,8 @@ func GetProjectsByResource(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.Ge
 		projectsResources = dao.GetAllProjectResources()
 	}
 
+	fmt.Println("ENVIO PERICION : pRequest.ResourceId ->")
+	fmt.Println(pRequest.ResourceId)
 	response.Projects = getDistintProjects(pRequest.ResourceId)
 	response.Resources = getFilterResource()
 

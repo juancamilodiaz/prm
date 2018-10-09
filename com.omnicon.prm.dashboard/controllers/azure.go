@@ -110,7 +110,7 @@ func (this *AzureController) Callback() {
 	//fmt.Println("OBJETO DE SESION", code)
 	if err == nil {
 		this.Session = session
-		fmt.Println("session", session.AccessToken)
+		//fmt.Println("session", session.AccessToken)
 		fmt.Println("s.Email 1", session.Email)
 		this.IsLogin = true
 		if session.Email == "" {
@@ -134,14 +134,13 @@ func (this *AzureController) Callback() {
 }
 
 /**
-* Function to obtain the personal data of the person in session.
+*  PersonalInFo Function to obtain the personal data of the person in session.
  */
 func PersonalInFo() {
 
 	url := "https://login.microsoftonline.com/omnicon.cc/oauth2/token"
 
 	payload := strings.NewReader("client_id=8a72ec00-36fe-4197-a22a-8c70e01c304a&client_secret=7iHt3uOYcDWcSQaoZDp9CqYOpcUdplhbchw6OwSzoFw%3D&resource=https%3A%2F%2Fgraph.microsoft.com&grant_type=client_credentials")
-	//payload := strings.NewReader("client_id=" + conf.ClientID + "&client_secret=" + conf.ClientSecret + "&resource=https%3A%2F%2Fgraph.microsoft.com&grant_type=client_credentials")
 	req, _ := http.NewRequest("POST", url, payload)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	res, _ := http.DefaultClient.Do(req)
@@ -152,7 +151,6 @@ func PersonalInFo() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	//fmt.Println(message)
 
 	url = "https://graph.microsoft.com/v1.0/users/" + session.Email
 	req, _ = http.NewRequest("GET", url, nil)
@@ -203,7 +201,7 @@ func PersonalInFo() {
 
 func (this *AzureController) Get() {
 	if session != nil {
-		fmt.Println("s.AccessToken", session.AccessToken)
+		//	fmt.Println("s.AccessToken", session.AccessToken)
 		fmt.Println("s.Email 3", session.Email)
 		fmt.Println("session", session)
 
