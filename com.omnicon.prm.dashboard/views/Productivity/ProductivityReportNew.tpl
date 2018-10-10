@@ -5,6 +5,7 @@
 	$(document).ready(function () {
 		$('.tooltipped').tooltip();
 		$('.modal-trigger').leanModal();
+		$('select').material_select();
 		$('#viewProductivity').DataTable({			
 			"iDisplayLength": 20,
 			"bLengthChange": false,
@@ -35,14 +36,7 @@
 		$('#refreshButton').click(function () {
 			reload('/productivity', {});
 		});
-	
-		$('#buttonOption').css("display", "inline-block");
-		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Task");
-		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("data-target", "#taskModal");
-		$('#buttonOption').attr("onclick", "configureCreateModal()");
-		
+			
 		// only show the option if already exist a search
 		if ({{.ProjectID}} == "" || {{.ProjectID}} == "Select a project..."){
 			$('#buttonOption').css("display", "none");
@@ -139,6 +133,12 @@
 		});
 	}
 	
+	$("#projectValue").change(function(){
+		var projectID = $('#projectValue option:selected').attr('id');
+		searchProductivityReport(projectID);
+
+	});
+
 	searchProductivityReport = function(pProjectID){
 		$(".searchReport").hide();
 		$(".loadingIcon").show();
@@ -409,35 +409,37 @@
 		
 		$('#objectPdf').attr('data', doc.output('datauristring'));
 		$('#showDocumentPDF').modal('show');
-	} 
+	}  
 </script>
 <div class="containerProductivity">
-<h4 id="titleSearch"></h4>
+<h4 id="titlePag"></h4>
+<h5 id="titleSearch"></h5>
+<a id="buttonOption" class="btn blue waves-effect waves-blue btn-flat modal-trigger white-text" href="#taskModal" onclick="configureCreateModal()" >New Task</a>
 		<div class="row">
-			<div class="col s6"> 
-				<label for="projectValue">Projects list:</label>
-				<select class="form-control" id="projectValue">
-					<option id="0">Select a project...</option>
-					{{range $index, $project := .Projects}}
-					<option id="{{$project.ID}}">{{$project.Name}}</option>
-					{{end}}
-				</select>			
+			<div class="col s6">
+					<label for="projectValue" class="active">Projects list: </label>
+					<select id="projectValue">
+						<option id="0">Select a project...</option>
+						{{range $index, $project := .Projects}}
+						<option id="{{$project.ID}}">{{$project.Name}}</option>
+						{{end}}
+					</select>
 			</div>
 		<div class="col s6"> 
-		<br><a class="btn waves-effect waves-light blue searchReport" onclick="searchProductivityReport()"><i class="mdi-action-search"></i></a>
+	<!--	<br><a class="btn waves-effect waves-light blue searchReport" onclick="searchProductivityReport()"><i class="mdi-action-search"></i></a>-->
 		
-		<div class="preloader-wrapper active loadingIcon">
-			<div class="spinner-layer spinner-blue-only">
-			<div class="circle-clipper left">
-				<div class="circle"></div>
-			</div><div class="gap-patch">
-				<div class="circle"></div>
-			</div><div class="circle-clipper right">
-				<div class="circle"></div>
+			<div class="preloader-wrapper active loadingIcon">
+				<div class="spinner-layer spinner-blue-only">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div><div class="gap-patch">
+					<div class="circle"></div>
+				</div><div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+				</div>
 			</div>
 			</div>
-		</div>
-		</div>
 	</div>
 
 <div id="main-content2">
@@ -484,7 +486,7 @@
 					</div>
 				</div>
 			</div>	
-		<div id="tableData">
+		<div id="tableData"> 
 		   	<table  id="viewProductivity" class="display" cellspacing="0" width="90%" >
 			    <thead>
 			    	<tr>
@@ -507,6 +509,7 @@
 			        	<th style="text-align:center;">Hours Billable</th>
 						{{end}}
 			      	</tr>
+
 			    </thead>
 		    	<tbody>
 				{{$resources := .Resources}}
@@ -521,12 +524,12 @@
 								{{$reportHours := index $reportByTask.ReportByTask $productivityTask.ID}}
 								{{if $reportHours}}
 									{{$reportHours.Hours}}
-									<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val({{$reportHours.Hours}})"> <i class="mdi-editor-mode-edit"></i></a>
+									<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val({{$reportHours.Hours}})"> <i class="mdi-editor-mode-edit tiny"></i></a>
 								{{else}}
-									<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"> <i class="mdi-editor-mode-edit"></i></a>
+									<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"> <i class="mdi-editor-mode-edit tiny"></i></a>
 								{{end}}
 							{{else}}
-								<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"><i class="mdi-editor-mode-edit"></i></a>
+								<a id="manageReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualHours').val(null)"><i class="mdi-editor-mode-edit tiny"></i></a>
 							{{end}}
 						</td>
 						<td>
@@ -535,12 +538,12 @@
 								{{$reportHours := index $reportByTask.ReportByTask $productivityTask.ID}}
 								{{if $reportHours}}
 									{{$reportHours.HoursBillable}}
-									<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val({{$reportHours.HoursBillable}})"> <i class="mdi-editor-mode-edit"></i></a>
+									<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val({{$reportHours.ID}});$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val({{$reportHours.HoursBillable}})"> <i class="mdi-editor-mode-edit tiny"></i></a>
 								{{else}}
-									<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val(null)"> <i class="mdi-editor-mode-edit"></i></a>
+									<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val(null)"> <i class="mdi-editor-mode-edit tiny"></i></a>
 								{{end}}
 							{{else}}
-								<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val(null)"><i class="mdi-editor-mode-edit"></i></a>
+								<a id="manageBillableReport" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportBillableModal" onclick="$('#reportID').val(null);$('#resourceID').val({{$resource.ID}});$('#taskID').val({{$productivityTask.ID}});$('#actualBillableHours').val(null)"><i class="mdi-editor-mode-edit tiny"></i></a>
 							{{end}}
 						</td>
 						{{end}}
@@ -549,8 +552,8 @@
 						<td>{{$productivityTask.Progress}}%</td>
 						<td><input type="checkbox" {{if $productivityTask.IsOutOfScope}}checked{{end}} disabled></td>
 			            <td>
-							<a id="updateTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#taskModal" onclick="configureUpdateModal({{$productivityTask.ID}},'{{$productivityTask.Name}}',{{$productivityTask.Scheduled}},{{$productivityTask.Progress}}, {{$productivityTask.IsOutOfScope}})"><i class="mdi-editor-mode-edit"></i></a>
-							<a id="deleteTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Delete" href="#confirmModal" onclick="$('#taskID').val({{$productivityTask.ID}})"> <i class="mdi-action-delete"></i></a>
+							<a id="updateTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#taskModal" onclick="configureUpdateModal({{$productivityTask.ID}},'{{$productivityTask.Name}}',{{$productivityTask.Scheduled}},{{$productivityTask.Progress}}, {{$productivityTask.IsOutOfScope}})"><i class="mdi-editor-mode-edit tiny"></i></a>
+							<a id="deleteTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Delete" href="#confirmModal" onclick="$('#taskID').val({{$productivityTask.ID}})"> <i class="mdi-action-delete tiny"></i></a>
 			            </td>
 		         	</tr>
 		        {{end}}
@@ -563,7 +566,8 @@
 			   	<div class="chart-container" id="chartjs-wrapper">
 					<h5>Tasks Executed Distribution</h5>
 					<canvas id="chartjs">
-					</canvas>				
+					</canvas>	
+
 					<script>
 						var seq = 0;
 						{{if .TValues}}
@@ -573,6 +577,7 @@
 						colorF.fill("white", 0, seq);
 						chart2=new Chart(document.getElementById("chartjs"),
 						{	"type": "pie",
+							"responsive":true,
 							"data": {
 								"labels": {{.TLabels}},
 								"datasets": [{ 
@@ -809,13 +814,11 @@
 		</div>
 	</div>
 </div>
+
 <div class="modal" id="confirmModal">
       <div class="modal-content">
-         <div class="modal-header">
             <h5 class="modal-title">Delete Confirmation</h5>
-         </div>
-		</div>
-		<div class="modal-content">
+			<div class="divider CardTable"></div>
             Are you sure you want to delete the task <b id="nameDelete"></b> from report?
             <br>
             <li>The resources will lose the reported times.</li>
@@ -829,79 +832,52 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="taskModal" role="dialog">
-
+<div class="modal" id="taskModal">
         <div class="modal-content">
-         <div class="modal-header">
             <h5 id="modalTitle" class="modal-title"></h5>
-			 <div class="divider"></div> 
-		</div>
-	    </div>	 
-         <div class="modal-content">
+			 <div class="divider"></div><br> 
+
             <input type="hidden" id="taskID">
-            <div class="row-box col s4" style="padding-bottom: 1%;">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col s4 translatable" data-i18n="Name"> Name </label>
-                  <div class="col s4">
-                     <input type="text" id="taskName" style="border-radius: 8px;">
-                  </div>
-               </div>
-            </div>
-            <div class="row-box col s4" style="padding-bottom: 1%;">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col s4 translatable" data-i18n="Scheduled"> Scheduled </label>
-                  <div class="col s4">
-                     <input type="number" id="taskScheduled" style="border-radius: 8px;" min="0">
-                  </div>
-               </div>
-            </div>
-            <div class="row-box col s4" style="padding-bottom: 1%;">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col s4 translatable" data-i18n="Progress"> Progress </label>
-                  <div class="col s4">
-                     <input type="number" id="taskProgress" style="border-radius: 8px;" min="0" max="100">
-                  </div>
-               </div>
-            </div>
-			<div class="row-box col s4" style="padding-bottom: 1%;">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col-sm-4 translatable" data-i18n="Is Out Of Scope"> Is Out Of Scope </label>
-                  <div class="col s4">
-					<input type="checkbox" id="taskIsOutOfScope"><br/>
-                  </div>
-               </div>
-            </div>
+			<div class="input-field col s12 m5 l5">
+				<label class="active" for="taskName"> Name </label>
+				<input type="text" id="taskName">
+			</div>
+			<div class="input-field col s12 m5 l5">
+				<label class="active" for="taskScheduled"> Scheduled </label>
+				<input type="number" id="taskScheduled">
+			</div>
+			<div class="input-field col s12 m5 l5">
+				<label class="active" for="taskProgress"> Progress </label>
+				<input type="number" id="taskProgress">
+			</div>
+			<div class="input-field col s12 m5 l5">
+				<input type="checkbox" id="taskIsOutOfScope">
+				<label for="taskIsOutOfScope">Is Out Of Scope </label>
+			</div>
+			
          </div>
          <div class="modal-footer">
 			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-            <a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
-            <a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
+            <a id="taskCreate" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
+            <a id="taskUpdate" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
          </div>
       </div>
    </div>
 </div>
 <!-- Modal -->
 <div class="modal" id="reportModal">
-    <div class="modal-content">
-      <div class="modal-header">
+   		<div class="modal-content">
             <h5 id="modalTitle" class="modal-title">Report Hours</h5>
-			 <div class="divider"></div> 
-    </div>
-	</div>
-         <div class="modal-content">
+			<div class="divider"></div><br>
 			<input type="hidden" id="reportID">
 			<input type="hidden" id="resourceID">
 			<input type="hidden" id="actualHours">
 			<input type="hidden" id="actualBillableHours">
-            <div class="row-box col s4" style="padding-bottom: 1%;">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col s4 translatable" data-i18n="Hours"> Hours </label>
-                  <div class="col s4">
-                     <input type="number" id="reportHours" style="border-radius: 8px;" min="0" max="100">
-                  </div>
-               </div>
-            </div>			
-         </div>
+            <div class="input-field col s12 m5 l5">
+				<label class="active"> Hours </label>                  
+				<input type="number" id="reportHours" min="0" max="100">
+            </div>	
+        </div>
          <div class="modal-footer">
 			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
             <a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
@@ -911,22 +887,14 @@
 <!-- Modal --> 
 <div class="modal" id="reportBillableModal">
     <div class="modal-content">
-      	<div class="modal-header">
             <h5 id="modalTitle" class="modal-title">Report Billable Hours</h5>
-			<div class="divider"></div> 
-		</div>
-	</div>
-         <div class="modal-content">
+			<div class="divider"></div> <br>
 			<input type="hidden" id="reportID">
 			<input type="hidden" id="resourceID">
 			<input type="hidden" id="actualBillableHours">
-            <div class="row-box col s4" style="padding-bottom: 1%;">
-               <div class="form-group form-group-sm">
-                  <label class="control-label col s4 translatable" data-i18n="Hours"> Hours Billable </label>
-                  <div class="col s4">
-                     <input type="number" id="reportBillableHours" style="border-radius: 8px;" min="0" max="100">
-                  </div>
-               </div>
+            <div class="input-field col s12 m5 l5">
+				<label class="active" for="reportBillableHours">  Hours Billable </label>
+            	<input type="number" id="reportBillableHours"  min="0" max="100">
             </div>
          </div>
          <div class="modal-footer">

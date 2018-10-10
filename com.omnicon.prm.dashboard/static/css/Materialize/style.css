@@ -600,10 +600,7 @@ h5.breadcrumbs-header {
   line-height: 1.804rem;
   margin: 1.5rem 0 0 0;
 }
-h5{
-  padding-left: 15px;
-  padding-top: 15px;
-}
+
 .breadcrumbs-nav {
   margin: 8px 0 9px 0;
 }
@@ -615,6 +612,10 @@ h5{
 }
 #viewSettings{
   text-align:left;
+}
+#buttonOption{
+  float:right;
+  display:inline;
 }
 /*----------------------------------------
     Cards
