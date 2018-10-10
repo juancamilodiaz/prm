@@ -8,6 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"io/ioutil"
+	"strings"
+
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
@@ -62,8 +65,9 @@ func init() {
 	provider.ProtectedResource, _ = url.Parse(protectedresource)
 	provider.ClientID = clientid
 	provider.ClientSecret = clientsecret
-
+	//fmt.Println("Azure Provider ", provider)
 	provider.Configure(tenantid)
+
 }
 
 func getAzureProvider(hostname string) *providers.AzureProvider {
@@ -105,6 +109,7 @@ func (this *AzureController) Callback() {
 	var err error
 	uri := BuildURI(false, serverip, httpport, "oauth2", "callback")
 	session, err = provider.Redeem(uri, code)
+	//fmt.Println("OBJETO DE SESION", code)
 	if err == nil {
 		this.Session = session
 		//fmt.Println("session", session.AccessToken)
@@ -113,7 +118,6 @@ func (this *AzureController) Callback() {
 		if session.Email == "" {
 			session.Email, err = provider.GetEmailAddress(session)
 			fmt.Println("s.Email 2", session.Email)
-
 			fmt.Println("this.IsLogin", this.IsLogin)
 		}
 
@@ -210,7 +214,6 @@ func (this *AzureController) Get() {
 
 		flash.Success("Success logged in")
 		flash.Store(&this.Controller)
-
 		this.SetLogin(user)
 		this.Session = session
 

@@ -2,6 +2,7 @@
 	$(document).ready(function(){
 		$('.tooltipped').tooltip();
 		$('.modal-trigger').leanModal();
+		$('select').material_select();
 		$('#viewProjects').DataTable({			
 		"iDisplayLength": 20,
 		"bLengthChange": false,
@@ -180,6 +181,7 @@
 		}
 		$.ajax(settings).done(function (response) {
 		  $("#content").html(response);
+		 //
 		  $('.modal-backdrop').remove();
 		});
 	}
@@ -218,7 +220,7 @@
 			<td style="width:120px;">
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href='#projectModal' onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})'><i class="mdi-editor-mode-edit"></i></a>
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" ><i class="mdi-action-delete"></i></a>
-			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Get Resources"  ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-action-assignment-ind"></i></a>
+			  <a class='modal-trigger tooltipped modal-close' data-position="top" data-tooltip="Get Resources" href="" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-action-assignment-ind"></i></a>
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Get Types"  onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-image-style"></i></a>		
 			</td>
 		</tr>
@@ -231,94 +233,66 @@
 <!-- Modal -->
 <div class="modal" id="projectModal"> 
     <div class="modal-content">
-      <div class="modal-header">
-				<h5 id="modalProjectTitle" class="modal-title"></h5>
-				<div class="divider"></div>
-			</div>
-		</div>		
-			<div class="modal-content">		
-        <input type="hidden" id="projectID">
-        <div class="row-box col s12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col s4 translatable" data-i18n="Operation Center"> Operation Center </label>
-              <div class="col-sm-8">
-              	<input type="text" id="projectOperationCenter" style="border-radius: 8px;">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col s12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col s4 translatable" data-i18n="Work Order"> Work Order </label>
-              <div class="col-sm-8">
-              	<input type="number" id="projectWorkOrder" style="border-radius: 8px;">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col s12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col s4 translatable" data-i18n="Name"> Name </label>
-              <div class="col-sm-8">
-              	<input type="text" id="projectName" style="border-radius: 8px;">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col s12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col s4 translatable" data-i18n="Start Date"> Start Date </label> 
-              <div class="col-sm-8">
-              	<input type="date" id="projectStartDate" style="inline-size: 174px; border-radius: 8px;">
-        		</div>
-          </div>
-        </div>
-        <div class="row-box col s12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col s4 translatable" data-i18n="End Date"> End Date </label> 
-              <div class="col-sm-8">
-              	<input type="date" id="projectEndDate" style="inline-size: 174px; border-radius: 8px;">
-        		</div>
-          </div>
-        </div>
-		<div class="row-box col s12" style="padding-bottom: 1%;">
-        	<div id="divProjectType" class="form-group form-group-sm">
-        		<label class="control-label col s4 translatable" data-i18n="Types"> Types </label> 
-             	<div class="col-sm-8">
-	             	<select  id="projectType" multiple style="width: 174px; border-radius: 8px;">
+		<h5 id="modalProjectTitle" class="modal-title"></h5>
+		<div class="divider"></div><br>
+		<input type="hidden" id="projectID">		
+		<div class="input-field col s12 m5 l5">
+			<label class="active"> Operation Center </label>
+			<input type="text" id="projectOperationCenter">
+		</div>   	
+		<div class="input-field col s12 m5 l5">
+			<label class="active"> Work Order </label>
+			<input type="number" id="projectWorkOrder">
+		</div>
+
+		<div class="input-field col s12 m5 l5">
+			<label class="active"> Name </label>
+			<input type="text" id="projectName">
+		</div>
+
+		<div class="input-field col s12 m5 l5">
+			<label class="active"> Start Date </label> 
+			<input type="date" id="projectStartDate">
+		</div>
+		
+		<div class="input-field col s12 m5 l5">
+			<label class="active"> End Date </label>               
+			<input type="date" id="projectEndDate">
+		</div>
+
+		<div class="input-field col s12 m5 l5">
+			<label class="active"> Types </label> 
+			<div class=" col s12 m5 l5">
+					<select  id="projectType" multiple>
 					{{range $key, $types := .Types}}
 						<option value="{{$types.ID}}">{{$types.Name}}</option>
 					{{end}}
 					</select>
-              	</div>    
-          	</div>
-        </div>
-        <div class="row-box col s12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col s4 translatable" data-i18n="Active"> Active </label> 
-              <div class="col-sm-8">
-              	<input type="checkbox" id="projectActive"><br/>
-              </div>    
-          </div>
-        </div>
-		<div class="row-box col s12" style="padding-bottom: 1%;">
-			<div id="divProjectType" class="form-group form-group-sm">
-			<label class="control-label col s4 translatable" data-i18n="Leader"> Leader </label> 
-				<div class="col-sm-8">
-					<select  id="leaderID" style="width: 174px; border-radius: 8px;">
-					<option value="0">Without leader</option>
-					{{range $key, $resource := .Resources}}
-					<option value="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
-					{{end}}
-					</select>
-				</div>    
-			</div>
+			</div>    
 		</div>
-        <div class="row-box col s12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col s4 translatable" data-i18n="Cost"> Cost </label>
-	            <div class="col-sm-8">
-	            	<input type="number" id="projectCost" min="0" step="1000" class="currency" style="border-radius: 8px;">
-	        	</div>
-          </div>
-        </div>
+	
+		<div class="input-field col s12 m5 l5">
+			<label class="active"> Active </label> 
+			<div class=" col s12 m5 l5">
+					<input type="checkbox" id="projectActive"><br/>
+			</div>   
+		</div>
+		<div class="input-field col s12 m5 l5">
+			<label class="active">  Leader </label> 
+			<div class="col-sm-8">
+				<select  id="leaderID">
+				<option value="0">Without leader</option>
+				{{range $key, $resource := .Resources}}
+				<option value="{{$resource.ID}}">{{$resource.Name}} {{$resource.LastName}}</option>
+				{{end}}
+				</select>
+			</div>    
+		</div>
+		<div class="input-field col s12 m5 l5">
+			<label class="active"> Cost </label>
+				<input type="number" id="projectCost" min="0" step="1000" class="currency" style="border-radius: 8px;">
+		
+		</div>
       </div>
       <div class="modal-footer">			
 			<a id="projectCreate" onclick="createProject()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>

@@ -491,9 +491,11 @@ ul.side-nav.fixed .profile-btn {
 }
 .user-roal {
   color: #fff;
-  margin-top: -16px;
+  margin-top:0px;
   font-size: 13px;
   text-shadow: 1px 1px 1px #444;
+  line-height: 20px;
+  padding-bottom: 10px;
 }
 .bold > a {
   font-weight: bold;
@@ -616,6 +618,13 @@ h5.breadcrumbs-header {
 #buttonOption{
   float:right;
   display:inline;
+}
+#titlePag{
+  display:inline;
+}
+#titleSearch{
+  display:inline;
+
 }
 /*----------------------------------------
     Cards

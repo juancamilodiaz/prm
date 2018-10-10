@@ -378,7 +378,7 @@
 
 <div class="container"> 
 	<h5 class="marginCard">Forecast Projects</h5>
-	<div class="tabs">
+	<div class="">
 
 		<button class="tablink btn waves-effect waves-light blue" onclick="openCity(event, 'Report')" id="defaultOpen">Report</button>
 		<button class="tablinks btn waves-effect waves-light blue" onclick="openCity(event, 'Planning')" id="planningOpen">Planning</button>
@@ -738,7 +738,7 @@
 						<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Status}});$('#actualField').val('Status');"> <i class="mdi-editor-mode-edit tiny"></i></a>
 					</td>			
 					<td>
-						<a id="deleteProjectForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});$('#reportID').val({{$projectForecast.ID}});"> <span class="glyphicon glyphicon-trash"></span></a>
+						<a id="deleteProjectForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});$('#reportID').val({{$projectForecast.ID}});"><i class="mdi-editor-mode-delete tiny"></i></a>
 					</td>
 				</tr>
 				{{end}}	
@@ -843,15 +843,9 @@
   </div>
 </div>
 
-<div class="modal fade" id="confirmModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
+<div class="modal" id="confirmModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
+        <h4 class="modal-title">Delete Confirmation</h4>		
 		<input type="hidden" id="projectID">
         Are you sure you want to remove <b id="nameDelete"></b> from projects?
 		<br>
@@ -859,8 +853,8 @@
 		<li>The types will lose this project assignment.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="projectDelete" class="btn btn-default" onclick="deleteForecastProject()" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+	  		<a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="deleteForecastProject()" >Delete</a>
+			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
       </div>
     </div>
   </div>
@@ -871,32 +865,27 @@
       <!-- Modal content-->
       <div class="modal-content">
             <h5 id="modalTitle" class="modal-title">Edit</h5>
-			<div class="divider"></div> 
-
-         <div class="modal-body">
+			<div class="divider"></div><br> 
 			<input type="hidden" id="reportID">
 			<input type="hidden" id="resourceID">
 			<input type="hidden" id="actualValue">
 			<input type="hidden" id="actualField">
 			<input type="hidden" id="typeResourceId">
 			<input type="hidden" id="actualBillableHours">
-			<input type="hidden" id="actualProjectType">
-            <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-               <div class="form-group form-group-sm">
-                  <label id="field" class="control-label col-sm-4 translatable" data-i18n=""></label>
-                  <div class="col-sm-8">
-                    <input type="text" id="value" style="border-radius: 8px;" min="0" max="100">
-					<input type="number" id="valueNumber" style="border-radius: 8px;" min="0" max="100">
-					<input type="date" id="valueDate" style="border-radius: 8px;" min="0" max="100">
-                  	<select  id="projectType" >
-					{{range $key, $types := .Types}}
-						<option value="{{$types.ID}}">{{$types.Name}}</option>
-					{{end}}
-					</select>
-				  </div>
-               </div>
+			<input type="hidden" id="actualProjectType">			
+            <div class="input-field col s12 m5 l5">
+				<label id="field" class="active"></label>
+				<input type="text" id="value"  min="0" max="100">
+				<input type="number" id="valueNumber" min="0" max="100">
+				<input type="date" id="valueDate" min="0" max="100">
+				<select  id="projectType" >
+				{{range $key, $types := .Types}}
+				<option value="{{$types.ID}}">{{$types.Name}}</option>
+				{{end}}
+				</select>
             </div>
-         </div>
+        </div>
+		
          <div class="modal-footer">
 		    <a id="reportAdd" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
             <!--<button type="button" id="reportAdd" class="btn btn-default" onclick="manageReport()" data-dismiss="modal">OK</button>-->
@@ -904,4 +893,3 @@
          </div>
       </div>
    </div>
-</div>
