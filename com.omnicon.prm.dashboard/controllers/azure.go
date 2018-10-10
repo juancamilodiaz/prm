@@ -8,9 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"io/ioutil"
-	"strings"
-
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 
