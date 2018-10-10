@@ -92,11 +92,11 @@ func (this *ProductivityController) ListProductivity() {
 					dataBillableOrNotBillable = append(dataBillableOrNotBillable, strconv.FormatFloat(100-(totalBillable/totalExecuted)*100, 'f', 2, 64))
 					dataBillableOrNotBillable = append(dataBillableOrNotBillable, strconv.FormatFloat((totalBillable/totalExecuted)*100, 'f', 2, 64))
 					this.Data["TValuesBillableOrNotBillable"] = dataBillableOrNotBillable
-					this.Data["TOverallProgress"] = strconv.FormatFloat(totalProgress/float64(totalTasksOnScope), 'f', 2, 64)
-					this.Data["TBillableHours"] = strconv.FormatFloat(totalBillable, 'f', 2, 64)
-					this.Data["TExecutedHours"] = strconv.FormatFloat(totalExecuted, 'f', 2, 64)
-					this.Data["TOutOfScopeHours"] = strconv.FormatFloat(totalHoursExecutedOutOfScope, 'f', 2, 64)
-					this.Data["TQuotedHours"] = strconv.FormatFloat(totalQuotedHours, 'f', 2, 64)
+					this.Data["TOverallProgress"] = strconv.FormatFloat(totalProgress/float64(totalTasksOnScope), 'f', 1, 64)
+					this.Data["TBillableHours"] = strconv.FormatFloat(totalBillable, 'f', 1, 64)
+					this.Data["TExecutedHours"] = strconv.FormatFloat(totalExecuted, 'f', 1, 64)
+					this.Data["TOutOfScopeHours"] = strconv.FormatFloat(totalHoursExecutedOutOfScope, 'f', 1, 64)
+					this.Data["TQuotedHours"] = strconv.FormatFloat(totalQuotedHours, 'f', 1, 64)
 					this.Data["TLabels"] = labels
 					this.Data["TLabelsOutOfScope"] = labelsOutOfScope
 					this.Data["TValues"] = data
@@ -154,7 +154,7 @@ func (this *ProductivityController) ListProductivity() {
 					this.Data["OutOfScope"] = strconv.FormatFloat((totalHoursExecutedOutOfScope/totalHoursExecutedProject)*100, 'f', 2, 64)
 				}
 
-				this.TplName = "Productivity/ProductivityReport.tpl"
+				this.TplName = "Productivity/ProductivityReportNew.tpl"
 
 			} else {
 				this.Data["Title"] = "The Service is down."

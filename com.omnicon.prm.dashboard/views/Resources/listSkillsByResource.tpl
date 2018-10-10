@@ -1,11 +1,13 @@
 <html>
 <head>
 	<script src="/static/js/chartjs/Chart.min.js" > </script>
-
-
 <script>
 	$(document).ready(function(){
-		$('#viewSkillsInResource').DataTable({
+		$('.modal-trigger').leanModal();
+		$('.tooltipped').tooltip();
+		$('#viewSkillsInResource').DataTable({		
+			"iDisplayLength": 20,
+			"bLengthChange": false,
 			"lengthMenu": [[8, 16, 32, -1], [8, 16, 32, "All"]],
 			"columns":[
 				null,
@@ -201,13 +203,6 @@
 body {font-family: Verdana,sans-serif;margin:0}
 .mySlides {display:none}
 
-/* Slideshow container */
-.slideshow-container {
-  max-width: 1000px;
-  position: relative;
-  margin: auto;
-}
-
 /* Next & previous buttons */
 .prev-slide, .next-slide {
   cursor: pointer;
@@ -297,9 +292,11 @@ body {font-family: Verdana,sans-serif;margin:0}
 </head>
 
 <body>
-<div class="col-sm-12">
-	<div class="col-sm-6">
-		<table id="viewSkillsInResource" class="table table-striped table-bordered">
+<div class="container" style="padding:15px;">
+	<h6>Skills by resource</h6>
+	<div class="row">
+		<div class="col s6">
+		<table id="viewSkillsInResource" class="display" cellspacing="0" width="100%">
 			<thead>
 				<tr>
 					<th>Name</th>
@@ -313,94 +310,96 @@ body {font-family: Verdana,sans-serif;margin:0}
 					<td>{{$skill.Name}}</td>
 					<td>{{$skill.Value}}</td>
 					<td>
-						<button class="buttonTable button2" data-toggle="modal" data-target="#updateResourceSkillModal" onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})" data-dismiss="modal">Update</button>
-						<button data-toggle="modal" data-target="#confirmDeleteSkillResourceModal" class="buttonTable button2" onclick="configureDeleteSkillResourceModal({{$skill.SkillId}});$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.SkillId}});" data-dismiss="modal">Delete</button>
+						<!--<button class="buttonTable button2" data-toggle="modal" data-target="#updateResourceSkillModal" onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})" data-dismiss="modal">Update</button>
+						<button data-toggle="modal" data-target="#confirmDeleteSkillResourceModal" class="buttonTable button2" onclick="configureDeleteSkillResourceModal({{$skill.SkillId}});$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.SkillId}});" data-dismiss="modal">Delete</button>-->
+						<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href="#updateResourceSkillModal"  onclick="configureUpdateSkillResourceModal({{$skill.SkillId}},'{{$skill.Name}}',{{$skill.Value}})" ><i class="mdi-editor-mode-edit"></i></a>
+						<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmDeleteSkillResourceModal' onclick="configureDeleteSkillResourceModal({{$skill.SkillId}});$('#nameDelete').html('{{$skill.Name}}');$('#skillID').val({{$skill.SkillId}});"><i class="mdi-action-delete"></i></a>
+				
 					</td>
 				</tr>
 				{{end}}	
 			</tbody>
 		</table>
-	</div>
-	<div class="col-sm-6">
-		<p>
-		<div class="slideshow-container">
-			{{$mapSkillsAndValues := .MapSkillsAndValues}}
-			{{$listTypesName := .ListTypesName}}
-			{{$listSkills := .ListSkills}}	
-			{{$listValueSkills := .ListValues}}	
-			{{$listColors := .ListColor}}
-			{{$listColorsBkg := .ListColorBkg}}	
-			{{range $indexTypes, $typesNames := $listTypesName}}
-				{{if lt $indexTypes (minus (len $listTypesName) 1)}}
-				<div class="mySlides fade-slide">
-				  	<div class="chart-container" id="chartjs-wrapper">
-						<canvas id="chartjs-{{$indexTypes}}" >
-						</canvas>					
-						<script>new Chart(document.getElementById("chartjs-{{$indexTypes}}"),
-							{"type":"radar",
-								"data": {			
-									"labels": {{$listSkills}},
-										"datasets":[
-											{{range $index, $listValue := $listValueSkills}}
-												{{if lt $index (minus (len $listValueSkills) 1)}}
-													{{if eq $index $indexTypes}}										
-													{"label":"{{index $listTypesName $indexTypes}}","data":{{$listValue}},"fill":true,"backgroundColor":"{{index $listColorsBkg $indexTypes}}","borderColor":"{{index $listColors $indexTypes}}","pointBackgroundColor":"{{index $listColors $indexTypes}}","pointBorderColor":"{{index $listColors $indexTypes}}","pointHoverBackgroundColor":"{{index $listColors $indexTypes}}","pointHoverBorderColor":"{{index $listColors $indexTypes}}"},								
+		</div>
+		<div class="col s6">
+			<p>
+			<div class="slideshow-container">
+				{{$mapSkillsAndValues := .MapSkillsAndValues}}
+				{{$listTypesName := .ListTypesName}}
+				{{$listSkills := .ListSkills}}	
+				{{$listValueSkills := .ListValues}}	
+				{{$listColors := .ListColor}}
+				{{$listColorsBkg := .ListColorBkg}}	
+				{{range $indexTypes, $typesNames := $listTypesName}}
+					{{if lt $indexTypes (minus (len $listTypesName) 1)}}
+					<div class="mySlides fade-slide">
+						<div class="chart-container" id="chartjs-wrapper">
+							<canvas id="chartjs-{{$indexTypes}}" >
+							</canvas>					
+							<script>new Chart(document.getElementById("chartjs-{{$indexTypes}}"),
+								{"type":"radar",
+									"data": {			
+										"labels": {{$listSkills}},
+											"datasets":[
+												{{range $index, $listValue := $listValueSkills}}
+													{{if lt $index (minus (len $listValueSkills) 1)}}
+														{{if eq $index $indexTypes}}										
+														{"label":"{{index $listTypesName $indexTypes}}","data":{{$listValue}},"fill":true,"backgroundColor":"{{index $listColorsBkg $indexTypes}}","borderColor":"{{index $listColors $indexTypes}}","pointBackgroundColor":"{{index $listColors $indexTypes}}","pointBorderColor":"{{index $listColors $indexTypes}}","pointHoverBackgroundColor":"{{index $listColors $indexTypes}}","pointHoverBorderColor":"{{index $listColors $indexTypes}}"},								
+														{{end}}
 													{{end}}
 												{{end}}
-											{{end}}
-											{"label":"{{index $listTypesName (minus (len $listTypesName) 1)}}","data":{{index $listValueSkills (minus (len $listValueSkills) 1)}},"fill":true,"backgroundColor":"{{index $listColorsBkg (minus (len $listColorsBkg) 1)}}","borderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointBackgroundColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointBorderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointHoverBackgroundColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointHoverBorderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}"},								
-										]
-									},
-								"options": {
-									"elements": {
-										"line":{"tension":0,"borderWidth":3}
-									},
-									"scale": {
-								        "display": true,
-										"ticks": {
-											"max": 100,
-											"min": 0,
-											"beginAtZero":true,
-											"stepSize": 20	
-										}				
-								    },
-									legend: {
-										display:true
+												{"label":"{{index $listTypesName (minus (len $listTypesName) 1)}}","data":{{index $listValueSkills (minus (len $listValueSkills) 1)}},"fill":true,"backgroundColor":"{{index $listColorsBkg (minus (len $listColorsBkg) 1)}}","borderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointBackgroundColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointBorderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointHoverBackgroundColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}","pointHoverBorderColor":"{{index $listColors (minus (len $listColorsBkg) 1)}}"},								
+											]
+										},
+									"options": {
+										"elements": {
+											"line":{"tension":0,"borderWidth":3}
+										},
+										"scale": {
+											"display": true,
+											"ticks": {
+												"max": 100,
+												"min": 0,
+												"beginAtZero":true,
+												"stepSize": 20	
+											}				
+										},
+										legend: {
+											display:true
+										}
 									}
-								}
-							
-							});
-						</script>
+								
+								});
+							</script>
+						</div>
+						<div class="row">
+							<div class="col s5">
+							</div>
+							<div class="col s2">
+								<button class="buttonTable button2" id="download-pdf" onclick="downloadPDF({{$indexTypes}})" >Download PDF</button>
+							</div>
+							<div class="col s5">
+							</div>
+						</div>
 					</div>
-					<div class="row">
-				        <div class="col-sm-5">
-				        </div>
-				        <div class="col-sm-2">
-							<button class="buttonTable button2" id="download-pdf" onclick="downloadPDF({{$indexTypes}})" >Download PDF</button>
-				        </div>
-				        <div class="col-sm-5">
-				        </div>
-				    </div>
-				</div>
-				{{end}}
-			{{end}}	
-			<a class="prev-slide" onclick="plusSlides(-1)">&#10094;</a>
-			<a class="next-slide" onclick="plusSlides(1)">&#10095;</a>
-		</div>
-		<div style="text-align:center">
-			<div class="col-sm-5"></div>
-			<div class="col-sm-2">
-				{{range $index, $typeName := $listTypesName}}
-					{{if lt $index (minus (len $listTypesName) 1)}}
-			  		<span class="dot" onclick="currentSlide({{inc $index 1}})"></span> 
 					{{end}}
-				{{end}}
+				{{end}}	
+				<a class="prev-slide" onclick="plusSlides(-1)">&#10094;</a>
+				<a class="next-slide" onclick="plusSlides(1)">&#10095;</a>
 			</div>
-			<div class="col-sm-5"></div>
+			<div style="text-align:center">
+				<div class="col-sm-5"></div>
+				<div class="col-sm-2">
+					{{range $index, $typeName := $listTypesName}}
+						{{if lt $index (minus (len $listTypesName) 1)}}
+						<span class="dot" onclick="currentSlide({{inc $index 1}})"></span> 
+						{{end}}
+					{{end}}
+				</div>
+				<div class="col s5"></div>
+			</div>
+			</p>
 		</div>
-		</p>
-	</div>
-</div>
 <!-- Modal -->
 	<div class="modal fade" id="resourceSkillModal" role="dialog">
   		<div class="modal-dialog">
@@ -438,14 +437,13 @@ body {font-family: Verdana,sans-serif;margin:0}
   		</div>
 	</div>
 	<!-- Modal -->
-	<div class="modal fade" id="updateResourceSkillModal" role="dialog">
-  		<div class="modal-dialog">
+	<div class="modal" id="updateResourceSkillModal">
     		<!-- Modal content-->
     		<div class="modal-content">
       			<div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal">&times;</button>
 			        <h4 id="modalUpdateResourceSkillTitle" class="modal-title"></h4>
 			    </div>
+			</div>
 		    	<div class="modal-body">
 					<input type="hidden" id="updateResourceSkillId">
         			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
@@ -513,4 +511,6 @@ body {font-family: Verdana,sans-serif;margin:0}
 	
 	  </div>
 	</div>
+</div>
+</div>
 </body>

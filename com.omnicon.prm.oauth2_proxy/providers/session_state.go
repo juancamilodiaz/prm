@@ -15,6 +15,27 @@ type SessionState struct {
 	RefreshToken string
 	Email        string
 	User         string
+	PInfo        PersonalInfo
+	ProfPic      ProfilePicture
+}
+
+type PersonalInfo struct {
+	Odatacontext      string
+	ID                string
+	BusinessPhones    []string
+	DisplayName       string
+	GivenName         string
+	JobTitle          string
+	Mail              string
+	MobilePhone       string
+	OfficeLocation    string
+	PreferredLanguage string
+	Surname           string
+	UserPrincipalName string
+}
+
+type ProfilePicture struct {
+	Picture []byte
 }
 
 func (s *SessionState) IsExpired() bool {

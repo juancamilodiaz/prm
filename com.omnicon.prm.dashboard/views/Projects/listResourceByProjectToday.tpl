@@ -1,7 +1,26 @@
 <script>
 	var MyProject = {};
 	$(document).ready(function(){
-		MyProject.table = $('#viewResourcesPerProjectUnassign').DataTable({
+		$('.tooltipped').tooltip();
+		$('.modal-trigger').leanModal();
+		
+		$('.viewResourcesPerProject').DataTable({			
+			"iDisplayLength": 20,
+			"bLengthChange": false,
+			"searching": false
+
+		});
+		
+		$('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 15,
+			format: 'yyyy-mm-dd',
+			formatSubmit: 'yyyy-mm-dd'
+		});
+
+		MyProject.table = $('#viewResourcesPerProjectUnassign').DataTable({		
+			"iDisplayLength": 20,
+			"bLengthChange": false,
 			"columns": [
 				{"className":'details-control',"searchable":true},
 				null
@@ -24,13 +43,28 @@
 			"columns": [
 				{"width": "100%"}
 	        ],
-			scrollY: 370,
 			responsive: true,
 			"pageLength": 50,
 			"searching": true,
 			"paging": false,
 		});	
-				
+
+		var time = new Date();
+		var mm = time.getMonth() + 1; // getMonth() is zero-based
+		var dd = time.getDate()
+		var date =  [time.getFullYear(),
+				(mm>9 ? '' : '0') + mm,
+				(dd>9 ? '' : '0') + dd
+				].join('-');
+		
+		data = { 
+				"StartDate": date,
+				"EndDate": date
+			}
+		//reload('/projects/resources/today', data);
+		$('#dateFrom').val(date)
+		$('#dateTo').val(date)
+
 		$('#backButton').css("display", "none");	
 		$('#datePicker').css("display", "inline-block");	
 		$('#refreshButton').css("display", "inline-block");
@@ -265,7 +299,8 @@ function drop(ev, projectID, obj) {
 	$("#tempResource").html(data);
 	
 	configureCreateModal();
-	$("#setResourceModal").modal("show");
+	$("#setResourceModal").openModal()
+	//$("#setResourceModal").modal("show");
 	$("#resourceIDInput").val(ev.dataTransfer.getData("resourceID"));
 	$("#projectIDInput").val(projectID);
 	//}
@@ -277,7 +312,40 @@ function setResourceToProjectExc(){
 	setResourceToProject($("#resourceIDInput").val(), $("#projectIDInput").val(), $("#resourceStartDate").val(), $("#resourceEndDate").val(), $("#estimatedHours").val(), $("#createHoursPerDay").val(), $("#checkHoursPerDay").is(":checked"));
 }
 </script>
+<!--
+<div id="datePicker" class="pull-right" style="input-field col s12 inline">
 
+	<label for="dateFrom">Start Date:</label>
+	<input id="dateFrom" type="date"  class="datepicker">
+	<label for="dateTo">End Date:</label>
+	<input id="dateTo" type="date"   class="datepicker">
+	<button id="filterByDateRange" class="buttonHeader button2">Filter</button>
+	<a id="filterByDateRange" class="btn green waves-effect waves-light"  data-dismiss="modal">Filter</button>        
+
+</div>-->
+
+<div class="container">
+<div class="row ">
+	<div class="col s12 offset-l6">
+		<div class="col m2">
+			<div class="input-field">
+				<label for="dateFrom" class="active">Start Date:</label>
+				<input id="dateFrom" type="date" class="datepicker">
+			</div>
+		</div>
+		<div class="col m2">
+			<div class="input-field">
+				<label for="dateTo" class="active">End Date:</label>
+				<input id="dateTo" type="date"   class="datepicker">
+			</div>
+		</div>
+		<div class="col m1">
+		<div class="input-field">
+			<a id="filterByDateRange" class="btn blue waves-effect waves-light"><i class="mdi-action-search"></i></a>       
+		</div>
+		</div>
+	</div>
+</div>
 
 <tr id="tempResource" style="display:none"></tr>
 </div>
@@ -286,11 +354,13 @@ function setResourceToProjectExc(){
 <var id="resourceIDInput"></var>
 
 	<div class="row">
-		<div class="col-sm-3">
+	<h5 class="modal-title">Project Summaries</h5>
+		<div class="col s12 m9 l3">
 			<div class="panel-group" >
 				<div class="panel panel-default">
 					<div id="resources" class="panel-body">
-						<table id="viewResourcesHome" class="table table-striped table-bordered pull-left">
+					<div class="card-panel" style="background-color: #f9f9f9;">
+						<table id="viewResourcesHome" class="display" cellspacing="0" width="90%">
 							<thead>
 								<th style="text-align: -webkit-center;">Resources</th>
 							</thead>
@@ -301,6 +371,7 @@ function setResourceToProjectExc(){
 							</tbody>
 						</table>
 					</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -310,41 +381,47 @@ function setResourceToProjectExc(){
 					{{$projectsLoop := .Projects}}
 					{{$resourcesProject := .ResourcesToProjects}}
 					{{range $key, $project := $projectsLoop}}	
-					 	<div class="col-sm-6" style="padding-bottom: 10px;">	
-							<div id="panel-df-project{{$key}}" class="panel panel-default">
-								<div id="project{{$key}}" class="panel-heading">
-									{{$project.OperationCenter}}-{{$project.WorkOrder}} {{$project.Name}}
-									<div class="pull-right">
-										{{dateformat $project.StartDate "2006-01-02"}} to {{dateformat $project.EndDate "2006-01-02"}} 
-										<button id="collapseButton{{$key}}" class="btnCollapse glyphicon glyphicon-collapse-up" data-toggle="collapse" href="#collapse{{$key}}" style="border:none;border-radius:4px;"></button>
+						<div class="card-panel" style="background-color: #f9f9f9;">
+							<div class="col-sm-6" style="padding-bottom: 15px;">	
+								<div id="panel-df-project{{$key}}" class="panel panel-default">
+									<div id="project{{$key}}" class="panel-heading" style="padding-bottom: 15px;">
+
+											{{$project.OperationCenter}}-{{$project.WorkOrder}} {{$project.Name}}
+											<div style="display:inline;float:right;">
+												{{dateformat $project.StartDate "2006-01-02"}} to {{dateformat $project.EndDate "2006-01-02"}} 
+											</div>
 									</div>
-								</div>
-								<div id="collapse{{$key}}" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px; overflow-y: auto;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
-									<table id="viewResourcesPerProject{{$project.ID}}" class="table table-striped table-bordered">
-										<thead>
-											<th style="font-size:12px;text-align: -webkit-center;">Name</th>
-											<th style="font-size:12px;text-align: -webkit-center;">Start date</th>
-											<th style="font-size:12px;text-align: -webkit-center;">End date</th>
-											<th style="font-size:12px;text-align: -webkit-center;">Hours</th>
-											<th style="font-size:12px;text-align: -webkit-center;">Options</th>
-										</thead>
-										<tbody>
-											{{range $keyR, $resProj := $resourcesProject}}
-												{{if eq  $resProj.ProjectId $project.ID}}
-												<tr draggable ="false">
-													<td id="res{{$keyR}}" style="font-size:11px;text-align: -webkit-center;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
-													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
-													<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
-													<td style="font-size:11px;text-align: -webkit-center;">{{$resProj.Hours}}</td>
-													
-													<td style="text-align: -webkit-center;"><img style="padding:0px;" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn button3" src="/static/img/rubbish-bin.png" onclick="$('#ID').val('{{$resProj.ID}}'); $('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"></td>
-												</tr>
+			 						 
+									<div id="collapse{{$key}}" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px;" ondrop="drop(event,'{{$project.ID}}', this)" ondragover="allowDrop(event)">
+										<table id="viewResourcesPerProject{{$project.ID}}" class="display viewResourcesPerProject" cellspacing="0" width="100%">
+											<thead>
+												<th style="font-size:12px;text-align: -webkit-center;">Name</th>
+												<th style="font-size:12px;text-align: -webkit-center;">Start date</th>
+												<th style="font-size:12px;text-align: -webkit-center;">End date</th>
+												<th style="font-size:12px;text-align: -webkit-center;">Hours</th>
+												<th style="font-size:12px;text-align: -webkit-center;">Options</th>
+											</thead>
+											<tbody>
+												{{range $keyR, $resProj := $resourcesProject}}
+													{{if eq  $resProj.ProjectId $project.ID}}
+													<tr draggable ="false">
+														<td id="res{{$keyR}}" style="font-size:11px;text-align: -webkit-center;margin:0 0 0px;">{{$resProj.ResourceName}}</td> 
+														<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.StartDate "2006-01-02"}}</td>
+														<td style="font-size:11px;text-align: -webkit-center;">{{dateformat $resProj.EndDate "2006-01-02"}}</td>
+														<td style="font-size:11px;text-align: -webkit-center;">{{$resProj.Hours}}</td>
+														
+														<td style="text-align: -webkit-center;">
+															<a class="modal-trigger tooltipped" data-position="top" data-tooltip="Delete" href="#confirmDeleteModal" onclick="$('#ID').val('{{$resProj.ID}}'); $('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')"><i class="mdi-action-delete"></i></a>														
+															<!--<img style="padding:0px;" data-toggle="modal" data-target="#confirmDeleteModal" data-dismiss="modal" class="btn button3" src="/static/img/rubbish-bin.png" onclick="$('#ID').val('{{$resProj.ID}}'); $('#projectID').val('{{$resProj.ProjectId}}'); $('#resourceID').val('{{$resProj.ResourceId}}'); $('body').data('buttonX', this); $('#resourceName').html('{{$resProj.ResourceName}}'); $('#projectName').html('{{$resProj.ProjectName}}')">-->
+															</td>
+													</tr>
+													{{end}}
 												{{end}}
-											{{end}}
-										</tbody>
-									</table>										
-								</div>
-							</div>														
+											</tbody>
+										</table>										
+									</div>
+								</div>														
+							</div>
 						</div>
 					{{end}}
 				</div>
@@ -353,19 +430,16 @@ function setResourceToProjectExc(){
 	</div>
 	
 	<div class="row">
-		<div class="col-sm-12" style="padding-bottom: 10px;">											
+		<div class="col s12">											
 			<div id="panel-df-projectUnassign" class="panel panel-default">
 				<div id="unassign" class="panel-heading">
-					Available hours per resource
-					<div class="pull-right">
-						<button id="collapseButtonUnassign" class="btnCollapse" data-toggle="collapse" href="#collapseUnassign" style="border:none;border-radius:4px;"></button>
-					</div>
+					<h5>Available hours per resource</h5>
 				</div>
-				<div id="collapseUnassign" class="panel-body panel-collapse collapse in" style="padding:0;height: auto;max-height: 221px;">
-					<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
+				<div id="collapseUnassign">
+					<table id="viewResourcesPerProjectUnassign" class="display" cellspacing="0" width="100%" >
 						<thead id="availabilityTableHead">
-							<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-10">Resource Name</th>
-							<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-1">Hours</th>
+							<th>Resource Name</th>
+							<th>Hours</th>
 						</thead>
 						<tbody id="unassignBody">
 							{{$availBreakdown := .AvailBreakdownPerRange}}
@@ -375,8 +449,8 @@ function setResourceToProjectExc(){
 									{{if $avail}}
 										{{if gt $avail.TotalHours 0.0}}
 											<tr draggable=false>
-												<td style="background-position-x: 1%;font-size:11px;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
-												<td style="font-size:11px;text-align: -webkit-center;">{{$avail.TotalHours}}</td>
+												<td style="background-position-x: 1%;font-size:11px;;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+												<td>{{$avail.TotalHours}}</td>
 											</tr>
 										{{end}}
 									{{end}}	
@@ -390,80 +464,50 @@ function setResourceToProjectExc(){
 	</div>
 	
 <!-- Modal -->
-<div class="modal fade" id="setResourceModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
+<div class="modal" id="setResourceModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTitle" class="modal-title">Assign dates to the resource</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Start Date"> Start Date </label> 
-              <div class="col-sm-8">
-              	<input type="date" id="resourceStartDate" style="width: 174px; border-radius: 8px;">
-        		</div>
-          </div>
+        <h5>Assign dates to the resource</h5><br>   
+        <div class="input-field col s12">
+			<label> Start Date </label>
+			<input type="date" id="resourceStartDate" class="datepicker">
         </div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="End Date"> End Date </label> 
-              <div class="col-sm-8">
-              	<input type="date" id="resourceEndDate" style="width: 174px; border-radius: 8px;">
-        		</div>
-          </div>
+        <div class="input-field col s12">
+        	<label> End Date </label> 
+            <input type="date" id="resourceEndDate" class="datepicker">
+        
         </div>
-      		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	       	<div class="form-group form-group-sm">
-	       		<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Total Hours </label> 
-	             	<div class="col-sm-6">
-	             		<input type="number" id="estimatedHours" value="8" style="border-radius: 8px;">
-	       		</div>
-	       	</div>
+        <div class="input-field col s12">
+	       	<label class="active"> Total Hours </label> 
+	        <input type="number" id="estimatedHours" value="8" class="validate">
 		</div>
-		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="activeHoursPerDay"> Activate Hours Per Day </label> 
-              <div class="col-sm-8">
-              	<input type="checkbox" id="checkHoursPerDay"><br/>
-              </div>    
-          </div>
+		<div class="input-field col s12">
+        	<label class="active"> Activate Hours Per Day </label> 
+            <input type="checkbox" id="checkHoursPerDay" ><br/>         
         </div>
-		<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-			<div class="form-group form-group-sm">
-				<label class="control-label col-sm-4 translatable" data-i18n="HoursPerDay"> Hours Per Day </label> 
-   				<div class="col-sm-8">
-    				<input type="number" id="createHoursPerDay" value="8" disabled style="border-radius: 8px;">
-				</div>
- 			</div>
+		<div class="input-field col s12">
+			<label class="active"> Hours Per Day </label> 
+   			<input type="number" id="createHoursPerDay" value="8" disabled class="validate">
 		</div>
 	</div>
-      <div class="modal-footer">
-        <button type="button" id="setResource" class="btn btn-default" onclick="setResourceToProjectExc();" data-dismiss="modal">Create</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>    
-  </div>
+	<div class="modal-footer">
+	<a id="setResource" class="btn green waves-effect waves-light  modal-action modal-close"  onclick="setResourceToProjectExc();" data-dismiss="modal">Create</button>        
+	<a class="btn waves-effect waves-light red modal-action modal-close">Cancel</a>
+	</div>
 </div>
 
-<div class="modal fade" id="confirmDeleteModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
+<div class="modal" id="confirmDeleteModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" onclick="getResourcesByProjectWithFilterDate();">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
+       <!-- <button type="button" class="close" data-dismiss="modal" onclick="getResourcesByProjectWithFilterDate();">&times;</button>-->
+        <h4>Delete Confirmation</h4>
 		<input type="hidden" id="ID">
         Are you sure you want to remove <b id="resourceName"></b> from project <b id="projectName"></b>?
       </div>
       <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#ID').val(), $('body').data('buttonX'));getResourcesByProjectWithFilterDate();" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+	    <a id="resourceProjectDelete" class="btn green waves-effect waves-light  modal-action modal-close" onclick="unassignResource($('#ID').val(), $('body').data('buttonX'));getResourcesByProjectWithFilterDate();" data-dismiss="modal" style="margin-left:5px;">Delete</button>        
+        <!--<button type="button" id="resourceProjectDelete" class="btn btn-default" onclick="unassignResource($('#ID').val(), $('body').data('buttonX'));getResourcesByProjectWithFilterDate();" data-dismiss="modal">Yes</button>-->
+        <a class="btn waves-effect waves-light red modal-action modal-close">Cancel</a>
       </div>
     </div>
   </div>
+</div>
 </div>

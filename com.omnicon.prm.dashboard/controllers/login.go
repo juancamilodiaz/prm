@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/smtp"
+
 	//	"net/url"
 	"os"
 	"strings"
@@ -61,8 +62,8 @@ func (this *LoginController) Login() {
 		fmt.Println("session2", session.AccessToken)
 		fmt.Println("s.Email 4", session.Email)
 		this.Provider.GetEmailAddress(session)
-
-		this.TplName = "Projects/listResourceByProjectToday.tpl"
+		//this.TplName = "Projects/listResourceByProjectToday.tpl"
+		this.TplName = "Projects/ProductivityReportNew.tpl"
 	} else {
 		tr := &http.Transport{
 			MaxIdleConns:       10,
@@ -79,8 +80,8 @@ func (this *LoginController) Login() {
 		this.Redirect(uri, 307)
 
 	}
-
-	this.TplName = "Projects/listResourceByProjectToday.tpl"
+	//this.TplName = "Projects/listResourceByProjectToday.tpl"
+	this.TplName = "Projects/ProductivityReportNew.tpl"
 }
 
 func (c *LoginController) Logout() {
