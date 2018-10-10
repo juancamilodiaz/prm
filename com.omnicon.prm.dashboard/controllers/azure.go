@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"golang.org/x/net/context"
@@ -24,6 +26,34 @@ var conf *oauth2.Config
 var tenant string
 var provider *providers.AzureProvider
 var session *providers.SessionState
+
+type Respuesta struct {
+	TokenType    string `json:"token_type"`
+	Scope        string `json:"scope"`
+	ExpiresIn    string `json:"expires_in`
+	ExtExpiresIn string `json:"ext_expires_in"`
+	ExpiresOn    string `json:"expires_on"`
+	NotBefore    string `json:"not_before"`
+	Resource     string `json:"resource"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	IdToken      string `json:"id_token"`
+}
+
+type PersonalInfoGraph struct {
+	Odatacontext      string   `json:"@odata.context"`
+	ID                string   `json:"id"`
+	BusinessPhones    []string `json:"businessPhones"`
+	DisplayName       string   `json:"displayName"`
+	GivenName         string   `json:"givenName"`
+	JobTitle          string   `json:"jobTitle"`
+	Mail              string   `json:"mail"`
+	MobilePhone       string   `json:"mobilePhone"`
+	OfficeLocation    string   `json:"officeLocation"`
+	PreferredLanguage string   `json:"preferredLanguage"`
+	Surname           string   `json:"surname"`
+	UserPrincipalName string   `json:"userPrincipalName"`
+}
 
 //var url string
 
@@ -184,6 +214,8 @@ func (this *AzureController) Get() {
 		this.SetLogin(user)
 		this.Session = session
 
+		// Function to obtain the personal data of the person in session.
+		PersonalInFo()
 		operation := "GetResourcesToProjects"
 
 		input := domain.GetResourcesToProjectsRQ{}
@@ -215,7 +247,7 @@ func (this *AzureController) Get() {
 		}
 
 		uri := BuildURI(false, serverip, httpport) // Review if missing last /
-//		fmt.Println("test - 9-1") // ---------------------------------------------
+		//		fmt.Println("test - 9-1") // ---------------------------------------------
 
 		this.Redirect(uri, 307)
 

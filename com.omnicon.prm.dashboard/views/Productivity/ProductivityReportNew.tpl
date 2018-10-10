@@ -40,9 +40,6 @@
 		// only show the option if already exist a search
 		if ({{.ProjectID}} == "" || {{.ProjectID}} == "Select a project..."){
 			$('#buttonOption').css("display", "none");
-			$("#main-content").collapse("hide");
-			$("#tableData").collapse("hide");
-			$("#filters").collapse("hide");
 			//searchProductivityReport(361); //Temporal code, must be removed
 		}
 

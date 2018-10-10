@@ -351,7 +351,6 @@
 		$('#projectType').css("display", "none");
 		$('#value').val($('#actualValue').val());
 		$('#field').html($('#actualField').val());
-    	$('#reportForecast').modal('show');
 	});
 	
 	$(document).on('click','#manageForecastDate',function(){
@@ -361,7 +360,6 @@
 		$('#projectType').css("display", "none");
 		$('#valueDate').val($('#actualValue').val());
 		$('#field').html($('#actualField').val());
-    	$('#reportForecast').modal('show');
 	});		
 	
 	$(document).on('click','#manageForecastNumber',function(){
@@ -371,7 +369,6 @@
 		$('#projectType').css("display", "none");
 		$('#valueNumber').val($('#actualValue').val());
 		$('#field').html($('#actualField').val());
-    	$('#reportForecast').modal('show');
 	});	
 		
 	manageReport = function () {
