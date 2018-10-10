@@ -104,26 +104,29 @@ func UpdateSettings(pRequest *DOMAIN.SettingsRQ) *DOMAIN.SettingsRS {
 }
 
 func UpdateSettingsVariables() {
-	setting := dao.GetSettingsByName(util.HOURS_OF_WORK)
-	if setting != nil {
-		hoursOfWork, err := strconv.ParseFloat(setting.Value, 64)
-		if err != nil {
-			log.Error("Error in parse " + util.HOURS_OF_WORK)
+	if dao.GetSession() != nil {
+		setting := dao.GetSettingsByName(util.HOURS_OF_WORK)
+		if setting != nil {
+			hoursOfWork, err := strconv.ParseFloat(setting.Value, 64)
+			if err != nil {
+				log.Error("Error in parse " + util.HOURS_OF_WORK)
+			}
+			// Set variable
+			HoursOfWork = hoursOfWork
 		}
-		// Set variable
-		HoursOfWork = hoursOfWork
-	}
-	setting = dao.GetSettingsByName(util.VALID_EMAILS)
-	if setting != nil {
-		//TODO set value
-	}
-	setting = dao.GetSettingsByName(util.EPSILON_VALUE)
-	if setting != nil {
-		epsilonValue, err := strconv.ParseFloat(setting.Value, 64)
-		if err != nil {
-			log.Error("Error in parse " + util.EPSILON_VALUE)
+		setting = dao.GetSettingsByName(util.VALID_EMAILS)
+		if setting != nil {
+			//TODO set value
 		}
-		// Set variable
-		EpsilonValue = epsilonValue
+		setting = dao.GetSettingsByName(util.EPSILON_VALUE)
+		if setting != nil {
+			epsilonValue, err := strconv.ParseFloat(setting.Value, 64)
+			if err != nil {
+				log.Error("Error in parse " + util.EPSILON_VALUE)
+			}
+			// Set variable
+			EpsilonValue = epsilonValue
+		}
 	}
+
 }

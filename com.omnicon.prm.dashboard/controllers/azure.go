@@ -28,8 +28,6 @@ var session *providers.SessionState
 //var url string
 
 func init() {
-	fmt.Println("init init")
-
 	provider = getAzureProvider(azureprovider)
 	provider.ProtectedResource, _ = url.Parse(protectedresource)
 	provider.ClientID = clientid
@@ -79,7 +77,7 @@ func (this *AzureController) Callback() {
 	session, err = provider.Redeem(uri, code)
 	if err == nil {
 		this.Session = session
-		fmt.Println("session", session.AccessToken)
+		//fmt.Println("session", session.AccessToken)
 		fmt.Println("s.Email 1", session.Email)
 		this.IsLogin = true
 		if session.Email == "" {
@@ -103,9 +101,75 @@ func (this *AzureController) Callback() {
 
 }
 
+/**
+*  PersonalInFo Function to obtain the personal data of the person in session.
+ */
+func PersonalInFo() {
+
+	url := "https://login.microsoftonline.com/omnicon.cc/oauth2/token"
+
+	payload := strings.NewReader("client_id=8a72ec00-36fe-4197-a22a-8c70e01c304a&client_secret=7iHt3uOYcDWcSQaoZDp9CqYOpcUdplhbchw6OwSzoFw%3D&resource=https%3A%2F%2Fgraph.microsoft.com&grant_type=client_credentials")
+	req, _ := http.NewRequest("POST", url, payload)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	res, _ := http.DefaultClient.Do(req)
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	message := Respuesta{}
+	err := json.Unmarshal(body, &message)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	url = "https://graph.microsoft.com/v1.0/users/" + session.Email
+	req, _ = http.NewRequest("GET", url, nil)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Authorization", message.TokenType+" "+message.AccessToken)
+	res, _ = http.DefaultClient.Do(req)
+	defer res.Body.Close()
+	body, _ = ioutil.ReadAll(res.Body)
+
+	pinfo := PersonalInfoGraph{}
+	err = json.Unmarshal(body, &pinfo)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	session.PInfo.ID = pinfo.ID
+	session.PInfo.BusinessPhones = pinfo.BusinessPhones
+	session.PInfo.DisplayName = pinfo.DisplayName
+	session.PInfo.GivenName = pinfo.GivenName
+	session.PInfo.JobTitle = pinfo.JobTitle
+	session.PInfo.Mail = pinfo.Mail
+	session.PInfo.MobilePhone = pinfo.MobilePhone
+	session.PInfo.Odatacontext = pinfo.Odatacontext
+	session.PInfo.OfficeLocation = pinfo.OfficeLocation
+	session.PInfo.PreferredLanguage = pinfo.PreferredLanguage
+	session.PInfo.Surname = pinfo.Surname
+	session.PInfo.UserPrincipalName = pinfo.UserPrincipalName
+
+	//fmt.Println(session.PInfo)
+	//fmt.Println(res)
+	//fmt.Println(string(body))
+
+	url = "https://graph.microsoft.com/v1.0/users/" + session.Email + "/photo/$value"
+	req, _ = http.NewRequest("GET", url, nil)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Authorization", message.TokenType+" "+message.AccessToken)
+	res, _ = http.DefaultClient.Do(req)
+	defer res.Body.Close()
+	body, _ = ioutil.ReadAll(res.Body)
+	session.ProfPic.Picture = body
+	if session.ProfPic.Picture != nil {
+		fmt.Println("IMGAGE ALIVE")
+	} else {
+		fmt.Println("IMAGE DIE")
+	}
+	//fmt.Println(res)
+	//fmt.Println(string(body))
+}
+
 func (this *AzureController) Get() {
 	if session != nil {
-		fmt.Println("s.AccessToken", session.AccessToken)
+		//	fmt.Println("s.AccessToken", session.AccessToken)
 		fmt.Println("s.Email 3", session.Email)
 		fmt.Println("session", session)
 

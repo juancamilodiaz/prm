@@ -186,7 +186,7 @@ func DeleteProductivityTasks(pID int) (int, error) {
 func GetProductivityTasksByFilters(pProductivityTasksFilters *DOMAIN.ProductivityTasks) ([]*DOMAIN.ProductivityTasks, string) {
 	// Slice to keep all productivityTasks
 	productivityTasks := []*DOMAIN.ProductivityTasks{}
-	var string_response string
+	var stringResponse string
 	// Filter productivityTasks
 	if getProductivityTasksCollection() != nil {
 		result := getProductivityTasksCollection().Find()
@@ -224,8 +224,8 @@ func GetProductivityTasksByFilters(pProductivityTasksFilters *DOMAIN.Productivit
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 	}
-	return productivityTasks, string_response
+	return productivityTasks, stringResponse
 
 }

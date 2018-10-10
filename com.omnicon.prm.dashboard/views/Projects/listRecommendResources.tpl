@@ -95,9 +95,10 @@
 		});
 	}
 		
-	getResourcesByProjectAvail = function(){
+	getResourcesByProjectAvail = function(){ 
 		dateFrom = $('#projectStartDate').val();
 		dateTo = $('#projectEndDate').val();
+		console.warn(dateFrom);
 		skillsActive = $('#skillsActive').is(":checked");
 		hoursActive = $('#projectHoursActive').is(":checked");
 		hours = $('#projectHours').val();

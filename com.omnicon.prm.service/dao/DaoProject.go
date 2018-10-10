@@ -2,12 +2,14 @@ package dao
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 	"time"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 	"upper.io/db.v3"
+	"upper.io/db.v3/lib/sqlbuilder"
 )
 
 /**
@@ -227,7 +229,7 @@ func DeleteProject(pProjectId int) (int, error) {
 func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
 	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
-	var string_response string
+	var stringResponse string
 
 	result_ini := getProjectCollection()
 
@@ -307,9 +309,36 @@ func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate 
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 
 	}
 	// Close session when ends the method
-	return projects, string_response
+	return projects, stringResponse
+}
+
+func GetProjectsByResourceId(pResourceId int) ([]*DOMAIN.Project, string) {
+	//Slice to keep all projects associated to a given resource id
+	defer session.Close()
+	var projects []*DOMAIN.Project
+	session = GetSession()
+	if session != nil {
+		fmt.Println("id: ", strconv.Itoa(pResourceId))
+		rows, err := session.Query(`SELECT DISTINCT t2.id, t2.[name], t2.start_date, t2.end_date, t2.enabled, t2.operation_center, t2.work_order, t2.leader_id, t2.cost
+		from ProjectResources as t1
+		join Project as t2 on t1.project_id = t2.id
+		where resource_id = ` + strconv.Itoa(pResourceId) + ` and t2.end_date > GETDATE()`)
+
+		if err != nil {
+			return projects, "An error has occurred"
+		}
+
+		iter := sqlbuilder.NewIterator(rows)
+		iter.All(&projects)
+		log.Infof("PROYECTOS POR RECURSOS: ", projects)
+		return projects, "OK"
+
+	} else {
+		return projects, "An error has occurred"
+	}
+
 }

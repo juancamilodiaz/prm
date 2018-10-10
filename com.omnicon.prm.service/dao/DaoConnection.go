@@ -23,7 +23,7 @@ var cfgConfig util.Config
 	Database: "prm",
 }*/
 
-//function to deliver the configuration of the database
+//ConfigDBConnection function to deliver the configuration of the database
 func ConfigDBConnection() mssql.ConnectionURL {
 	return mssql.ConnectionURL{
 		User:     cfgConfig.ConfigMSSQL.User,
@@ -33,7 +33,7 @@ func ConfigDBConnection() mssql.ConnectionURL {
 	}
 }
 
-//lee el archivo de configuración del servicio y se parsea en la variable cfgConfig
+//ReadFileIntoConfig lee el archivo de configuracion del servicio y se parsea en la variable cfgConfig
 func ReadFileIntoConfig() {
 	err := gcfg.ReadFileInto(&cfgConfig, lib_conf.CONF_PREFIX)
 	if err != nil {
@@ -41,19 +41,19 @@ func ReadFileIntoConfig() {
 	}
 }
 
-//function to generate the connection to the database
+//GetSession function to generate the connection to the database
 func GetSession() sqlbuilder.Database {
 	var err error
 	var sess sqlbuilder.Database
-	//	fmt.Println("Starting the connection to Database...")
-	//Se lee el archivo de configuración
+	//log.Debug("Starting the connection to Database...")
+
+	/*Se lee el archivo de configuración*/
 	ReadFileIntoConfig()
-	//fmt.Println("Trying to connect to Database...")
+	//log.Debug("Trying to connect to Database...")
 	sess, err = mssql.Open(ConfigDBConnection())
 	if err != nil {
-		//	fmt.Println("Error Trying to connect to Database, check the log file for more information.")
 		log.Error(err)
 	}
-	//fmt.Println("Success connection to Database...")
+	//log.Debug("Success connection to Database...")
 	return sess
 }

@@ -24,6 +24,8 @@
 			],
 			"paging": false
 		});
+
+		console.log("Objeto resource : ",{{ .Testeo }})
 		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
 		sendTitle("Productivity Report");

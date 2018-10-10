@@ -209,7 +209,7 @@ func DeleteProjectForecast(pProjectForecastId int) (int, error) {
 func GetProjectsForecastByFilters(pProjectForecastFilters *DOMAIN.ProjectForecast, pStartDate, pEndDate, pBillingDate string) ([]*DOMAIN.ProjectForecast, string) {
 	// Slice to keep all projectsForecast
 	projectsForecast := []*DOMAIN.ProjectForecast{}
-	var string_response string
+	var stringResponse string
 	if getProjectForecastCollection() != nil {
 		result := getProjectForecastCollection().Find()
 
@@ -331,7 +331,7 @@ func GetProjectsForecastByFilters(pProjectForecastFilters *DOMAIN.ProjectForecas
 				log.Error(err)
 			}
 		}
-		string_response = filters.String()
+		stringResponse = filters.String()
 	}
-	return projectsForecast, string_response
+	return projectsForecast, stringResponse
 }

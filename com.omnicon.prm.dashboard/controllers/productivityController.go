@@ -2,7 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	//"fmt"
+	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -12,24 +15,56 @@ type ProductivityController struct {
 	beego.Controller
 }
 
+//GetResourcesID function to find a resource by email
+func GetResourcesID(email string) (int, bool) {
+	//Get resource
+	operationResources := "GetResources"
+	requestResources := domain.GetResourcesRQ{}
+	requestResources.Email = email
+	inputBufferResources := EncoderInput(requestResources)
+
+	resResources, _ := PostData(operationResources, inputBufferResources)
+
+	messageResources := new(domain.GetResourcesRS)
+	err := json.NewDecoder(resResources.Body).Decode(&messageResources)
+	if err == nil {
+		defer resResources.Body.Close()
+		return messageResources.Resources[0].ID, true
+
+	}
+	return 0, false
+
+}
+
 func (this *ProductivityController) ListProductivity() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
-
 		if level <= du {
 
 			input := domain.ProductivityTasksRQ{}
 			this.ParseForm(&input)
 
-			// Get projects enabled
-			operationProjects := "GetProjects"
-			requestProjects := domain.GetProjectsRQ{}
-			enabled := true
-			requestProjects.Enabled = &enabled
+			var resProjects *http.Response
 
-			inputBufferProjects := EncoderInput(requestProjects)
+			if level > pu {
 
-			resProjects, _ := PostData(operationProjects, inputBufferProjects)
+				operationProjects := "GetProjectsByResource"
+				resource, _ := GetResourcesID(session.Email)
+				payload := strings.NewReader("{\n\t\"ResourceId\" : " + strconv.Itoa(resource) + "\n}")
+
+				resProjects, _ = PostDataJson(operationProjects, payload)
+
+			} else {
+				// Get projects enabled
+				operationProjects := "GetProjects"
+				requestProjects := domain.GetProjectsRQ{}
+
+				enabled := true
+				requestProjects.Enabled = &enabled
+				inputBufferProjects := EncoderInput(requestProjects)
+
+				resProjects, _ = PostData(operationProjects, inputBufferProjects)
+			}
 
 			messageProjects := new(domain.GetProjectsRS)
 			err := json.NewDecoder(resProjects.Body).Decode(&messageProjects)
@@ -38,6 +73,8 @@ func (this *ProductivityController) ListProductivity() {
 				defer resProjects.Body.Close()
 
 				this.Data["Projects"] = messageProjects.Projects
+
+				this.Data["Proyerctos "] = messageProjects.Projects
 
 				if input.ProjectID != 0 {
 

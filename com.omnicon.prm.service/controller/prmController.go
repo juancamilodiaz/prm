@@ -170,6 +170,15 @@ func ProcessGetResourcesToProjects(pRequest *domain.GetResourcesToProjectsRQ) *d
 /**
 *
  */
+func ProcessGetProjectsByResource(pRequest *domain.GetResourcesToProjectsRQ) *domain.GetResourcesToProjectsRS {
+	response := tool.GetProjectsByResource(pRequest)
+	// Return response
+	return response
+}
+
+/**
+*
+ */
 func ProcessGetSkillsToResources(pRequest *domain.GetSkillByResourceRQ) *domain.GetSkillByResourceRS {
 	response := tool.GetSkillsToResources(pRequest)
 	// Return response
