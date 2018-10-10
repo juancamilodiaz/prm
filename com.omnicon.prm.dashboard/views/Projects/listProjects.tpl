@@ -188,7 +188,7 @@
 <div class="container" style="padding:20px;">
 <div id="pry_add">
 	<h4>Projects </h5>
-	<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" href="#projectModal" onclick="configureCreateModal()"><i class="mdi-action-note-add large"></i></a>
+	<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-position="top" data-tooltip="Create" href="#projectModal" onclick="configureCreateModal()"><i class="mdi-action-note-add large"></i></a>
 </div>
 <table id="viewProjects" class="display" cellspacing="0" width="100%" >
 	<thead>

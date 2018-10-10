@@ -13,9 +13,8 @@
     <!-- For iPhone -->
     <meta name="msapplication-TileColor" content="#00bcd4">
     <meta name="msapplication-TileImage" content="images/favicon/nosotros-favicon.ico">
-    <!-- For Windows Phone -->
-
-    <!-- CORE CSS-->    
+    <!-- CORE CSS--> 
+    
     <link href="/static/css/Materialize/materialize.css" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="/static/css/Materialize/style.css" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="http://cdn.datatables.net/1.10.6/css/jquery.dataTables.min.css" type="text/css" rel="stylesheet" media="screen,projection">
@@ -122,6 +121,21 @@
 			$('#projectTypeSimulator').val(null);
 		});
 		
+        getProjectSummaries = function(){
+			var time = new Date();
+			var mm = time.getMonth() + 1; // getMonth() is zero-based
+			var dd = time.getDate();
+	        var date =  [time.getFullYear(),
+		          (mm>9 ? '' : '0') + mm,
+		          (dd>9 ? '' : '0') + dd
+		         ].join('-');
+		  	data = { 
+					"StartDate": date,
+					"EndDate": date
+				}
+            reload('/projects/resources/today', data);
+        }
+
 		getResourcesByProjectToday = function(){
 			var time = new Date();
 			var mm = time.getMonth() + 1; // getMonth() is zero-based
@@ -181,7 +195,6 @@
             <nav class="cyan">
                 <div class="nav-wrapper">
                     <h1 class="logo-wrapper"><a href="index.html" class="brand-logo darken-1"><img class="svg" src="/static/img/logo2.svg" width="240" height="41" alt="" data-mu-svgfallback="images/logo_omnicon_poster_.png"></a> <span class="logo-text">Materialize</span></h1>
-                    
                     <div class="NavCenter" class="NavItem col-sm-8">
                         <img src="/static/img/prm.png" style="cursor: pointer;">
                     </div>
@@ -189,7 +202,7 @@
                         <li class="search-out">
                             <input type="text" class="search-out-text">
                         </li>
-                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-exit-to-app"></i></a>
+                        <li><a  href='{{urlfor "LoginController.Logout"}}' class="waves-effect waves-block waves-light"><i class="mdi-action-exit-to-app"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -210,10 +223,11 @@
                 <ul id="slide-out" class="side-nav fixed leftside-navigation">
                     <li class="user-details cyan darken-2">
                         <div class="row">
-                            <div class="col col s4 m4 l4">
-                                <img src="/static/img/avatar.jpg" alt="" class="circle responsive-img valign profile-image">
-                            </div>
+                                <div class="col col s4 m4 l4">
+                                <img src="" id="ItemPreview" alt="" class="circle responsive-img valign profile-image">
+                                </div>                                
                             <div class="col col s8 m8 l8">
+                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><i class="mdi-navigation-arrow-drop-down right"></i><span id="userName"></span><span id="lastName"></span></a>
                                 <ul id="profile-dropdown" class="dropdown-content">
                                     <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
                                     </li>
@@ -226,15 +240,14 @@
                                     </li>
                                     <li><a href="#"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
                                     </li>
-                                </ul>
-                                <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">Daniel C.<i class="mdi-navigation-arrow-drop-down right"></i></a>
-                                <p class="user-roal">Administrator</p>
+                                </ul>  
+                                <div id="userRole" class="user-roal userRoleText"></div>
                             </div>
                         </div>
                     </li>
-                    <li class="bold"><a href="index.html" class="waves-effect waves-cyan"><i class="mdi-action-assignment"></i> Home</a>
+                    <li class="bold"><a href="" ng-click="link('productivity')"  class="waves-effect waves-cyan"><i class="mdi-action-assignment"></i> Home</a>
                     </li>
-                    <li class="bold"><a href="app-email.html" class="waves-effect waves-cyan"><i class="mdi-action-assignment-turned-in"></i> Forecast Projects</a>
+                    <li class="bold"><a href="" ng-click="link('projectsForecast')" class="waves-effect waves-cyan"><i class="mdi-action-assignment-turned-in"></i> Forecast Projects</a>
                     </li>                    
                     <li class="no-padding">
                         <ul class="collapsible collapsible-accordion">
@@ -264,9 +277,9 @@
                     </li>
                     <li class="bold"><a href="" ng-click="link('trainings/resources')" onclick="sendTitle($(this).html())" class="waves-effect waves-cyan"><i class="mdi-maps-directions-walk"></i>Trainings</a>
                     </li>
-                    <li class="bold"><a ng-click="link('productivity')"   class="waves-effect waves-cyan"><i class="mdi-action-assessment"></i>Productivity Reports</a>
+                    <li class="bold"><a href=""  onclick="getProjectSummaries();"  class="waves-effect waves-cyan"><i class="mdi-action-assessment"></i>Project Summaries</a>
                     </li>
-                    <li class="bold"><a href="app-email.html" class="waves-effect waves-cyan"><i class="mdi-action-settings"></i>Settings</a>
+                    <li class="bold"><a href="" ng-click="link('settings')" onclick="sendTitle($(this).html())" class="waves-effect waves-cyan"><i class="mdi-action-settings"></i>Settings</a>
                     </li>
 
                 </ul>
@@ -278,7 +291,6 @@
                 <!--start container-->
                 <div  id="content" ng-bind-html="content">
                 </div>
-
                 <div id="ImagesHidden">
                     <div id="imgLoading"><img  class=".img-responsive" style="max-width: 200px; top: 0; right: 0; left: 0; bottom: 0; position: absolute; margin: auto;" src="/static/img/loading.gif"></div>
                 </div>
@@ -319,7 +331,6 @@
 
     <!-- chartist -->
     <script type="text/javascript" src="/static/js/js/plugins/chartist-js/chartist.min.js"></script>   
-    
     <script type="text/javascript" src="/static/js/js/plugins/data-tables/js/jquery.dataTables.min.js"></script>
     
     
@@ -327,20 +338,18 @@
     <script type="text/javascript" src="/static/js/js/plugins.js"></script>
     <script type="text/javascript" src="/static/js/functions.js"></script>
 
-    
- 
-   
-    <!-- Toast Notification -->
-    <script type="text/javascript">
-    // Toast Notification
-    $(window).load(function() {
-       /* setTimeout(function() {
-            Materialize.toast('<span>Hiya! I am a toast.</span>', 1500);
-        }, 3000);*/
 
-    });
-    
-    </script>
+ <script>                                   
+    ProfilePicture = JSON.parse({{ .ProfilePicture}});
+    PersonalInformation = JSON.parse({{ .PersonalInformation}});
+    var JobTitleSplitted = PersonalInformation.JobTitle.split(",");
+    var SurnameSplitted = PersonalInformation.Surname.split(" ");
+    $("#userName").text(PersonalInformation.GivenName);
+    $("#lastName").text(" "+SurnameSplitted[0][0]+".");
+    $("#userRole").text(JobTitleSplitted[0]);
+    document.getElementById("ItemPreview").src = "data:image/png;base64," + ProfilePicture.Picture;
+  
+  </script> 
 </body>
 
 </html>

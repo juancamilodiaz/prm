@@ -600,8 +600,21 @@ h5.breadcrumbs-header {
   line-height: 1.804rem;
   margin: 1.5rem 0 0 0;
 }
+h5{
+  padding-left: 15px;
+  padding-top: 15px;
+}
 .breadcrumbs-nav {
   margin: 8px 0 9px 0;
+}
+#settingUpdate{
+  margin-left:5px;
+}
+#setResource{
+  margin-left:5px;
+}
+#viewSettings{
+  text-align:left;
 }
 /*----------------------------------------
     Cards
@@ -1481,6 +1494,11 @@ select {
   color: orange;
 }
 
+
+input[type=search]{
+  height:1rem;
+  width: 68%;
+}
 
 .progressInfo{
   display:none;
