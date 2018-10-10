@@ -261,12 +261,8 @@
 	<div class="modal" id="resourceModal">
 	    <!-- Modal content-->
 	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h4 id="modalResourceTitle" class="modal-title"></h4>
-	    </div>		  
+	        <h4 id="modalResourceTitle" class="modal-title"></h4>	  	  
 		<div class="divider"></div>
-		</div>
-	    <div class="modal-content">
 			<input type="hidden" id="resourceID">
 	        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
 	        	<div class="form-group form-group-sm">
@@ -318,14 +314,14 @@
 	        </div>
 	    </div>
 		<div class="modal-footer">		
-			<a onclick="createResource()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
-			<a onclick="updateResource()" class="waves-effect waves-blue btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
+			<a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
+			<a class="waves-effect waves-blue btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
 			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
 		</div>
 	    </div>
 	</div>
 
-	<div class="modal fade" id="confirmModal" role="dialog">
+	<div class="modal" id="confirmModal" >
 		<div class="modal-dialog">
 	    	<!-- Modal content-->
 		    <div class="modal-content">

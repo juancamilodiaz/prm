@@ -181,8 +181,7 @@
 		}
 		$.ajax(settings).done(function (response) {
 		  $("#content").html(response);
-		 //
-		  $('.modal-backdrop').remove();
+		 //$('.modal-backdrop').remove();
 		});
 	}
 	
@@ -220,7 +219,7 @@
 			<td style="width:120px;">
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href='#projectModal' onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})'><i class="mdi-editor-mode-edit"></i></a>
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" ><i class="mdi-action-delete"></i></a>
-			  <a class='modal-trigger tooltipped modal-close' data-position="top" data-tooltip="Get Resources" href="" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-action-assignment-ind"></i></a>
+			  <a class='tooltipped' data-position="top" data-tooltip="Get Resources" href="#" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" ><i class="mdi-action-assignment-ind"></i></a>
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Get Types"  onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-image-style"></i></a>		
 			</td>
 		</tr>
