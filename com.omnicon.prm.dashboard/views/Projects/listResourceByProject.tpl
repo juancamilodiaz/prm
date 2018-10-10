@@ -1,5 +1,8 @@
 <script>
-	$(document).ready(function(){
+	$(document).ready(function(){		
+		$('.modal-trigger').leanModal();
+		$('.tooltipped').tooltip();
+
 		$('#viewResourceInProject').DataTable({
 			"columns":[
 				null,
@@ -299,75 +302,49 @@
   		</div>
 	</div>
 	
-	<div class="modal fade" id="resourceProjectUpdateModal" role="dialog">
-  		<div class="modal-dialog">
-    		<!-- Modal content-->
+	<div class="modal" id="resourceProjectUpdateModal">
     		<div class="modal-content">
-      			<div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal">&times;</button>
-			        <h4 id="modalUpdateResourceProjectTitle" class="modal-title">Update Assign Resource</h4>
-			    </div>
-		    	<div class="modal-body">
+			        <h5 id="modalUpdateResourceProjectTitle" class="modal-title">Update Assign Resource</h5>
+					<div class="divider"></div><br> 
 					<input type="hidden" id="resourceProjectUpdateId">
         			<input type="hidden" id="projectUpdateId">
-					<input type="hidden" id="resourceProjectIDUpdate">					
-					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="ResourceName"> Resource Name </label>
-          					<div class="col-sm-8">
-								<input type="text" id="resourceProjectUpdateName" readonly style="border-radius: 8px;">
-    						</div>
-          				</div>
+					<input type="hidden" id="resourceProjectIDUpdate">				
+					<div class="input-field col s12 m5 l5">
+						<label class="active"> Resource Name </label>
+						<input type="text" id="resourceProjectUpdateName" readonly >						
         			</div>
-        			<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="StartDate"> Start Date </label> 
-             				<div class="col-sm-8">
-              					<input type="date" id="resourceUpdateDateStartProject" style="inline-size: 174px; border-radius: 8px;">
-        					</div>
-          				</div>
+        			<div class="input-field col s12 m5 l5">
+						<label class="active"> Start Date </label> 
+						<input type="date" id="resourceUpdateDateStartProject">
         			</div>
-					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="EndDate"> End Date </label> 
-             				<div class="col-sm-8">
-              					<input type="date" id="resourceUpdateDateEndProject" style="inline-size: 174px; border-radius: 8px;">
-        					</div>
-          				</div>
+					<div class="input-field col s12 m5 l5">
+        				<label class="active"> End Date </label> 
+             			<input type="date" id="resourceUpdateDateEndProject">        				
         			</div>
-					<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        				<div class="form-group form-group-sm">
-        					<label class="control-label col-sm-4 translatable" data-i18n="Hours"> Hours </label> 
-             				<div class="col-sm-8">
-              					<input type="number" id="resourceUpdateDateHoursProject" style="border-radius: 8px;">
-        					</div>
-          				</div>
+					<div class="input-field col s12 m5 l5">
+        				<label class="active"> Hours </label>
+              			<input type="number" id="resourceUpdateDateHoursProject">
         			</div>
       			</div>
       			<div class="modal-footer">
-			        <button type="button" id="resourceProjectCreate" class="btn btn-default" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), false, 0, false)" data-dismiss="modal">Set</button>
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			        <a id="resourceProjectCreate" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), false, 0, false)">Set</button>
+			        <a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
 			    </div>
     		</div>    
   		</div>
 	</div>
 
-	<div class="modal fade" id="confirmUnassignModal" role="dialog">
-		<div class="modal-dialog">
-	    <!-- Modal content-->
+	<div class="modal" id="confirmUnassignModal">
 	    	<div class="modal-content">
-	      		<div class="modal-header">
-	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
-	        		<h4 class="modal-title">Unassign Confirmation</h4>
-	      		</div>
-	      		<div class="modal-body">
-					<input type="hidden" id="resourceProjectIDDelete">
-	        		<input type="hidden" id="projectID">
-						Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> project?
+	        	<h5 class="modal-title">Unassign Confirmation</h5>	  	  
+				<div class="divider"></div>	      		
+				<input type="hidden" id="resourceProjectIDDelete">
+				<input type="hidden" id="projectID">
+					Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> project?
 	      		</div>
 				<div class="modal-footer" style="text-align:center;">
-					<button type="button" id="resourceUnassign" class="btn btn-default" onclick="unassignResource()" data-dismiss="modal">Yes</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+					<a id="resourceUnassign" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="unassignResource()" >Confirm</a>
+					<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
 				</div>
 			</div>
 		</div>
