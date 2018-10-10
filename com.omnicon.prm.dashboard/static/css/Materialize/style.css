@@ -615,10 +615,10 @@ h5.breadcrumbs-header {
 #viewSettings{
   text-align:left;
 }
-#buttonOption{
+/*#buttonOption{
   float:right;
   display:inline;
-}
+}*/
 #titlePag{
   display:inline;
 }
