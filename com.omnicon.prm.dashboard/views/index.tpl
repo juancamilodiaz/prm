@@ -342,9 +342,11 @@
  <script>                                   
     ProfilePicture = JSON.parse({{ .ProfilePicture}});
     PersonalInformation = JSON.parse({{ .PersonalInformation}});
+    console.warn(PersonalInformation);
     var JobTitleSplitted = PersonalInformation.JobTitle.split(",");
     var SurnameSplitted = PersonalInformation.Surname.split(" ");
-    $("#userName").text(PersonalInformation.GivenName);
+    var nameSplitted = PersonalInformation.GivenName.split(" ");
+    $("#userName").text(nameSplitted[0]);
     $("#lastName").text(" "+SurnameSplitted[0][0]+".");
     $("#userRole").text(JobTitleSplitted[0]);
     document.getElementById("ItemPreview").src = "data:image/png;base64," + ProfilePicture.Picture;
