@@ -159,7 +159,9 @@
 		$.ajax(settings).done(function (response) {
 			$("#content").html(response);				
 			$("#projectValue option[id="+projectID+"]").attr("selected", "selected");
-			$("#titleSearch").html($("#projectValue").val());		
+			//$("#titleSearch").html($("#projectValue").val());	
+			console.warn($("#projectValue").val());	
+			$("#titleSearch").html(" - "+$("#projectValue").val());
 			$("#main-content2").show();	
 			$(".progressInfo").show();
 			$(".searchReport").show();
@@ -412,8 +414,8 @@
 	}  
 </script>
 <div class="containerProductivity">
-<h4 id="titlePag"></h4>
-<h5 id="titleSearch"></h5>
+<h4 id="titlePag"> </h4><h4 id="titleSearch"></h4> 
+
 <a id="buttonOption" class="btn blue waves-effect waves-blue btn-flat modal-trigger white-text" href="#taskModal" onclick="configureCreateModal()" >New Task</a>
 		<div class="row">
 			<div class="col s6">

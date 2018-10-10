@@ -326,7 +326,7 @@ function setResourceToProjectExc(){
 
 <div class="container">
 <div class="row ">
-	<div class="col s12 offset-l6">
+	<div class="col s12 offset-l6 marginCard">
 		<div class="col m2">
 			<div class="input-field">
 				<label for="dateFrom" class="active">Start Date:</label>
@@ -352,9 +352,11 @@ function setResourceToProjectExc(){
 
 <var id="projectIDInput"></var>
 <var id="resourceIDInput"></var>
-
+	<div class="container">
 	<div class="row">
-	<h5 class="modal-title">Project Summaries</h5>
+	<div class="marginCard">
+	<h4 class="modal-title">Project Summaries</h4>
+	
 		<div class="col s12 m9 l3">
 			<div class="panel-group" >
 				<div class="panel panel-default">

@@ -2,6 +2,8 @@
 	$(document).ready(function(){
 		$('.tooltipped').tooltip();
 		$('.modal-trigger').leanModal();
+		
+		$('select').material_select();
 			
 	getDateToday = function(){	
 		var time = new Date();
@@ -59,8 +61,8 @@
 		$('#skillsActive').prop('checked', false);
 		//$('#projectTypeSimulator').prop('disabled', true);
 		$('#projectHoursActive').prop('checked', false);
-		$('#projectHours').prop('disabled', true);
-		$('#personNumber').prop('disabled', true);
+		//$('#projectHours').prop('disabled', true);
+		//$('#personNumber').prop('disabled', true);
 		
 		$('#projectStartDate').change(function(){
 			$('#projectEndDate').attr("min", $("#projectStartDate").val());
@@ -179,12 +181,6 @@
 			<div class="input-field col s12">
 			<input id="projectEndDate" type="date">
 			<label for="projectEndDate" class="active">End Date</label>
-			</div>
-		</div>
-		<div class="row formSimulate">
-			<div class="input-field col s12">
-			<input id="projectWorkOrder" type="number">
-			<label for="projectWorkOrder">Work Order</label>
 			</div>
 		</div>
 		<div class="row formSimulate">
