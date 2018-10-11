@@ -8,6 +8,13 @@
 		$('#backButton').css("display", "none");
 		$('#buttonOption').css("display", "none");
 
+        $('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 15,
+			format: 'yyyy-mm-dd',
+			formatSubmit: 'yyyy-mm-dd'
+		});
+
 
 	});
 	
@@ -89,9 +96,9 @@
          </div>
 
          <div class="input-field">
-            <label class="active" for="dateFromValue">Date From:</label>
-            <input type="date" class="validate"  id="dateFromValue">
-         </div>
+            <label class="active"> Date From: </label>
+            <input type="date" id="dateFromValue" class="datepicker">
+        </div>
       </div>
 
       <div class="col s12 m6">
@@ -104,10 +111,11 @@
                 {{end}}
             </select>
          </div>
+
          <div class="input-field">
-            <label class="active" for="dateToValue">Date To:</label>
-            <input type="date" class="validate"  id="dateToValue">
-         </div>
+            <label class="active">Date To:</label>
+            <input type="date" id="dateToValue" class="datepicker">
+        </div>
       </div>
    </div>
 </div>

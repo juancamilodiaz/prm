@@ -18,6 +18,14 @@
 				{"searchable":false}
 			]
 		});
+
+		$('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 15,
+			format: 'yyyy-mm-dd',
+			formatSubmit: 'yyyy-mm-dd',
+			container: 'body'
+		});
 		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
 		$('#backButton').prop('onclick',null).off('click');
@@ -181,8 +189,7 @@
 		}
 		$.ajax(settings).done(function (response) {
 		  $("#content").html(response);
-		 //
-		  $('.modal-backdrop').remove();
+		 //$('.modal-backdrop').remove();
 		});
 	}
 	
@@ -190,6 +197,7 @@
 <div class="container" style="padding:20px;">
 <div id="pry_add">
 	<h4>Projects </h5>
+	<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>	
 	<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-position="top" data-tooltip="Create" href="#projectModal" onclick="configureCreateModal()"><i class="mdi-action-note-add large"></i></a>
 </div>
 <table id="viewProjects" class="display" cellspacing="0" width="100%" >
@@ -220,8 +228,8 @@
 			<td style="width:120px;">
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href='#projectModal' onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})'><i class="mdi-editor-mode-edit"></i></a>
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" ><i class="mdi-action-delete"></i></a>
-			  <a class='modal-trigger tooltipped modal-close' data-position="top" data-tooltip="Get Resources" href="" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-action-assignment-ind"></i></a>
-			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Get Types"  onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-image-style"></i></a>		
+			  <a class='tooltipped' data-position="top" data-tooltip="Get Resources" href="#" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" ><i class="mdi-action-assignment-ind"></i></a>
+			  <a class='tooltipped' data-position="top" data-tooltip="Get Types"  onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-image-style"></i></a>		
 			</td>
 		</tr>
 		{{end}}	
@@ -252,12 +260,12 @@
 
 		<div class="input-field col s12 m5 l5">
 			<label class="active"> Start Date </label> 
-			<input type="date" id="projectStartDate">
+			<input type="date" class="datepicker" id="projectStartDate">
 		</div>
 		
 		<div class="input-field col s12 m5 l5">
 			<label class="active"> End Date </label>               
-			<input type="date" id="projectEndDate">
+			<input type="date" class="datepicker" id="projectEndDate">
 		</div>
 
 		<div class="input-field col s12 m5 l5">
@@ -290,7 +298,7 @@
 		</div>
 		<div class="input-field col s12 m5 l5">
 			<label class="active"> Cost </label>
-				<input type="number" id="projectCost" min="0" step="1000" class="currency" style="border-radius: 8px;">
+				<input type="number" id="projectCost" min="0" step="1000" class="currency">
 		
 		</div>
       </div>

@@ -5813,7 +5813,7 @@ small {
   transition: 0.2s ease-out;
   cursor: pointer; }
   .btn:hover, .btn-large:hover {
-    background-color: #ff5a92; }
+    background-color:#137cd0; }
 
 .btn-floating {
   display: inline-block;
@@ -8086,7 +8086,7 @@ select {
   background: #fef3f7; }
 
 .picker__weekday-display {
-  background-color: #ff1c69;
+  background-color: #137cd0;
   padding: 10px;
   font-weight: 200;
   letter-spacing: .5;

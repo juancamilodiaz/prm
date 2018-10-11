@@ -191,8 +191,8 @@
 				<a ng-click="link('trainings')" onclick="toNav();sendTitle($(this).html())">Trainings</a>
 			</div>		
 		  <a  onclick="toNav();getTypes();">Simulator</a>
-		  <a  ng-click="link('reports')" onclick="toNav();sendTitle($(this).html())">Reports</a>
-		  <a  ng-click="link('dashboard')" onclick="toNav();sendTitle($(this).html())">Status</a>
+		  <a  ng-click="link('reports')" onclick="sendTitle($(this).html())">Reports</a>
+		  <a  ng-click="link('dashboard')" onclick="sendTitle($(this).html())">Status</a>
 		  <a  ng-click="link('trainings/resources')" onclick="toNav();sendTitle($(this).html())">Trainings</a>
 		  <a  ng-click="link('productivity')" onclick="toNav();sendTitle($(this).html())">Productivity Report</a>
 		  <a  ng-click="link('settings')" onclick="toNav();sendTitle($(this).html())">Settings</a>
