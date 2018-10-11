@@ -26,6 +26,7 @@
     <link href="/static/js/js/plugins/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="/static/js/js/plugins/jvectormap/jquery-jvectormap.css" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="/static/js/js/plugins/chartist-js/chartist.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+    
 
     <script src="/static/js/Angular/angular.min.js"></script>
     
@@ -335,6 +336,7 @@
     
     
     <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+    <script type="text/javascript" src="/static/js/Utils.js"></script>
     <script type="text/javascript" src="/static/js/js/plugins.js"></script>
     <script type="text/javascript" src="/static/js/functions.js"></script>
 
@@ -342,7 +344,6 @@
  <script>                                   
     ProfilePicture = JSON.parse({{ .ProfilePicture}});
     PersonalInformation = JSON.parse({{ .PersonalInformation}});
-    console.warn(PersonalInformation);
     var JobTitleSplitted = PersonalInformation.JobTitle.split(",");
     var SurnameSplitted = PersonalInformation.Surname.split(" ");
     var nameSplitted = PersonalInformation.GivenName.split(" ");

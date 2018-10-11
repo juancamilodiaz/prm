@@ -20,6 +20,12 @@
 		$('select').material_select();
 		$('.modal-trigger').leanModal();
 		$('.tooltipped').tooltip();
+		$('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 15,
+			format: 'yyyy-mm-dd',
+			formatSubmit: 'yyyy-mm-dd'
+		});
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
@@ -567,15 +573,15 @@
 
 					<!-- Input -->
 					<div class="input-field col s12 m5 l5">
-						<input id="trainingStartDate" type="date" class="validate">
-						<label  for="trainingStartDate"  class="active">Start Date</label>
+						<label class="active">Start Date</label>
+						<input type="date" id="trainingStartDate" class="datepicker">
 					</div>
 					<!-- /Input -->
 
 					<!-- Input -->
 					<div class="input-field col s12 m5 l5">
-						<input id="trainingEndDate" type="date" class="validate">
-						<label  for="trainingEndDate"  class="active">End Date</label>
+						<label class="active">End Date</label>
+						<input type="date" id="trainingEndDate" class="datepicker">
 					</div>
 					<!-- /Input -->
 

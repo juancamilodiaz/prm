@@ -1479,6 +1479,10 @@ tr.group:hover {
   margin-top: 50px !important;
 }
 
+.picker__holder{
+  overflow: visible;
+}
+
 input[type=search] {
   height: 1rem;
   width: 68%;

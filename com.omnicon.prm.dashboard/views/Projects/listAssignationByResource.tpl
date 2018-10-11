@@ -1,6 +1,11 @@
 <script>
 	$(document).ready(function(){
+		$('.modal-trigger').leanModal();
+		$('.tooltipped').tooltip();
+		$('select').material_select();
 		$('#viewResourceInProjects').DataTable({
+			"iDisplayLength": 20,
+			"bLengthChange": false,
 			"columns":[
 				null,
 				null,
@@ -10,13 +15,14 @@
 				{"searchable":false}
 			],
 			"dom": '<"col-sm-2"<"toolbar">><"col-sm-4"f><"col-sm-6"l><rtip>',
-			initComplete: function(){
-		      $("div.toolbar").html('<button id="multiDelete" disabled data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="' + "$('#resourceID').val({{.ResourceId}}); $('#nameDelete').html('the marked elements')" + '" data-dismiss="modal"> Delete </button>');     
+			initComplete: function(){	
+		      $("div.toolbar").html('<a id="multiDelete" class="btn-floating btn-large disabled modal-trigger tooltipped" data-position="top" data-tooltip="Unassign All" href="#confirmUnassignModal" data-dismiss="modal" onclick="' + "$('#resourceID').val({{.ResourceId}}); $('#nameDelete').html('the marked elements')" + '" ><i class="mdi-action-delete"></i></a>');     
+		   	  $('.modal-trigger').leanModal();
+			  $('.tooltipped').tooltip();
 		   	}
 		});
 		$('#titlePag').html("{{.Title}}");
 		$('#backButton').css("display", "inline-block");
-		$('#backButton').html("Resources");
 		$('#backButton').prop('onclick',null).off('click');
 		$('#backButton').click(function(){
 			reload('/resources',{});
@@ -56,10 +62,17 @@
 
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("Set New Project");
 		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("data-target", "#resourceProjectModal");
+		$('#buttonOption').attr("href", "#resourceProjectModal");
 		$('#buttonOption').attr("onclick","$('#resourceProjectId').val({{.ResourceId}});getProjects();configureShowCreateModal()");
+
+		$('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 15,
+			format: 'yyyy-mm-dd',
+			showButtonPanel: false,
+			formatSubmit: 'yyyy-mm-dd'
+		});
 	});
 	
 	var listToDelete = [];
@@ -74,9 +87,9 @@
 			}
 		}
 		if (listToDelete.length > 0){
-			$('#multiDelete').removeAttr("disabled");
+			$('#multiDelete').removeClass("disabled");
 		} else {
-			$('#multiDelete').attr("disabled", "disabled");			
+			$('#multiDelete').addClass("disabled");			
 		}
 	});
 	
@@ -95,6 +108,17 @@
 		$.ajax(settings).done(function (response) {
 		  reload('/projects/resources/assignation', {"ResourceId": $('#resourceID').val(), "ResourceName": "{{.Title}}"});
 		});
+	}
+
+		getDateToday = function(){	
+		var time = new Date();
+		var mm = time.getMonth() + 1; // getMonth() is zero-based
+		var dd = time.getDate();
+        var date =  [time.getFullYear(),
+	          (mm>9 ? '' : '0') + mm,
+	          (dd>9 ? '' : '0') + dd
+	         ].join('-');
+		return date;
 	}
 	
 	configureShowCreateModal = function(){
@@ -153,42 +177,109 @@
 		}
 		$.ajax(settings).done(function (response) {
 		  $('#projectNames').html(response);
+		  $('#projectNames').material_select();
 		});
 	}
 </script>
 
-<table id="viewResourceInProjects" class="table table-striped table-bordered">
-	<thead>
-		<tr>
-			<th>To Delete</th>
-			<th>Project Name</th>
-			<th>Start Date</th>
-			<th>End Date</th>
-			<th>Hours</th>
-			<th>Options</th>
-		</tr>
-	</thead>
-	<tbody>
-	 	{{range $key, $resourceToProject := .ResourcesToProjects}}
-		<tr>
-			<td><input type="checkbox" value="{{$resourceToProject.ID}}" class="checkToDelete"></td>
-			<td>{{$resourceToProject.ProjectName}}</td>
-			<td>{{dateformat $resourceToProject.StartDate "2006-01-02"}}</td>
-			<td>{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>
-			<td>{{$resourceToProject.Hours}}</td>
-			<td>
-				<button data-toggle="modal" data-target="#confirmUnassignModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$resourceToProject.ProjectName}}');$('#resourceProjectIDDelete').val({{$resourceToProject.ID}});$('#projectID').val({{$resourceToProject.ProjectId}});;$('#resourceID').val({{$resourceToProject.ResourceId}})" data-dismiss="modal">Unassign</button>
-				<button data-toggle="modal" data-target="#resourceProjectUpdateModal" class="buttonTable button2" onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Hours}});$("#resourceProjectIDUpdate").val({{$resourceToProject.ID}});' data-dismiss="modal">Update assign</button>
-			</td>
-		</tr>
-		{{end}}	
-	</tbody>
-</table>
+<div class="container" style="padding:15px;">
+	<div class="row">
+		<div class="col s12   marginCard">
+			<div id="pry_add">
+				<h4 id="titlePag"></h4>
+				<a id="backButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Back"  ><i class="mdi-navigation-arrow-back large"></i></a>
+				<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
+				<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "New Project"><i class="mdi-action-note-add large"></i></a>
+			</div>
+		</div>
 
-<!-- Modal -->
+		<table id="viewResourceInProjects" class="striped centered">
+			<thead>
+				<tr>
+					<th>To Delete</th>
+					<th>Project Name</th>
+					<th>Start Date</th>
+					<th>End Date</th>
+					<th>Hours</th>
+					<th>Options</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $key, $resourceToProject := .ResourcesToProjects}}
+				<tr>
+					</div>
+					<td><p><input id="{{$resourceToProject.ID}}" class="checkToDelete" type="checkbox" value="{{$resourceToProject.ID}}" /><label for="{{$resourceToProject.ID}}" ><span></span></label></p></td>
+					<td>{{$resourceToProject.ProjectName}}</td>
+					<td>{{dateformat $resourceToProject.StartDate "2006-01-02"}}</td>
+					<td>{{dateformat $resourceToProject.EndDate "2006-01-02"}}</td>
+					<td>{{$resourceToProject.Hours}}</td>
+					<td>
+				
+						<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Update Assign"  href="#resourceProjectUpdateModal"  onclick='$("#resourceProjectUpdateName").val("{{$resourceToProject.ResourceName}}");$("#resourceProjectUpdateId").val({{$resourceToProject.ResourceId}});$("#projectUpdateId").val({{$resourceToProject.ProjectId}});configureShowUpdateModal({{dateformat $resourceToProject.StartDate "2006-01-02"}}, {{dateformat $resourceToProject.EndDate "2006-01-02"}}, {{$resourceToProject.Hours}});$("#resourceProjectIDUpdate").val({{$resourceToProject.ID}});'><i class="mdi-editor-mode-edit"></i></a>	
+						<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Unassign"  href="#confirmUnassignModal"  onclick="$('#nameDelete').html('{{$resourceToProject.ProjectName}}');$('#resourceProjectIDDelete').val({{$resourceToProject.ID}});$('#projectID').val({{$resourceToProject.ProjectId}});;$('#resourceID').val({{$resourceToProject.ResourceId}})" data-dismiss="modal"><i class="mdi-action-delete"></i></a>	
+						
+					</td>
+				</tr>
+				{{end}}	
+			</tbody>
+		</table>
+	</div>
+</div>		
+
+
+
+<!-- Materialize Modal Update -->
+	<div id="resourceProjectModal" class="modal " style = "overflow:visible" >
+			<div class="modal-content">
+				<h5 id="modalResourceProjectTitle" class="modal-title">Set New Assignment</h5>
+				<div class="divider CardTable"></div>
+				<input type="hidden" id="resourceProjectId">
+				<div class="row">	
+					<!-- Select -->
+					<div class="input-field col s12 ">
+						<label for="projectNames"  class= "active">Project Name</label>
+						<select id="projectNames" style="inline-size: 174px; border-radius: 8px;"></select>	
+					</div>
+					<!-- Close Select -->
+					<div class="input-field col s12 m6 ">
+						<label for="resourceDateStartProject" class="active">Start Date:</label>
+						<input id="resourceDateStartProject" type="date" class="datepicker">
+					</div>
+
+					<div class="input-field col s12 m6 ">
+						<label for="resourceDateEndProject" class="active">End Date:</label>
+						<input id="resourceDateEndProject" type="date" class="datepicker">
+					</div>
+					<div class="input-field col s12 m6">
+						<input id="resourceHoursProject" type="number"  class="validate">
+						<label  for="resourceHoursProject"  class="active">Total Hours</label>
+					</div>
+					<div class="input-field col s12 m6">
+						<p>
+							<input id="checkHoursPerDay" type="checkbox" />
+							<label for="checkHoursPerDay" ><span>Activate Hours Per Day</span></label>
+						</p>
+					</div>
+					<div class="input-field col s12 m7 l7">
+						<input id="createHoursPerDay" type="number"  class="validate">
+						<label  for="createHoursPerDay"  class="active">Hours Per Day</label>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a id="resourceProjectCreate" onclick="setResourceToProject(0, $('#resourceProjectId').val(), $('#projectNames').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), true, $('#createHoursPerDay').val(), $('#checkHoursPerDay').is(':checked'))" class="waves-effect waves-green btn-flat modal-action modal-close" >Set</a>
+       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+			</div>
+	</div>
+    
+<!-- Modal Update -->
+
+
+
+<!-- Modal 
 	<div class="modal fade" id="resourceProjectModal" role="dialog">
-  		<div class="modal-dialog">
-    		<!-- Modal content-->
+  		<div class="modal-dialog">-->
+    		<!-- Modal content
     		<div class="modal-content">
       			<div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -252,11 +343,51 @@
 			    </div>
     		</div>    
   		</div>
+	</div>-->
+
+
+	<!-- Materialize Modal Update -->
+	<div id="resourceProjectUpdateModal" class="modal " style = "overflow:visible" >
+			<div class="modal-content">
+				<h5 id="modalUpdateResourceProjectTitle" class="modal-title">Update Assign Resource</h5>
+				<div class="divider CardTable"></div>
+				<input type="hidden" id="resourceProjectUpdateId">
+				<input type="hidden" id="projectUpdateId">
+				<input type="hidden" id="resourceProjectIDUpdate">	
+				<div class="input-field row">	
+					<div class="input-field col s12">
+						<input id="resourceProjectUpdateName" type="text"  class="validate">
+						<label  for="resourceProjectUpdateName"  class="active">Resource Name</label>
+					</div>
+
+					<div class="input-field col s12 m6 ">
+						<label for="resourceUpdateDateStartProject" class="active">Start Date:</label>
+						<input id="resourceUpdateDateStartProject" type="date" class="datepicker">
+					</div>
+
+					<div class="input-field col s12 m6 ">
+						<label for="resourceUpdateDateEndProject" class="active">End Date:</label>
+						<input id="resourceUpdateDateEndProject" type="date" class="datepicker">
+					</div>
+					
+					<div class="input-field col s12 m7 l7">
+						<input id="resourceUpdateDateHoursProject" type="number"  class="validate">
+						<label  for="resourceUpdateDateHoursProject"  class="active">Hours</label>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a id="resourceProjectCreate" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), false, 0, false)" class="waves-effect waves-green btn-flat modal-action modal-close" >Set</a>
+       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+			</div>
 	</div>
+    
+<!-- Modal Update
+
 	
 	<div class="modal fade" id="resourceProjectUpdateModal" role="dialog">
-  		<div class="modal-dialog">
-    		<!-- Modal content-->
+  		<div class="modal-dialog"> -->
+    		<!-- Modal content
     		<div class="modal-content">
       			<div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -305,11 +436,32 @@
 			    </div>
     		</div>    
   		</div>
-	</div>
+	</div>-->
 
+
+
+<!-- Materialize Modal Unassign -->
+<div id="confirmUnassignModal" class="modal" >
+			<div class="modal-content">
+				<h5  class="modal-title">Unassign Confirmation</h5>
+				<div class="divider CardTable"></div>
+				<input type="hidden" id="resourceProjectIDDelete">
+				<input type="hidden" id="projectID">
+				<input type="hidden" id="resourceID">
+				Are you sure that you want to unassign <b>{{.Title}}</b> from <b id="nameDelete"></b> project?
+			</div>
+			<div class="modal-footer">
+				<a id="resourceUnassign"  onclick="unassignResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
+        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+			</div>
+</div>
+
+<!-- Modal Unassign close -->
+
+<!-- Modal content
 	<div class="modal fade" id="confirmUnassignModal" role="dialog">
 		<div class="modal-dialog">
-	    <!-- Modal content-->
+	    
 	    	<div class="modal-content">
 	      		<div class="modal-header">
 	        		<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -327,4 +479,4 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>-->
