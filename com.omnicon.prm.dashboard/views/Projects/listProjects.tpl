@@ -289,7 +289,7 @@
 		</div>
 		<div class="input-field col s12 m5 l5">
 			<label class="active"> Cost </label>
-				<input type="number" id="projectCost" min="0" step="1000" class="currency" style="border-radius: 8px;">
+				<input type="number" id="projectCost" min="0" step="1000" class="currency">
 		
 		</div>
       </div>
