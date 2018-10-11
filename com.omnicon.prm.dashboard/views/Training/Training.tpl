@@ -24,7 +24,8 @@
 			selectMonths: true,
 			selectYears: 15,
 			format: 'yyyy-mm-dd',
-			formatSubmit: 'yyyy-mm-dd'
+			formatSubmit: 'yyyy-mm-dd',
+			container: 'body'
 		});
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');

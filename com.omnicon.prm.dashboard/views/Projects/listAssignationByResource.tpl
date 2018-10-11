@@ -71,7 +71,8 @@
 			selectYears: 15,
 			format: 'yyyy-mm-dd',
 			showButtonPanel: false,
-			formatSubmit: 'yyyy-mm-dd'
+			formatSubmit: 'yyyy-mm-dd',
+			container: 'body'
 		});
 	});
 	

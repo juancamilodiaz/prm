@@ -246,13 +246,13 @@
                             </div>
                         </div>
                     </li>
-                    <li class="bold"><a href="" ng-click="link('productivity')"  class="waves-effect waves-cyan"><i class="mdi-action-assignment"></i> Home</a>
+                    <li class="bold"><a href="" ng-click="link('productivity')"  class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
                     </li>
-                    <li class="bold"><a href="" ng-click="link('projectsForecast')" class="waves-effect waves-cyan"><i class="mdi-action-assignment-turned-in"></i> Forecast Projects</a>
+                    <li class="bold"><a href="" ng-click="link('projectsForecast')" class="waves-effect waves-cyan"><i class="mdi-action-trending-up"></i> Forecast Projects</a>
                     </li>                    
                     <li class="no-padding">
                         <ul class="collapsible collapsible-accordion">
-                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-wallet-travel"></i> Manage<i class="mdi-navigation-arrow-drop-down right"></i></a>
+                            <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-extension"></i> Manage<i class="mdi-navigation-arrow-drop-down right"></i></a>
                                 <div class="collapsible-body">
                                     <ul>
                                         <li><a href="" ng-click="link('projects')" >Projects</a>
@@ -270,15 +270,15 @@
                             </li>          
                         </ul>
                     </li>                    
-                    <li class="bold"><a href="" onclick="getTypes();" class="waves-effect waves-cyan"><i class="mdi-communication-email"></i>Simulator</a>
+                    <li class="bold"><a href="" onclick="getTypes();" class="waves-effect waves-cyan"><i class="mdi-image-blur-on"></i>Simulator</a>
                     </li>
                     <li class="bold"><a href="" ng-click="link('reports')" onclick="sendTitle($(this).html())" class="waves-effect waves-cyan"><i class="mdi-action-assessment"></i>Reports</a>
                     </li>
                     <li class="bold"><a href="" ng-click="link('dashboard')" onclick="sendTitle($(this).html())" class="waves-effect waves-cyan"><i class="mdi-action-assignment-late"></i>Status</a>
                     </li>
-                    <li class="bold"><a href="" ng-click="link('trainings/resources')" onclick="sendTitle($(this).html())" class="waves-effect waves-cyan"><i class="mdi-maps-directions-walk"></i>Trainings</a>
+                    <li class="bold"><a href="" ng-click="link('trainings/resources')" onclick="sendTitle($(this).html())" class="waves-effect waves-cyan"><i class="mdi-social-school"></i>Trainings</a>
                     </li>
-                    <li class="bold"><a href=""  onclick="getProjectSummaries();"  class="waves-effect waves-cyan"><i class="mdi-action-assessment"></i>Project Summaries</a>
+                    <li class="bold"><a href=""  onclick="getProjectSummaries();"  class="waves-effect waves-cyan"><i class="mdi-editor-format-list-numbered"></i>Project Summaries</a>
                     </li>
                     <li class="bold"><a href="" ng-click="link('settings')" onclick="sendTitle($(this).html())" class="waves-effect waves-cyan"><i class="mdi-action-settings"></i>Settings</a>
                     </li>

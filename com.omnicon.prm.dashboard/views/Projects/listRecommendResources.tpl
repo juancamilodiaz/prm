@@ -8,7 +8,8 @@
 			selectMonths: true,
 			selectYears: 15,
 			format: 'yyyy-mm-dd',
-			formatSubmit: 'yyyy-mm-dd'
+			formatSubmit: 'yyyy-mm-dd',
+			container: 'body'
 		});
 			
 	getDateToday = function(){	
