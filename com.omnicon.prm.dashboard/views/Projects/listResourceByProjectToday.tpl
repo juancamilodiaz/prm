@@ -100,19 +100,30 @@
 		
 		//collapse button event
 		$(".btnCollapse").click(
-			function(){
-				if($(this).hasClass('collapsed')){
-					$(this).removeClass('glyphicon-collapse-down');
-					$(this).addClass('glyphicon-collapse-up');
+			function(){	
+				if($(this).hasClass('mdi-navigation-arrow-drop-down')){
+					$(this).removeClass('mdi-navigation-arrow-drop-down');
+					$(this).addClass('mdi-navigation-arrow-drop-up');
 				}
 				else{
-					$(this).removeClass('glyphicon-collapse-up');
-					$(this).addClass('glyphicon-collapse-down');
+					$(this).removeClass('mdi-navigation-arrow-drop-up');
+					$(this).addClass('mdi-navigation-arrow-drop-down');
 				}
 			}
 		);
 		sendTitle("Home");
 	});
+
+	catchID = function (ID) {
+		if($(".icon"+ID).hasClass('mdi-navigation-arrow-drop-down')){
+			$(".icon"+ID).removeClass('mdi-navigation-arrow-drop-down');
+			$(".icon"+ID).addClass('mdi-navigation-arrow-drop-up');
+		}
+		else{
+			$(".icon"+ID).removeClass('mdi-navigation-arrow-drop-up');
+			$(".icon"+ID).addClass('mdi-navigation-arrow-drop-down');
+		}
+	}
 	
 	unassignResource = function(ID, obj){
 		var settings = {
@@ -451,7 +462,7 @@ function setResourceToProjectExc(){
 									{{if $avail}}
 										{{if gt $avail.TotalHours 0.0}}
 											<tr draggable=false>
-												<td style="background-position-x: 1%;font-size:11px;;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+												<td style="cursor: pointer; background-position-x: 1%;font-size:11px;;" onclick="showDetails($(this),{{$avail.ListOfRange}});catchID({{$resource.ID}})"><i class="icon{{$resource.ID}}  mdi-navigation-arrow-drop-down" style="vertical-align: middle;"></i>{{$resource.Name}} {{$resource.LastName}}</td>
 												<td>{{$avail.TotalHours}}</td>
 											</tr>
 										{{end}}
