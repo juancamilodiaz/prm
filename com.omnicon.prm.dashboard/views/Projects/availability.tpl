@@ -54,12 +54,32 @@
 		}
 		
 		$(document).ready(function(){
+			$('.modal-trigger').leanModal();
+			$('.tooltipped').tooltip();
 			$('#backButton').css("display", "none");
 			$('#refreshButton').css("display", "none");
 			$('#buttonOption').css("display", "none");
 			$('#datePicker').css("display", "none");
 			setWeek(0);
 			$( window ).resize(function() {repaint();});
+			$('#viewProjects').DataTable({
+			"iDisplayLength": 20,
+			"bLengthChange": false,
+			"columns":[
+				null,
+				null,
+				{"searchable":false}
+			]
+		});
+		$('#viewResourcesPerProjectUnassign').DataTable({
+			"iDisplayLength": 20,
+			"bLengthChange": false,
+			"columns":[
+				null,
+				null,
+				{"searchable":false}
+			]
+		});
 		});
 		
 		function setWeek(i) {
@@ -98,8 +118,8 @@
 <body id="home">
 
 <div class="row">
-		<div class="col-sm-6" style="padding-bottom: 10px;">				
-			<table id="viewProjects" class="table table-striped table-bordered">
+		<div class="col s6" >				
+			<table id="viewProjects" class="display TableConfig " cellspacing="0" width="100%">
 			<thead>
 				<tr>
 					<th class="col-sm-4"><p style="font-size:12px;text-align: -webkit-center">Name</p></th>
@@ -120,20 +140,21 @@
 			</tbody>
 			</table>
 		</div>	
-		<div class="col-sm-6" style="padding-bottom: 10px;">											
+		<div class="col s6" style="padding-bottom: 10px;">											
 			<div id="panel-df-projectUnassign" class="panel panel-default">
 				<div id="unassign" class="panel-heading">
 					<p style="font-size:14px;text-align: -webkit-center;">
 						Available hours per resource 
 					</p>
-					<p style="font-size:12px;text-align: -webkit-center;">
-						<button onclick="setWeek(-1)" class="search-button"><i class="fa fa-caret-left" aria-hidden="true"></i></button>
-						<label id="hoursDateFrom"></label> / <label id="hoursDateTo"></label>
-						<button onclick="setWeek(1)" class="search-button"><i class="fa fa-caret-right" aria-hidden="true"></i></button>
-					</p>
+					<div style="font-size:12px;text-align: -webkit-center;">
+					
+						<a class='tooltipped' data-position="top" data-tooltip="Previous Week"  onclick="setWeek(-1)" ><i class="mdi-hardware-keyboard-arrow-left"></i></a>
+						<label id="hoursDateFrom" style= "vertical-align: top;"></label> <label style= "vertical-align: top;">/</label> <label id="hoursDateTo" style= "vertical-align: top;"></label>
+						<a class='tooltipped' data-position="top" data-tooltip="Next Week"  onclick="setWeek(1)" ><i class="mdi-hardware-keyboard-arrow-right"></i></a>
+					</div>
 				</div>
 				
-				<table id="viewResourcesPerProjectUnassign" class="table table-striped table-bordered">
+				<table id="viewResourcesPerProjectUnassign"  class="display striped TableConfig " cellspacing="0" width="100%">
 				</table>
 			</div>														
 		</div>

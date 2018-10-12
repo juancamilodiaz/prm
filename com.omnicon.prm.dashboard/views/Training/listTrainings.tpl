@@ -1,6 +1,11 @@
 <script>
 	$(document).ready(function(){
+		$('.modal-trigger').leanModal();
+		$('.tooltipped').tooltip();
+		$('select').material_select();
 		$('#viewTrainings').DataTable({
+			"iDisplayLength": 20,
+			"bLengthChange": false,
 			"columns":[
 				null,
 				null,
@@ -19,9 +24,8 @@
 		
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Training");
 		$('#buttonOption').attr("data-toggle", "modal");
-		$('#buttonOption').attr("data-target", "#trainingModal");
+		$('#buttonOption').attr("href", "#trainingModal");
 		$('#buttonOption').attr("onclick","configureCreateModal()");
 	});
 	
@@ -111,106 +115,108 @@
 			if ({{$typeSkill.TypeId}} == $('#typeValue option:selected').attr('id')) {
         		$('#skillValue').append('<option id="{{$typeSkill.SkillId}}">{{$typeSkill.Name}}</option>');
 			}
+			$('#skillValue').material_select();
         {{end}}
 	});
 	
 </script>
-<div>
-<table id="viewTrainings" class="table table-striped table-bordered">
-	<thead>
-		<tr>
-			<th>Type Name</th>
-			<th>Skill Name</th>
-			<th>Training Name</th>
-			<th>Options</th>
-		</tr>
-	</thead>
-	<tbody>
-	 	{{range $key, $training := .Trainings}}
-		<tr>
-			<td>{{$training.TypeName}}</td>
-			<td>{{$training.SkillName}}</td>
-			<td>{{$training.Name}}</td>
-			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#trainingModal" onclick="configureUpdateModal({{$training.ID}},'{{$training.Name}}', '{{$training.TypeName}}', '{{$training.SkillName}}')" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$training.Name}}');$('#trainingID').val({{$training.ID}});" data-dismiss="modal">Delete</button>
-			</td>
-		</tr>
-		{{end}}	
-	</tbody>
-</table>
 
+
+<div class ="container">
+	<div class="row">
+		<div class="col s12   marginCard">
+			<div id="pry_add">
+				<h4 id="titlePag"></h4>
+				<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
+				<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "New Training"><i class="mdi-action-note-add large"></i></a>
+			</div>
+			<table id="viewTrainings" class="display TableConfig " cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>Type Name</th>
+						<th>Skill Name</th>
+						<th>Training Name</th>
+						<th>Options</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{range $key, $training := .Trainings}}
+					<tr>
+						<td>{{$training.TypeName}}</td>
+						<td>{{$training.SkillName}}</td>
+						<td>{{$training.Name}}</td>
+						<td>
+							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href="#trainingModal"  onclick="configureUpdateModal({{$training.ID}},'{{$training.Name}}', '{{$training.TypeName}}', '{{$training.SkillName}}')" ><i class="mdi-editor-mode-edit"></i></a>
+							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick="$('#nameDelete').html('{{$training.Name}}');$('#trainingID').val({{$training.ID}});"><i class="mdi-action-delete"></i></a>
+						</td>
+					</tr>
+					{{end}}	
+				</tbody>
+			</table>
+		</div>	
+	</div>
 </div>
+
 
 <!-- Modal -->
-<div class="modal fade" id="trainingModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTitle" class="modal-title">Create/Update Training</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="trainingID">
-		<div class="row-box col-sm-12" style="padding-bottom: 1%;" id="typeInput">
-		  <div class="form-group form-group-sm">
-		     <label class="control-label col-sm-4 translatable" data-i18n="Select Type"> Select Type </label>
-		     <div class="col-sm-8">
-			 <select id="typeValue" style="width: 174px; border-radius: 8px;">
-			    <option id="">Type...</option>
-			    {{range $index, $type := .Types}}
-			    <option id="{{$type.ID}}">{{$type.Name}}</option>
-			    {{end}}
-			 </select>
-		     </div>
-		  </div>
-		</div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;" id="skillInput">
-           <div class="form-group form-group-sm">
-              <label class="control-label col-sm-4 translatable" data-i18n="Select Skill"> Select Skill </label>
-              <div class="col-sm-8">
-          <select id="skillValue" style="width: 174px; border-radius: 8px;">
-             <option id="">Skill...</option>
-          </select>
-              </div>
-           </div>
-        </div>
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-              <div class="col-sm-8">
-              	<input type="text" id="trainingName" style="border-radius: 8px;">
-        		</div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="trainingCreate" class="btn btn-default" onclick="createTraining()" data-dismiss="modal">Create</button>
-        <button type="button" id="trainingUpdate" class="btn btn-default" onclick="updateTraining()" data-dismiss="modal">Update</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
+<!-- Materialize Modal Update -->
+	<div id="trainingModal" class="modal overflowModal " >
+			<div class="modal-content">
+				<h5 id="modalTitle" class="modal-title">Create/Update Training</h5>
+				<div class="divider CardTable"></div>
+				<input type="hidden" id="trainingID">
+				<div class="input-field row">
+					<div class="col s12 m7 l7">
+						<input id="trainingName" type="text" class="validate">
+						<label  for="trainingName"  class="active">Name</label>
+					</div>	
+					<!-- Select -->
+					<div class="input-field col s12 m5 l5">
+						<label  class= "active">Select Type</label>
+						<select id="typeValue">
+							<option id="">Type...</option>
+							{{range $index, $type := .Types}}
+							<option id="{{$type.ID}}">{{$type.Name}}</option>
+							{{end}}
+						</select>
+					</div>
+					<!-- Select2 -->
+
+					<div class="input-field col s12 m5 l5">
+						<label  class= "active">Select Skill</label>
+						<select id="skillValue" style="width: 174px; border-radius: 8px;">
+            	 <option id="">Skill...</option>
+          	</select>
+					</div>
+					<!-- Close Select -->
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a id="trainingCreate" onclick="createTraining()" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
+				<a id="trainingUpdate" onclick="updateTraining()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+			</div>
+	</div>
     
-  </div>
+<!-- Modal Update -->
+
+
+
+
+<!-- Materialize Modal Delete -->
+<div id="confirmModal" class="modal" >
+			<div class="modal-content">
+				<h5 id="modalTitle" class="modal-title">Delete Confirmation</h5>
+				<div class="divider CardTable"></div>
+				<input type="hidden" id="skillID">
+				Are you sure you want to remove <b id="nameDelete"></b> from trainings?
+				<br>
+				<li>The resources will lose this training assignment.</li>
+			</div>
+			<div class="modal-footer">
+				<a onclick="deleteTraining()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
+        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+			</div>
 </div>
-<div class="modal fade" id="confirmModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to remove <b id="nameDelete"></b> from trainings?
-		<br>
-		<li>The resources will lose this training assignment.</li>
-      </div>
-      <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="trainingDelete" class="btn btn-default" onclick="deleteTraining()" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-      </div>
-    </div>
-  </div>
-</div>
+
+<!-- Modal delete close -->

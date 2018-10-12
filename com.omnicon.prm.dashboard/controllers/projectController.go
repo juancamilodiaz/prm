@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -87,7 +88,7 @@ func (this *ProjectController) CreateProject() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		if level <= au {
+		if level <= pu {
 
 			operation := "CreateProject"
 			input := domain.CreateProjectRQ{}
@@ -136,7 +137,7 @@ func (this *ProjectController) CreateProject() {
 			} else {
 				this.TplName = "Common/empty.tpl"
 			}
-		} else if level > au {
+		} else if level > pu {
 			this.Data["Title"] = "You don't have enough permissions."
 			this.Data["Message"] = "Please contact with the system manager."
 			this.Data["Type"] = "Error"
@@ -182,315 +183,243 @@ func (this *ProjectController) ReadProject() {
 }
 
 func (this *ProjectController) UpdateProject() {
-	operation := "UpdateProject"
 
-	input := domain.UpdateProjectRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	inputBuffer := EncoderInput(input)
+		if level <= pu {
+			operation := "UpdateProject"
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			input := domain.UpdateProjectRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	defer res.Body.Close()
-	message := new(domain.UpdateProjectRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			inputBuffer := EncoderInput(input)
 
-	if err != nil {
-		log.Error(err.Error())
-	}
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			defer res.Body.Close()
+			message := new(domain.UpdateProjectRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
+
+			if err != nil {
+				log.Error(err.Error())
+			}
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+
+		} else if level > pu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ProjectController) DeleteProject() {
-	operation := "DeleteProject"
 
-	input := domain.DeleteProjectRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	inputBuffer := EncoderInput(input)
+		if level <= pu {
+			operation := "DeleteProject"
 
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			input := domain.DeleteProjectRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	message := new(domain.DeleteProjectRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			inputBuffer := EncoderInput(input)
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			message := new(domain.DeleteProjectRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
+
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+
+		} else if level > pu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ProjectController) GetResourcesByProject() {
-	operation := "GetResourcesToProjects"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.GetResourcesToProjectsRQ{}
-	input.Enabled = false
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= du {
+			operation := "GetResourcesToProjects"
 
-	inputBuffer := EncoderInput(input)
-
-	res, err := PostData(operation, inputBuffer)
-
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesToProjectsRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
-
-		for _, rp := range message.Projects {
-			if input.ProjectId == rp.ID {
-
-				this.Data["Title"] = rp.Name
-				this.Data["StartDate"] = rp.StartDate
-				this.Data["EndDate"] = rp.EndDate
-				break
+			input := domain.GetResourcesToProjectsRQ{}
+			input.Enabled = false
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
 			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesToProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+
+				for _, rp := range message.Projects {
+					if input.ProjectId == rp.ID {
+
+						this.Data["Title"] = rp.Name
+						this.Data["StartDate"] = rp.StartDate
+						this.Data["EndDate"] = rp.EndDate
+						break
+					}
+				}
+				this.Data["ProjectId"] = input.ProjectId
+				//this.Data["Title"] = input.ProjectName
+				this.TplName = "Projects/listResourceByProject.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+			//body, _ := ioutil.ReadAll(res.Body)
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-		this.Data["ProjectId"] = input.ProjectId
-		//this.Data["Title"] = input.ProjectName
-		this.TplName = "Projects/listResourceByProject.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
-	//body, _ := ioutil.ReadAll(res.Body)
 }
 
 func (this *ProjectController) DeleteResourceToProject() {
-	operation := "DeleteResourceToProject"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.DeleteResourceToProjectRQ{}
-	id, _ := this.GetInt("ID")
-	if id != 0 {
-		input.IDs = append(input.IDs, id)
-	} else {
-		idsStr := this.GetString("IDs")
-		ids := strings.Split(idsStr, ",")
-		for _, idStr := range ids {
-			id, _ := strconv.Atoi(idStr)
-			input.IDs = append(input.IDs, id)
+		if level <= pu {
+			operation := "DeleteResourceToProject"
+
+			input := domain.DeleteResourceToProjectRQ{}
+			id, _ := this.GetInt("ID")
+			if id != 0 {
+				input.IDs = append(input.IDs, id)
+			} else {
+				idsStr := this.GetString("IDs")
+				ids := strings.Split(idsStr, ",")
+				for _, idStr := range ids {
+					id, _ := strconv.Atoi(idStr)
+					input.IDs = append(input.IDs, id)
+				}
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesToProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+				this.Data["Title"] = this.GetString("ProjectName")
+				this.TplName = "Projects/listResourceByProject.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+			//body, _ := ioutil.ReadAll(res.Body)
+		} else if level > pu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
 	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
-
-	inputBuffer := EncoderInput(input)
-
-	res, err := PostData(operation, inputBuffer)
-
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesToProjectsRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
-		this.Data["Title"] = this.GetString("ProjectName")
-		this.TplName = "Projects/listResourceByProject.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
-	}
-	//body, _ := ioutil.ReadAll(res.Body)
 }
 
 func (this *ProjectController) SetResourceToProject() {
-	operation := "SetResourceToProject"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.SetResourceToProjectRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= pu {
+			operation := "SetResourceToProject"
 
-	inputBuffer := EncoderInput(input)
+			input := domain.SetResourceToProjectRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
+			inputBuffer := EncoderInput(input)
 
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.SetResourceToProjectRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["Project"] = message.Project
-		this.Data["ProjectId"] = input.ProjectId
-		if message.Project != nil {
-			this.Data["Title"] = message.Project.Name
-		}
-		if message.Status == "Error" {
-			this.Data["Type"] = message.Status
-			this.Data["Title"] = "Error in operation."
-			this.Data["Message"] = message.Message
-			this.TplName = "Common/message.tpl"
-		} else {
-			this.TplName = "Common/empty.tpl"
-		}
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
-	}
-	//body, _ := ioutil.ReadAll(res.Body)
-}
+			res, err := PostData(operation, inputBuffer)
 
-func (this *ProjectController) GetResourcesByProjectToday() {
-	operation := "GetResourcesToProjects"
-
-	input := domain.GetResourcesToProjectsRQ{}
-	input.Enabled = true
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
-
-	inputBuffer := EncoderInput(input)
-
-	res, err := PostData(operation, inputBuffer)
-
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesToProjectsRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
-		this.Data["Projects"] = message.Projects
-		this.Data["Resources"] = message.Resources
-		this.Data["AvailBreakdown"] = message.AvailBreakdown
-		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
-		this.Data["Title"] = input.ProjectName
-		this.TplName = "Projects/listResourceByProjectToday.tpl"
-
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
-	}
-}
-
-func (this *ProjectController) GetRecommendationResourcesByProject() {
-	operation := "GetResourcesToProjects"
-
-	input := domain.GetResourcesToProjectsRQ{}
-	input.Enabled = true
-	idTypesString := this.GetString("Types")
-
-	isSkillFilter, _ := this.GetBool("SkillsActive")
-
-	isHoursFilter, _ := this.GetBool("HoursActive")
-	hoursNumber, _ := this.GetInt("Hours")
-	resourceNumber, _ := this.GetInt("NumberOfResources")
-
-	err := this.ParseForm(&input)
-	input.Hours = 0
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-
-	log.Debugf("[ParseInput] Input: %+v \n", input)
-
-	if isHoursFilter {
-		input.StartDate = util.GetFechaConFormato(time.Now().Unix(), util.DATEFORMAT)
-		input.EndDate = util.GetFechaConFormato(util.AgregarORestaDiasAUnaFecha(time.Now().Unix(), hoursNumber), util.DATEFORMAT)
-	}
-
-	startDate := util.GetDateInt64FromString(input.StartDate)
-	endDate := util.GetDateInt64FromString(input.EndDate)
-
-	projectDays := util.CalcularDiasEntreDosFechas(startDate, endDate)
-
-	inputBuffer := EncoderInput(input)
-
-	var idsType []string
-	if idTypesString != "" {
-		idsType = strings.Split(idTypesString, ",")
-	}
-
-	res, err := PostData(operation, inputBuffer)
-
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesToProjectsRS)
-		json.NewDecoder(res.Body).Decode(&message)
-
-		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
-		this.Data["Projects"] = message.Projects
-		this.Data["Resources"] = message.Resources
-		this.Data["AvailBreakdown"] = message.AvailBreakdown
-		this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
-
-		// Set variable epsilon
-		epsilonValue := message.EpsilonValue
-
-		var listSorted []domain.ListByHours
-		if isHoursFilter {
-			listSorted = transformByHours(message.AvailBreakdownPerRange, hoursNumber, resourceNumber)
-		}
-
-		listSkillsPerProject := make(map[int]int)
-		var listProjectsSkillName []string
-		var listProjectsSkillValue []int
-
-		for _, value := range idsType {
-			skillsByTypeInput := domain.TypeRQ{}
-			typeID, _ := strconv.Atoi(value)
-			skillsByTypeInput.ID = typeID
-			skillsByTypeInputBuffer := EncoderInput(skillsByTypeInput)
-
-			resSkillsByType, errSkillsByType := PostData("GetSkillsByType", skillsByTypeInputBuffer)
-			if errSkillsByType == nil {
-				defer resSkillsByType.Body.Close()
-				messageSkillsByType := new(domain.TypeSkillsRS)
-				json.NewDecoder(resSkillsByType.Body).Decode(&messageSkillsByType)
-
-				for _, skill := range messageSkillsByType.TypeSkills {
-					listSkillsPerProject[skill.SkillId] = skill.Value
-					listProjectsSkillName = append(listProjectsSkillName, skill.Name)
-					listProjectsSkillValue = append(listProjectsSkillValue, skill.Value)
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.SetResourceToProjectRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["Project"] = message.Project
+				this.Data["ProjectId"] = input.ProjectId
+				if message.Project != nil {
+					this.Data["Title"] = message.Project.Name
+				}
+				if message.Status == "Error" {
+					this.Data["Type"] = message.Status
+					this.Data["Title"] = "Error in operation."
+					this.Data["Message"] = message.Message
+					this.TplName = "Common/message.tpl"
+				} else {
+					this.TplName = "Common/empty.tpl"
 				}
 			} else {
 				this.Data["Title"] = "The Service is down."
@@ -498,384 +427,604 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 				this.Data["Type"] = "Error"
 				this.TplName = "Common/message.tpl"
 			}
+			//body, _ := ioutil.ReadAll(res.Body)
+		} else if level > pu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
+	}
+}
 
-		listAbleResource := make(map[int]float64)
-		listResourceToDraw := []domain.Resource{}
-		mapCompare := make(map[int][]int)
-		listColors := []string{"Black", "Orange", "Red", "Green", "Purple", "Brown", "Gray", "Yellow", "Pink", "Aqua", "DarkCyan"}
-		/*Set color again*/
-		// TODO refactor this to assign ramdom colors.
-		listColors = append(listColors, listColors...)
-		listColors = append(listColors, listColors...)
+func (this *ProjectController) GetResourcesByProjectToday() {
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-		for _, resource := range message.Resources {
-			isAble := true
-			average := 0.0
-			count := 0
-			if isSkillFilter {
-				resourceSkillsInput := domain.GetSkillByResourceRQ{}
-				resourceSkillsInput.ID = resource.ID
-				resourceSkillsInputBuffer := EncoderInput(resourceSkillsInput)
+		if level <= du {
+			operation := "GetResourcesToProjects"
 
-				resResourceSkills, errResourceSkills := PostData("GetSkillsByResource", resourceSkillsInputBuffer)
+			input := domain.GetResourcesToProjectsRQ{}
+			input.Enabled = true
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-				if errResourceSkills == nil {
-					defer resResourceSkills.Body.Close()
-					messageResourceSkills := new(domain.GetSkillByResourceRS)
-					json.NewDecoder(resResourceSkills.Body).Decode(&messageResourceSkills)
+			inputBuffer := EncoderInput(input)
 
-					mapSkills := make(map[string]int)
-					for skillID, skillValue := range listSkillsPerProject {
-						stars := 0
-						hasSkill := false
-						for _, skillsByResource := range messageResourceSkills.Skills {
-							if skillID == int(skillsByResource.SkillId) {
-								mapSkills[skillsByResource.Name] = skillsByResource.Value
-								if skillsByResource.Value >= skillValue {
-									hasSkill = true
-									stars = 4
-									break
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesToProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+				this.Data["Projects"] = message.Projects
+				this.Data["Resources"] = message.Resources
+				this.Data["AvailBreakdown"] = message.AvailBreakdown
+				this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+				this.Data["Title"] = input.ProjectName
+				this.TplName = "Projects/listResourceByProjectToday.tpl"
+
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
+	}
+}
+
+func (this *ProjectController) GetRecommendationResourcesByProject() {
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
+
+		if level <= du {
+			operation := "GetResourcesToProjects"
+
+			input := domain.GetResourcesToProjectsRQ{}
+			input.Enabled = true
+			idTypesString := this.GetString("Types")
+
+			isSkillFilter, _ := this.GetBool("SkillsActive")
+
+			isHoursFilter, _ := this.GetBool("HoursActive")
+			hoursNumber, _ := this.GetInt("Hours")
+			resourceNumber, _ := this.GetInt("NumberOfResources")
+
+			err := this.ParseForm(&input)
+			input.Hours = 0
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			if isHoursFilter {
+				input.StartDate = util.GetFechaConFormato(time.Now().Unix(), util.DATEFORMAT)
+				input.EndDate = util.GetFechaConFormato(util.AgregarORestaDiasAUnaFecha(time.Now().Unix(), hoursNumber), util.DATEFORMAT)
+			}
+
+			startDate := util.GetDateInt64FromString(input.StartDate)
+			endDate := util.GetDateInt64FromString(input.EndDate)
+
+			projectDays := util.CalcularDiasEntreDosFechas(startDate, endDate)
+
+			inputBuffer := EncoderInput(input)
+
+			var idsType []string
+			if idTypesString != "" {
+				idsType = strings.Split(idTypesString, ",")
+			}
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesToProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
+
+				this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+				this.Data["Projects"] = message.Projects
+				this.Data["Resources"] = message.Resources
+				this.Data["AvailBreakdown"] = message.AvailBreakdown
+				this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+
+				// Set variable epsilon
+				epsilonValue := message.EpsilonValue
+
+				var listSorted []domain.ListByHours
+				if isHoursFilter {
+					listSorted = transformByHours(message.AvailBreakdownPerRange, hoursNumber, resourceNumber)
+				}
+
+				listSkillsPerProject := make(map[int]int)
+				var listProjectsSkillName []string
+				var listProjectsSkillValue []int
+
+				for _, value := range idsType {
+					skillsByTypeInput := domain.TypeRQ{}
+					typeID, _ := strconv.Atoi(value)
+					skillsByTypeInput.ID = typeID
+					skillsByTypeInputBuffer := EncoderInput(skillsByTypeInput)
+
+					resSkillsByType, errSkillsByType := PostData("GetSkillsByType", skillsByTypeInputBuffer)
+					if errSkillsByType == nil {
+						defer resSkillsByType.Body.Close()
+						messageSkillsByType := new(domain.TypeSkillsRS)
+						json.NewDecoder(resSkillsByType.Body).Decode(&messageSkillsByType)
+
+						for _, skill := range messageSkillsByType.TypeSkills {
+							listSkillsPerProject[skill.SkillId] = skill.Value
+							listProjectsSkillName = append(listProjectsSkillName, skill.Name)
+							listProjectsSkillValue = append(listProjectsSkillValue, skill.Value)
+						}
+					} else {
+						this.Data["Title"] = "The Service is down."
+						this.Data["Message"] = "Please contact with the system manager."
+						this.Data["Type"] = "Error"
+						this.TplName = "Common/message.tpl"
+					}
+				}
+
+				listAbleResource := make(map[int]float64)
+				listResourceToDraw := []domain.Resource{}
+				mapCompare := make(map[int][]int)
+				listColors := []string{"Black", "Orange", "Red", "Green", "Purple", "Brown", "Gray", "Yellow", "Pink", "Aqua", "DarkCyan"}
+				/*Set color again*/
+				// TODO refactor this to assign ramdom colors.
+				listColors = append(listColors, listColors...)
+				listColors = append(listColors, listColors...)
+
+				for _, resource := range message.Resources {
+					isAble := true
+					average := 0.0
+					count := 0
+					if isSkillFilter {
+						resourceSkillsInput := domain.GetSkillByResourceRQ{}
+						resourceSkillsInput.ID = resource.ID
+						resourceSkillsInputBuffer := EncoderInput(resourceSkillsInput)
+
+						resResourceSkills, errResourceSkills := PostData("GetSkillsByResource", resourceSkillsInputBuffer)
+
+						if errResourceSkills == nil {
+							defer resResourceSkills.Body.Close()
+							messageResourceSkills := new(domain.GetSkillByResourceRS)
+							json.NewDecoder(resResourceSkills.Body).Decode(&messageResourceSkills)
+
+							mapSkills := make(map[string]int)
+							for skillID, skillValue := range listSkillsPerProject {
+								stars := 0
+								hasSkill := false
+								for _, skillsByResource := range messageResourceSkills.Skills {
+									if skillID == int(skillsByResource.SkillId) {
+										mapSkills[skillsByResource.Name] = skillsByResource.Value
+										if skillsByResource.Value >= skillValue {
+											hasSkill = true
+											stars = 4
+											break
+										}
+										if skillsByResource.Value < skillValue && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.25) {
+											hasSkill = true
+											stars = 3
+											break
+										}
+										if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.25) && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.5) {
+											hasSkill = true
+											stars = 2
+											break
+										}
+										if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.5) && float64(skillsByResource.Value) >= float64(skillValue)-epsilonValue {
+											hasSkill = true
+											stars = 1
+											break
+										}
+									} else {
+										hasSkill = false
+									}
 								}
-								if skillsByResource.Value < skillValue && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.25) {
-									hasSkill = true
-									stars = 3
+								if !hasSkill {
+									isAble = false
 									break
+								} else {
+									count += stars
 								}
-								if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.25) && float64(skillsByResource.Value) >= float64(skillValue)-(epsilonValue*0.5) {
-									hasSkill = true
-									stars = 2
-									break
-								}
-								if float64(skillsByResource.Value) < float64(skillValue)-(epsilonValue*0.5) && float64(skillsByResource.Value) >= float64(skillValue)-epsilonValue {
-									hasSkill = true
-									stars = 1
-									break
-								}
-							} else {
-								hasSkill = false
+							}
+
+							for _, skillName := range listProjectsSkillName {
+								mapCompare[resource.ID] = append(mapCompare[resource.ID], mapSkills[skillName])
+							}
+						} else {
+							this.Data["Title"] = "The Service is down."
+							this.Data["Message"] = "Please contact with the system manager."
+							this.Data["Type"] = "Error"
+							this.TplName = "Common/message.tpl"
+						}
+					} else {
+						listAbleResource[resource.ID] = 5
+					}
+					if isAble {
+						if len(listSkillsPerProject) != 0 {
+							average = float64(count / len(listSkillsPerProject))
+							listAbleResource[resource.ID] = average
+							if message.AvailBreakdownPerRange[resource.ID] != nil {
+								listResourceToDraw = append(listResourceToDraw, *resource)
 							}
 						}
-						if !hasSkill {
-							isAble = false
-							break
-						} else {
-							count += stars
+					}
+
+				}
+
+				this.Data["AbleResource"] = listAbleResource
+				this.Data["ListProjectSkillsName"] = listProjectsSkillName
+				this.Data["ListProjectSkillsValue"] = listProjectsSkillValue
+				this.Data["MapCompare"] = mapCompare
+				this.Data["ListColor"] = listColors
+				this.Data["ListChecked"] = []int{}
+				this.Data["ListToDraw"] = listResourceToDraw
+				if isHoursFilter {
+					var resourcesSorted []*domain.Resource
+					for _, resourceIdSorted := range listSorted {
+						for _, resource := range message.Resources {
+							if resourceIdSorted.ResourceId == resource.ID {
+								resourcesSorted = append(resourcesSorted, resource)
+							}
 						}
 					}
-
-					for _, skillName := range listProjectsSkillName {
-						mapCompare[resource.ID] = append(mapCompare[resource.ID], mapSkills[skillName])
-					}
+					this.Data["Resources"] = resourcesSorted
+					this.Data["HoursByPerson"] = hoursNumber / resourceNumber
+					this.TplName = "Projects/listRecommendResourcesTablePerHour.tpl"
 				} else {
-					this.Data["Title"] = "The Service is down."
-					this.Data["Message"] = "Please contact with the system manager."
-					this.Data["Type"] = "Error"
-					this.TplName = "Common/message.tpl"
+					fmt.Println("------>", this.Data["AvailBreakdownPerRange"])
+					this.Data["ProjectHours"] = projectDays * 8
+					this.TplName = "Projects/listRecommendResourcesTable.tpl"
 				}
 			} else {
-				listAbleResource[resource.ID] = 5
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
 			}
-			if isAble {
-				if len(listSkillsPerProject) != 0 {
-					average = float64(count / len(listSkillsPerProject))
-					listAbleResource[resource.ID] = average
-					if message.AvailBreakdownPerRange[resource.ID] != nil {
-						listResourceToDraw = append(listResourceToDraw, *resource)
-					}
-				}
-			}
-
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-
-		this.Data["AbleResource"] = listAbleResource
-		this.Data["ListProjectSkillsName"] = listProjectsSkillName
-		this.Data["ListProjectSkillsValue"] = listProjectsSkillValue
-		this.Data["MapCompare"] = mapCompare
-		this.Data["ListColor"] = listColors
-		this.Data["ListChecked"] = []int{}
-		this.Data["ListToDraw"] = listResourceToDraw
-		if isHoursFilter {
-			var resourcesSorted []*domain.Resource
-			for _, resourceIdSorted := range listSorted {
-				for _, resource := range message.Resources {
-					if resourceIdSorted.ResourceId == resource.ID {
-						resourcesSorted = append(resourcesSorted, resource)
-					}
-				}
-			}
-			this.Data["Resources"] = resourcesSorted
-			this.Data["HoursByPerson"] = hoursNumber / resourceNumber
-			this.TplName = "Projects/listRecommendResourcesTablePerHour.tpl"
-		} else {
-			this.Data["ProjectHours"] = projectDays * 8
-			this.TplName = "Projects/listRecommendResourcesTable.tpl"
-		}
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 }
 
 func (this *ProjectController) GetTypesByProject() {
-	operation := "GetTypesByProject"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.GetProjectsRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= du {
+			operation := "GetTypesByProject"
 
-	inputBuffer := EncoderInput(input)
-
-	res, err := PostData(operation, inputBuffer)
-
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.ProjectTypesRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["ProjectTypes"] = message.ProjectTypes
-
-		typesProject := []*domain.Type{}
-		for _, _types := range message.Types {
-			if _types.ApplyTo == "Project" {
-				typesProject = append(typesProject, _types)
+			input := domain.GetProjectsRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
 			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.ProjectTypesRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["ProjectTypes"] = message.ProjectTypes
+
+				typesProject := []*domain.Type{}
+				for _, _types := range message.Types {
+					if _types.ApplyTo == "Project" {
+						typesProject = append(typesProject, _types)
+					}
+				}
+				this.Data["Types"] = typesProject
+				this.Data["ProjectID"] = input.ID
+				this.Data["Title"] = this.GetString("Description")
+				this.TplName = "Projects/listProjectTypes.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-		this.Data["Types"] = typesProject
-		this.Data["ProjectID"] = input.ID
-		this.Data["Title"] = this.GetString("Description")
-		this.TplName = "Projects/listProjectTypes.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 }
 
 func (this *ProjectController) DeleteTypesByProject() {
-	operation := "DeleteTypesByProject"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.ProjectTypesRQ{}
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= pu {
+			operation := "DeleteTypesByProject"
 
-	inputBuffer := EncoderInput(input)
-	res, err := PostData(operation, inputBuffer)
+			input := domain.ProjectTypesRQ{}
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	message := new(domain.ProjectTypesRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
+			inputBuffer := EncoderInput(input)
+			res, err := PostData(operation, inputBuffer)
 
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			message := new(domain.ProjectTypesRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > pu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ProjectController) SetTypesToProject() {
-	operation := "SetTypesToProject"
-	input := domain.ProjectTypesRQ{}
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
+		if level <= pu {
+			operation := "SetTypesToProject"
+			input := domain.ProjectTypesRQ{}
 
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
 
-	inputBuffer := EncoderInput(input)
-	res, err := PostData(operation, inputBuffer)
-	if err != nil {
-		log.Error(err.Error())
-	}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	message := new(domain.ProjectTypesRS)
-	err = json.NewDecoder(res.Body).Decode(&message)
-	defer res.Body.Close()
-	if err != nil {
-		log.Error(err.Error())
-	}
+			inputBuffer := EncoderInput(input)
+			res, err := PostData(operation, inputBuffer)
+			if err != nil {
+				log.Error(err.Error())
+			}
 
-	if message.Status == "Error" {
-		this.Data["Type"] = message.Status
-		this.Data["Title"] = "Error in operation."
-		this.Data["Message"] = message.Message
-		this.TplName = "Common/message.tpl"
-	} else if message.Status == "OK" {
-		this.Data["Type"] = "Success"
-		this.Data["Title"] = "Operation Success"
-		this.TplName = "Common/message.tpl"
-	} else {
-		this.TplName = "Common/empty.tpl"
+			message := new(domain.ProjectTypesRS)
+			err = json.NewDecoder(res.Body).Decode(&message)
+			defer res.Body.Close()
+			if err != nil {
+				log.Error(err.Error())
+			}
+
+			if message.Status == "Error" {
+				this.Data["Type"] = message.Status
+				this.Data["Title"] = "Error in operation."
+				this.Data["Message"] = message.Message
+				this.TplName = "Common/message.tpl"
+			} else if message.Status == "OK" {
+				this.Data["Type"] = "Success"
+				this.Data["Title"] = "Operation Success"
+				this.TplName = "Common/message.tpl"
+			} else {
+				this.TplName = "Common/empty.tpl"
+			}
+		} else if level > pu {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 
 func (this *ProjectController) GetAssignationByResource() {
-	operation := "GetResourcesToProjects"
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.GetResourcesToProjectsRQ{}
-	input.Enabled = true
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+		if level <= du {
+			operation := "GetResourcesToProjects"
 
-	inputBuffer := EncoderInput(input)
-
-	res, err := PostData(operation, inputBuffer)
-
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesToProjectsRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["ResourcesToProjects"] = message.ResourcesToProjects
-		this.Data["ResourceId"] = input.ResourceId
-		this.Data["Title"] = input.ResourceName
-		if input.ResourceName == "" {
-			for _, assig := range message.ResourcesToProjects {
-				this.Data["Title"] = assig.ResourceName
-				break
+			input := domain.GetResourcesToProjectsRQ{}
+			input.Enabled = true
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
 			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesToProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+				this.Data["ResourceId"] = input.ResourceId
+				this.Data["Title"] = input.ResourceName
+				if input.ResourceName == "" {
+					for _, assig := range message.ResourcesToProjects {
+						this.Data["Title"] = assig.ResourceName
+						break
+					}
+				}
+				this.TplName = "Projects/listAssignationByResource.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-		this.TplName = "Projects/listAssignationByResource.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 }
 
 func (this *ProjectController) Availability() {
-	operation := "GetResourcesToProjects"
-	y, w := time.Now().ISOWeek()
-	dateFrom := FirstDayOfISOWeek(y, w, time.UTC)
-	dateTo := dateFrom.AddDate(0, 0, 5)
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	if this.Ctx.Input.IsPost() {
-		this.Data["IsGet"] = false
-	} else {
-		this.Data["IsGet"] = true
-	}
+		if level <= du {
+			operation := "GetResourcesToProjects"
+			y, w := time.Now().ISOWeek()
+			dateFrom := FirstDayOfISOWeek(y, w, time.UTC)
+			dateTo := dateFrom.AddDate(0, 0, 5)
 
-	input := domain.GetResourcesToProjectsRQ{}
-	input.Enabled = true
-	input.StartDate = dateFrom.Format("2006-01-02")
-	input.EndDate = dateTo.Format("2006-01-02")
+			if this.Ctx.Input.IsPost() {
+				this.Data["IsGet"] = false
+			} else {
+				this.Data["IsGet"] = true
+			}
 
-	dates := []string{}
+			input := domain.GetResourcesToProjectsRQ{}
+			input.Enabled = true
+			input.StartDate = dateFrom.Format("2006-01-02")
+			input.EndDate = dateTo.Format("2006-01-02")
 
-	for i := 0; i < 5; i++ { //dateFrom.Before(dateTo) {
-		dates = append(dates, dateFrom.Format("2006-01-02"))
-		dateFrom = dateFrom.AddDate(0, 0, 1)
-	}
+			dates := []string{}
 
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+			for i := 0; i < 5; i++ { //dateFrom.Before(dateTo) {
+				dates = append(dates, dateFrom.Format("2006-01-02"))
+				dateFrom = dateFrom.AddDate(0, 0, 1)
+			}
 
-	inputBuffer := EncoderInput(input)
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
+			inputBuffer := EncoderInput(input)
 
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesToProjectsRS)
-		json.NewDecoder(res.Body).Decode(&message)
+			res, err := PostData(operation, inputBuffer)
 
-		this.Data["Dates"] = dates
-		//this.Data["ResourcesToProjects"] = message.ResourcesToProjects
-		for _, project := range message.Projects {
-			diff := project.EndDate.Sub(project.StartDate)
-			days := int(diff.Hours() / 24)
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesToProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
 
-			diff2 := time.Now().Sub(project.StartDate)
-			days2 := int(diff2.Hours() / 24)
+				this.Data["Dates"] = dates
+				//this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+				for _, project := range message.Projects {
+					diff := project.EndDate.Sub(project.StartDate)
+					days := int(diff.Hours() / 24)
 
-			f := float32(days2) / float32(days)
-			project.Percent = int(f * float32(100))
+					diff2 := time.Now().Sub(project.StartDate)
+					days2 := int(diff2.Hours() / 24)
+
+					f := float32(days2) / float32(days)
+					project.Percent = int(f * float32(100))
+				}
+
+				this.Data["Projects"] = message.Projects
+				this.Data["Resources"] = message.Resources
+				this.Data["AvailBreakdown"] = message.AvailBreakdown
+				this.Data["DateFrom"] = input.StartDate
+				this.Data["DateTo"] = input.EndDate
+				//this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
+				this.Data["Title"] = input.ProjectName
+				this.TplName = "Projects/availability.tpl"
+
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
 		}
-
-		this.Data["Projects"] = message.Projects
-		this.Data["Resources"] = message.Resources
-		this.Data["AvailBreakdown"] = message.AvailBreakdown
-		this.Data["DateFrom"] = input.StartDate
-		this.Data["DateTo"] = input.EndDate
-		//this.Data["AvailBreakdownPerRange"] = message.AvailBreakdownPerRange
-		this.Data["Title"] = input.ProjectName
-		this.TplName = "Projects/availability.tpl"
-
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
 	}
 }
 
 func (this *ProjectController) AvailabileHours() {
-	operation := "GetResourcesToProjects"
-	dateFrom, _ := time.Parse("2006-01-02", this.GetString("dateFrom"))
-	dateTo := dateFrom.AddDate(0, 0, 5)
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
 
-	input := domain.GetResourcesToProjectsRQ{}
-	input.Enabled = true
-	input.StartDate = dateFrom.Format("2006-01-02")
-	input.EndDate = dateTo.Format("2006-01-02")
+		if level <= du {
+			operation := "GetResourcesToProjects"
+			dateFrom, _ := time.Parse("2006-01-02", this.GetString("dateFrom"))
+			dateTo := dateFrom.AddDate(0, 0, 5)
 
-	dates := []string{}
+			input := domain.GetResourcesToProjectsRQ{}
+			input.Enabled = true
+			input.StartDate = dateFrom.Format("2006-01-02")
+			input.EndDate = dateTo.Format("2006-01-02")
 
-	for i := 0; i < 5; i++ { //dateFrom.Before(dateTo) {
-		dates = append(dates, dateFrom.Format("2006-01-02"))
-		dateFrom = dateFrom.AddDate(0, 0, 1)
-	}
+			dates := []string{}
 
-	err := this.ParseForm(&input)
-	if err != nil {
-		log.Error("[ParseInput]", input)
-	}
-	log.Debugf("[ParseInput] Input: %+v \n", input)
+			for i := 0; i < 5; i++ { //dateFrom.Before(dateTo) {
+				dates = append(dates, dateFrom.Format("2006-01-02"))
+				dateFrom = dateFrom.AddDate(0, 0, 1)
+			}
 
-	inputBuffer := EncoderInput(input)
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
 
-	res, err := PostData(operation, inputBuffer)
+			inputBuffer := EncoderInput(input)
 
-	if err == nil {
-		defer res.Body.Close()
-		message := new(domain.GetResourcesToProjectsRS)
-		json.NewDecoder(res.Body).Decode(&message)
-		this.Data["Dates"] = dates
-		this.Data["Resources"] = message.Resources
-		this.Data["AvailBreakdown"] = message.AvailBreakdown
-		this.TplName = "Projects/availableHours.tpl"
-	} else {
-		this.Data["Title"] = "The Service is down."
-		this.Data["Message"] = "Please contact with the system manager."
-		this.Data["Type"] = "Error"
-		this.TplName = "Common/message.tpl"
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesToProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["Dates"] = dates
+				this.Data["Resources"] = message.Resources
+				this.Data["AvailBreakdown"] = message.AvailBreakdown
+				this.TplName = "Projects/availableHours.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
 	}
 }
 

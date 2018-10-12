@@ -17,8 +17,12 @@ import (
 func getResourceCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table resource in the session
-	return session.Collection("Resource")
+	if session != nil {
+		// Return table resource in the session
+		return session.Collection("Resource")
+	} else {
+		return nil
+	}
 }
 
 /**
@@ -29,12 +33,14 @@ func getResourceCollection() db.Collection {
 func GetAllResources() []*DOMAIN.Resource {
 	// Slice to keep all resources
 	var resources []*DOMAIN.Resource
-	// Add all resources in resources variable
-	err := getResourceCollection().Find().All(&resources)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+	if getResourceCollection() != nil {
+		// Add all resources in resources variable
+		err := getResourceCollection().Find().All(&resources)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return resources
 }
@@ -48,14 +54,16 @@ func GetAllResources() []*DOMAIN.Resource {
 func GetResourceById(pId int) *DOMAIN.Resource {
 	// Resource structure
 	resource := DOMAIN.Resource{}
-	// Add in resource variable, the resource where ID is the same that the param
-	res := getResourceCollection().Find(db.Cond{"id": pId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&resource)
-	if err != nil {
-		log.Error(err)
-		return nil
+	if getResourceCollection() != nil {
+		// Add in resource variable, the resource where ID is the same that the param
+		res := getResourceCollection().Find(db.Cond{"id": pId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&resource)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
 	}
 	return &resource
 }
@@ -69,14 +77,16 @@ func GetResourceById(pId int) *DOMAIN.Resource {
 func GetResourcesByName(pName string) []*DOMAIN.Resource {
 	// Slice to keep all resources
 	resources := []*DOMAIN.Resource{}
-	// Filter resources by name
-	res := getResourceCollection().Find().Where("name = ?", pName)
-	// Close session when ends the method
-	defer session.Close()
-	// Add all resources in resources variable
-	err := res.All(&resources)
-	if err != nil {
-		log.Error(err)
+	if getResourceCollection() != nil {
+		// Filter resources by name
+		res := getResourceCollection().Find().Where("name = ?", pName)
+		// Close session when ends the method
+		defer session.Close()
+		// Add all resources in resources variable
+		err := res.All(&resources)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return resources
 }
@@ -90,31 +100,35 @@ func GetResourcesByName(pName string) []*DOMAIN.Resource {
 func AddResource(pResource *DOMAIN.Resource) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert in DB
-	res, err := session.InsertInto("Resource").Columns(
-		"name",
-		"last_name",
-		"email",
-		"photo",
-		"engineer_range",
-		"enabled",
-		"visa_us").Values(
-		pResource.Name,
-		pResource.LastName,
-		pResource.Email,
-		pResource.Photo,
-		pResource.EngineerRange,
-		pResource.Enabled,
-		pResource.VisaUS).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert in DB
+		res, err := session.InsertInto("Resource").Columns(
+			"name",
+			"last_name",
+			"email",
+			"photo",
+			"engineer_range",
+			"enabled",
+			"visa_us").Values(
+			pResource.Name,
+			pResource.LastName,
+			pResource.Email,
+			pResource.Photo,
+			pResource.EngineerRange,
+			pResource.Enabled,
+			pResource.VisaUS).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-	return int(insertId), nil
 }
 
 /**
@@ -126,19 +140,23 @@ func AddResource(pResource *DOMAIN.Resource) (int, error) {
 func UpdateResource(pResource *DOMAIN.Resource) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update resource in DB
-	q := session.Update("Resource").Set("name = ?, last_name = ?, email = ?, photo = ?, engineer_range = ?, enabled = ?, visa_us = ?",
-		pResource.Name, pResource.LastName, pResource.Email, pResource.Photo, pResource.EngineerRange, pResource.Enabled, pResource.VisaUS).Where("id = ?", int(pResource.ID))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update resource in DB
+		q := session.Update("Resource").Set("name = ?, last_name = ?, email = ?, photo = ?, engineer_range = ?, enabled = ?, visa_us = ?",
+			pResource.Name, pResource.LastName, pResource.Email, pResource.Photo, pResource.EngineerRange, pResource.Enabled, pResource.VisaUS).Where("id = ?", int(pResource.ID))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -150,18 +168,22 @@ func UpdateResource(pResource *DOMAIN.Resource) (int, error) {
 func DeleteResource(pResourceId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete resource in DB
-	q := session.DeleteFrom("Resource").Where("id", int(pResourceId))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete resource in DB
+		q := session.DeleteFrom("Resource").Where("id", int(pResourceId))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -173,64 +195,68 @@ func DeleteResource(pResourceId int) (int, error) {
 func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([]*DOMAIN.Resource, string) {
 	// Slice to keep all resources
 	resources := []*DOMAIN.Resource{}
-	result := getResourceCollection().Find()
+	var stringResponse string
 
-	// Close session when ends the method
-	defer session.Close()
+	if getResourceCollection() != nil {
+		result := getResourceCollection().Find()
 
-	var filters bytes.Buffer
-	if pResourceFilters.ID != 0 {
-		filters.WriteString("id = '")
-		filters.WriteString(strconv.Itoa(pResourceFilters.ID))
-		filters.WriteString("'")
-	}
-	if pResourceFilters.Name != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
-		}
-		filters.WriteString("name = '")
-		filters.WriteString(pResourceFilters.Name)
-		filters.WriteString("'")
-	}
-	if pResourceFilters.LastName != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
-		}
-		filters.WriteString("last_name = '")
-		filters.WriteString(pResourceFilters.LastName)
-		filters.WriteString("'")
-	}
-	if pResourceFilters.Email != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
-		}
-		filters.WriteString("email = '")
-		filters.WriteString(pResourceFilters.Email)
-		filters.WriteString("'")
-	}
-	if pResourceFilters.EngineerRange != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
-		}
-		filters.WriteString("engineer_range = '")
-		filters.WriteString(pResourceFilters.EngineerRange)
-		filters.WriteString("'")
-	}
-	if pEnabled != nil {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
-		}
-		filters.WriteString("enabled = '")
-		filters.WriteString(strconv.FormatBool(*pEnabled))
-		filters.WriteString("'")
-	}
-	if filters.String() != "" {
-		err := result.Where(filters.String()).All(&resources)
+		// Close session when ends the method
+		defer session.Close()
 
-		if err != nil {
-			log.Error(err)
+		var filters bytes.Buffer
+		if pResourceFilters.ID != 0 {
+			filters.WriteString("id = '")
+			filters.WriteString(strconv.Itoa(pResourceFilters.ID))
+			filters.WriteString("'")
 		}
-	}
+		if pResourceFilters.Name != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("name = '")
+			filters.WriteString(pResourceFilters.Name)
+			filters.WriteString("'")
+		}
+		if pResourceFilters.LastName != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("last_name = '")
+			filters.WriteString(pResourceFilters.LastName)
+			filters.WriteString("'")
+		}
+		if pResourceFilters.Email != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("email = '")
+			filters.WriteString(pResourceFilters.Email)
+			filters.WriteString("'")
+		}
+		if pResourceFilters.EngineerRange != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("engineer_range = '")
+			filters.WriteString(pResourceFilters.EngineerRange)
+			filters.WriteString("'")
+		}
+		if pEnabled != nil {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("enabled = '")
+			filters.WriteString(strconv.FormatBool(*pEnabled))
+			filters.WriteString("'")
+		}
+		if filters.String() != "" {
+			err := result.Where(filters.String()).All(&resources)
 
-	return resources, filters.String()
+			if err != nil {
+				log.Error(err)
+			}
+		}
+		stringResponse = filters.String()
+	}
+	return resources, stringResponse
 }

@@ -6,6 +6,8 @@ import (
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.dashboard/convert"
 	"prm/com.omnicon.prm.dashboard/models"
+	"prm/com.omnicon.prm.service/log"
+
 	//Oauth
 	"prm/com.omnicon.prm.oauth2_proxy/providers"
 )
@@ -17,6 +19,8 @@ type BaseController struct {
 	IsLogin  bool
 	Provider *providers.AzureProvider
 	Session  *providers.SessionState
+	PInfo    *providers.PersonalInfo
+	ProfPic  *providers.ProfilePicture
 }
 
 type NestPreparer interface {
@@ -28,14 +32,14 @@ type NestFinisher interface {
 }
 
 func (c *BaseController) Prepare() {
-	fmt.Println("base.Prepare")
+	log.Debug("base.Prepare")
 
 	c.SetParams()
 
-	fmt.Println("this.Session!=nil", c.Session != nil)
+	log.Debug("this.Session!=nil", c.Session != nil)
 	c.IsLogin = c.GetSession("userinfo") != nil
 	if c.IsLogin {
-		c.Userinfo = c.GetLogin()
+		//c.Userinfo = c.GetLogin()
 	}
 
 	c.Data["IsLogin"] = c.IsLogin

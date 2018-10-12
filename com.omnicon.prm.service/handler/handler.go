@@ -73,6 +73,7 @@ func SetUpHandlers() {
 	http.HandleFunc("/CreateProductivityReport", createProductivityReport)
 	http.HandleFunc("/UpdateProductivityReport", updateProductivityReport)
 	http.HandleFunc("/DeleteProductivityReport", deleteProductivityReport)
+	http.HandleFunc("/GetProjectsByResource", getProjectsByResource)
 }
 
 /*
@@ -2017,6 +2018,43 @@ func deleteProductivityReport(pResponse http.ResponseWriter, pRequest *http.Requ
 	}
 
 	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to get all the projects associated to an especified Resource.
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getProjectsByResource(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("GetProjectsByResource")
+
+	message := new(domain.GetResourcesToProjectsRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+	log.Info("Process Get Projects By Resource", message)
+	response := controller.ProcessGetProjectsByResource(message)
+	// Set response time to all process.
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+
+	value := marshalJson(accept, response)
+
 	pResponse.Header().Add("Content-Type", "application/json")
 	pResponse.Write(value)
 

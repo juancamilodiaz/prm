@@ -30,7 +30,6 @@ func init() {
 }
 
 func main() {
-
 	// Se utiliza para poder obtener el parametro del nombre del archivo
 	flag.Parse()
 

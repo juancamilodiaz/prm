@@ -17,8 +17,12 @@ import (
 func getProjectResourcesCollection() db.Collection {
 	// Get a session
 	session = GetSession()
-	// Return table resource in the session
-	return session.Collection("ProjectResources")
+	if session != nil {
+		// Return table resource in the session
+		return session.Collection("ProjectResources")
+	} else {
+		return nil
+	}
 }
 
 /**
@@ -29,12 +33,15 @@ func getProjectResourcesCollection() db.Collection {
 func GetAllProjectResources() []*DOMAIN.ProjectResources {
 	// Slice to keep all ProjectResources
 	var projectResources []*DOMAIN.ProjectResources
-	// Add all ProjectResources in projectResources variable
-	err := getProjectResourcesCollection().Find().All(&projectResources)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+
+	if getProjectResourcesCollection() != nil {
+		// Add all ProjectResources in projectResources variable
+		err := getProjectResourcesCollection().Find().All(&projectResources)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return projectResources
 }
@@ -48,13 +55,15 @@ func GetAllProjectResources() []*DOMAIN.ProjectResources {
 func GetProjectResourcesById(pId int) *DOMAIN.ProjectResources {
 	// ProjectResources structure
 	projectResources := DOMAIN.ProjectResources{}
-	// Add in projectResources variable, the projectResources where ID is the same that the param
-	res := getProjectResourcesCollection().Find(db.Cond{"id": pId})
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&projectResources)
-	if err != nil {
-		log.Error(err)
+	if getProjectResourcesCollection() != nil {
+		// Add in projectResources variable, the projectResources where ID is the same that the param
+		res := getProjectResourcesCollection().Find(db.Cond{"id": pId})
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&projectResources)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return &projectResources
 }
@@ -68,12 +77,15 @@ func GetProjectResourcesById(pId int) *DOMAIN.ProjectResources {
 func GetProjectResourcesByProjectId(pId int) []*DOMAIN.ProjectResources {
 	// Slice to keep all ProjectResources
 	var projectResources []*DOMAIN.ProjectResources
-	// Add all ProjectResources in projectResources variable
-	err := getProjectResourcesCollection().Find(db.Cond{"project_id": pId}).All(&projectResources)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Debug(err)
+
+	if getProjectResourcesCollection() != nil {
+		// Add all ProjectResources in projectResources variable
+		err := getProjectResourcesCollection().Find(db.Cond{"project_id": pId}).All(&projectResources)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Debug(err)
+		}
 	}
 	return projectResources
 }
@@ -87,12 +99,14 @@ func GetProjectResourcesByProjectId(pId int) []*DOMAIN.ProjectResources {
 func GetProjectResourcesByResourceId(pId int) []*DOMAIN.ProjectResources {
 	// Slice to keep all ProjectResources
 	var projectResources []*DOMAIN.ProjectResources
-	// Add all ProjectResources in projectResources variable
-	err := getProjectResourcesCollection().Find(db.Cond{"resource_id": pId}).All(&projectResources)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Debug(err)
+	if getProjectResourcesCollection() != nil {
+		// Add all ProjectResources in projectResources variable
+		err := getProjectResourcesCollection().Find(db.Cond{"resource_id": pId}).All(&projectResources)
+		// Close session when ends the method
+		defer session.Close()
+		if err != nil {
+			log.Debug(err)
+		}
 	}
 	return projectResources
 }
@@ -133,32 +147,37 @@ func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int, error
 	// Get a session
 	session = GetSession()
 	// Close session when ends the method
-	defer session.Close()
-	// Insert in DB
-	res, err := session.InsertInto("ProjectResources").Columns(
-		"project_id",
-		"resource_id",
-		"project_name",
-		"resource_name",
-		"start_date",
-		"end_date",
-		"lead",
-		"hours").Values(
-		pProjectResources.ProjectId,
-		pProjectResources.ResourceId,
-		pProjectResources.ProjectName,
-		pProjectResources.ResourceName,
-		pProjectResources.StartDate,
-		pProjectResources.EndDate,
-		pProjectResources.Lead,
-		pProjectResources.Hours).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		defer session.Close()
+		// Insert in DB
+		res, err := session.InsertInto("ProjectResources").Columns(
+			"project_id",
+			"resource_id",
+			"project_name",
+			"resource_name",
+			"start_date",
+			"end_date",
+			"lead",
+			"hours").Values(
+			pProjectResources.ProjectId,
+			pProjectResources.ResourceId,
+			pProjectResources.ProjectName,
+			pProjectResources.ResourceName,
+			pProjectResources.StartDate,
+			pProjectResources.EndDate,
+			pProjectResources.Lead,
+			pProjectResources.Hours).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-	return int(insertId), nil
+
 }
 
 /**
@@ -170,18 +189,22 @@ func AddProjectResources(pProjectResources *DOMAIN.ProjectResources) (int, error
 func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update ProjectResources in DB
-	q := session.Update("ProjectResources").Set("project_id = ?, resource_id = ?, start_date = ?, end_date = ?, lead = ?, hours = ?, project_name = ?, resource_name = ?", pProjectResources.ProjectId, pProjectResources.ResourceId, pProjectResources.StartDate, pProjectResources.EndDate, pProjectResources.Lead, pProjectResources.Hours, pProjectResources.ProjectName, pProjectResources.ResourceName).Where("id = ?", int(pProjectResources.ID))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update ProjectResources in DB
+		q := session.Update("ProjectResources").Set("project_id = ?, resource_id = ?, start_date = ?, end_date = ?, lead = ?, hours = ?, project_name = ?, resource_name = ?", pProjectResources.ProjectId, pProjectResources.ResourceId, pProjectResources.StartDate, pProjectResources.EndDate, pProjectResources.Lead, pProjectResources.Hours, pProjectResources.ProjectName, pProjectResources.ResourceName).Where("id = ?", int(pProjectResources.ID))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -193,18 +216,22 @@ func UpdateProjectResources(pProjectResources *DOMAIN.ProjectResources) (int, er
 func DeleteProjectResources(pProjectResourcesId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete ProjectResources in DB
-	q := session.DeleteFrom("ProjectResources").Where("id", int(pProjectResourcesId))
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete ProjectResources in DB
+		q := session.DeleteFrom("ProjectResources").Where("id", int(pProjectResourcesId))
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 /**
@@ -216,105 +243,114 @@ func DeleteProjectResources(pProjectResourcesId int) (int, error) {
 func DeleteProjectResourcesByProjectIdAndResourceId(pProjectId int, pResourceId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete ProjectResources in DB
-	q := session.DeleteFrom("ProjectResources").Where("project_id", pProjectId).And("resource_id", pResourceId)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete ProjectResources in DB
+		q := session.DeleteFrom("ProjectResources").Where("project_id", pProjectId).And("resource_id", pResourceId)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
+//GetProjectsResourcesByFilters gets prjects by filters at the struct
 func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResources, pStartDate, pEndDate string, pLead *bool) ([]*DOMAIN.ProjectResources, string) {
 	// Slice to keep all resources
 	projectsResources := []*DOMAIN.ProjectResources{}
-	result := getProjectResourcesCollection().Find()
+	var stringResponse string
+	if getProjectResourcesCollection() != nil {
+		result := getProjectResourcesCollection().Find()
 
-	// Close session when ends the method
-	defer session.Close()
+		// Close session when ends the method
+		defer session.Close()
 
-	var filters bytes.Buffer
-	if pProjectResourceFilters.ID != 0 {
-		filters.WriteString("id = ")
-		filters.WriteString(strconv.Itoa(pProjectResourceFilters.ID))
-	}
-	if pProjectResourceFilters.ProjectId != 0 {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		var filters bytes.Buffer
+		if pProjectResourceFilters.ID != 0 {
+			filters.WriteString("id = ")
+			filters.WriteString(strconv.Itoa(pProjectResourceFilters.ID))
 		}
-		filters.WriteString("project_id = ")
-		filters.WriteString(strconv.Itoa(pProjectResourceFilters.ProjectId))
-	}
-	if pProjectResourceFilters.ResourceId != 0 {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pProjectResourceFilters.ProjectId != 0 {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("project_id = ")
+			filters.WriteString(strconv.Itoa(pProjectResourceFilters.ProjectId))
 		}
-		filters.WriteString("resource_id = ")
-		filters.WriteString(strconv.Itoa(pProjectResourceFilters.ResourceId))
+		if pProjectResourceFilters.ResourceId != 0 {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("resource_id = ")
+			filters.WriteString(strconv.Itoa(pProjectResourceFilters.ResourceId))
 
-	}
-	if pProjectResourceFilters.ProjectName != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
 		}
-		filters.WriteString("project_name = '")
-		filters.WriteString(pProjectResourceFilters.ProjectName)
-		filters.WriteString("'")
+		if pProjectResourceFilters.ProjectName != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("project_name = '")
+			filters.WriteString(pProjectResourceFilters.ProjectName)
+			filters.WriteString("'")
 
-	}
-	if pProjectResourceFilters.ResourceName != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
 		}
-		filters.WriteString("resource_name = '")
-		filters.WriteString(pProjectResourceFilters.ResourceName)
-		filters.WriteString("'")
+		if pProjectResourceFilters.ResourceName != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("resource_name = '")
+			filters.WriteString(pProjectResourceFilters.ResourceName)
+			filters.WriteString("'")
 
-	}
-	if pStartDate != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
 		}
-		filters.WriteString("end_date >= '")
-		filters.WriteString(pStartDate)
-		filters.WriteString("'")
-	}
-	if pEndDate != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pStartDate != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("end_date >= '")
+			filters.WriteString(pStartDate)
+			filters.WriteString("'")
 		}
-		filters.WriteString("start_date <= '")
-		filters.WriteString(pEndDate)
-		filters.WriteString("'")
-	}
-	if pLead != nil {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pEndDate != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("start_date <= '")
+			filters.WriteString(pEndDate)
+			filters.WriteString("'")
 		}
-		filters.WriteString("lead = '")
-		filters.WriteString(strconv.FormatBool(*pLead))
-		filters.WriteString("'")
-	}
-	if pProjectResourceFilters.Hours != 0 {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pLead != nil {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("lead = '")
+			filters.WriteString(strconv.FormatBool(*pLead))
+			filters.WriteString("'")
 		}
-		filters.WriteString("hours = ")
-		filters.WriteString(strconv.FormatFloat(pProjectResourceFilters.Hours, 'f', -1, 64))
-	}
+		if pProjectResourceFilters.Hours != 0 {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("hours = ")
+			filters.WriteString(strconv.FormatFloat(pProjectResourceFilters.Hours, 'f', -1, 64))
+		}
 
-	if filters.String() != "" {
-		err := result.Where(filters.String()).All(&projectsResources)
+		if filters.String() != "" {
+			err := result.Where(filters.String()).All(&projectsResources)
 
-		if err != nil {
-			log.Error(err)
+			if err != nil {
+				log.Error(err)
+			}
 		}
-	}
 
-	return projectsResources, filters.String()
+		stringResponse = filters.String()
+	}
+	return projectsResources, stringResponse
 }

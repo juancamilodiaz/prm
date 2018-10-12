@@ -9,6 +9,26 @@ import (
 	"prm/com.omnicon.prm.service/log"
 )
 
+func PostDataJson(pOperation string, pRequest *strings.Reader) (*http.Response, error) {
+
+	/*if pRequest == nil {
+		pRequest = bytes.NewBuffer([]byte("{\n\n}"))
+	}*/
+	req, _ := http.NewRequest("POST", getURL(pOperation), pRequest)
+
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("cache-control", "no-cache")
+
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		log.Error(err.Error())
+	}
+
+	return res, err
+}
+
 func PostData(pOperation string, pRequest *bytes.Buffer) (*http.Response, error) {
 
 	if pRequest == nil {

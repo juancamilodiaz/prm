@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -13,7 +14,10 @@ import (
 var HoursOfWork, EpsilonValue float64
 
 func init() {
-	UpdateSettingsVariables()
+	if dao.GetSession() != nil {
+		UpdateSettingsVariables()
+	}
+
 }
 
 func CreateProject(pRequest *DOMAIN.CreateProjectRQ) *DOMAIN.CreateProjectRS {
@@ -517,7 +521,7 @@ func getInsertedResource(pIdResProject int, pProject *DOMAIN.Project, pTimeRespo
 		// Get all resources to this project
 		resourcesOfProject := dao.GetProjectResourcesByProjectId(pProject.ID)
 		// Mapping resources in the project of the response
-		lead := util.MappingResourcesInAProject(pProject, resourcesOfProject)
+		lead := dao.MappingResourcesInAProject(pProject, resourcesOfProject)
 		pProject.Lead = lead
 		response.Project = pProject
 
@@ -862,4 +866,145 @@ func getFilterProject(pStartDate, pEndDate string, pEnabled bool) []*DOMAIN.Proj
 	//TODO filter in query enabled projects.
 	responseProjects := GetProjects(&requestProjects)
 	return responseProjects.Projects
+}
+
+func GetProjectsByResource(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.GetResourcesToProjectsRS {
+	timeResponse := time.Now()
+	response := DOMAIN.GetResourcesToProjectsRS{}
+
+	filters := util.MappingFiltersProjectResource(pRequest)
+	projectsResources, filterString := dao.GetProjectsResourcesByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Lead)
+
+	if len(projectsResources) == 0 && filterString == "" {
+		projectsResources = dao.GetAllProjectResources()
+	}
+
+	fmt.Println("ENVIO PERICION : pRequest.ResourceId ->")
+	fmt.Println(pRequest.ResourceId)
+	response.Projects = getDistintProjects(pRequest.ResourceId)
+	response.Resources = getFilterResource()
+
+	startDate, _ := time.Parse("2006-01-02", pRequest.StartDate)
+	endDate, _ := time.Parse("2006-01-02", pRequest.EndDate)
+
+	// breakdown exist assignation map[resourceID]map[day]hours
+	breakdown := make(map[int]map[string]float64)
+
+	for _, assignation := range projectsResources {
+
+		if breakdown[assignation.ResourceId] == nil {
+			breakdown[assignation.ResourceId] = make(map[string]float64)
+		}
+		totalHours := assignation.Hours
+
+		for day := assignation.StartDate; day.Unix() <= assignation.EndDate.Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				//if startDate.Unix() <= day.Unix() && endDate.Unix() >= day.Unix() {
+				if totalHours > 0 && totalHours <= HoursOfWork {
+					breakdown[assignation.ResourceId][day.Format("2006-01-02")] += totalHours
+					break
+				} else {
+					breakdown[assignation.ResourceId][day.Format("2006-01-02")] += HoursOfWork
+					totalHours = totalHours - HoursOfWork
+				}
+
+			}
+		}
+	}
+	log.Debug("breakdownGet", breakdown)
+
+	// Calculate the available hours according to hours assignation
+	availBreakdown := make(map[int]map[string]float64)
+
+	for _, resource := range response.Resources {
+
+		for day := startDate; day.Unix() <= endDate.Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				_, exist := breakdown[resource.ID]
+
+				if exist {
+					availHours := HoursOfWork - breakdown[resource.ID][day.Format("2006-01-02")]
+					if availHours > 0 {
+						if availBreakdown[resource.ID] == nil {
+							availBreakdown[resource.ID] = make(map[string]float64)
+						}
+						availBreakdown[resource.ID][day.Format("2006-01-02")] = availHours
+					}
+				} else {
+					if availBreakdown[resource.ID] == nil {
+						availBreakdown[resource.ID] = make(map[string]float64)
+					}
+					availBreakdown[resource.ID][day.Format("2006-01-02")] = HoursOfWork
+				}
+			}
+		}
+	}
+
+	response.AvailBreakdown = availBreakdown
+	//
+	availBreakdownPerRange := make(map[int]*DOMAIN.ResourceAvailabilityInformation)
+	for resourceId, mapHourPerDate := range response.AvailBreakdown {
+
+		resourceAvailabilityInformation := DOMAIN.ResourceAvailabilityInformation{}
+		var totalHours float64
+		rangesPerDay := []*DOMAIN.RangeDatesAvailability{}
+		rangePerDay := new(DOMAIN.RangeDatesAvailability)
+
+		for day := startDate; day.Unix() <= endDate.AddDate(0, 0, 1).Unix(); day = day.AddDate(0, 0, 1) {
+			if day.Weekday() != time.Saturday && day.Weekday() != time.Sunday {
+				if rangePerDay.StartDate == "" {
+					rangePerDay.StartDate = day.Format("2006-01-02")
+				}
+				if rangePerDay.EndDate == "" {
+					rangePerDay.EndDate = day.Format("2006-01-02")
+				}
+				availHours, exist := mapHourPerDate[day.Format("2006-01-02")]
+				if exist {
+					if availHours > 0 {
+						rangePerDay.EndDate = day.Format("2006-01-02")
+						rangePerDay.Hours += availHours
+					}
+				} else {
+					if rangePerDay.Hours > 0 {
+						copyRangePerDay := *rangePerDay
+						totalHours += copyRangePerDay.Hours
+						rangesPerDay = append(rangesPerDay, &copyRangePerDay)
+						rangePerDay = new(DOMAIN.RangeDatesAvailability)
+					} else {
+						rangePerDay = new(DOMAIN.RangeDatesAvailability)
+					}
+				}
+			} else if day.Unix() > endDate.Unix() && rangePerDay.Hours > 0 {
+				copyRangePerDay := *rangePerDay
+				totalHours += copyRangePerDay.Hours
+				rangesPerDay = append(rangesPerDay, &copyRangePerDay)
+				rangePerDay = new(DOMAIN.RangeDatesAvailability)
+			}
+		}
+
+		resourceAvailabilityInformation.ListOfRange = rangesPerDay
+		resourceAvailabilityInformation.TotalHours = totalHours
+		availBreakdownPerRange[resourceId] = &resourceAvailabilityInformation
+	}
+
+	log.Debug("AvailBreakdownPerRange", availBreakdownPerRange)
+	response.AvailBreakdownPerRange = availBreakdownPerRange
+	//
+
+	response.ResourcesToProjects = projectsResources
+
+	// Set value epsilon
+	response.EpsilonValue = EpsilonValue
+
+	// Create response
+	response.Status = "OK"
+
+	response.Header = util.BuildHeaderResponse(timeResponse)
+	return &response
+
+}
+
+func getDistintProjects(pResourceId int) []*DOMAIN.Project {
+	projects, _ := dao.GetProjectsByResourceId(pResourceId)
+	return projects
 }

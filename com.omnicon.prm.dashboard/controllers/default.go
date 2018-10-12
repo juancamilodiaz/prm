@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/astaxie/beego"
@@ -21,8 +22,19 @@ func (c *MainController) NestPrepare() {
 /*Index*/
 func (c *MainController) Get() {
 	fmt.Println("default.Get, c.IsLogin", c.IsLogin)
+
+	personalInformation, err := json.Marshal(session.PInfo)
+
+	profilePicture, err := json.Marshal(session.ProfPic)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	c.Data["Website"] = "beego.me"
 	c.Data["Email"] = "astaxie@gmail.com"
+	c.Data["PersonalInformation"] = string(personalInformation)
+	c.Data["ProfilePicture"] = string(profilePicture)
 	c.TplName = "index.tpl"
 }
 

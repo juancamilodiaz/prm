@@ -2,12 +2,14 @@ package dao
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 	"time"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 	"upper.io/db.v3"
+	"upper.io/db.v3/lib/sqlbuilder"
 )
 
 /**
@@ -19,7 +21,12 @@ func getProjectCollection() db.Collection {
 	// Get a session
 	session = GetSession()
 	// Return table project in the session
-	return session.Collection("Project")
+	if session != nil {
+		return session.Collection("Project")
+	} else {
+		return nil
+	}
+
 }
 
 /**
@@ -30,13 +37,19 @@ func getProjectCollection() db.Collection {
 func GetAllProjects() []*DOMAIN.Project {
 	// Slice to keep all projects
 	var projects []*DOMAIN.Project
-	// Add all projects in projects variable
-	err := getProjectCollection().Find().All(&projects)
-	// Close session when ends the method
-	defer session.Close()
-	if err != nil {
-		log.Error(err)
+	result_ini := getProjectCollection()
+
+	if result_ini != nil {
+		err := result_ini.Find().All(&projects)
+
+		defer session.Close()
+		if err != nil {
+			log.Error(err)
+		}
 	}
+	// Add all projects in projects variable
+	// Close session when ends the method
+
 	return projects
 }
 
@@ -49,20 +62,22 @@ func GetAllProjects() []*DOMAIN.Project {
 func GetProjectById(pId int) *DOMAIN.Project {
 	// Project structure
 	project := DOMAIN.Project{}
-	// Add in project variable, the project where ID is the same that the param
-	res := getProjectCollection().Find(db.Cond{"id": pId})
+	if getProjectCollection() != nil {
+		// Add in project variable, the project where ID is the same that the param
+		res := getProjectCollection().Find(db.Cond{"id": pId})
 
-	//project.ProjectType = GetTypesByProjectId(pId)
+		//project.ProjectType = GetTypesByProjectId(pId)
 
-	// Close session when ends the method
-	defer session.Close()
-	err := res.One(&project)
-	if err != nil {
-		log.Error(err)
-		return nil
+		// Close session when ends the method
+		defer session.Close()
+		err := res.One(&project)
+		if err != nil {
+			log.Error(err)
+			return nil
+		}
 	}
-
 	return &project
+
 }
 
 /**
@@ -76,14 +91,16 @@ func GetProjectsByDateRange(pStartDate, pEndDate int64) []*DOMAIN.Project {
 	projects := []*DOMAIN.Project{}
 	startDate := time.Unix(pStartDate, 0).Format("20060102")
 	endDate := time.Unix(pEndDate, 0).Format("20060102")
-	// Filter projects by date range
-	res := getProjectCollection().Find().Where("start_date >= ?", startDate).And("end_date <= ?", endDate)
-	// Close session when ends the method
-	defer session.Close()
-	// Add all projects in projects variable
-	err := res.All(&projects)
-	if err != nil {
-		log.Error(err)
+	if getProjectCollection() != nil {
+		// Filter projects by date range
+		res := getProjectCollection().Find().Where("start_date >= ?", startDate).And("end_date <= ?", endDate)
+		// Close session when ends the method
+		defer session.Close()
+		// Add all projects in projects variable
+		err := res.All(&projects)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return projects
 }
@@ -97,14 +114,16 @@ func GetProjectsByDateRange(pStartDate, pEndDate int64) []*DOMAIN.Project {
 func GetProjectsByLeaderID(pLeaderID int) []*DOMAIN.Project {
 	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
-	// Filter projects by leader id
-	res := getProjectCollection().Find().Where("leader_id = ?", pLeaderID)
-	// Close session when ends the method
-	defer session.Close()
-	// Add all projects in projects variable
-	err := res.All(&projects)
-	if err != nil {
-		log.Error(err)
+	if getProjectCollection() != nil {
+		// Filter projects by leader id
+		res := getProjectCollection().Find().Where("leader_id = ?", pLeaderID)
+		// Close session when ends the method
+		defer session.Close()
+		// Add all projects in projects variable
+		err := res.All(&projects)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 	return projects
 }
@@ -118,34 +137,37 @@ func GetProjectsByLeaderID(pLeaderID int) []*DOMAIN.Project {
 func AddProject(pProject *DOMAIN.Project) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Insert in DB
-	res, err := session.InsertInto("Project").Columns(
-		"name",
-		"start_date",
-		"end_date",
-		"enabled",
-		"operation_center",
-		"work_order",
-		"leader_id",
-		"cost").Values(
-		pProject.Name,
-		pProject.StartDate,
-		pProject.EndDate,
-		pProject.Enabled,
-		pProject.OperationCenter,
-		pProject.WorkOrder,
-		pProject.LeaderID,
-		pProject.Cost).Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Insert in DB
+		res, err := session.InsertInto("Project").Columns(
+			"name",
+			"start_date",
+			"end_date",
+			"enabled",
+			"operation_center",
+			"work_order",
+			"leader_id",
+			"cost").Values(
+			pProject.Name,
+			pProject.StartDate,
+			pProject.EndDate,
+			pProject.Enabled,
+			pProject.OperationCenter,
+			pProject.WorkOrder,
+			pProject.LeaderID,
+			pProject.Cost).Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows inserted
+		insertId, err := res.LastInsertId()
+		return int(insertId), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows inserted
-	insertId, err := res.LastInsertId()
-
-	return int(insertId), nil
 }
 
 /**
@@ -157,20 +179,24 @@ func AddProject(pProject *DOMAIN.Project) (int, error) {
 func UpdateProject(pProject *DOMAIN.Project) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Update project in DB
-	q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?, leader_id = ?, cost = ?",
-		pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder, pProject.LeaderID, pProject.Cost).Where("id = ?", int(pProject.ID))
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Update project in DB
+		q := session.Update("Project").Set("name = ?, start_date = ?, end_date = ?, enabled = ?, operation_center = ?, work_order = ?, leader_id = ?, cost = ?",
+			pProject.Name, pProject.StartDate, pProject.EndDate, pProject.Enabled, pProject.OperationCenter, pProject.WorkOrder, pProject.LeaderID, pProject.Cost).Where("id = ?", int(pProject.ID))
 
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows updated
+		updateCount, err := res.RowsAffected()
+		return int(updateCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows updated
-	updateCount, err := res.RowsAffected()
-	return int(updateCount), nil
 }
 
 /**
@@ -182,97 +208,137 @@ func UpdateProject(pProject *DOMAIN.Project) (int, error) {
 func DeleteProject(pProjectId int) (int, error) {
 	// Get a session
 	session = GetSession()
-	// Close session when ends the method
-	defer session.Close()
-	// Delete project in DB
-	q := session.DeleteFrom("Project").Where("id", pProjectId)
-	res, err := q.Exec()
-	if err != nil {
-		log.Error(err)
-		return 0, err
+	if session != nil {
+		// Close session when ends the method
+		defer session.Close()
+		// Delete project in DB
+		q := session.DeleteFrom("Project").Where("id", pProjectId)
+		res, err := q.Exec()
+		if err != nil {
+			log.Error(err)
+			return 0, err
+		}
+		// Get rows deleted
+		deleteCount, err := res.RowsAffected()
+		return int(deleteCount), nil
+	} else {
+		return 0, nil
 	}
-	// Get rows deleted
-	deleteCount, err := res.RowsAffected()
-	return int(deleteCount), nil
 }
 
 func GetProjectsByFilters(pProjectFilters *DOMAIN.Project, pStartDate, pEndDate string, pEnabled *bool) ([]*DOMAIN.Project, string) {
 	// Slice to keep all projects
 	projects := []*DOMAIN.Project{}
-	result := getProjectCollection().Find()
+	var stringResponse string
 
-	// Close session when ends the method
-	defer session.Close()
+	result_ini := getProjectCollection()
 
-	var filters bytes.Buffer
-	if pProjectFilters.ID != 0 {
-		filters.WriteString("id = '")
-		filters.WriteString(strconv.Itoa(pProjectFilters.ID))
-		filters.WriteString("'")
-	}
-	if pProjectFilters.Name != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+	if result_ini != nil {
+
+		result := result_ini.Find()
+
+		defer session.Close()
+
+		var filters bytes.Buffer
+		if pProjectFilters.ID != 0 {
+			filters.WriteString("id = '")
+			filters.WriteString(strconv.Itoa(pProjectFilters.ID))
+			filters.WriteString("'")
 		}
-		filters.WriteString("name = '")
-		filters.WriteString(pProjectFilters.Name)
-		filters.WriteString("'")
-	}
-	/*
-		if pProjectFilters.ProjectType != "" {
+
+		if pProjectFilters.Name != "" {
 			if filters.String() != "" {
 				filters.WriteString(" and ")
 			}
-			filters.WriteString("type = '")
-			filters.WriteString(pProjectFilters.ProjectType)
+			filters.WriteString("name = '")
+			filters.WriteString(pProjectFilters.Name)
 			filters.WriteString("'")
 		}
-	*/
-	if pStartDate != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		/*
+			if pProjectFilters.ProjectType != "" {
+				if filters.String() != "" {
+					filters.WriteString(" and ")
+				}
+				filters.WriteString("type = '")
+				filters.WriteString(pProjectFilters.ProjectType)
+				filters.WriteString("'")
+			}
+		*/
+		if pStartDate != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("end_date >= '")
+			filters.WriteString(pStartDate)
+			filters.WriteString("'")
 		}
-		filters.WriteString("end_date >= '")
-		filters.WriteString(pStartDate)
-		filters.WriteString("'")
-	}
-	if pEndDate != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pEndDate != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("start_date <= '")
+			filters.WriteString(pEndDate)
+			filters.WriteString("'")
 		}
-		filters.WriteString("start_date <= '")
-		filters.WriteString(pEndDate)
-		filters.WriteString("'")
-	}
-	if pEnabled != nil {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pEnabled != nil {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("enabled = '")
+			filters.WriteString(strconv.FormatBool(*pEnabled))
+			filters.WriteString("'")
 		}
-		filters.WriteString("enabled = '")
-		filters.WriteString(strconv.FormatBool(*pEnabled))
-		filters.WriteString("'")
-	}
-	if pProjectFilters.OperationCenter != "" {
-		if filters.String() != "" {
-			filters.WriteString(" and ")
+		if pProjectFilters.OperationCenter != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("operation_center = '")
+			filters.WriteString(pProjectFilters.OperationCenter)
+			filters.WriteString("'")
 		}
-		filters.WriteString("operation_center = '")
-		filters.WriteString(pProjectFilters.OperationCenter)
-		filters.WriteString("'")
-	}
-	if pProjectFilters.WorkOrder != 0 {
-		filters.WriteString("work_order = '")
-		filters.WriteString(strconv.Itoa(pProjectFilters.WorkOrder))
-		filters.WriteString("'")
-	}
+		if pProjectFilters.WorkOrder != 0 {
+			filters.WriteString("work_order = '")
+			filters.WriteString(strconv.Itoa(pProjectFilters.WorkOrder))
+			filters.WriteString("'")
+		}
 
-	if filters.String() != "" {
-		err := result.Where(filters.String()).All(&projects)
+		if filters.String() != "" {
+			err := result.Where(filters.String()).All(&projects)
+
+			if err != nil {
+				log.Error(err)
+			}
+		}
+		stringResponse = filters.String()
+
+	}
+	// Close session when ends the method
+	return projects, stringResponse
+}
+
+func GetProjectsByResourceId(pResourceId int) ([]*DOMAIN.Project, string) {
+	//Slice to keep all projects associated to a given resource id
+	defer session.Close()
+	var projects []*DOMAIN.Project
+	session = GetSession()
+	if session != nil {
+		fmt.Println("id: ", strconv.Itoa(pResourceId))
+		rows, err := session.Query(`SELECT DISTINCT t2.id, t2.[name], t2.start_date, t2.end_date, t2.enabled, t2.operation_center, t2.work_order, t2.leader_id, t2.cost
+		from ProjectResources as t1
+		join Project as t2 on t1.project_id = t2.id
+		where resource_id = ` + strconv.Itoa(pResourceId) + ` and t2.end_date > GETDATE()`)
 
 		if err != nil {
-			log.Error(err)
+			return projects, "An error has occurred"
 		}
+
+		iter := sqlbuilder.NewIterator(rows)
+		iter.All(&projects)
+		log.Infof("PROYECTOS POR RECURSOS: ", projects)
+		return projects, "OK"
+
+	} else {
+		return projects, "An error has occurred"
 	}
 
-	return projects, filters.String()
 }

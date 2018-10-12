@@ -70,17 +70,7 @@ function setHeaderSize(){
 
 $(document).ready(
 	function(){
-		setHeaderSize();
-		$('#sidebar').collapse();
-		$("#NavMenuButton").click(function(e) {
-		  	e.preventDefault();
-		  	$('#sidebar').toggleClass('collapsed');
-		});
-		$(window).resize(
-			function(){
-				setHeaderSize();
-			}
-		);
+
 	}
 );
 
@@ -163,4 +153,13 @@ function formatDate(valDate) {
 	var year = f.getFullYear();
 	
 	return day + ' ' + monthNames[monthIndex] + ' ' + year;
+}
+
+function sleep(milliseconds) {
+	var start = new Date().getTime();
+	for (var i = 0; i < 1e7; i++) {
+		if ((new Date().getTime() - start) > milliseconds){
+			break;
+		}
+	}
 }

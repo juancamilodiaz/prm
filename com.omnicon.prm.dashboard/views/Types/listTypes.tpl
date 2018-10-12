@@ -1,6 +1,11 @@
 <script>
 	$(document).ready(function(){
+		$('.modal-trigger').leanModal();
+		$('.tooltipped').tooltip();
+		$('select').material_select();
 		$('#viewTypes').DataTable({
+			"iDisplayLength": 20,
+			"bLengthChange": false,
 			"columns":[
 				null,
 				null,
@@ -63,19 +68,21 @@
 		$("#typeID").val(null);
 		$("#typeName").val(null);
 		$("#typesTo").val(null);
-		$("#typesTo").attr("disabled", false);
+		$(".select-dropdown").attr("disabled", false);
+		$( ".mdi-navigation-arrow-drop-down" ).toggleClass( "disabled", false );
 		
 		$("#modalTitle").html("Create Type");
 		$("#typeUpdate").css("display", "none");
 		$("#typeCreate").css("display", "inline-block");
+		
 	}
 	
 	configureUpdateModal = function(pID, pName, pTypeTo){
-		
 		$("#typeID").val(pID);
 		$("#typeName").val(pName);
 		$("#typesTo").val(pTypeTo);
-		$("#typesTo").attr("disabled", "disabled");
+		$(".select-dropdown").attr("disabled", true);
+		$( ".mdi-navigation-arrow-drop-down" ).toggleClass( "disabled", true );
 		
 		$("#modalTitle").html("Update Type");
 		$("#typeCreate").css("display", "none");
@@ -83,6 +90,12 @@
 	}
 
 	createType = function(){
+		if(typeof  $('#typesTo option:selected').attr("id") === "undefined"){
+			var applyTo = "Project";
+		}else{
+		var applyTo = $('#typesTo option:selected').attr("id");
+		}
+		
 		var settings = {
 			method: 'POST',
 			url: '/types/create',
@@ -91,7 +104,7 @@
 			},
 			data: { 
 				"Name": $('#typeName').val(),
-				"ApplyTo": $('#typesTo option:selected').attr("id")
+				"ApplyTo": applyTo
 			}
 		}
 		$.ajax(settings).done(function (response) {
@@ -152,119 +165,99 @@
 	}
 	
 </script>
-<button class="buttonHeader button2" data-toggle="collapse" data-target="#filters">
+<!-- <button class="buttonHeader button2" data-toggle="collapse" data-target="#filters"> 
 <span class="glyphicon glyphicon-filter"></span> Filter 
-</button>
-<div id="filters" class="collapse">
-   <div class="row">
-      <div class="col-md-6">
-         <div class="form-group">
-            <label for="typesValue">Types to:</label>
-            <select class="form-control" id="typesValue">
-               <option id="">All types</option>
-               {{range $index, $applyTo := .ListApplyTo}}
-               <option id="{{$applyTo}}">{{$applyTo}}</option>
-               {{end}}
-            </select>
-         </div>
-         <div class="form-group">
-           
-         </div>
-      </div>
-      <div class="col-md-6">
-         <div class="form-group">
-         </div>
-         <div class="form-group">
-         </div>
-      </div>
-   </div>
-</div>
+</button>-->
+
 <div>
-<table id="viewTypes" class="table table-striped table-bordered">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Apply To</th>
-			<th>Options</th>
-		</tr>
-	</thead>
-	<tbody>
-	 	{{range $key, $types := .Types}}
-		<tr>
-			<td>{{$types.Name}}</td>
-			<td>{{$types.ApplyTo}}</td>
-			<td>
-				<button class="buttonTable button2" data-toggle="modal" data-target="#typeModal" onclick="configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.ApplyTo}}')" data-dismiss="modal">Update</button>
-				<button data-toggle="modal" data-target="#confirmModal" class="buttonTable button2" onclick="$('#nameDelete').html('{{$types.Name}}');$('#typeID').val({{$types.ID}});" data-dismiss="modal">Delete</button>
-				<button class="buttonTable button2" onclick="getSkillsByType({{$types.ID}}, '{{$types.Name}}');" data-dismiss="modal">Skills</button>
-			</td>
-		</tr>
-		{{end}}	
-	</tbody>
-</table>
+<div class="container">
+	<div class="row">
+	<div id="pry_add" class= "marginCard">
+				<h4 >Types</h4>
+				<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Create Type" href="#typeModal" onclick="configureCreateModal()"><i class="mdi-action-note-add large"></i></a>
+			</div>
+		<div class= "col s12 marginCard">
+			
+			<table id="viewTypes" class="display TableConfig " cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Apply To</th>
+						<th>Options</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{range $key, $types := .Types}}
+					<tr>
+						<td>{{$types.Name}}</td>
+						<td>{{$types.ApplyTo}}</td>
+						<td>
+							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Update"  href="#typeModal"  onclick="configureUpdateModal({{$types.ID}},'{{$types.Name}}','{{$types.ApplyTo}}')"><i class="mdi-editor-mode-edit"></i></a>	
+							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href="#confirmModal"  onclick="$('#nameDelete').html('{{$types.Name}}');$('#typeID').val({{$types.ID}});" data-dismiss="modal"><i class="mdi-action-delete"></i></a>	
+							<a class='tooltipped' data-position="top" data-tooltip="Skills"  onclick="getSkillsByType({{$types.ID}}, '{{$types.Name}}');" ><i class="mdi-maps-local-library"></i></a>	
+							
+						</td>
+					</tr>
+					{{end}}	
+				</tbody>
+			</table>
+		</div>	
+	</div>	
 
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="typeModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalTitle" class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="typeID">
-        <div class="row-box col-sm-12" style="padding-bottom: 1%;">
-        	<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-              	<div class="col-sm-8">
-              		<input type="text" id="typeName" style="border-radius: 8px;">
-        		</div>
-          	</div>
-        </div>
-		<div class="row-box col-sm-12" style="padding-bottom: 1%;">        	
-			<div class="form-group form-group-sm">
-        		<label class="control-label col-sm-4 translatable" data-i18n="Apply To"> Apply To </label>
-              	<div class="col-sm-8">
-					<select id="typesTo" style="border-radius: 8px; width: 174px;">
-		               {{range $index, $applyTo := .ListApplyTo}}
-		               <option id="{{$applyTo}}">{{$applyTo}}</option>
-		               {{end}}
-		            </select>
-        		</div>
-          	</div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="typeCreate" class="btn btn-default" onclick="createType()" data-dismiss="modal">Create</button>
-        <button type="button" id="typeUpdate" class="btn btn-default" onclick="updateType()" data-dismiss="modal">Update</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
+<!-- Materialize Modal Update -->
+	<div id="typeModal" class="modal " >
+			<div class="modal-content">
+				<h5 id="modalTitle" class="modal-title"></h5>
+				<div class="divider CardTable"></div>
+				<input type="hidden" id="typeID">
+				<div class="input-field row">
+					<div class="col s12 m7 l7">
+						<input id="typeName" type="text" class="validate">
+						<label  for="typeName"  class="active">Name</label>
+					</div>	
+					<!-- Select -->
+					<div class="input-field col s12 m5 l5">
+						<label  class= "active">Apply To</label>
+						<select id = "typesTo">				
+						{{range $index, $applyTo := .ListApplyTo}}
+							<option id="{{$applyTo}}">{{$applyTo}}</option>
+						{{end}}
+						</select>
+						
+					</div>
+	
+					<!-- Close Select -->
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a id="typeCreate" onclick="createType()" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
+				<a id="typeUpdate" onclick="updateType()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+			</div>
+	</div>
     
-  </div>
+<!-- Modal Update -->
+
+
+<!-- Materialize Modal Delete -->
+<div id="confirmModal" class="modal" >
+			<div class="modal-content">
+				<h5 id="modalTitle" class="modal-title">Delete Confirmation</h5>
+				<div class="divider CardTable"></div>
+				<input type="hidden" id="skillID">
+				Are you sure you want to remove <b id="nameDelete"></b> from types?
+				<br>
+				<li>The projects will lose this type assignment.</li>
+				<li>The skills will lose this type assignment.</li>
+				<li>The training and the training's assignations will lose this skill assignment and they will be eliminated.</li>
+			</div>
+			<div class="modal-footer">
+				<a onclick="deleteType()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
+        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+			</div>
 </div>
-<div class="modal fade" id="confirmModal" role="dialog">
-<div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Delete Confirmation</h4>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to remove <b id="nameDelete"></b> from types?
-		<br>
-		<li>The projects will lose this type assignment.</li>
-		<li>The skills will lose this type assignment.</li>
-		<li>The training and the training's assignations will lose this skill assignment and they will be eliminated.</li>
-      </div>
-      <div class="modal-footer" style="text-align:center;">
-        <button type="button" id="typeDelete" class="btn btn-default" onclick="deleteType()" data-dismiss="modal">Yes</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-      </div>
-    </div>
-  </div>
-</div>
+
+<!-- Modal delete close -->
