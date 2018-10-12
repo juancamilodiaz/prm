@@ -615,10 +615,10 @@ h5.breadcrumbs-header {
 #viewSettings{
   text-align:left;
 }
-#buttonOption{
+/*#buttonOption{
   float:right;
   display:inline;
-}
+}*/
 #titlePag{
   display:inline;
 }
@@ -1477,6 +1477,14 @@ tr.group:hover {
 
 .marginCard {
   margin-top: 50px !important;
+}
+
+.formSimulate {
+  margin: 1rem;
+}
+.switch {
+  left: 2rem;
+  bottom: 1.2rem;
 }
 
 input[type=search] {

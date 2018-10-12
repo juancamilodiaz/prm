@@ -157,7 +157,7 @@
 			$("#content").html(response);				
 			$("#projectValue option[id="+projectID+"]").attr("selected", "selected");
 			//$("#titleSearch").html($("#projectValue").val());	
-			console.warn($("#projectValue").val());	
+			//console.warn($("#projectValue").val());	
 			$("#titleSearch").html(" - "+$("#projectValue").val());
 			$("#main-content2").show();	
 			$(".progressInfo").show();

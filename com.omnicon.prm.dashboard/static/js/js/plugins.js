@@ -204,7 +204,7 @@ $(function() {
   }
 
   //LINE CHART WITH AREA IN SIDEBAR
-    new Chartist.Line('#ct2-chart', {
+   /* new Chartist.Line('#ct2-chart', {
         labels: [1, 2, 3, 4, 5, 6, 7, 8],
         series: [
             [5, 9, 7, 8, 5, 3, 5, 4]
@@ -219,7 +219,7 @@ $(function() {
     $("#trending-line-chart").attr({
       height: '200'
     });
-  }
+  }*/
 
 
 }); // end of document ready

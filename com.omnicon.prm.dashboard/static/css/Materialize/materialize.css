@@ -5813,7 +5813,7 @@ small {
   transition: 0.2s ease-out;
   cursor: pointer; }
   .btn:hover, .btn-large:hover {
-    background-color: #ff5a92; }
+    background-color:#137cd0; }
 
 .btn-floating {
   display: inline-block;
@@ -6837,7 +6837,7 @@ form p:last-child {
   height: 0; }
 
 .switch label input[type=checkbox]:checked + .lever {
-  background-color: #f7c7d8; }
+  background-color: #8ccaff; }
 
 .switch label input[type=checkbox]:checked + .lever:after {
   background-color: #2196F3; }
@@ -6869,7 +6869,7 @@ form p:last-child {
   transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease; }
 
 input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after {
-  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(255, 64, 129, 0.1); }
+  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(64, 176, 255, 0.1) }
 
 input[type=checkbox]:not(:disabled) ~ .lever:active:after {
   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08); }
@@ -8086,7 +8086,7 @@ select {
   background: #fef3f7; }
 
 .picker__weekday-display {
-  background-color: #ff1c69;
+  background-color: #137cd0;
   padding: 10px;
   font-weight: 200;
   letter-spacing: .5;

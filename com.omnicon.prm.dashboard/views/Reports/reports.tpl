@@ -8,6 +8,13 @@
 		$('#backButton').css("display", "none");
 		$('#buttonOption').css("display", "none");
 
+        $('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 15,
+			format: 'yyyy-mm-dd',
+			formatSubmit: 'yyyy-mm-dd'
+		});
+
 
 	});
 	
@@ -26,7 +33,9 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-			$('#reports').html(response);
+			$('#reports').html("<a target='_blank' href="+window.location.host +response+">Or click here to download.</a>");
+            window.open(response,"_blank");
+            // response.PDF.save('Report.pdf');
 		});
 	}
 	
@@ -45,7 +54,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-			$('#reports').html(response);
+			$('#reports').html("<a href="+window.location.host +response+">Or click here to download.</a>");
+            window.open(response,"_blank");
 		});
 	}
 	
@@ -89,9 +99,9 @@
          </div>
 
          <div class="input-field">
-            <label class="active" for="dateFromValue">Date From:</label>
-            <input type="date" class="validate"  id="dateFromValue">
-         </div>
+            <label class="active"> Date From: </label>
+            <input type="date" id="dateFromValue" class="datepicker">
+        </div>
       </div>
 
       <div class="col s12 m6">
@@ -104,10 +114,11 @@
                 {{end}}
             </select>
          </div>
+
          <div class="input-field">
-            <label class="active" for="dateToValue">Date To:</label>
-            <input type="date" class="validate"  id="dateToValue">
-         </div>
+            <label class="active">Date To:</label>
+            <input type="date" id="dateToValue" class="datepicker">
+        </div>
       </div>
    </div>
 </div>
@@ -147,7 +158,9 @@
         <h5 id="titleReport" class="modal-title"></h5>
         <div class="divider CardTable"></div>
         <input type="hidden" id="skillID">
+        <div><p>If after 5 seconds the PDF has not been opened, make sure you have Pop Ups enabled  to view the PDF file.</p></div>
         <div id="reports" style="height: 100%;">
+
         </div>
     </div>
     <div class="modal-footer">
