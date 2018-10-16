@@ -13,8 +13,7 @@ function addDays(date, days) {
     return result;
 }
 
-
-		// Simple function that accepts two parameters and calculates
+// Simple function that accepts two parameters and calculates
 // the number of hours worked within that range
 function workingHoursBetweenDates(startDate, endDate, workHoursUpdate, isHoursPerDay) {  
     // Store minutes worked
@@ -127,10 +126,10 @@ text-align:left;
 	<div class="col s12" >	
 		<div class="card-panel">
 		<a class="modal-trigger btn waves-effect waves-light blue" href="#spiderModal" id="compare">Compare</a>
-		<table id="availabilityTable" class="display responsive-table" cellspacing="0" width="90%" >
+		<table id="availabilityTable" class="display" cellspacing="0" width="90%" >
 			<thead id="availabilityTableHead">
-				<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-9">Resource Name</th>
-				<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-2">Hours</th>
+				<th style="font-size:12px;text-align: -webkit-center;">Resource Name</th>
+				<th style="font-size:12px;text-align: -webkit-center;">Hours</th>
 			</thead>
 			<tbody id="availabilityTableBody">
 				{{$availBreakdownPerRange := .AvailBreakdownPerRange}}
@@ -238,57 +237,57 @@ text-align:left;
 </div>-->
 
 <div id="spiderModal" class="modal" >
-			<div class="modal-content">
-				<h5  class="modal-title" id="modalProjectTitle">Spider Diagram</h5>
-				<div class="divider CardTable"></div>
-				<input type="hidden" id="projectID">
-				<div class="chart-container-compare" id="chartjs-wrapper">
-					<canvas id="chartjs-3" >
-					</canvas>	
-					<script>
-					chart = new Chart(document.getElementById("chartjs-3"),
-						{	"type":"radar",
-							"data": {
-								"labels": {{.ListProjectSkillsName}},
-									"datasets":[
-										{{$ableResource := .AbleResource}}
-										{{$mapCompare := .MapCompare}}
-										{{$listColors := .ListColor}}
-										{"label":$('#projectName').val(),"data":{{.ListProjectSkillsValue}},"fill":true,"backgroundColor":"rgba(80, 169, 224, 0.2)","borderColor":"rgb(8, 91, 142)","pointBackgroundColor":"rgb(8, 91, 142)","pointBorderColor":"#ffffff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},
+	<div class="modal-content">
+		<h5  class="modal-title" id="modalProjectTitle">Spider Diagram</h5>
+		<div class="divider CardTable"></div>
+		<input type="hidden" id="projectID">
+		<div class="chart-container-compare" id="chartjs-wrapper">
+			<canvas id="chartjs-3" >
+			</canvas>	
+			<script>
+			chart = new Chart(document.getElementById("chartjs-3"),
+				{	"type":"radar",
+					"data": {
+						"labels": {{.ListProjectSkillsName}},
+							"datasets":[
+								{{$ableResource := .AbleResource}}
+								{{$mapCompare := .MapCompare}}
+								{{$listColors := .ListColor}}
+								{"label":$('#projectName').val(),"data":{{.ListProjectSkillsValue}},"fill":true,"backgroundColor":"rgba(80, 169, 224, 0.2)","borderColor":"rgb(8, 91, 142)","pointBackgroundColor":"rgb(8, 91, 142)","pointBorderColor":"#ffffff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},
+								
+								{{range $index, $resource := .ListToDraw}}	
+									
+											{{$listSkillsValue := index $mapCompare $resource.ID}}
+											{{if (ne $index 0)}}
+												,
+											{{end}}
+											{"label":"{{$resource.Name}}","data":{{$listSkillsValue}},"fill":false,"backgroundColor":"transparent","borderColor":"{{index $listColors $index}}","pointBackgroundColor":"{{index $listColors $index}}","pointBorderColor":"{{index $listColors $index}}","pointHoverBackgroundColor":"{{index $listColors $index}}","pointHoverBorderColor":"{{index $listColors $index}}"}
 										
-										{{range $index, $resource := .ListToDraw}}	
-											
-													{{$listSkillsValue := index $mapCompare $resource.ID}}
-													{{if (ne $index 0)}}
-														,
-													{{end}}
-													{"label":"{{$resource.Name}}","data":{{$listSkillsValue}},"fill":false,"backgroundColor":"transparent","borderColor":"{{index $listColors $index}}","pointBackgroundColor":"{{index $listColors $index}}","pointBorderColor":"{{index $listColors $index}}","pointHoverBackgroundColor":"{{index $listColors $index}}","pointHoverBorderColor":"{{index $listColors $index}}"}
-												
-										{{end}}
-									]
-								},
-							"options": {
-								"elements": {
-									"line":{"tension":0,"borderWidth":3}
-								},
-								"scale": {
-									"display": true,
-									"ticks": {
-										"max": 100,
-										"min": 0,
-										"beginAtZero":true,
-										"stepSize": 20	
-									}				
-								},
-								legend: {
-									display:true
-								}
-							}
-						});
-					</script>
-				</div>
-			</div>
-			<div class="modal-footer">
-        		<a class="btn red white-text waves-effect waves-red btn-flat modal-action modal-close">Close</a>
-			</div>
+								{{end}}
+							]
+						},
+					"options": {
+						"elements": {
+							"line":{"tension":0,"borderWidth":3}
+						},
+						"scale": {
+							"display": true,
+							"ticks": {
+								"max": 100,
+								"min": 0,
+								"beginAtZero":true,
+								"stepSize": 20	
+							}				
+						},
+						legend: {
+							display:true
+						}
+					}
+				});
+			</script>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<a class="btn red white-text waves-effect waves-red btn-flat modal-action modal-close">Close</a>
+	</div>
 </div>

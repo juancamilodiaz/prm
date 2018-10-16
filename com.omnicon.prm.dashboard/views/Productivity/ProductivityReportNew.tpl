@@ -444,7 +444,7 @@
 <div id="main-content2">
 	<div class="row">
 			<div class="progressInfo">
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Overall Progress</h6>
@@ -452,7 +452,7 @@
 						</div>
 					</div>
 				</div>	
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Quoted Hours</h6>
@@ -460,7 +460,7 @@
 						</div>
 					</div>
 				</div>				
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Billable Hours</h6>
@@ -468,7 +468,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Total Executed</h6>
@@ -476,7 +476,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Out Of Scope</h6>
