@@ -118,8 +118,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="typeCreate" onclick="addTypeToResource({{.ResourceID}}, $('#typeID').val(), {{.Title}})"  class="waves-effect waves-green btn-flat modal-action modal-close" >Set</a>
-       	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="typeCreate" onclick="addTypeToResource({{.ResourceID}}, $('#typeID').val(), {{.Title}})"  class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Set</a>
+       	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -139,8 +139,8 @@
 					Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> resource?
 			</div>
 			<div class="modal-footer">
-				<a id="resourceUnassign"  onclick="unassignResourceType($('#resourceIDToDelete').val(),$('#typeIDToDelete').val(),{{.Title}})" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a id="resourceUnassign"  onclick="unassignResourceType($('#resourceIDToDelete').val(),$('#typeIDToDelete').val(),{{.Title}})" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 

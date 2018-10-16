@@ -25,7 +25,7 @@ func (c *MainController) Get() {
 
 	personalInformation, err := json.Marshal(session.PInfo)
 	profilePicture, err := json.Marshal(session.ProfPic)
-
+	resourceID, _ := GetResourcesID(session.PInfo.Mail)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -34,6 +34,7 @@ func (c *MainController) Get() {
 	c.Data["Email"] = "astaxie@gmail.com"
 	c.Data["PersonalInformation"] = string(personalInformation)
 	c.Data["ProfilePicture"] = string(profilePicture)
+	c.Data["ResourceID"] = resourceID
 	c.TplName = "index.tpl"
 }
 

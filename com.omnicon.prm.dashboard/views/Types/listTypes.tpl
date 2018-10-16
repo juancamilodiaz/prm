@@ -174,6 +174,7 @@
 	<div class="row">
 	<div id="pry_add" class= "marginCard">
 				<h4 >Types</h4>
+				<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
 				<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Create Type" href="#typeModal" onclick="configureCreateModal()"><i class="mdi-action-note-add large"></i></a>
 			</div>
 		<div class= "col s12 marginCard">
@@ -233,9 +234,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="typeCreate" onclick="createType()" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
-				<a id="typeUpdate" onclick="updateType()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="typeCreate" onclick="createType()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Create</a>
+				<a id="typeUpdate" onclick="updateType()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -255,8 +256,8 @@
 				<li>The training and the training's assignations will lose this skill assignment and they will be eliminated.</li>
 			</div>
 			<div class="modal-footer">
-				<a onclick="deleteType()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a onclick="deleteType()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 

@@ -428,8 +428,8 @@ body {font-family: Verdana,sans-serif;margin:0}
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="addSkill" onclick="setSkillToResource({{.ResourceId}}, $('#resourceNameSkill').val(),$('#resourceValueSkill').val(), {{.MapTypesResource}})" class="waves-effect waves-green btn-flat modal-action modal-close" >Set</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="addSkill" onclick="setSkillToResource({{.ResourceId}}, $('#resourceNameSkill').val(),$('#resourceValueSkill').val(), {{.MapTypesResource}})" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Set</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -457,8 +457,8 @@ body {font-family: Verdana,sans-serif;margin:0}
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="addSkill" onclick="setSkillToResource({{.ResourceId}}, $('#updateResourceSkillId').val(), $('#updateResourceValueSkill').val(), {{.MapTypesResource}})" class="waves-effect waves-green btn-flat modal-action modal-close" >Set</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="addSkill" onclick="setSkillToResource({{.ResourceId}}, $('#updateResourceSkillId').val(), $('#updateResourceValueSkill').val(), {{.MapTypesResource}})" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Set</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -472,8 +472,8 @@ body {font-family: Verdana,sans-serif;margin:0}
 				Are you sure you want to remove <b id="nameDelete"></b> from <b>{{.Title}}</b>?
 			</div>
 			<div class="modal-footer">
-				<a onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val(), {{.MapTypesResource}})" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a onclick="deleteSkillToResource({{.ResourceId}}, $('#deleteResourceSkillId').val(), {{.MapTypesResource}})" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 

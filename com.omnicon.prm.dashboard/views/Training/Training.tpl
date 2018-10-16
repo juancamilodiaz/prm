@@ -616,9 +616,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="trainingCreate" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
-				<a id="trainingUpdate" onclick="setTrainingToResource()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="trainingCreate" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Create</a>
+				<a id="trainingUpdate" onclick="setTrainingToResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -755,8 +755,8 @@
 				<li>The resource will lose this training assignment.</li>
 			</div>
 			<div class="modal-footer">
-				<a onclick="deleteTrainingResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a onclick="deleteTrainingResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 
@@ -772,7 +772,7 @@
 					</object>
 			</div>
 			<div class="modal-footer">
-        		<a class="btn waves-effect waves-red btn-flat modal-action modal-close">Close</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Close</a>
 
 			</div>
 </div>
