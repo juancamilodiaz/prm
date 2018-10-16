@@ -1,9 +1,10 @@
 package dao
 
 import (
+	"fmt"
+
 	gcfg "gopkg.in/gcfg.v1"
 	"prm/com.omnicon.prm.library/lib_conf"
-	"prm/com.omnicon.prm.service/log"
 	"prm/com.omnicon.prm.service/util"
 	"upper.io/db.v3/lib/sqlbuilder"
 	"upper.io/db.v3/mssql"
@@ -37,6 +38,7 @@ func ConfigDBConnection() mssql.ConnectionURL {
 func ReadFileIntoConfig() {
 	err := gcfg.ReadFileInto(&cfgConfig, lib_conf.CONF_PREFIX)
 	if err != nil {
+		fmt.Println(err)
 		panic(err)
 	}
 }
@@ -52,7 +54,8 @@ func GetSession() sqlbuilder.Database {
 	//log.Debug("Trying to connect to Database...")
 	sess, err = mssql.Open(ConfigDBConnection())
 	if err != nil {
-		log.Error(err)
+		//	log.Error(err)
+		return nil
 	}
 	//log.Debug("Success connection to Database...")
 	return sess

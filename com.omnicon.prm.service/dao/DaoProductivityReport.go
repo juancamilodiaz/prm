@@ -9,6 +9,8 @@ import (
 	"upper.io/db.v3"
 )
 
+//var sessionDB sqlbuilder.Database
+
 /**
 *	Name : getProductivityReportCollection
 *	Return: db.Collection
@@ -34,8 +36,10 @@ func GetAllProductivityReport() []*DOMAIN.ProductivityReport {
 	// Slice to keep all ProductivityReport
 	var productivityReport []*DOMAIN.ProductivityReport
 	if getProductivityReportCollection() != nil {
+
 		// Add all ProductivityReport in productivityReport variable
 		err := getProductivityReportCollection().Find().All(&productivityReport)
+
 		// Close session when ends the method
 		defer session.Close()
 		if err != nil {
@@ -104,6 +108,7 @@ func GetProductivityReportByResourceID(pResourceID int) []*DOMAIN.ProductivityRe
 	// ProductivityReport structure
 	productivityReport := []*DOMAIN.ProductivityReport{}
 	if getProductivityReportCollection() != nil {
+
 		// Add in ProductivityReport variable, the ProductivityReport where ID is the same that the param
 		res := getProductivityReportCollection().Find().Where("resource_id = ?", pResourceID)
 		// Close session when ends the method

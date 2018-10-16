@@ -114,8 +114,8 @@ func (this *AzureController) Callback() {
 		this.IsLogin = true
 		if session.Email == "" {
 			session.Email, err = provider.GetEmailAddress(session)
-			fmt.Println("s.Email 2", session.Email)
-			fmt.Println("this.IsLogin", this.IsLogin)
+			//fmt.Println("s.Email 2", session.Email)
+			//fmt.Println("this.IsLogin", this.IsLogin)
 		}
 
 		if session.User == "" {
@@ -124,7 +124,7 @@ func (this *AzureController) Callback() {
 			if err != nil && err.Error() == "not implemented" {
 				err = nil
 			}
-			fmt.Println("s.User", session.User)
+			//fmt.Println("s.User", session.User)
 		}
 	}
 
@@ -177,10 +177,6 @@ func PersonalInFo() {
 	session.PInfo.Surname = pinfo.Surname
 	session.PInfo.UserPrincipalName = pinfo.UserPrincipalName
 
-	//fmt.Println(session.PInfo)
-	//fmt.Println(res)
-	//fmt.Println(string(body))
-
 	url = "https://graph.microsoft.com/v1.0/users/" + session.Email + "/photo/$value"
 	req, _ = http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/json")
@@ -190,12 +186,11 @@ func PersonalInFo() {
 	body, _ = ioutil.ReadAll(res.Body)
 	session.ProfPic.Picture = body
 	if session.ProfPic.Picture != nil {
-		fmt.Println("IMGAGE ALIVE")
+		//	fmt.Println("IMGAGE ALIVE")
 	} else {
-		fmt.Println("IMAGE DIE")
+		//	fmt.Println("IMAGE DIE")
 	}
-	//fmt.Println(res)
-	//fmt.Println(string(body))
+
 }
 
 func (this *AzureController) Get() {
@@ -247,7 +242,6 @@ func (this *AzureController) Get() {
 		}
 
 		uri := BuildURI(false, serverip, httpport) // Review if missing last /
-		//		fmt.Println("test - 9-1") // ---------------------------------------------
 
 		this.Redirect(uri, 307)
 
