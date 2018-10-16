@@ -2,7 +2,7 @@ package dao
 
 import (
 	"bytes"
-	"fmt"
+	//"fmt"
 	"strconv"
 	"time"
 
@@ -322,7 +322,7 @@ func GetProjectsByResourceId(pResourceId int) ([]*DOMAIN.Project, string) {
 	var projects []*DOMAIN.Project
 	session = GetSession()
 	if session != nil {
-		fmt.Println("id: ", strconv.Itoa(pResourceId))
+	//	fmt.Println("id: ", strconv.Itoa(pResourceId))
 		rows, err := session.Query(`SELECT DISTINCT t2.id, t2.[name], t2.start_date, t2.end_date, t2.enabled, t2.operation_center, t2.work_order, t2.leader_id, t2.cost
 		from ProjectResources as t1
 		join Project as t2 on t1.project_id = t2.id
@@ -334,7 +334,7 @@ func GetProjectsByResourceId(pResourceId int) ([]*DOMAIN.Project, string) {
 
 		iter := sqlbuilder.NewIterator(rows)
 		iter.All(&projects)
-		log.Infof("PROYECTOS POR RECURSOS: ", projects)
+	//	log.Infof("PROYECTOS POR RECURSOS: ", projects)
 		return projects, "OK"
 
 	} else {

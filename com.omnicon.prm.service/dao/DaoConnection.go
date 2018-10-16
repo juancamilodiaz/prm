@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"fmt"
+
 	gcfg "gopkg.in/gcfg.v1"
 	"prm/com.omnicon.prm.library/lib_conf"
 	"prm/com.omnicon.prm.service/util"
@@ -36,6 +38,7 @@ func ConfigDBConnection() mssql.ConnectionURL {
 func ReadFileIntoConfig() {
 	err := gcfg.ReadFileInto(&cfgConfig, lib_conf.CONF_PREFIX)
 	if err != nil {
+		fmt.Println(err)
 		panic(err)
 	}
 }

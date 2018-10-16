@@ -1,7 +1,7 @@
 package tool
 
 import (
-	"fmt"
+	//"fmt"
 	"strconv"
 	"time"
 
@@ -879,8 +879,8 @@ func GetProjectsByResource(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.Ge
 		projectsResources = dao.GetAllProjectResources()
 	}
 
-	fmt.Println("ENVIO PERICION : pRequest.ResourceId ->")
-	fmt.Println(pRequest.ResourceId)
+	//fmt.Println("ENVIO PERICION : pRequest.ResourceId ->")
+	//fmt.Println(pRequest.ResourceId)
 	response.Projects = getDistintProjects(pRequest.ResourceId)
 	response.Resources = getFilterResource()
 
