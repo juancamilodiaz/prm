@@ -92,15 +92,15 @@ function workingHoursBetweenDates(startDate, endDate, workHoursUpdate, isHoursPe
             // This row is already open - close it
             row.child.hide();
             tr.removeClass('shown');
-			$(pObjBody).children('span').addClass('glyphicon-collapse-down');
-			$(pObjBody).children('span').removeClass('glyphicon-expand');
+			$(pObjBody).children('i').addClass('fa-caret-square-down');
+			$(pObjBody).children('i').removeClass('fa-caret-square-right');
         }
         else {
             // Open this row
             row.child( format(pListOfRange) ).show();
             tr.addClass('shown');
-			$(pObjBody).children('span').addClass('glyphicon-expand');
-			$(pObjBody).children('span').removeClass('glyphicon-collapse-down');
+			$(pObjBody).children('i').addClass('fa-caret-square-right');
+			$(pObjBody).children('i').removeClass('fa-caret-square-down');
         }
     }
 	
@@ -126,7 +126,7 @@ text-align:left;
 	<div class="col s12" >	
 		<div class="card-panel">
 		<a class="modal-trigger btn waves-effect waves-light blue" href="#spiderModal" id="compare">Compare</a>
-		<table id="availabilityTable" class="display" cellspacing="0" width="90%" >
+		<table id="availabilityTable" class="display " cellspacing="0" width="90%" >
 			<thead id="availabilityTableHead">
 				<th style="font-size:12px;text-align: -webkit-center;">Resource Name</th>
 				<th style="font-size:12px;text-align: -webkit-center;">Hours</th>
@@ -149,7 +149,7 @@ text-align:left;
 										
 										<tr>
 											<td class="col-sm-9" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
-												<span class="glyphicon glyphicon-collapse-down" style="float:left;"></span>
+												<i class="fas fa-caret-square-down" style="margin-right: 10px;"></i>
 												{{if gt $resourceSkillValue 3.0}}
 													<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
 												{{end}}

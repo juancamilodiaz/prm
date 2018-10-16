@@ -6,6 +6,14 @@
 	$(document).ready(function(){
 		$('.tooltipped').tooltip();
 		$('.modal-trigger').leanModal();
+		$('select').material_select();
+		$('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 15,
+			format: 'yyyy-mm-dd',
+			formatSubmit: 'yyyy-mm-dd',
+			container: 'body'
+		});
 		
 		var atable = $('#viewWorkLoadByTypes').DataTable({
 			"sDom": '<"search-box"r>lftip',
@@ -616,7 +624,7 @@
 			</div>
 		</div>
 		<div id="Planning" class="tabscontent">
-			<table id="viewProjectsForecast"  class="display responsive-table" cellspacing="0" width="90%">
+			<table id="viewProjectsForecast"  class="display responsive-table centered" cellspacing="0" width="90%">
 				<thead>
 					<tr>
 						<th>BU</th>
@@ -642,6 +650,7 @@
 					{{range $key, $projectForecast := .ProjectsForecast}}
 					<tr>
 						<td>
+							
 							{{$projectForecast.BusinessUnit}}
 							<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.BusinessUnit}});$('#actualField').val('Business Unit');"> <i class="mdi-editor-mode-edit tiny"></i></a>
 						</td>
@@ -755,10 +764,52 @@
 	</div>
 </div>
 
+
 <!-- Modal -->
+<!-- Materialize Modal Update -->
+	<div id="projectForecastModal" class="modal overflowModal " >
+			<div class="modal-content">
+				<h5 id="modalProjectForecastTitle" class="modal-title"></h5>
+				<div class="divider CardTable"></div>
+				<input type="hidden" id="projectForecastID">
+				<div class="row">
+					<div class="input-field  col s12 m6">
+						<input id="projectBusinessUnit" type="text" class="validate">
+						<label  for="projectBusinessUnit"  class="active">Business Unit</label>
+					</div>
+					<div class="input-field  col s12 m6">
+						<input id="projectForecastRegion" type="text" class="validate">
+						<label  for="projectForecastRegion"  class="active">Region</label>
+					</div>
+					<div class="input-field  col s12 ">
+						<input id="projectForecastName" type="text" class="validate">
+						<label  for="projectForecastName"  class="active">Project Name</label>
+					</div>	
+					<div class="input-field  col s12 m6">
+						<label class="active"> Start Date </label>
+            			<input type="date" id="projectForecastStartDate" class="datepicker">
+					</div>
+					<div class="input-field  col s12 m6">
+						<label class="active"> End Date </label>
+            			<input type="date" id="projectForecastEndDate" class="datepicker">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a id="projectForecastCreate" onclick="createForecastProject()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Create</a>
+				<a id="projectForecastUpdate" onclick="" class="btn green white-text waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			</div>
+	</div>
+    
+<!-- Modal Update -->
+
+
+
+<!-- Modal 
 <div class="modal fade" id="projectForecastModal" role="dialog">
   <div class="modal-dialog">
-    <!-- Modal content-->
+  
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -806,6 +857,15 @@
         		</div>
           </div>
         </div>
+		      </div>
+      <div class="modal-footer">
+        <button type="button" id="projectForecastCreate" class="btn btn-default" onclick="createForecastProject()" data-dismiss="modal">Create</button>
+		<button type="button" id="projectForecastUpdate" class="btn btn-default" onclick="" data-dismiss="modal">Update</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>-->
 		<!--div class="row-box col-sm-12" style="padding-bottom: 1%;">
         	<div id="divProjectType" class="form-group form-group-sm">
         		<label class="control-label col-sm-4 translatable" data-i18n="Types"> Types </label> 
@@ -839,16 +899,7 @@
 				</div>    
 			</div>
 		</div-->
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="projectForecastCreate" class="btn btn-default" onclick="createForecastProject()" data-dismiss="modal">Create</button>
-		<button type="button" id="projectForecastUpdate" class="btn btn-default" onclick="" data-dismiss="modal">Update</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-    
-  </div>
-</div>
+
 
 <div class="modal" id="confirmModal">
     <div class="modal-content">

@@ -101,13 +101,13 @@
 		//collapse button event
 		$(".btnCollapse").click(
 			function(){	
-				if($(this).hasClass('mdi-navigation-arrow-drop-down')){
-					$(this).removeClass('mdi-navigation-arrow-drop-down');
-					$(this).addClass('mdi-navigation-arrow-drop-up');
+				if($(this).hasClass('fa-caret-square-down')){
+					$(this).removeClass('fa-caret-square-down');
+					$(this).addClass('fa-caret-square-right');
 				}
 				else{
-					$(this).removeClass('mdi-navigation-arrow-drop-up');
-					$(this).addClass('mdi-navigation-arrow-drop-down');
+					$(this).removeClass('fa-caret-square-right');
+					$(this).addClass('fa-caret-square-down');
 				}
 			}
 		);
@@ -115,13 +115,13 @@
 	});
 
 	catchID = function (ID) {
-		if($(".icon"+ID).hasClass('mdi-navigation-arrow-drop-down')){
-			$(".icon"+ID).removeClass('mdi-navigation-arrow-drop-down');
-			$(".icon"+ID).addClass('mdi-navigation-arrow-drop-up');
+		if($(".icon"+ID).hasClass('fa-caret-square-down')){
+			$(".icon"+ID).removeClass('fa-caret-square-down');
+			$(".icon"+ID).addClass('fa-caret-square-right');
 		}
 		else{
-			$(".icon"+ID).removeClass('mdi-navigation-arrow-drop-up');
-			$(".icon"+ID).addClass('mdi-navigation-arrow-drop-down');
+			$(".icon"+ID).removeClass('fa-caret-square-right');
+			$(".icon"+ID).addClass('fa-caret-square-down');
 		}
 	}
 	
@@ -462,7 +462,7 @@ function setResourceToProjectExc(){
 									{{if $avail}}
 										{{if gt $avail.TotalHours 0.0}}
 											<tr draggable=false>
-												<td style="cursor: pointer; background-position-x: 1%;font-size:11px;;" onclick="showDetails($(this),{{$avail.ListOfRange}});catchID({{$resource.ID}})"><i class="icon{{$resource.ID}}  mdi-navigation-arrow-drop-down" style="vertical-align: middle;"></i>{{$resource.Name}} {{$resource.LastName}}</td>
+												<td style="cursor: pointer; background-position-x: 1%;font-size:11px;;" onclick="showDetails($(this),{{$avail.ListOfRange}});catchID({{$resource.ID}})"><i class="icon{{$resource.ID}}  fas fa-caret-square-down" style="vertical-align: middle; margin-right: 10px;"></i>{{$resource.Name}} {{$resource.LastName}}</td>
 												<td>{{$avail.TotalHours}}</td>
 											</tr>
 										{{end}}

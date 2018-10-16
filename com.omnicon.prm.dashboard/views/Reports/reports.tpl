@@ -164,6 +164,6 @@
         </div>
     </div>
     <div class="modal-footer">
-        <a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+        <a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
     </div>
 </div>

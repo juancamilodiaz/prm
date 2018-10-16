@@ -118,7 +118,12 @@
 <body id="home">
 
 <div class="row">
-		<div class="col s6" >				
+		<div class="col s12   marginCard">
+			<div id="pry_add">
+				<h4 id="titlePag">Status</h4>
+			</div>
+		</div>
+		<div class="col s6 marginCard" >				
 			<table id="viewProjects" class="display TableConfig " cellspacing="0" width="100%">
 			<thead>
 				<tr>
@@ -140,7 +145,7 @@
 			</tbody>
 			</table>
 		</div>	
-		<div class="col s6" style="padding-bottom: 10px;">											
+		<div class="col s6 marginCard" style="padding-bottom: 10px;">											
 			<div id="panel-df-projectUnassign" class="panel panel-default">
 				<div id="unassign" class="panel-heading">
 					<p style="font-size:14px;text-align: -webkit-center;">
