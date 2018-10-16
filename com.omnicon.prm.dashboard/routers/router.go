@@ -49,6 +49,7 @@ func init() {
 	beego.Router("/projects/delete", &controllers.ProjectController{}, "post:DeleteProject")
 	beego.Router("/projects/resources", &controllers.ProjectController{}, "post:GetResourcesByProject")
 	beego.Router("/projects/resources/assignation", &controllers.ProjectController{}, "post:GetAssignationByResource")
+	beego.Router("/projects/resources/ownAssignation", &controllers.ProjectController{}, "post:GetOwnAssignation")
 	beego.Router("/projects/resources/unassign", &controllers.ProjectController{}, "post:DeleteResourceToProject")
 	beego.Router("/projects/setresource", &controllers.ProjectController{}, "post:SetResourceToProject")
 	beego.Router("/projects/resources/today", &controllers.ProjectController{}, "post:GetResourcesByProjectToday")
