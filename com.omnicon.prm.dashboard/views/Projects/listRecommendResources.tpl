@@ -168,45 +168,11 @@
 </script>
 <div class="container">
 	<div class="row">
-<<<<<<< HEAD
-		<div class="col s12 m5 l4 marginCard ">
-		<div id="pry_add">
-			<h4 id="titlePag"></h4>
-			<a id="backButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Go To Projects"  ><i class="mdi-navigation-arrow-back large"></i></a>
-			<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue tooltipped" data-tooltip= "Save Project"><i class="mdi-action-note-add large"></i></a>
-		</div>
-		<div class="card-panel">
-			<form id="simulate">
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-				<input id="projectOperationCenter" type="text">
-				<label for="projectOperationCenter" class="active">Operation Center </label>
-				</div>
-			</div>
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-				<input id="projectWorkOrder" type="number">
-				<label for="projectWorkOrder" class="active">Work Order</label>
-				</div>
-			</div>
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-				<input id="projectName" type="text" required="" aria-required="true">
-				<label for="projectName" class="active">Name</label>
-				</div>
-			</div>
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-					<label class="active"> Start Date </label>
-					<input type="date" id="projectStartDate" class="datepicker" required>
-				</div>
-=======
 		<div class="col s12 marginCard ">
 			<div id="pry_add">
 				<h4 id="titlePag"></h4>
 				<a id="backButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Go To Projects"  ><i class="mdi-navigation-arrow-back large"></i></a>
 				<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Save Project"><i class="mdi-action-note-add large"></i></a>
->>>>>>> origin/DanielDevNew
 			</div>
 
 			<div class="col s12 m5 l4">
