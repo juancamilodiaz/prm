@@ -203,7 +203,7 @@
                         <li class="search-out">
                             <input type="text" class="search-out-text">
                         </li>
-                        <li><a  href='{{urlfor "LoginController.Logout"}}' class="waves-effect waves-block waves-light"><i class="mdi-action-exit-to-app"></i></a>
+                        <li><a href='{{urlfor "LoginController.Logout"}}' class="waves-effect waves-block waves-light"><i class="mdi-action-exit-to-app"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -232,14 +232,10 @@
                                 <ul id="profile-dropdown" class="dropdown-content">
                                     <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
                                     </li>
-                                    <li><a href="#"><i class="mdi-action-settings"></i> Settings</a>
-                                    </li>
-                                    <li><a href="#"><i class="mdi-communication-live-help"></i> Help</a>
+                                    <li><a href="" ng-click="link('settings')" onclick="sendTitle($(this).html())"><i class="mdi-action-settings"></i> Settings</a>
                                     </li>
                                     <li class="divider"></li>
-                                    <li><a href="#"><i class="mdi-action-lock-outline"></i> Lock</a>
-                                    </li>
-                                    <li><a href="#"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
+                                    <li><a href='{{urlfor "LoginController.Logout"}}'><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
                                     </li>
                                 </ul>  
                                 <div id="userRole" class="user-roal userRoleText"></div>

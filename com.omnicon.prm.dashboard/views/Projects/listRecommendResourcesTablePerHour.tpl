@@ -2,8 +2,14 @@
 <script>
 	var MyProject = {};
 	$(document).ready(function(){
+		$('.tooltipped').tooltip();
+		$('.modal-trigger').leanModal();
 		MyProject.table = $('#availabilityTable').DataTable({
-			"bSort": false,
+			"bPaginate": false,
+			"bLengthChange": false,
+			"bFilter": true,
+			"bInfo": false,
+			"bAutoWidth": false,
 			"columns": [
 				{"className":'details-control',"searchable":true},
 				null
@@ -18,7 +24,7 @@
 			"paging": true,			
 			"dom": '<"col-sm-4"l><"col-sm-4"f><"col-sm-4"<"toolbar">><rtip>',
 			initComplete: function(){
-		      $("div.toolbar").html('<label>Hours by resource:{{.HoursByPerson}}</label><button type="button" data-toggle="modal" data-target="#spiderModal" class="pull-right buttonTable button2" id="compare" style="border-radius:8px;">Compare</button>');         
+		     // $("div.toolbar").html('<label>Hours by resource:{{.HoursByPerson}}</label><button type="button" data-toggle="modal" data-target="#spiderModal" class="pull-right buttonTable button2" id="compare" style="border-radius:8px;">Compare</button>');         
 		   	}       
 		});
 		if (!$('#skillsActive').prop("checked")) {
@@ -61,11 +67,13 @@
 	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="table table-striped table-bordered  dataTable">'+insert+'</table>';
 	}
 </script>
-<div class="col-sm-12" style="padding: 1%;">
-	<table id="availabilityTable" class="table table-striped table-bordered">
+<div class="col s12" >	
+	<div class="card-panel">
+		<a class="modal-trigger btn waves-effect waves-light blue" href="#spiderModal" id="compare">Compare</a>
+	<table id="availabilityTable" class="display" cellspacing="0" width="90%" >
 		<thead id="availabilityTableHead">
-			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-9">Resource Name</th>
-			<th style="font-size:12px;text-align: -webkit-center;" class="col-sm-2">Hours</th>
+			<th style="font-size:12px;text-align: -webkit-center;">Resource Name</th>
+			<th style="font-size:12px;text-align: -webkit-center;">Hours</th>
 		</thead>
 		<tbody id="availabilityTableBody">
 			{{$availBreakdownPerRange := .AvailBreakdownPerRange}}
@@ -79,7 +87,7 @@
 								{{$totalHours := $resourceAvailabilityInfo.TotalHours}}
 								{{if ne $totalHours 0.0}}
 									<tr>
-										<td class="col-sm-9" style="background-position-x: 1%;font-size:11px;text-align: -webkit-center; background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
+										<td class="col-sm-9" style="background-position-x: 1%;font-size:11px;text-align:left background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
 											{{if gt $resourceSkillValue 3.0}}
 												<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
 											{{end}}
@@ -94,7 +102,7 @@
 											{{end}}
 											{{$resource.Name}} {{$resource.LastName}}
 										</td>
-										<td id="totalHours" class="col-sm-2" style="font-size:11px;text-align: -webkit-center; background-color: aliceblue;">{{$totalHours}}</td>
+										<td id="totalHours" class="col-sm-2" style="font-size:11px;text-align: -webkit-center;">{{$totalHours}}</td>
 									</tr>
 								{{end}}
 							{{end}}
@@ -104,24 +112,18 @@
 			{{end}}
 		</tbody>
 	</table>
+	</div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="spiderModal" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
+<div class="modal" id="spiderModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 id="modalProjectTitle" class="modal-title">Spider Diagram</h4>
-      </div>
-      <div class="modal-body">
+        <h5 class="modal-title" id="modalProjectTitle">Spider Diagram</h5>
+			<div class="divider CardTable"></div>
         <input type="hidden" id="projectID">
         <div class="chart-container-compare" id="chartjs-wrapper">
 			<canvas id="chartjs-3" >
-			</canvas>
-			
-			
+			</canvas>	
 			<script>
 			new Chart(document.getElementById("chartjs-3"),
 				{"type":"radar",
@@ -167,9 +169,8 @@
 		</div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a class="btn red white-text waves-effect waves-red btn-flat modal-action modal-close">Close</a>
       </div>
-    </div>
-    
+    </div>    
   </div>
 </div>
