@@ -1479,7 +1479,13 @@ tr.group:hover {
   margin-top: 50px !important;
 }
 
-
+.formSimulate {
+  margin: 1rem;
+}
+.switch {
+  left: 2rem;
+  bottom: 1.2rem;
+}
 
 input[type=search] {
   height: 1rem;

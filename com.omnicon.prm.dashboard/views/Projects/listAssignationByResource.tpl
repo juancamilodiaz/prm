@@ -268,8 +268,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="resourceProjectCreate" onclick="setResourceToProject(0, $('#resourceProjectId').val(), $('#projectNames').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), true, $('#createHoursPerDay').val(), $('#checkHoursPerDay').is(':checked'))" class="waves-effect waves-green btn-flat modal-action modal-close" >Set</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="resourceProjectCreate" onclick="setResourceToProject(0, $('#resourceProjectId').val(), $('#projectNames').val(), $('#resourceDateStartProject').val(), $('#resourceDateEndProject').val(), $('#resourceHoursProject').val(), true, $('#createHoursPerDay').val(), $('#checkHoursPerDay').is(':checked'))" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Set</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -378,8 +378,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="resourceProjectCreate" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), false, 0, false)" class="waves-effect waves-green btn-flat modal-action modal-close" >Set</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="resourceProjectCreate" onclick="setResourceToProject($('#resourceProjectIDUpdate').val(), $('#resourceProjectUpdateId').val(), $('#projectUpdateId').val(), $('#resourceUpdateDateStartProject').val(), $('#resourceUpdateDateEndProject').val(), $('#resourceUpdateDateHoursProject').val(), false, 0, false)" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Set</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -452,8 +452,8 @@
 				Are you sure that you want to unassign <b>{{.Title}}</b> from <b id="nameDelete"></b> project?
 			</div>
 			<div class="modal-footer">
-				<a id="resourceUnassign"  onclick="unassignResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a id="resourceUnassign"  onclick="unassignResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 

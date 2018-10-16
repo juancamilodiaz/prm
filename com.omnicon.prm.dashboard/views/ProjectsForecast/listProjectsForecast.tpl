@@ -52,7 +52,7 @@
 		});
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("New Forecast Project");
+		//$('#buttonOption').html("New Forecast Project");
 		//$('#buttonOption').attr("onclick","createForecastProject()");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("data-target", "#projectForecastModal");
@@ -377,375 +377,382 @@
 </script>
 
 <div class="container"> 
-	<h5 class="marginCard">Forecast Projects</h5>
-	<div class="">
+	<div class="row">
+		<div class="col s12   marginCard">
+			<div id="pry_add">
+				<h4 id="titlePag">Forecast Projects</h4>
+				<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
+				<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "New Forecast Project" href ="#projectForecastModal"><i class="mdi-action-note-add large"></i></a>
+			</div>
+		</div>
+		<div class="col s12 marginCard">
 
-		<button class="tablink btn waves-effect waves-light blue" onclick="openCity(event, 'Report')" id="defaultOpen">Report</button>
-		<button class="tablinks btn waves-effect waves-light blue" onclick="openCity(event, 'Planning')" id="planningOpen">Planning</button>
-	</div>
-	 
-	<div id="Report" class="tabscontent">
-		<div id="tableWorkLoadByTypes" class="row">
-			{{if gt (len .MonthsSimple) 12}}
-			
-			<div class="col-sm-10 md-10">
-				<h5 style="text-align: center;">Number of engineers by month</h5>
-				<table id="viewWorkLoadByTypes" class="display" cellspacing="0" width="100%">
-				    <thead>
-				    	<tr>
-							<th style="text-align:center;"></th>
-							{{range $key, $month := .MonthsSimple}}
-				        	<th style="text-align:center;">{{$month}}</th>
-							{{end}}
-				      	</tr>
-				    </thead>
-			    	<tbody>
-			        	<tr>
-							<td>MOM</td>
-							{{range $index, $mom := .MOM}}
-							<td>{{$mom}}</td>						
-							{{end}}
-			         	</tr>
-						<tr>
-							<td>DEV</td>
-							{{range $index, $dev := .DEV}}
-							<td>{{$dev}}</td>					
-							{{end}}
-			         	</tr>
-			      	</tbody>
-			   	</table>
-			</div>
-		   	<div class="col s12">
-				<h5 style="text-align: center;">Workload percentage by month</h5>
-				<table id="viewWorkLoadByPercentage" class="display responsive-table" cellspacing="0">
-				    <thead>
-				    	<tr>
-							<th style="text-align:center;"></th>
-							{{range $key, $month := .MonthsSimple}}
-				        	<th style="text-align:center;">{{$month}}</th>
-							{{end}}
-				      	</tr>
-				    </thead>
-			    	<tbody>
-						<tr>
-							<td>Max</td>
-							{{range $index, $max := .MaxLoad}}
-							<td>{{$max}}%</td>					
-							{{end}}
-			         	</tr>
-						<tr>
-							<td>Resource Usage</td>
-							{{range $index, $percent := .PercentageWorkLoad}}
-							<td>{{$percent}}%</td>					
-							{{end}}
-			         	</tr>
-			        	<tr>
-							<td>Min</td>
-							{{range $index, $min := .MinLoad}}
-							<td>{{$min}}%</td>						
-							{{end}}
-			         	</tr>
-			      	</tbody>
-			   	</table>
-			</div>
-			{{else}}
-			<div class="col-sm-6">
-				<h5 style="text-align: center;">Number of engineers by month</h5>
-				<table id="viewWorkLoadByTypes" class="display responsive-table" cellspacing="0" width="90%">
-				    <thead>
-				    	<tr>
-							<th style="text-align:center;"></th>
-							{{range $key, $month := .MonthsSimple}}
-				        	<th style="text-align:center;">{{$month}}</th>
-							{{end}}
-				      	</tr>
-				    </thead>
-			    	<tbody>
-			        	<tr>
-							<td>MOM</td>
-							{{range $index, $mom := .MOM}}
-							<td>{{$mom}}</td>						
-							{{end}}
-			         	</tr>
-						<tr>
-							<td>DEV</td>
-							{{range $index, $dev := .DEV}}
-							<td>{{$dev}}</td>					
-							{{end}}
-			         	</tr>
-			      	</tbody>
-			   	</table>
-			</div>
-		   	<div class="col-sm-6">
-				<h5 style="text-align: center;">Workload percentage by month</h5>
-				<table id="viewWorkLoadByPercentage" class="display responsive-table" cellspacing="0" width="90%">
-				    <thead>
-				    	<tr>
-							<th style="text-align:center;"></th>
-							{{range $key, $month := .MonthsSimple}}
-				        	<th style="text-align:center;">{{$month}}</th>
-							{{end}}
-				      	</tr>
-				    </thead>
-			    	<tbody>
-						<tr>
-							<td>Max</td>
-							{{range $index, $max := .MaxLoad}}
-							<td>{{$max}}%</td>					
-							{{end}}
-			         	</tr>
-						<tr>
-							<td>Resource Usage</td>
-							{{range $index, $percent := .PercentageWorkLoad}}
-							<td>{{$percent}}%</td>					
-							{{end}}
-			         	</tr>
-			        	<tr>
-							<td>Min</td>
-							{{range $index, $min := .MinLoad}}
-							<td>{{$min}}%</td>						
-							{{end}}
-			         	</tr>
-			      	</tbody>
-			   	</table>
-			</div>
-			{{end}}
+			<button class="tablink btn waves-effect waves-light blue" onclick="openCity(event, 'Report')" id="defaultOpen">Report</button>
+			<button class="tablinks btn waves-effect waves-light blue" onclick="openCity(event, 'Planning')" id="planningOpen">Planning</button>
 		</div>
-		<div class="col s6 m6 " style="width:90%">
-			<h5 style="text-align: center;">No. of Resources per Month</h5>
-			<canvas id="chartjs-stacked">
-			</canvas>		
-			<script>
-				chart6=new Chart(document.getElementById("chartjs-stacked"),
-				{	
-					type: 'bar',
-	                data: {
-			            labels: {{.Months}},
-			            datasets: [{
-			                label: 'MOM',
-			                data: {{.MOM}},
-			                backgroundColor: '#cc6677'
-			            }, {
-			                label: 'DEV',
-			                data: {{.DEV}},
-			                backgroundColor: '#4477aa'
-			            }]					
-			        },
-	                options: {
-	                    responsive: true,
-	                    scales: {
-	                        xAxes: [{
-	                            stacked: true,
-								scaleLabel: {
-		                            display: true,
-		                            labelString: 'Month'
-		                        }
-	                        }],
-	                        yAxes: [{
-	                            stacked: true,
-								scaleLabel: {
-		                            display: true,
-		                            labelString: 'Number of resources'
-		                        }
-	                        }]
-	                    }
-	                }
-				});
-			</script>			
+		
+		<div id="Report" class="tabscontent">
+			<div id="tableWorkLoadByTypes" class="row">
+				{{if gt (len .MonthsSimple) 12}}
+				
+				<div class="col-sm-10 md-10">
+					<h5 style="text-align: center;">Number of engineers by month</h5>
+					<table id="viewWorkLoadByTypes" class="display" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th style="text-align:center;"></th>
+								{{range $key, $month := .MonthsSimple}}
+								<th style="text-align:center;">{{$month}}</th>
+								{{end}}
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>MOM</td>
+								{{range $index, $mom := .MOM}}
+								<td>{{$mom}}</td>						
+								{{end}}
+							</tr>
+							<tr>
+								<td>DEV</td>
+								{{range $index, $dev := .DEV}}
+								<td>{{$dev}}</td>					
+								{{end}}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col s12">
+					<h5 style="text-align: center;">Workload percentage by month</h5>
+					<table id="viewWorkLoadByPercentage" class="display responsive-table" cellspacing="0">
+						<thead>
+							<tr>
+								<th style="text-align:center;"></th>
+								{{range $key, $month := .MonthsSimple}}
+								<th style="text-align:center;">{{$month}}</th>
+								{{end}}
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Max</td>
+								{{range $index, $max := .MaxLoad}}
+								<td>{{$max}}%</td>					
+								{{end}}
+							</tr>
+							<tr>
+								<td>Resource Usage</td>
+								{{range $index, $percent := .PercentageWorkLoad}}
+								<td>{{$percent}}%</td>					
+								{{end}}
+							</tr>
+							<tr>
+								<td>Min</td>
+								{{range $index, $min := .MinLoad}}
+								<td>{{$min}}%</td>						
+								{{end}}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				{{else}}
+				<div class="col-sm-6">
+					<h5 style="text-align: center;">Number of engineers by month</h5>
+					<table id="viewWorkLoadByTypes" class="display responsive-table" cellspacing="0" width="90%">
+						<thead>
+							<tr>
+								<th style="text-align:center;"></th>
+								{{range $key, $month := .MonthsSimple}}
+								<th style="text-align:center;">{{$month}}</th>
+								{{end}}
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>MOM</td>
+								{{range $index, $mom := .MOM}}
+								<td>{{$mom}}</td>						
+								{{end}}
+							</tr>
+							<tr>
+								<td>DEV</td>
+								{{range $index, $dev := .DEV}}
+								<td>{{$dev}}</td>					
+								{{end}}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-sm-6">
+					<h5 style="text-align: center;">Workload percentage by month</h5>
+					<table id="viewWorkLoadByPercentage" class="display responsive-table" cellspacing="0" width="90%">
+						<thead>
+							<tr>
+								<th style="text-align:center;"></th>
+								{{range $key, $month := .MonthsSimple}}
+								<th style="text-align:center;">{{$month}}</th>
+								{{end}}
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Max</td>
+								{{range $index, $max := .MaxLoad}}
+								<td>{{$max}}%</td>					
+								{{end}}
+							</tr>
+							<tr>
+								<td>Resource Usage</td>
+								{{range $index, $percent := .PercentageWorkLoad}}
+								<td>{{$percent}}%</td>					
+								{{end}}
+							</tr>
+							<tr>
+								<td>Min</td>
+								{{range $index, $min := .MinLoad}}
+								<td>{{$min}}%</td>						
+								{{end}}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				{{end}}
+			</div>
+			<div class="col s6 m6 " style="width:90%">
+				<h5 style="text-align: center;">No. of Resources per Month</h5>
+				<canvas id="chartjs-stacked">
+				</canvas>		
+				<script>
+					chart6=new Chart(document.getElementById("chartjs-stacked"),
+					{	
+						type: 'bar',
+						data: {
+							labels: {{.Months}},
+							datasets: [{
+								label: 'MOM',
+								data: {{.MOM}},
+								backgroundColor: '#cc6677'
+							}, {
+								label: 'DEV',
+								data: {{.DEV}},
+								backgroundColor: '#4477aa'
+							}]					
+						},
+						options: {
+							responsive: true,
+							scales: {
+								xAxes: [{
+									stacked: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'Month'
+									}
+								}],
+								yAxes: [{
+									stacked: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'Number of resources'
+									}
+								}]
+							}
+						}
+					});
+				</script>			
+			</div>
+			<div class="col s6 m6" style="width:90%">
+				<h5 style="text-align: center;">Resource Usage per Month</h5>
+				<canvas id="chartjs-lines">
+				</canvas>		
+				<script>
+					chart7=new Chart(document.getElementById("chartjs-lines"),
+					{	
+						type: 'line',
+						data: {
+							labels: {{.Months}},
+							datasets: [{
+								label: "Resource Ussage",
+								fill: false,
+								pointRadius: 0,
+								lineTension: 0,
+								data: {{.PercentageWorkLoad}},
+								backgroundColor: '#332288',
+								borderColor: '#137cd0 '
+							}, {
+								label: "Max",
+								fill: false,
+								borderDash: [5, 5],
+								data: {{.MaxLoad}},
+								backgroundColor: '#88ccee'
+							}, {
+								label: "Min",
+								fill: false,
+								borderDash: [5, 5],
+								data: {{.MinLoad}},
+								backgroundColor: '#882255'
+							}]					
+						},
+						options: {
+							responsive: true,
+							scales: {
+								xAxes: [{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'Month'
+									}
+								}],
+								yAxes: [{
+									display: true,
+									scaleLabel: {
+										display: true,
+										labelString: 'Work load percentage'
+									}
+								}]
+							}
+						}
+					});
+				</script>			
+			</div>
 		</div>
-		<div class="col s6 m6" style="width:90%">
-			<h5 style="text-align: center;">Resource Usage per Month</h5>
-			<canvas id="chartjs-lines">
-			</canvas>		
-			<script>
-				chart7=new Chart(document.getElementById("chartjs-lines"),
-				{	
-					type: 'line',
-	                data: {
-			            labels: {{.Months}},
-			            datasets: [{
-							label: "Resource Ussage",
-		                    fill: false,
-							pointRadius: 0,
-							lineTension: 0,
-		                    data: {{.PercentageWorkLoad}},
-			                backgroundColor: '#332288',
-			                borderColor: '#137cd0 '
-			            }, {
-			                label: "Max",
-			               	fill: false,
-                    		borderDash: [5, 5],
-		                    data: {{.MaxLoad}},
-			                backgroundColor: '#88ccee'
-			            }, {
-			                label: "Min",
-			               	fill: false,
-                    		borderDash: [5, 5],
-		                    data: {{.MinLoad}},
-			                backgroundColor: '#882255'
-			            }]					
-			        },
-	                options: {
-	                    responsive: true,
-	                    scales: {
-		                    xAxes: [{
-		                        display: true,
-		                        scaleLabel: {
-		                            display: true,
-		                            labelString: 'Month'
-		                        }
-		                    }],
-		                    yAxes: [{
-		                        display: true,
-		                        scaleLabel: {
-		                            display: true,
-		                            labelString: 'Work load percentage'
-		                        }
-		                    }]
-		                }
-	                }
-				});
-			</script>			
-		</div>
-	</div>
-	<div id="Planning" class="tabscontent">
-		<table id="viewProjectsForecast"  class="display responsive-table" cellspacing="0" width="90%">
-			<thead>
-				<tr>
-					<th>BU</th>
-					<th>Region</th>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Description</th>
-					<th>StartDate</th>
-					<th>EndDate</th>
-					<th>Sites</th>
-					<th>Process</th>	
-					<th>MOM Resources</th>
-					<th>DEV Resources</th>
-					<th>Total Resources</th>
-					<th>Estimate Cost</th>	
-					<th>Billing Date</th>
-					<th>Status</th>
-					<th>Options</th>			
-				</tr>
-			</thead>
-			<tbody>
-				{{$typeResources := .TypesResources}}
-			 	{{range $key, $projectForecast := .ProjectsForecast}}
-				<tr>
-					<td>
-						{{$projectForecast.BusinessUnit}}
-						<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.BusinessUnit}});$('#actualField').val('Business Unit');"> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					<td>
-						{{$projectForecast.Region}}
-						<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Region}});$('#actualField').val('Region');"> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					<td>{{$projectForecast.ID}}</td>
-					<td>
-						{{$projectForecast.Name}}
-						<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Name}});$('#actualField').val('Name');"> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					<td>
-						{{$projectForecast.Description}}
-						<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Description}});$('#actualField').val('Description');"> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					<td>
-						{{dateformat $projectForecast.StartDate "2006-01-02"}}
-						<a id="manageForecastDate" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.StartDate "2006-01-02"}});$("#actualField").val("Start Date");'> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					<td>
-						{{dateformat $projectForecast.EndDate "2006-01-02"}}
-						<a id="manageForecastDate" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.EndDate "2006-01-02"}});$("#actualField").val("End Date");'> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					<td>
-						{{$projectForecast.NumberSites}}
-						<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.NumberSites}});$('#actualField').val('Number Of Sites');"> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					<td>
-						{{$projectForecast.NumberProcessPerSite}}
-						<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.NumberProcessPerSite}});$('#actualField').val('Number Of Process');"> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					{{if eq (len $projectForecast.AssignResources) 0}}
-						<td id ="MOMEngineers">
-							0
-							<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+		<div id="Planning" class="tabscontent">
+			<table id="viewProjectsForecast"  class="display responsive-table" cellspacing="0" width="90%">
+				<thead>
+					<tr>
+						<th>BU</th>
+						<th>Region</th>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>StartDate</th>
+						<th>EndDate</th>
+						<th>Sites</th>
+						<th>Process</th>	
+						<th>MOM Resources</th>
+						<th>DEV Resources</th>
+						<th>Total Resources</th>
+						<th>Estimate Cost</th>	
+						<th>Billing Date</th>
+						<th>Status</th>
+						<th>Options</th>			
+					</tr>
+				</thead>
+				<tbody>
+					{{$typeResources := .TypesResources}}
+					{{range $key, $projectForecast := .ProjectsForecast}}
+					<tr>
+						<td>
+							{{$projectForecast.BusinessUnit}}
+							<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.BusinessUnit}});$('#actualField').val('Business Unit');"> <i class="mdi-editor-mode-edit tiny"></i></a>
 						</td>
-						<td id ="DEVEngineers">
-							0
-							<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+						<td>
+							{{$projectForecast.Region}}
+							<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Region}});$('#actualField').val('Region');"> <i class="mdi-editor-mode-edit tiny"></i></a>
 						</td>
-					{{end}}
-					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
-						{{if eq (len $projectForecast.AssignResources) 1}}
-							{{if eq "MOM Engineer" $assignResources.Name}}
-								<td id ="MOMEngineers">
-									{{$assignResources.NumberResources}}
-									<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
-								</td>
+						<td>{{$projectForecast.ID}}</td>
+						<td>
+							{{$projectForecast.Name}}
+							<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Name}});$('#actualField').val('Name');"> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>
+						<td>
+							{{$projectForecast.Description}}
+							<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Description}});$('#actualField').val('Description');"> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>
+						<td>
+							{{dateformat $projectForecast.StartDate "2006-01-02"}}
+							<a id="manageForecastDate" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.StartDate "2006-01-02"}});$("#actualField").val("Start Date");'> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>
+						<td>
+							{{dateformat $projectForecast.EndDate "2006-01-02"}}
+							<a id="manageForecastDate" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.EndDate "2006-01-02"}});$("#actualField").val("End Date");'> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>
+						<td>
+							{{$projectForecast.NumberSites}}
+							<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.NumberSites}});$('#actualField').val('Number Of Sites');"> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>
+						<td>
+							{{$projectForecast.NumberProcessPerSite}}
+							<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.NumberProcessPerSite}});$('#actualField').val('Number Of Process');"> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>
+						{{if eq (len $projectForecast.AssignResources) 0}}
+							<td id ="MOMEngineers">
+								0
+								<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+							</td>
+							<td id ="DEVEngineers">
+								0
+								<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+							</td>
+						{{end}}
+						{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
+							{{if eq (len $projectForecast.AssignResources) 1}}
+								{{if eq "MOM Engineer" $assignResources.Name}}
+									<td id ="MOMEngineers">
+										{{$assignResources.NumberResources}}
+										<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+									</td>
+								{{else}}
+									<td id ="MOMEngineers">
+										0
+										<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+									</td>
+								{{end}}
 							{{else}}
-								<td id ="MOMEngineers">
-									0
-									<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast"  onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
-								</td>
-							{{end}}
-						{{else}}
-							{{if eq "MOM Engineer" $assignResources.Name}}
-								<td id ="MOMEngineers">
-									{{$assignResources.NumberResources}}
-									<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
-								</td>
-							{{end}}
-						{{end}}												
-					{{end}}
-					{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
-						{{if eq (len $projectForecast.AssignResources) 1}}
-							{{if eq "Developer" $assignResources.Name}}
-								<td id ="DEVEngineers">
-									{{$assignResources.NumberResources}}
-									<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
-								</td>
+								{{if eq "MOM Engineer" $assignResources.Name}}
+									<td id ="MOMEngineers">
+										{{$assignResources.NumberResources}}
+										<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("MOM Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "MOM Engineer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+									</td>
+								{{end}}
+							{{end}}												
+						{{end}}
+						{{range $keyAssigns, $assignResources := $projectForecast.AssignResources}}
+							{{if eq (len $projectForecast.AssignResources) 1}}
+								{{if eq "Developer" $assignResources.Name}}
+									<td id ="DEVEngineers">
+										{{$assignResources.NumberResources}}
+										<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+									</td>
+								{{else}}
+									<td id ="DEVEngineers">
+										0
+										<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+									</td>
+								{{end}}
 							{{else}}
-								<td id ="DEVEngineers">
-									0
-									<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val(0);$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
-								</td>
-							{{end}}
-						{{else}}
-							{{if eq "Developer" $assignResources.Name}}
-								<td id ="DEVEngineers">
-									{{$assignResources.NumberResources}}
-									<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
-								</td>
+								{{if eq "Developer" $assignResources.Name}}
+									<td id ="DEVEngineers">
+										{{$assignResources.NumberResources}}
+										<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{$assignResources.NumberResources}});$("#actualField").val("DEV Resources");$("#typeResourceId").val({{range $idex, $typeResource := $typeResources}}{{if eq $typeResource.Name "Developer"}}{{$typeResource.ID}}{{end}}{{end}});'> <i class="mdi-editor-mode-edit tiny"></i></a>
+									</td>
+								{{end}}
 							{{end}}
 						{{end}}
-					{{end}}
-					
-					<td id ="totalEngineers">
-					{{$projectForecast.TotalEngineers}}
-					</td>
-					<td>
-						{{$projectForecast.EstimateCost}}
-						<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.EstimateCost}});$('#actualField').val('Estimate Cost');"> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>	
-					<td>
-						{{dateformat $projectForecast.BillingDate "2006-01-02"}}
-						<a id="manageForecastDate" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.BillingDate "2006-01-02"}});$("#actualField").val("Billing Date");'> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>
-					<td>
-						{{$projectForecast.Status}}
-						<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Status}});$('#actualField').val('Status');"> <i class="mdi-editor-mode-edit tiny"></i></a>
-					</td>			
-					<td>
-						<a id="deleteProjectForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});$('#reportID').val({{$projectForecast.ID}});"><i class="mdi-editor-mode-delete tiny"></i></a>
-					</td>
-				</tr>
-				{{end}}	
-			</tbody>
-		</table>
+						
+						<td id ="totalEngineers">
+						{{$projectForecast.TotalEngineers}}
+						</td>
+						<td>
+							{{$projectForecast.EstimateCost}}
+							<a id="manageForecastNumber" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.EstimateCost}});$('#actualField').val('Estimate Cost');"> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>	
+						<td>
+							{{dateformat $projectForecast.BillingDate "2006-01-02"}}
+							<a id="manageForecastDate" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick='$("#reportID").val({{$projectForecast.ID}});$("#actualValue").val({{dateformat $projectForecast.BillingDate "2006-01-02"}});$("#actualField").val("Billing Date");'> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>
+						<td>
+							{{$projectForecast.Status}}
+							<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Status}});$('#actualField').val('Status');"> <i class="mdi-editor-mode-edit tiny"></i></a>
+						</td>			
+						<td>
+							<a id="deleteProjectForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});$('#reportID').val({{$projectForecast.ID}});"><i class="mdi-action-delete tiny"></i></a>
+						</td>
+					</tr>
+					{{end}}	
+				</tbody>
+			</table>
+		</div>
 	</div>
-
 </div>
 
 <!-- Modal -->
@@ -887,9 +894,9 @@
         </div>
 		
          <div class="modal-footer">
-		    <a id="reportAdd" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
+		    <a id="reportAdd" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
             <!--<button type="button" id="reportAdd" class="btn btn-default" onclick="manageReport()" data-dismiss="modal">OK</button>-->
-            <a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+            <a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
          </div>
       </div>
    </div>

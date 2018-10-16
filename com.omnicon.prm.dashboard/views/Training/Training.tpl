@@ -499,7 +499,7 @@
 							"labels": {{.TStatus}},
 							"datasets": [{ 
 								"data": {{.TValues}},
-								"backgroundColor":["rgb(54, 162, 235)","rgb(255, 99, 132)","rgb(75, 192, 192)"]
+								"backgroundColor":["rgb(0, 128, 0)","rgb(255, 0, 0)","rgb(255, 165, 0)"]
 								
 							}]						
 						},
