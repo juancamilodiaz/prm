@@ -2,6 +2,7 @@ package dao
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
@@ -314,7 +315,7 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 			if filters.String() != "" {
 				filters.WriteString(" and ")
 			}
-			filters.WriteString("end_date >= '")
+			filters.WriteString("start_date >= '")
 			filters.WriteString(pStartDate)
 			filters.WriteString("'")
 		}
@@ -322,7 +323,7 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 			if filters.String() != "" {
 				filters.WriteString(" and ")
 			}
-			filters.WriteString("start_date <= '")
+			filters.WriteString("end_date <= '")
 			filters.WriteString(pEndDate)
 			filters.WriteString("'")
 		}
@@ -351,6 +352,7 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 		}
 
 		stringResponse = filters.String()
+		fmt.Println("query->", stringResponse)
 	}
 	return projectsResources, stringResponse
 }

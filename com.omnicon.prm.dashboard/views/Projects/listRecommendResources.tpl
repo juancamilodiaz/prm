@@ -239,40 +239,40 @@
 								</label>
 							</div>
 						</div>
-					</div>		
-					<div class="row formSimulate" style ="margin-top: 1rem">
-						<div class="switch" style="text-align: right;">
-							Enable Types
-							<label>
-								<input id="skillsActive" type="checkbox">
-								<span class="lever"></span>
-							</label>
-						</div>
-						<div class="input-field col s12">
-							<label for="projectTypeSimulator" class="active">Types</label>
-							<select  id="projectTypeSimulator" style="height: 100px;" disabled>
-								<option value="" selected disabled>Select Type</option>
-								{{range $key, $types := .Types}}
-									<option value={{$types.ID}}>{{$types.Name}}</option>
-								{{end}}	
-							</select>
-						</div>
-
 					</div>
-					<div class="row formSimulate">
-						<div class="input-field col s12">
-						<button type="submit" class="btn waves-effect waves-light green">Simulate</button>
-						</div>
-					</div>
-					</form>
+				</div>
+			</div>		
+			<div class="row formSimulate" style ="margin-top: 1rem">
+				<div class="switch" style="text-align: right;">
+					Enable Types
+					<label>
+						<input id="skillsActive" type="checkbox">
+						<span class="lever"></span>
+					</label>
+				</div>
+				<div class="input-field col s12">
+					<label for="projectTypeSimulator" class="active">Types</label>
+					<select  id="projectTypeSimulator" style="height: 100px;" disabled>
+						<option value="" selected disabled>Select Type</option>
+						{{range $key, $types := .Types}}
+							<option value={{$types.ID}}>{{$types.Name}}</option>
+						{{end}}	
+					</select>
 				</div>
 
 			</div>
-
-			<div id="listResourceAble" class="col s12 m7 l8"></div>
+			<div class="row formSimulate">
+				<div class="input-field col s12">
+				<button type="submit" class="btn waves-effect waves-light green">Simulate</button>
+				</div>
 			</div>
+			</form>
+		</div>
 	</div>
-</div>
+
+	<div id="listResourceAble" class="col s12 m7 l8"></div>
+	</div>
+
 <!--
 	<div class="col s12 m12 l12">
 			<div id="simulator" class="col s6 m6 l6">

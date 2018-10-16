@@ -29,7 +29,10 @@ func GetResourcesID(email string) (int, bool) {
 	err := json.NewDecoder(resResources.Body).Decode(&messageResources)
 	if err == nil {
 		defer resResources.Body.Close()
-		return messageResources.Resources[0].ID, true
+		if messageResources.Resources != nil {
+			return messageResources.Resources[0].ID, true
+		}
+		
 
 	}
 	return 0, false
