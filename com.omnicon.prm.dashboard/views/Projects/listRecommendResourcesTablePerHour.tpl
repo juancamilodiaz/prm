@@ -44,13 +44,18 @@
  
         if ( row.child.isShown() ) {
             // This row is already open - close it
-            row.child.hide();
+			row.child.hide();
             tr.removeClass('shown');
+			$(pObjBody).children('i').addClass('fa-caret-square-down');
+			$(pObjBody).children('i').removeClass('fa-caret-square-right');
+			
         }
         else {
             // Open this row
             row.child( format(pListOfRange) ).show();
             tr.addClass('shown');
+			$(pObjBody).children('i').addClass('fa-caret-square-right');
+			$(pObjBody).children('i').removeClass('fa-caret-square-down');
         }
     }
 	
@@ -88,6 +93,7 @@
 								{{if ne $totalHours 0.0}}
 									<tr>
 										<td class="col-sm-9" style="background-position-x: 1%;font-size:11px;text-align:left background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
+											<i class="fas fa-caret-square-down" style="margin-right: 10px;"></i>
 											{{if gt $resourceSkillValue 3.0}}
 												<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
 											{{end}}

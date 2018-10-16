@@ -823,8 +823,8 @@
             <li>The resources will lose the reported times.</li>
        
          <div class="modal-footer" style="text-align:center;">
-           <a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+           <a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
+			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
          </div>
       </div>
    </div>
@@ -856,9 +856,9 @@
 			
          </div>
          <div class="modal-footer">
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-            <a id="taskCreate" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
-            <a id="taskUpdate" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+            <a id="taskCreate" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
+            <a id="taskUpdate" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
          </div>
       </div>
    </div>
@@ -878,8 +878,8 @@
             </div>	
         </div>
          <div class="modal-footer">
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-            <a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+            <a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
          </div>
       </div>
 </div>
@@ -897,8 +897,8 @@
             </div>
          </div>
          <div class="modal-footer">
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-			<a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="manageBillableReport()" >Edit</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="manageBillableReport()" >Edit</a>
          </div>
       </div>
    </div>

@@ -212,6 +212,7 @@
 <table id="viewResources" class="display" cellspacing="0" width="100%">
 <div id="pry_add">
 	<h4>Resources</h5>
+	<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
 	<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" id="buttonOption" onclick="configureCreateModal()" data-position="top" data-tooltip="Create" href="#" ><i class="mdi-action-note-add large"></i></a>
 </div>
 	<thead>
@@ -324,9 +325,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="trainingCreate" onclick="createResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
-				<a id="trainingUpdate" onclick="updateResource()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="trainingCreate" onclick="createResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Create</a>
+				<a id="trainingUpdate" onclick="updateResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -419,8 +420,8 @@
 				<li>The projects will lose this resource assignment as leader.</li>
 			</div>
 			<div class="modal-footer">
-				<a onclick="deleteResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Delete</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a onclick="deleteResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Delete</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 </div>
 

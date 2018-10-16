@@ -192,9 +192,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="trainingCreate" onclick="createTraining()" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
-				<a id="trainingUpdate" onclick="updateTraining()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="trainingCreate" onclick="createTraining()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Create</a>
+				<a id="trainingUpdate" onclick="updateTraining()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -214,8 +214,8 @@
 				<li>The resources will lose this training assignment.</li>
 			</div>
 			<div class="modal-footer">
-				<a onclick="deleteTraining()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a onclick="deleteTraining()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 
