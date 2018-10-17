@@ -1,42 +1,26 @@
+<div class="container">
 {{range $key, $resource := .Resources}}
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Name"> Name </label>
-		  <div class="col-sm-8">
-			 <input type="text" id="showResourceName" value="{{$resource.Name}}" readonly style="border-radius: 8px;">
-		  </div>
-	   </div>
+	<div class="input-field col s12 m5 l5">
+		<label class="active"> Name </label>
+		<input type="text" id="showResourceName" value="{{$resource.Name}}" readonly >
 	</div>
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Last Name"> Last Name </label> 
-		  <div class="col-sm-8">
-			 <input type="text" id="showResourceLastName" value="{{$resource.LastName}}" readonly style="border-radius: 8px;">
-		  </div>
-	   </div>
+	<div class="input-field col s12 m5 l5">
+		    <label class="active"> Last Name </label> 
+			<input type="text" id="showResourceLastName" value="{{$resource.LastName}}" readonly>		
 	</div>
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Email"> Email </label> 
-		  <div class="col-sm-8">
-			 <input type="text" id="showResourceEmail" value="{{$resource.Email}}" readonly style="border-radius: 8px;">
-		  </div>
-	   </div>
+	<div class="input-field col s12 m5 l5">
+		    <label class="active">Email </label>
+			<input type="text" id="showResourceEmail" value="{{$resource.Email}}" readonly>
 	</div>
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Enginer Rank"> Enginer Rank </label> 
-		  <div class="col-sm-8">
-			 <input type="text" id="showResourceRank" value="{{$resource.EngineerRange}}" readonly style="border-radius: 8px;">
-		  </div>
-	   </div>
+	<div class="input-field col s12 m5 l5">
+		    <label class="active"> Enginer Rank </label> 
+			<input type="text" id="showResourceRank" value="{{$resource.EngineerRange}}" readonly>
 	</div>
-	<div class="row-box col-sm-12" style="padding-bottom: 1%;">
-	   <div class="form-group form-group-sm">
-		  <label class="control-label col-sm-4 translatable" data-i18n="Active"> Active </label> 
-		  <div class="col-sm-8">
-			 <input type="checkbox" id="showResourceActive" {{if $resource.Enabled}}checked{{end}} disabled><br/>
-		  </div>
+	<div class="input-field col s12 m5 l5">
+		   <label class="active"> Active </label> 
+			<input type="checkbox" id="showResourceActive" {{if $resource.Enabled}}checked{{end}} disabled><br/>
+		  
 	   </div>
 	</div>
 {{end}}
+</div>

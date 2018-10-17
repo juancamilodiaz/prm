@@ -100,19 +100,30 @@
 		
 		//collapse button event
 		$(".btnCollapse").click(
-			function(){
-				if($(this).hasClass('collapsed')){
-					$(this).removeClass('glyphicon-collapse-down');
-					$(this).addClass('glyphicon-collapse-up');
+			function(){	
+				if($(this).hasClass('fa-caret-square-down')){
+					$(this).removeClass('fa-caret-square-down');
+					$(this).addClass('fa-caret-square-right');
 				}
 				else{
-					$(this).removeClass('glyphicon-collapse-up');
-					$(this).addClass('glyphicon-collapse-down');
+					$(this).removeClass('fa-caret-square-right');
+					$(this).addClass('fa-caret-square-down');
 				}
 			}
 		);
 		sendTitle("Home");
 	});
+
+	catchID = function (ID) {
+		if($(".icon"+ID).hasClass('fa-caret-square-down')){
+			$(".icon"+ID).removeClass('fa-caret-square-down');
+			$(".icon"+ID).addClass('fa-caret-square-right');
+		}
+		else{
+			$(".icon"+ID).removeClass('fa-caret-square-right');
+			$(".icon"+ID).addClass('fa-caret-square-down');
+		}
+	}
 	
 	unassignResource = function(ID, obj){
 		var settings = {
@@ -451,7 +462,7 @@ function setResourceToProjectExc(){
 									{{if $avail}}
 										{{if gt $avail.TotalHours 0.0}}
 											<tr draggable=false>
-												<td style="background-position-x: 1%;font-size:11px;;" onclick="showDetails($(this),{{$avail.ListOfRange}})">{{$resource.Name}} {{$resource.LastName}}</td>
+												<td style="cursor: pointer; background-position-x: 1%;font-size:11px;;" onclick="showDetails($(this),{{$avail.ListOfRange}});catchID({{$resource.ID}})"><i class="icon{{$resource.ID}}  fas fa-caret-square-down" style="vertical-align: middle; margin-right: 10px;"></i>{{$resource.Name}} {{$resource.LastName}}</td>
 												<td>{{$avail.TotalHours}}</td>
 											</tr>
 										{{end}}

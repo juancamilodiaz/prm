@@ -107,7 +107,9 @@
 <!-- Modal -->
 <div class="modal" id="settingModal">
     <div class="modal-content">        
-        <h5>Assign dates to the resource</h5>  
+        <h5 class="modal-title">Assign dates to the resource</h5>  
+		<div class="divider"></div><br> 
+ 
         <input type="hidden" id="settingID">
 		<input type="hidden" id="settingType">
 		
@@ -121,8 +123,8 @@
 		</div>        
     </div>
     <div class="modal-footer">
-	  	<a id="settingUpdate"  class="btn waves-effect waves-light green modal-action modal-close" onclick="updateSetting()">Update</a>
-       	<a class="btn waves-effect waves-light red modal-action modal-close">Cancel</a>
+	  	<a id="settingUpdate"  class="btn green waves-effect waves-light modal-action modal-close" onclick="updateSetting()">Update</a>
+       	<a class="btn red waves-effect waves-light modal-action modal-close">Cancel</a>
     </div>
 
 

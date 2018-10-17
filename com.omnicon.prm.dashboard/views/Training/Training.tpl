@@ -20,6 +20,13 @@
 		$('select').material_select();
 		$('.modal-trigger').leanModal();
 		$('.tooltipped').tooltip();
+		$('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 15,
+			format: 'yyyy-mm-dd',
+			formatSubmit: 'yyyy-mm-dd',
+			container: 'body'
+		});
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
@@ -492,7 +499,7 @@
 							"labels": {{.TStatus}},
 							"datasets": [{ 
 								"data": {{.TValues}},
-								"backgroundColor":["rgb(54, 162, 235)","rgb(255, 99, 132)","rgb(75, 192, 192)"]
+								"backgroundColor":["rgb(0, 128, 0)","rgb(255, 0, 0)","rgb(255, 165, 0)"]
 								
 							}]						
 						},
@@ -567,15 +574,15 @@
 
 					<!-- Input -->
 					<div class="input-field col s12 m5 l5">
-						<input id="trainingStartDate" type="date" class="validate">
-						<label  for="trainingStartDate"  class="active">Start Date</label>
+						<label class="active">Start Date</label>
+						<input type="date" id="trainingStartDate" class="datepicker">
 					</div>
 					<!-- /Input -->
 
 					<!-- Input -->
 					<div class="input-field col s12 m5 l5">
-						<input id="trainingEndDate" type="date" class="validate">
-						<label  for="trainingEndDate"  class="active">End Date</label>
+						<label class="active">End Date</label>
+						<input type="date" id="trainingEndDate" class="datepicker">
 					</div>
 					<!-- /Input -->
 
@@ -609,9 +616,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="trainingCreate" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
-				<a id="trainingUpdate" onclick="setTrainingToResource()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="trainingCreate" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Create</a>
+				<a id="trainingUpdate" onclick="setTrainingToResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -748,8 +755,8 @@
 				<li>The resource will lose this training assignment.</li>
 			</div>
 			<div class="modal-footer">
-				<a onclick="deleteTrainingResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a onclick="deleteTrainingResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 
@@ -765,7 +772,7 @@
 					</object>
 			</div>
 			<div class="modal-footer">
-        		<a class="btn waves-effect waves-red btn-flat modal-action modal-close">Close</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Close</a>
 
 			</div>
 </div>
