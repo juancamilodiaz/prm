@@ -240,8 +240,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>		
+						
 			<div class="row formSimulate" style ="margin-top: 1rem">
 				<div class="switch" style="text-align: right;">
 					Enable Types
