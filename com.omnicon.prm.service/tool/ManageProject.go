@@ -644,7 +644,7 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	return &response
 }
 
-func Contains(a []*DOMAIN.ProjectResources, x int) (bool, int) {
+func ContainsProjectResource(a []*DOMAIN.ProjectResources, x int) (bool, int) {
 	for index, n := range a {
 		if x == n.ProjectId {
 			return true, index
@@ -661,7 +661,7 @@ func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResource
 	for _, element := range projectResources {
 
 		// ckeck if the resource is duplicated and takes the index
-		exists, index := Contains(projectResourcesResponse, element.ProjectId)
+		exists, index := ContainsProjectResource(projectResourcesResponse, element.ProjectId)
 		//validate it if the resource is duplicated , if it is duplicated
 		if !exists {
 			//Instance ProjectResources structures and TaskDetail

@@ -2,7 +2,6 @@ package dao
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
@@ -58,7 +57,6 @@ func GetAllResourcesJoinResourceTypes() []*DOMAIN.ResourceQuery {
 	if ses != nil {
 		// Add all resources in resources variable
 		err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").All(&resources)
-		fmt.Println(ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id"))
 		//err := getResourceCollection().Find().All(&resources)
 		// Close session when ends the method
 		defer ses.Close()
