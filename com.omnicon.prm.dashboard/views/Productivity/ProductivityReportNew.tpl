@@ -549,7 +549,7 @@
 			            <td>{{$productivityTask.TotalExecute}}</td>
 			            <td>{{$productivityTask.Scheduled}}</td>
 						<td>{{$productivityTask.Progress}}%</td>
-						<td><input type="checkbox" {{if $productivityTask.IsOutOfScope}}checked{{end}} disabled></td>
+						<td><p><input type="checkbox" {{if $productivityTask.IsOutOfScope}}checked{{end}} disabled><label></label></p></td>
 			            <td>
 							<a id="updateTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#taskModal" onclick="configureUpdateModal({{$productivityTask.ID}},'{{$productivityTask.Name}}',{{$productivityTask.Scheduled}},{{$productivityTask.Progress}}, {{$productivityTask.IsOutOfScope}})"><i class="mdi-editor-mode-edit tiny"></i></a>
 							<a id="deleteTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Delete" href="#confirmModal" onclick="$('#taskID').val({{$productivityTask.ID}})"> <i class="mdi-action-delete tiny"></i></a>
@@ -823,7 +823,7 @@
             <li>The resources will lose the reported times.</li>
        
          <div class="modal-footer" style="text-align:center;">
-           <a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
+           <a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
 			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
          </div>
       </div>
