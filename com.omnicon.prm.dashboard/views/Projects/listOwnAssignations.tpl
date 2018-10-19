@@ -64,6 +64,7 @@
 				<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>				
 			</div>
 		</div>
+		
 		<table id="viewResourceInProjects" class="display responsive-table" cellspacing="0" width="95%" >
 			<thead>
 				<tr>
@@ -76,9 +77,8 @@
 			<tbody>
 				{{$startDate := .StartDate}}
 				{{$endDate := .EndDate}}
-				{{$totalHours := 0}}
+				{{$TotalHours := .TotalHours}}
 				{{range $key, $resourceToProject := .ResourcesToProjects}}
-
 				
 				{{ if ($resourceToProject.TaskDetail) }}
 				<tr>
@@ -93,8 +93,8 @@
 					{{end}}
 			</tbody>
 			<tr>
-					<td colspan="3">Available</td>
-					<td>{{$totalHours}}</td>
+					<td colspan="3" class="{{.Avability}}">{{.Avability}}</td>
+					<td  class="{{.Avability}}">{{.TotalHours}}</td>
 				</tr>	
 		</table>
 	</div>

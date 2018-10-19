@@ -686,7 +686,8 @@ func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResource
 			resourcestruct.AdditionalComments = ""
 			resourcestruct.AssignatedByName = ""
 			resourcestruct.AssignatedByLastName = ""
-
+			//resourcesToProjectsRS.TotalHours += resourcestruct.Hours
+			//resourcestruct.TotalHours += resourcestruct.Hours
 			//Assigns values to each attribute of the instantiated structure
 			taskDetail.StartDate = element.StartDate
 			taskDetail.EndDate = element.EndDate
@@ -731,7 +732,6 @@ func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResource
 			resourcestruct.AdditionalComments = ""
 			resourcestruct.AssignatedByName = ""
 			resourcestruct.AssignatedByLastName = ""
-
 			//Assigns values to each attribute of the instantiated structure
 			taskDetail.StartDate = element.StartDate
 			taskDetail.EndDate = element.EndDate
@@ -745,6 +745,7 @@ func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResource
 			taskDetail.AssignatedByName = element.AssignatedByName
 			taskDetail.AssignatedByLastName = element.AssignatedByLastName
 			projectResourcesResponse[index].Hours += element.Hours
+			//projectResourcesResponse[index].TotalHours += projectResourcesResponse[index].Hours
 
 			//Add the structure to the slice of structures included ResourceTypes
 			projectResourcesResponse = append(projectResourcesResponse, resourcestruct)
@@ -778,7 +779,13 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	}
 
 	projectsResourcesResponse := BuildResourcesToProjectsResponse(projectsResources)
-
+	var tempHour float64
+	for _, element := range projectsResourcesResponse {
+		if element.TaskDetail != nil {
+			tempHour += element.Hours
+		}
+	}
+	response.TotalHours = 45 - tempHour
 	/*
 		requestProjects := DOMAIN.GetProjectsRQ{}
 		requestProjects.StartDate = pRequest.StartDate

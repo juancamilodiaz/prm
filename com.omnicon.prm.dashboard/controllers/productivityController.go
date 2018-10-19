@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	//"fmt"
 	"net/http"
 	"strconv"
@@ -32,7 +33,6 @@ func GetResourcesID(email string) (int, bool) {
 		if messageResources.Resources != nil {
 			return messageResources.Resources[0].ID, true
 		}
-		
 
 	}
 	return 0, false
@@ -171,6 +171,7 @@ func (this *ProductivityController) ListProductivity() {
 						}
 					}
 					this.Data["Resources"] = resources
+					fmt.Println("resources--->", resources)
 					this.Data["ResourcesNames"] = resourcesName
 					resourcesHours := []float64{}
 					var totalHoursExecutedProject float64
