@@ -318,57 +318,90 @@ func DeleteSkillToResource(pRequest *DOMAIN.DeleteSkillToResourceRQ) *DOMAIN.Del
 	return &response
 }
 
+// Contains tells whether a contains x.
+func Contains(a []*DOMAIN.Resource, x int) (bool, int) {
+	for index, n := range a {
+		if x == n.ID {
+			return true, index
+		}
+	}
+	return false, 0
+}
+
+//BuildResourceResponse Build and return an Slice of Resource structs
+func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource {
+
+	resourceResponse := []*DOMAIN.Resource{}
+
+	for _, element := range resources {
+
+		// ckeck if the resource is duplicated and takes the index
+		exists, index := Contains(resourceResponse, element.ID)
+		//validate it if the resource is duplicated , if it is duplicated
+		if !exists {
+			//Instance Resource structures and ResourceTypes
+			resourcestruct := &DOMAIN.Resource{}
+			resourceTypesCustom := &DOMAIN.ResourceTypesCustom{}
+
+			//Assigns values ​​to each attribute of the instantiated structure
+			resourcestruct.ID = element.ID
+			resourcestruct.Name = element.Name
+			resourcestruct.LastName = element.LastName
+			resourcestruct.Email = element.Email
+			resourcestruct.Photo = element.Photo
+			resourcestruct.EngineerRange = element.EngineerRange
+			resourcestruct.Enabled = element.Enabled
+			resourcestruct.VisaUS = element.VisaUS
+
+			//Assigns values ​​to each attribute of the instantiated structure
+			resourceTypesCustom.Name = element.NameTypeR
+			resourceTypesCustom.ResourceId = element.ResourceId
+			resourceTypesCustom.TypeId = element.TypeId
+
+			//Add the structure to the slice of structures
+			resourcestruct.ResourceType = append(resourcestruct.ResourceType, resourceTypesCustom)
+
+			//Add the structure to the slice of structures included ResourceTypes
+			resourceResponse = append(resourceResponse, resourcestruct)
+
+			resourceTypesCustom = nil
+			resourcestruct = nil
+		} else {
+			//Instance ResourceTypes structure
+			resourceTypesCustom := &DOMAIN.ResourceTypesCustom{}
+
+			//Assigns values ​​to each attribute of the instantiated structure
+			resourceTypesCustom.Name = element.NameTypeR
+			resourceTypesCustom.ResourceId = element.ResourceId
+			resourceTypesCustom.TypeId = element.TypeId
+
+			//Add the structure to the slice of structures
+			resourceResponse[index].ResourceType = append(resourceResponse[index].ResourceType, resourceTypesCustom)
+			resourceTypesCustom = nil
+		}
+	}
+	return resourceResponse
+}
+
+//GetResources return a struct response to get all the resources
 func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetResourcesRS{}
 	filters := util.MappingFiltersResource(pRequest)
-	resources, filterString := dao.GetResourcesByFilters(filters, pRequest.Enabled)
-
-	//	var resultResources []*DOMAIN.Resource
+	resources, filterString := dao.GetResourcesByFiltersJoinResourceTypes(filters, pRequest.Enabled)
 
 	if len(resources) == 0 && filterString == "" {
-		resources = dao.GetAllResources()
+		resources = dao.GetAllResourcesJoinResourceTypes()
 	}
 
 	if resources != nil && len(resources) > 0 {
 
-		/*
-			// Filter by skills
-			if len(filters.Skills) > 0 {
-				for _, resource := range resources {
-					idResource := resource.ID
-					var resultSkills []*DOMAIN.ResourceSkills
-					for nameSkill, valueSkill := range filters.Skills {
-						skills := dao.GetSkillsByName(nameSkill)
-						for _, skill := range skills {
-							if skill.Name == nameSkill {
-								resourceSkill := dao.GetResourceSkillsByResourceIdAndSkillId(idResource, skill.ID)
-								if resourceSkill != nil && resourceSkill.Value >= valueSkill {
-									resultSkills = append(resultSkills, resourceSkill)
-								}
-							}
-						}
-					}
-					if len(resultSkills) > 0 {
-						util.MappingSkillsInAResource(resource, resultSkills)
-						resultResources = append(resultResources, resource)
-					}
-				}
-				response.Resources = resultResources
-			} else {
-				for _, resource := range resources {
-					resourceSkill := dao.GetResourceSkillsByResourceId(resource.ID)
-					if len(resourceSkill) > 0 {
-						util.MappingSkillsInAResource(resource, resourceSkill)
-					}
-				}
-				response.Resources = resources
-			}
-		*/
+		//Gets the ResourceResponse builded
+		resourcesresponse := BuildResourceResponse(resources)
 
 		// Create response
 		response.Status = "OK"
-		response.Resources = resources
+		response.Resources = resourcesresponse
 
 		response.Header = util.BuildHeaderResponse(timeResponse)
 

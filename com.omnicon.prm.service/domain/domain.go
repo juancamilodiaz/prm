@@ -12,7 +12,25 @@ type Resource struct {
 	Enabled       bool    `db:"enabled"`
 	VisaUS        *string `db:"visa_us"`
 	Skills        map[string]int
-	ResourceType  []*Type
+	ResourceType  []*ResourceTypesCustom
+	Type          []*Type
+}
+
+type ResourceQuery struct {
+	ID            int     `db:"id"`
+	Name          string  `db:"name"`
+	LastName      string  `db:"last_name"`
+	Email         string  `db:"email"`
+	Photo         string  `db:"photo"`
+	EngineerRange string  `db:"engineer_range"`
+	Enabled       bool    `db:"enabled"`
+	VisaUS        *string `db:"visa_us"`
+	ResourceId    int     `db:"resource_id"`
+	TypeId        int     `db:"type_id"`
+	NameTypeR     string  `db:"type_name"`
+	Skills        map[string]int
+	ResourceType  []*ResourceTypesCustom
+	Type          []*Type
 }
 
 type Project struct {
@@ -147,6 +165,12 @@ type ListByHours struct {
 
 type ResourceTypes struct {
 	ID         int    `db:"id"`
+	ResourceId int    `db:"resource_id"`
+	TypeId     int    `db:"type_id"`
+	Name       string `db:"type_name"`
+}
+
+type ResourceTypesCustom struct {
 	ResourceId int    `db:"resource_id"`
 	TypeId     int    `db:"type_id"`
 	Name       string `db:"type_name"`

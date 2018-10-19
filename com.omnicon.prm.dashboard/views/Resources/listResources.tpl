@@ -133,7 +133,9 @@
 				"Enabled": $('#resourceActive').is(":checked"),
 				"VisaUS": $('#resourceVisaUS').val()
 			}
+			
 		}
+		console.log(settings);
 		$.ajax(settings).done(function (response) {
 			validationError(response);
 			reload('/resources', {});
@@ -227,7 +229,7 @@
 			<th>Options</th>
 		</tr>
 	</thead>
-	<tbody>
+<tbody>
 		{{$typesResource := .TypesResource}}
 	 	{{range $key, $resource := .Resources}}
 		<tr>
