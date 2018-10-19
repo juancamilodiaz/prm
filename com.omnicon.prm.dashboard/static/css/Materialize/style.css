@@ -53,7 +53,16 @@ footer {
   line-height: 20px;
   margin-top: 11px;
 }
-
+.Unavailable{
+  color:red;
+  font-weight:bold;
+  font-size: 1.1rem;
+}
+.Available{
+  color:green;
+  font-weight:bold;
+  font-size: 1.1rem;
+}
 #content .container .row {
   margin-bottom: 0;
 }
