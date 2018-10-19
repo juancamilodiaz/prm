@@ -53,7 +53,27 @@ footer {
   line-height: 20px;
   margin-top: 11px;
 }
+.Unavailable{
+  color:red;
+  font-weight:bold;
+  font-size: 1.1rem;
+}
+.Available{
+  color:green;
+  font-weight:bold;
+  font-size: 1.1rem;
+}
+#checkboxProject{
+  position:relative;
+  visibility: visible;
+  left: 15px;
+}
+#checkboxResources{
+  position:relative;
+  visibility: visible;
+  left: 15px;
 
+}
 #content .container .row {
   margin-bottom: 0;
 }
@@ -1179,6 +1199,9 @@ tr.group:hover {
   margin-top: 5px;
   margin-bottom: 0px;
 }
+.profile-dropdown{
+  width: 140px !important;
+}
 /*----------------------------------------
     icon page
 ------------------------------------------*/
@@ -1479,7 +1502,17 @@ tr.group:hover {
   margin-top: 50px !important;
 }
 
+.btn {
+  margin-right: 5px !important;
+}
 
+.formSimulate {
+  margin: 1rem;
+}
+.switch {
+  left: 2rem;
+  bottom: 1.2rem;
+}
 
 input[type=search] {
   height: 1rem;
@@ -1506,6 +1539,10 @@ select {
   color: orange;
 }
 
+.pull-right {
+    vertical-align: middle;
+
+}
 
 input[type=search]{
   height:1rem;

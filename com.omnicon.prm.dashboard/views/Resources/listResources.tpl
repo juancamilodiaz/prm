@@ -19,7 +19,6 @@
 		});
 		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
-		sendTitle("Resources");
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
@@ -31,33 +30,6 @@
 		$('#buttonOption').attr("href", "#resourceModal");
 		
 
-
-
-		
-		
-		$("#resourceEmail").keyup(function(){
-
-	        var email = $("#resourceEmail").val();
-	
-	        if(email != 0)
-	        {
-	            if(isValidEmailAddress(email))
-	            {
-	                $("#resourceEmail").css({
-	                    "border-color": "lightgreen"
-	                });
-	            } else {
-	                $("#resourceEmail").css({
-	                    "border-color": "crimson"
-	                });
-	            }
-	        } else {
-	            $("#resourceEmail").css({
-	                "border-color": "crimson"
-	            });         
-	        }
-	
-	    });
 	});
 
 	
@@ -212,6 +184,7 @@
 <table id="viewResources" class="display" cellspacing="0" width="100%">
 <div id="pry_add">
 	<h4>Resources</h5>
+	<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
 	<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" id="buttonOption" onclick="configureCreateModal()" data-position="top" data-tooltip="Create" href="#" ><i class="mdi-action-note-add large"></i></a>
 </div>
 	<thead>
@@ -243,7 +216,14 @@
 			<td>{{$resource.Email}}</td>
 			<td>{{$resource.EngineerRange}}</td>
 			<td>{{if $resource.VisaUS}} {{$resource.VisaUS}} {{end}}</td>
-			<td><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
+			<td>
+				<div class="col">
+					<p>
+						<input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled>
+						<label  ></label>
+					</p>
+				</div>	
+			</td>
 			<td>							
 				<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href="#resourceModal"  onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}},{{$resource.VisaUS}})"><i class="mdi-editor-mode-edit"></i></a>
 				<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick='$("#nameDelete").html("{{$resource.Name}} {{$resource.LastName}}");$("#resourceID").val({{$resource.ID}});'><i class="mdi-action-delete"></i></a>
@@ -324,9 +304,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="trainingCreate" onclick="createResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
-				<a id="trainingUpdate" onclick="updateResource()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="trainingCreate" onclick="createResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Create</a>
+				<a id="trainingUpdate" onclick="updateResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -419,8 +399,8 @@
 				<li>The projects will lose this resource assignment as leader.</li>
 			</div>
 			<div class="modal-footer">
-				<a onclick="deleteResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Delete</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a onclick="deleteResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Delete</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 </div>
 

@@ -173,6 +173,25 @@
 			  $('.modal-backdrop').remove();
 			});
 		}
+
+        	
+	getTasksByResource = function(resourceID, resourceName){
+		var settings = {
+			method: 'POST',
+			url: '/projects/resources/ownAssignation',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+				"ResourceId": resourceID,
+				"ResourceName": resourceName
+			}
+		}
+		$.ajax(settings).done(function (response) {
+		  $("#content").html(response);
+		});
+	}
+
 	</script>
 
 </head>
@@ -203,7 +222,7 @@
                         <li class="search-out">
                             <input type="text" class="search-out-text">
                         </li>
-                        <li><a  href='{{urlfor "LoginController.Logout"}}' class="waves-effect waves-block waves-light"><i class="mdi-action-exit-to-app"></i></a>
+                        <li><a href='{{urlfor "LoginController.Logout"}}' class="waves-effect waves-block waves-light"><i class="mdi-action-exit-to-app"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -229,17 +248,15 @@
                                 </div>                                
                             <div class="col col s8 m8 l8">
                                 <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><i class="mdi-navigation-arrow-drop-down right"></i><span id="userName"></span><span id="lastName"></span></a>
-                                <ul id="profile-dropdown" class="dropdown-content">
+                                <ul id="profile-dropdown" class="dropdown-content profile-dropdown">
                                     <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
                                     </li>
-                                    <li><a href="#"><i class="mdi-action-settings"></i> Settings</a>
+                                    <li><a href="" ng-click="link('settings')" onclick="sendTitle($(this).html())"><i class="mdi-action-settings"></i> Settings</a>
                                     </li>
-                                    <li><a href="#"><i class="mdi-communication-live-help"></i> Help</a>
+                                    <li><a href=""  onclick="getTasksByResource({{.ResourceID }},'');" ><i class="fas fa-tasks"></i> My Tasks</a>
                                     </li>
                                     <li class="divider"></li>
-                                    <li><a href="#"><i class="mdi-action-lock-outline"></i> Lock</a>
-                                    </li>
-                                    <li><a href="#"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
+                                    <li><a href='{{urlfor "LoginController.Logout"}}'><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
                                     </li>
                                 </ul>  
                                 <div id="userRole" class="user-roal userRoleText"></div>
@@ -339,9 +356,7 @@
     <script type="text/javascript" src="/static/js/Utils.js"></script>
     <script type="text/javascript" src="/static/js/js/plugins.js"></script>
     <script type="text/javascript" src="/static/js/functions.js"></script>
-
-
- <script>                                   
+ <script>                               
     ProfilePicture = JSON.parse({{ .ProfilePicture}});
     PersonalInformation = JSON.parse({{ .PersonalInformation}});
     var JobTitleSplitted = PersonalInformation.JobTitle.split(",");

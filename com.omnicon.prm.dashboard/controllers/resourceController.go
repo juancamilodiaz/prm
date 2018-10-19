@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	"sort"
 
 	"github.com/astaxie/beego"
 	"prm/com.omnicon.prm.service/domain"
@@ -43,23 +45,11 @@ func (this *ResourceController) ListResources() {
 				mapTypePerResource := make(map[int]map[int]string)
 
 				for _, resource := range message.Resources {
-					operation = "GetTypesByResource"
-					input := domain.GetResourcesRQ{}
-					input.ID = resource.ID
-
-					inputBuffer := EncoderInput(input)
-					res, err := PostData(operation, inputBuffer)
-
-					if err == nil {
-						defer res.Body.Close()
-						message := new(domain.ResourceTypesRS)
-						json.NewDecoder(res.Body).Decode(&message)
-						mapOfTypes := make(map[int]string)
-						for _, resourceType := range message.ResourceTypes {
-							mapOfTypes[resourceType.TypeId] = resourceType.Name
-						}
-						mapTypePerResource[resource.ID] = mapOfTypes
+					mapOfTypes := make(map[int]string)
+					for _, resourceType := range resource.ResourceType {
+						mapOfTypes[resourceType.TypeId] = resourceType.Name
 					}
+					mapTypePerResource[resource.ID] = mapOfTypes
 				}
 
 				this.Data["TypesResource"] = mapTypePerResource
@@ -287,7 +277,7 @@ func (this *ResourceController) GetSkillsByResource() {
 			input := domain.GetSkillByResourceRQ{}
 
 			mapTypesResourceStr := this.GetString("MapTypesResource")
-
+			fmt.Println(mapTypesResourceStr)
 			err := this.ParseForm(&input)
 			if err != nil {
 				log.Error("[ParseInput]", input)
@@ -307,7 +297,6 @@ func (this *ResourceController) GetSkillsByResource() {
 				message := new(domain.GetSkillByResourceRS)
 				json.NewDecoder(res.Body).Decode(&message)
 				data := buildChartMessage(message)
-
 				this.Data["ResourceId"] = input.ID
 				this.Data["Skills"] = message.Skills
 				this.Data["Title"] = this.GetString("ResourceName")
@@ -338,6 +327,9 @@ func (this *ResourceController) GetSkillsByResource() {
 				mapSkillsTypes[0] = data
 
 				mapSkillsAndValues, listTypesName := buildChartMessageWithType(mapSkillsTypes)
+				//sort.Ints(mapSkillsAndValues["map"])
+
+				//	fmt.Printf("%v", mapSkillsAndValues)
 				this.Data["MapSkillsAndValues"] = mapSkillsAndValues
 
 				var listSkills []string
@@ -345,15 +337,23 @@ func (this *ResourceController) GetSkillsByResource() {
 				for skillName, _ := range mapSkillsAndValues {
 					listSkills = append(listSkills, skillName)
 				}
-
+			//	sort.Strings(listTypesName)
+				sort.Strings(listSkills)
+				
 				for index, _ := range listTypesName {
 					var listTemp []int
+
 					for _, nameSkill := range listSkills {
 						listValues := mapSkillsAndValues[nameSkill]
 						listTemp = append(listTemp, listValues[index])
 					}
 					listSkillsValue = append(listSkillsValue, listTemp)
 				}
+
+				fmt.Println("%v", listTypesName)
+				fmt.Println("%v", listSkills)
+				fmt.Println("%v", listSkillsValue)
+
 				this.Data["ListSkills"] = listSkills
 				this.Data["ListValues"] = listSkillsValue
 				this.Data["ListTypesName"] = listTypesName
@@ -427,6 +427,7 @@ func buildChartMessageWithType(pMapSkillsTypes map[int]Datasets) (map[string][]i
 				totalSkillsValue = append(totalSkillsValue, dataSet.SkillsValue[j])
 				mapResult[skillName] = totalSkillsValue
 			}
+
 		}
 
 		if i > 0 {

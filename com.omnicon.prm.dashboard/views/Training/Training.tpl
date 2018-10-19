@@ -397,7 +397,7 @@
 	<div class="col s12   marginCard">
 		<div id="pry_add">
 			<h4 id="titlePag">Trainings</h4>
-			<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
+			<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue  tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
 			<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Create Resource Training"><i class="mdi-action-note-add large"></i></a>
 			<a class='btn-floating btn-large waves-effect waves-light blue tooltipped' data-position="top" data-tooltip="Download PDF"  id="download-pdf" onclick="downloadPDF()" ><i class="fas fa-file-pdf"></i></a>
 		</div>
@@ -499,7 +499,7 @@
 							"labels": {{.TStatus}},
 							"datasets": [{ 
 								"data": {{.TValues}},
-								"backgroundColor":["rgb(54, 162, 235)","rgb(255, 99, 132)","rgb(75, 192, 192)"]
+								"backgroundColor":["rgb(0, 128, 0)","rgb(255, 0, 0)","rgb(255, 165, 0)"]
 								
 							}]						
 						},
@@ -616,9 +616,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="trainingCreate" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" class="waves-effect waves-green btn-flat modal-action modal-close" >Create</a>
-				<a id="trainingUpdate" onclick="setTrainingToResource()" class="waves-effect waves-blue btn-flat modal-action modal-close"  >Update</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="trainingCreate" onclick="setTrainingToResource();$('#trainingResourceID').val(0)" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Create</a>
+				<a id="trainingUpdate" onclick="setTrainingToResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close"  >Update</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     
@@ -755,8 +755,8 @@
 				<li>The resource will lose this training assignment.</li>
 			</div>
 			<div class="modal-footer">
-				<a onclick="deleteTrainingResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a onclick="deleteTrainingResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 
@@ -772,7 +772,7 @@
 					</object>
 			</div>
 			<div class="modal-footer">
-        		<a class="btn waves-effect waves-red btn-flat modal-action modal-close">Close</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Close</a>
 
 			</div>
 </div>

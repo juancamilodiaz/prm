@@ -157,7 +157,7 @@
 			$("#content").html(response);				
 			$("#projectValue option[id="+projectID+"]").attr("selected", "selected");
 			//$("#titleSearch").html($("#projectValue").val());	
-			console.warn($("#projectValue").val());	
+			//console.warn($("#projectValue").val());	
 			$("#titleSearch").html(" - "+$("#projectValue").val());
 			$("#main-content2").show();	
 			$(".progressInfo").show();
@@ -444,7 +444,7 @@
 <div id="main-content2">
 	<div class="row">
 			<div class="progressInfo">
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Overall Progress</h6>
@@ -452,7 +452,7 @@
 						</div>
 					</div>
 				</div>	
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Quoted Hours</h6>
@@ -460,7 +460,7 @@
 						</div>
 					</div>
 				</div>				
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Billable Hours</h6>
@@ -468,7 +468,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Total Executed</h6>
@@ -476,7 +476,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col s2">
+				<div class="col s4 m3 l2">
 					<div class="card">
 						<div class="card-content blue white-text">
 							<h6 style="text-align:  center;">Out Of Scope</h6>
@@ -549,7 +549,7 @@
 			            <td>{{$productivityTask.TotalExecute}}</td>
 			            <td>{{$productivityTask.Scheduled}}</td>
 						<td>{{$productivityTask.Progress}}%</td>
-						<td><input type="checkbox" {{if $productivityTask.IsOutOfScope}}checked{{end}} disabled></td>
+						<td><p><input type="checkbox" {{if $productivityTask.IsOutOfScope}}checked{{end}} disabled><label></label></p></td>
 			            <td>
 							<a id="updateTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#taskModal" onclick="configureUpdateModal({{$productivityTask.ID}},'{{$productivityTask.Name}}',{{$productivityTask.Scheduled}},{{$productivityTask.Progress}}, {{$productivityTask.IsOutOfScope}})"><i class="mdi-editor-mode-edit tiny"></i></a>
 							<a id="deleteTask" class="modal-trigger tooltipped" data-position="top" data-tooltip="Delete" href="#confirmModal" onclick="$('#taskID').val({{$productivityTask.ID}})"> <i class="mdi-action-delete tiny"></i></a>
@@ -823,8 +823,8 @@
             <li>The resources will lose the reported times.</li>
        
          <div class="modal-footer" style="text-align:center;">
-           <a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+        	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
          </div>
       </div>
    </div>
@@ -856,9 +856,9 @@
 			
          </div>
          <div class="modal-footer">
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-            <a id="taskCreate" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
-            <a id="taskUpdate" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+            <a id="taskCreate" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
+            <a id="taskUpdate" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
          </div>
       </div>
    </div>
@@ -878,8 +878,8 @@
             </div>	
         </div>
          <div class="modal-footer">
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-            <a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+            <a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
          </div>
       </div>
 </div>
@@ -897,8 +897,8 @@
             </div>
          </div>
          <div class="modal-footer">
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
-			<a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="manageBillableReport()" >Edit</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="manageBillableReport()" >Edit</a>
          </div>
       </div>
    </div>

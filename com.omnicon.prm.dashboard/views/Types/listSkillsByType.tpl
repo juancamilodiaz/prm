@@ -55,7 +55,7 @@
 		$("#skillId option:selected").text(pSkillId.split("-")[1]);
 		$("#skillId").attr("disabled", "disabled");
 		$("#typeValueSkill").val(pValue);
-		
+		$('select').material_select();
 		$("#modalTitleType").html("Update Skill to Type");
 	}
 	
@@ -85,7 +85,7 @@
 						<td>{{$typeSkill.Name}}</td>
 						<td>{{$typeSkill.Value}}</td>
 						<td>
-							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Update"  href="#loadSkillModal"  onclick="configureUpdateModal({{$typeSkill.SkillId}}-{{$typeSkill.Name}}',{{$typeSkill.Value}}')"><i class="mdi-editor-mode-edit"></i></a>	
+							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Update"  href="#loadSkillModal"  onclick="configureUpdateTypeModal('{{$typeSkill.SkillId}}-{{$typeSkill.Name}}',{{$typeSkill.Value}})"><i class="mdi-editor-mode-edit"></i></a>	
 							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Unassign"  href="#confirmUnassignModal"  onclick="$('#nameDelete').html('{{$typeSkill.Name}}');$('#typeSkillId').val({{$typeSkill.ID}});" data-dismiss="modal"><i class="mdi-content-remove-circle"></i></a>	
 						</td>
 					</tr>
@@ -149,8 +149,8 @@
 				<li>The training and the training's assignations will lose this skill assignment and they will be eliminated.</li>
 			</div>
 			<div class="modal-footer">
-				<a onclick="unassignTypeSkills({{.TypeID}}, $('#typeSkillId').val(), {{.Title}})" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a onclick="unassignTypeSkills({{.TypeID}}, $('#typeSkillId').val(), {{.Title}})" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 
@@ -181,8 +181,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a id="addSkill" onclick="addSkillToType({{.TypeID}},$('#skillId').val(),$('#typeValueSkill').val(), {{.Title}})" class="waves-effect waves-green btn-flat modal-action modal-close" >Ok</a>
-       		 	<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+				<a id="addSkill" onclick="addSkillToType({{.TypeID}},$('#skillId').val(),$('#typeValueSkill').val(), {{.Title}})" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Ok</a>
+       		 	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			</div>
 	</div>
     

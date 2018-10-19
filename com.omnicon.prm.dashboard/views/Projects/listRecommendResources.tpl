@@ -45,7 +45,6 @@
 		$("#projectEndDate").val(getDateToday());
 			
 		$('#backButton').css("display", "inline-block");
-		$('#backButton').html("Go to projects");
 		$('#backButton').prop('onclick',null).off('click');
 		$('#backButton').click(function(){
 			reload('/projects',{});
@@ -56,7 +55,6 @@
 				
 		$('#buttonOption').css("display", "inline-block");
 		$('#buttonOption').attr("style", "display: padding-right: 0%");
-		$('#buttonOption').html("Save Project");
 		$('#buttonOption').attr("data-toggle", "modal");
 		$('#buttonOption').attr("onclick","createProject();");
 		
@@ -74,6 +72,12 @@
 		$('#projectStartDate').change(function(){
 			$('#projectEndDate').attr("min", $("#projectStartDate").val());
 		});
+	});
+
+	$("#simulate").submit(function(e){
+
+		getResourcesByProjectAvail();
+		return false;
 	});
 				
 	configureShowCreateModal = function(){
@@ -146,69 +150,109 @@
 	
 	$('#skillsActive').click(function(){
 		$("#projectTypeSimulator").prop('disabled', !this.checked);
+		$('select').material_select();
 	});
 	
 	$('#projectHoursActive').click(function(){
 		$("#projectHours").prop('disabled', !this.checked);
+		$("#projectHours").prop('required', this.checked);
 		$("#personNumber").prop('disabled', !this.checked);
+		$("#personNumber").prop('required', this.checked);
 		$("#projectStartDate").prop('disabled', this.checked);
+		$("#projectStartDate").prop('required', this.checked);
 		$("#projectEndDate").prop('disabled', this.checked);
+		$("#projectEndDate").prop('required', this.checked);
+
 	});
 	
 </script>
 <div class="container">
 	<div class="row">
-		<h4 class="modal-title marginCard">Simulator</h4>
-		<div class="col s12 m5 l4 ">
-		<div class="card-panel">
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-				<input id="projectOperationCenter" type="text">
-				<label for="projectOperationCenter">Operation Center </label>
-				</div>
+		<div class="col s12 marginCard ">
+			<div id="pry_add">
+				<h4 id="titlePag"></h4>
+				<a id="backButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Go To Projects"  ><i class="mdi-navigation-arrow-back large"></i></a>
+				<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue tooltipped" data-tooltip= "Save Project"><i class="mdi-action-note-add large"></i></a>
 			</div>
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-				<input id="projectWorkOrder" type="number">
-				<label for="projectWorkOrder">Work Order</label>
-				</div>
-			</div>
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-				<input id="projectName" type="text">
-				<label for="projectName">Name</label>
-				</div>
-			</div>
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-					<label class="active"> Start Date </label>
-					<input type="date" id="projectStartDate" class="datepicker">
-				</div>
-			</div>
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-					<label class="active"> End Date </label> 
-					<input type="date" id="projectEndDate" class="datepicker">
-				
-				</div>
-			</div>
-			
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-				<input id="projectHours" type="number">
-				<label for="projectHours">Hours</label>
-				</div>
-			</div>
-			<div class="row formSimulate">
-				<div class="input-field col s12">
-				<input id="personNumber" type="number">
-				<label for="personNumber">Number of resources</label>
-				</div>
-			</div>
+
+			<div class="col s12 m5 l4">
+				<div class="card-panel">
+					<form id="simulate">
+					<div class="row formSimulate">
+						<div class="input-field col s12">
+						<input id="projectOperationCenter" type="text">
+						<label for="projectOperationCenter" class="active">Operation Center </label>
+						</div>
+					</div>
+					<div class="row formSimulate">
+						<div class="input-field col s12">
+						<input id="projectWorkOrder" type="number">
+						<label for="projectWorkOrder" class="active">Work Order</label>
+						</div>
+					</div>
+					<div class="row formSimulate">
+						<div class="input-field col s12">
+						<input id="projectName" type="text" required="" aria-required="true">
+						<label for="projectName" class="active">Name</label>
+						</div>
+					</div>
+					<div class="row formSimulate">
+						<div class="input-field col s12">
+							<label class="active"> Start Date </label>
+							<input type="date" id="projectStartDate" class="datepicker" required>
+						</div>
+					</div>
+					<div class="row formSimulate">
+						<div class="input-field col s12">
+							<label class="active"> End Date </label> 
+							<input type="date" id="projectEndDate" class="datepicker" required>
+						
+						</div>
+					</div>
+					
+					<div class="row formSimulate">
+						<div class="switch" style="text-align: right;">
+							Switch time picker:
+							<label>
+								<input id="projectHoursActive" type="checkbox">
+								<span class="lever"></span>
+							</label>
+						</div>
+						<div class="input-field col s12">
+							<input id="projectHours" type="number" disabled>
+							<label class="active" for="projectHours">Hours</label>
+						</div>
+					</div>
+					<div class="row formSimulate">
+						<div class="input-field col s12">
+						<input id="personNumber" type="number" disabled>
+						<label class="active" for="personNumber">Number of resources</label>
+						</div>
+					</div>
+					<div class="row formSimulate">
+						<div class="col s12">
+							<div class="switch">
+								<div class="input-field"><label class = "active">Active:</label></div>
+								<label>
+								<input id="projectActive" style="text-align: right;" type="checkbox">
+								<span class="lever switch"></span>
+								</label>
+							</div>
+						</div>
+					</div>
+						
 			<div class="row formSimulate" style ="margin-top: 1rem">
+				<div class="switch" style="text-align: right;">
+					Enable Types
+					<label>
+						<input id="skillsActive" type="checkbox">
+						<span class="lever"></span>
+					</label>
+				</div>
 				<div class="input-field col s12">
-					<label for="projectTypeSimulator" class="active" style="font-size:14px;">Types</label>
-					<select  id="projectTypeSimulator" class="browser-default" multiple style="height: 100px;">
+					<label for="projectTypeSimulator" class="active">Types</label>
+					<select  id="projectTypeSimulator" style="height: 100px;" disabled>
+						<option value="" selected disabled>Select Type</option>
 						{{range $key, $types := .Types}}
 							<option value={{$types.ID}}>{{$types.Name}}</option>
 						{{end}}	
@@ -218,10 +262,10 @@
 			</div>
 			<div class="row formSimulate">
 				<div class="input-field col s12">
-				<a onclick="getResourcesByProjectAvail();" class="btn waves-effect waves-light green">Simulate</a>
-
+				<button type="submit" class="btn waves-effect waves-light green">Simulate</button>
 				</div>
 			</div>
+			</form>
 		</div>
 	</div>
 
@@ -323,5 +367,3 @@
 
 			-->	
 		 	
-	</div>
-</div>

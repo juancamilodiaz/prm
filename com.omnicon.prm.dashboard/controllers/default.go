@@ -21,12 +21,11 @@ func (c *MainController) NestPrepare() {
 
 /*Index*/
 func (c *MainController) Get() {
-	fmt.Println("default.Get, c.IsLogin", c.IsLogin)
+	//fmt.Println("default.Get, c.IsLogin", c.IsLogin)
 
 	personalInformation, err := json.Marshal(session.PInfo)
-
 	profilePicture, err := json.Marshal(session.ProfPic)
-
+	resourceID, _ := GetResourcesID(session.PInfo.Mail)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -35,6 +34,7 @@ func (c *MainController) Get() {
 	c.Data["Email"] = "astaxie@gmail.com"
 	c.Data["PersonalInformation"] = string(personalInformation)
 	c.Data["ProfilePicture"] = string(profilePicture)
+	c.Data["ResourceID"] = resourceID
 	c.TplName = "index.tpl"
 }
 

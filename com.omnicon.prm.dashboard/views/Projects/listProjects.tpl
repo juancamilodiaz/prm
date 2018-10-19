@@ -200,7 +200,7 @@
 	<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>	
 	<a class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-position="top" data-tooltip="Create" href="#projectModal" onclick="configureCreateModal()"><i class="mdi-action-note-add large"></i></a>
 </div>
-<table id="viewProjects" class="display" cellspacing="0" width="100%" >
+<table id="viewProjects" class="display responsive-table" cellspacing="0" width="100%" >
 	<thead>
 		<tr>
 			<th>Operation Center</th>
@@ -224,12 +224,19 @@
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
 			<td>{{$project.Lead}}</td>
 			<td>{{if $project.Cost}} {{$project.Cost}} {{end}}</td>
-			<td><input type="checkbox" {{if $project.Enabled}}checked{{end}} disabled></td>			
+			<td>
+				<div class="col">
+					<p>
+						<input type="checkbox"{{if $project.Enabled}}checked{{end}} disabled >
+						<label  ></label>
+					</p>
+				</div>
+			</td>			
 			<td style="width:120px;">
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href='#projectModal' onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})'><i class="mdi-editor-mode-edit"></i></a>
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" ><i class="mdi-action-delete"></i></a>
 			  <a class='tooltipped' data-position="top" data-tooltip="Get Resources" href="#" ng-click="link('/projects/resources')" onclick="getResourcesByProject({{$project.ID}}, '{{$project.Name}}');" ><i class="mdi-action-assignment-ind"></i></a>
-			  <a class='tooltipped' data-position="top" data-tooltip="Get Types"  onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-image-style"></i></a>		
+			  <a class='tooltipped' data-position="top" data-tooltip="Get Types"  href="#" onclick="getTypesByProject({{$project.ID}}, '{{$project.Name}}');" data-dismiss="modal"><i class="mdi-image-style"></i></a>		
 			</td>
 		</tr>
 		{{end}}	
@@ -239,7 +246,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal" id="projectModal"> 
+<div class="modal" id="projectModal" style="overflow: visible;"> 
     <div class="modal-content">
 		<h5 id="modalProjectTitle" class="modal-title"></h5>
 		<div class="divider"></div><br>
@@ -272,6 +279,7 @@
 			<label class="active"> Types </label> 
 			<div class=" col s12 m5 l5">
 					<select  id="projectType" multiple>
+					<option value="" disabled selected>Select a type</option>
 					{{range $key, $types := .Types}}
 						<option value="{{$types.ID}}">{{$types.Name}}</option>
 					{{end}}
@@ -279,11 +287,11 @@
 			</div>    
 		</div>
 	
-		<div class="input-field col s12 m5 l5">
-			<label class="active"> Active </label> 
-			<div class=" col s12 m5 l5">
-					<input type="checkbox" id="projectActive"><br/>
-			</div>   
+		<div class="input-field col s12 m5 l5" style="bottom: 15px;">
+				<p>
+					<input id="projectActive" type="checkbox" /> 
+					<label for="projectActive" ><span>Active</span></label>
+				</p> 
 		</div>
 		<div class="input-field col s12 m5 l5">
 			<label class="active">  Leader </label> 
@@ -302,10 +310,10 @@
 		
 		</div>
       </div>
-      <div class="modal-footer">			
-			<a id="projectCreate" onclick="createProject()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
-			<a id="projectUpdate" onclick="updateProject()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+      <div class="modal-footer">		
+			<a id="projectCreate" onclick="createProject()" class="btn green waves-effect white-text waves-light btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
+			<a id="projectUpdate" onclick="updateProject()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
       </div>
     </div> 
 </div>
@@ -325,8 +333,8 @@
 		<li>The types will lose this project assignment.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
-			<a id="projectCreate" onclick="deleteProject()" class="waves-effect waves-green btn-flat modal-action modal-close" onclick="deleteProject()" >Yes</a>
-				<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+			<a id="projectCreate" onclick="deleteProject()" class="btn green white-text waves-effect waves-green btn-flat modal-action modal-close" onclick="deleteProject()" >Yes</a>
+				<a class="btn red white-text waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
       </div>
     </div>
   </div>

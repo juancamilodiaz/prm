@@ -2,13 +2,13 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/jinzhu/now"
 	"prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 	"prm/com.omnicon.prm.service/util"
@@ -683,7 +683,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 					this.Data["HoursByPerson"] = hoursNumber / resourceNumber
 					this.TplName = "Projects/listRecommendResourcesTablePerHour.tpl"
 				} else {
-					fmt.Println("------>", this.Data["AvailBreakdownPerRange"])
+					//fmt.Println("------>", this.Data["AvailBreakdownPerRange"])
 					this.Data["ProjectHours"] = projectDays * 8
 					this.TplName = "Projects/listRecommendResourcesTable.tpl"
 				}
@@ -894,6 +894,75 @@ func (this *ProjectController) GetAssignationByResource() {
 	}
 }
 
+func (this *ProjectController) GetOwnAssignation() {
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
+
+		if level <= du {
+			operation := "GetResourcesToProjects"
+
+			input := domain.GetResourcesToProjectsRQ{}
+			StartDate := now.BeginningOfWeek().String()
+			startDateSplitted := strings.Split(StartDate, " ")
+
+			EndDate := now.EndOfWeek().String()
+			EndDateSplitted := strings.Split(EndDate, " ")
+
+			input.Enabled = true
+			input.StartDate = startDateSplitted[0]
+			input.EndDate = EndDateSplitted[0]
+			input.ResourceId = input.ResourceId
+			err := this.ParseForm(&input)
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesToProjectsRS)
+				json.NewDecoder(res.Body).Decode(&message)
+
+				if message.TotalHours > 0 {
+					this.Data["Avability"] = "Available"
+				} else {
+					this.Data["Avability"] = "Unavailable"
+				}
+
+				//fmt.Printf("%+v\n", &}message.ResourcesToProjects)
+
+				this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+				this.Data["TotalHours"] = message.TotalHours
+				this.Data["ResourceId"] = input.ResourceId
+				this.Data["Title"] = input.ResourceName
+				this.Data["StartDate"] = input.StartDate
+				this.Data["EndDate"] = input.EndDate
+				//this.Data["TotalHours"]
+				if input.ResourceName == "" {
+					for _, assig := range message.ResourcesToProjects {
+						this.Data["Title"] = assig.ResourceName
+						break
+					}
+				}
+				this.TplName = "Projects/listOwnAssignations.tpl"
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
+	}
+}
 func (this *ProjectController) Availability() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)

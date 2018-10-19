@@ -33,7 +33,9 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-			$('#reports').html(response);
+			$('#reports').html("<a target='_blank' href="+window.location.host +response+">Or click here to download.</a>");
+            window.open(response,"_blank");
+            // response.PDF.save('Report.pdf');
 		});
 	}
 	
@@ -52,7 +54,8 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
-			$('#reports').html(response);
+			$('#reports').html("<a href="+window.location.host +response+">Or click here to download.</a>");
+            window.open(response,"_blank");
 		});
 	}
 	
@@ -155,10 +158,12 @@
         <h5 id="titleReport" class="modal-title"></h5>
         <div class="divider CardTable"></div>
         <input type="hidden" id="skillID">
+        <div><p>If after 5 seconds the PDF has not been opened, make sure you have Pop Ups enabled  to view the PDF file.</p></div>
         <div id="reports" style="height: 100%;">
+
         </div>
     </div>
     <div class="modal-footer">
-        <a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+        <a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
     </div>
 </div>
