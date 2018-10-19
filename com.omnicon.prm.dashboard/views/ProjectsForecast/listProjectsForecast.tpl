@@ -320,9 +320,9 @@
 	  alert(result.html());
 	}
 	
-	$(document).on('click','#deleteProjectForecast',function(){
+	/*$(document).on('click','#deleteProjectForecast',function(){
     	$('#confirmModal').modal('show');
-	});
+	});*/	
 	
 	openCity = function(evt, cityName) {
 	    // Declare all variables
@@ -356,27 +356,30 @@
 		$('#value').css("display", "inline-block");
 		$('#valueNumber').css("display", "none");
 		$('#valueDate').css("display", "none");
-		$('#projectType').css("display", "none");
+		$('#select-wrapper').css("display", "none");
 		$('#value').val($('#actualValue').val());
 		$('#field').html($('#actualField').val());
+
 	});
 	
 	$(document).on('click','#manageForecastDate',function(){
 		$('#value').css("display", "none");
 		$('#valueNumber').css("display", "none");
 		$('#valueDate').css("display", "inline-block");
-		$('#projectType').css("display", "none");
+		$('#select-wrapper').css("display", "none");
 		$('#valueDate').val($('#actualValue').val());
 		$('#field').html($('#actualField').val());
+
 	});		
 	
 	$(document).on('click','#manageForecastNumber',function(){
 		$('#value').css("display", "none");
 		$('#valueNumber').css("display", "inline-block");
 		$('#valueDate').css("display", "none");
-		$('#projectType').css("display", "none");
+		$('#select-wrapper').css("display", "none");
 		$('#valueNumber').val($('#actualValue').val());
 		$('#field').html($('#actualField').val());
+
 	});	
 		
 	manageReport = function () {
@@ -754,7 +757,7 @@
 							<a id="manageForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#reportID').val({{$projectForecast.ID}});$('#actualValue').val({{$projectForecast.Status}});$('#actualField').val('Status');"> <i class="mdi-editor-mode-edit tiny"></i></a>
 						</td>			
 						<td>
-							<a id="deleteProjectForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Edit" href="#reportForecast" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});$('#reportID').val({{$projectForecast.ID}});"><i class="mdi-action-delete tiny"></i></a>
+							<a id="deleteProjectForecast" class="modal-trigger tooltipped" data-position="top" data-tooltip="Delete" href="#confirmModal" onclick="$('#nameDelete').html('{{$projectForecast.Name}}');$('#projectID').val({{$projectForecast.ID}});$('#reportID').val({{$projectForecast.ID}});"><i class="mdi-action-delete tiny"></i></a>
 						</td>
 					</tr>
 					{{end}}	
@@ -911,8 +914,8 @@
 		<li>The types will lose this project assignment.</li>
       </div>
       <div class="modal-footer" style="text-align:center;">
-	  		<a class="waves-effect waves-green btn-flat modal-action modal-close" onclick="deleteForecastProject()" >Delete</a>
-			<a class="waves-effect waves-red btn-flat modal-action modal-close">Cancel</a>
+	  		<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="deleteForecastProject()" >Delete</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
       </div>
     </div>
   </div>
@@ -935,12 +938,14 @@
 				<label id="field" class="active"></label>
 				<input type="text" id="value"  min="0" max="100">
 				<input type="number" id="valueNumber" min="0" max="100">
-				<input type="date" id="valueDate" min="0" max="100">
-				<select  id="projectType" >
-				{{range $key, $types := .Types}}
-				<option value="{{$types.ID}}">{{$types.Name}}</option>
-				{{end}}
-				</select>
+				<input type="date" class="datepicker" id="valueDate" min="0" max="100">
+				<div id="select-wrapper">
+					<select  id="projectType" >
+					{{range $key, $types := .Types}}
+					<option value="{{$types.ID}}">{{$types.Name}}</option>
+					{{end}}
+					</select>
+				</div>
             </div>
         </div>
 		

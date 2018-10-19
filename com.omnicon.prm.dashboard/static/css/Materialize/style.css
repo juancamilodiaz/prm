@@ -1491,6 +1491,10 @@ tr.group:hover {
   margin-top: 50px !important;
 }
 
+.btn {
+  margin-right: 5px !important;
+}
+
 .formSimulate {
   margin: 1rem;
 }
