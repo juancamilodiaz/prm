@@ -12,7 +12,7 @@
 			selectYears: 15,
 			format: 'yyyy-mm-dd',
 			formatSubmit: 'yyyy-mm-dd',
-			container: 'body'
+			container: 'header'
 		});
 		
 		var atable = $('#viewWorkLoadByTypes').DataTable({
@@ -919,7 +919,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal" id="reportForecast">
+<div class="modal overflowModal" id="reportForecast">
       <!-- Modal content-->
       <div class="modal-content">
             <h5 id="modalTitle" class="modal-title">Edit</h5>
