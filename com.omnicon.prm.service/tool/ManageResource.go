@@ -319,7 +319,7 @@ func DeleteSkillToResource(pRequest *DOMAIN.DeleteSkillToResourceRQ) *DOMAIN.Del
 }
 
 // Contains tells whether a contains x.
-func Contains(a []*DOMAIN.Resource, x int) (bool, int) {
+func ContainsResources(a []*DOMAIN.Resource, x int) (bool, int) {
 	for index, n := range a {
 		if x == n.ID {
 			return true, index
@@ -336,7 +336,7 @@ func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource
 	for _, element := range resources {
 
 		// ckeck if the resource is duplicated and takes the index
-		exists, index := Contains(resourceResponse, element.ID)
+		exists, index := ContainsResources(resourceResponse, element.ID)
 		//validate it if the resource is duplicated , if it is duplicated
 		if !exists {
 			//Instance Resource structures and ResourceTypes
