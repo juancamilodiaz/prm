@@ -224,7 +224,14 @@
 			<td>{{dateformat $project.EndDate "2006-01-02"}}</td>
 			<td>{{$project.Lead}}</td>
 			<td>{{if $project.Cost}} {{$project.Cost}} {{end}}</td>
-			<td><input type="checkbox" {{if $project.Enabled}}checked{{end}} disabled></td>			
+			<td>
+				<div class="col">
+					<p>
+						<input type="checkbox"{{if $project.Enabled}}checked{{end}} disabled >
+						<label  ></label>
+					</p>
+				</div>
+			</td>			
 			<td style="width:120px;">
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href='#projectModal' onclick='configureUpdateModal({{$project.ID}}, "{{$project.OperationCenter}}", {{$project.WorkOrder}}, "{{$project.Name}}", {{dateformat $project.StartDate "2006-01-02"}}, {{dateformat $project.EndDate "2006-01-02"}}, {{$project.Enabled}}, {{$project.LeaderID}}, {{$project.Cost}})'><i class="mdi-editor-mode-edit"></i></a>
 			  <a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick="$('#nameDelete').html('{{$project.Name}}');$('#projectID').val({{$project.ID}});" ><i class="mdi-action-delete"></i></a>
