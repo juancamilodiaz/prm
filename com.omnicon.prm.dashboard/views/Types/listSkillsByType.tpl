@@ -55,7 +55,7 @@
 		$("#skillId option:selected").text(pSkillId.split("-")[1]);
 		$("#skillId").attr("disabled", "disabled");
 		$("#typeValueSkill").val(pValue);
-		
+		$('select').material_select();
 		$("#modalTitleType").html("Update Skill to Type");
 	}
 	
@@ -85,7 +85,7 @@
 						<td>{{$typeSkill.Name}}</td>
 						<td>{{$typeSkill.Value}}</td>
 						<td>
-							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Update"  href="#loadSkillModal"  onclick="configureUpdateModal({{$typeSkill.SkillId}}-{{$typeSkill.Name}}',{{$typeSkill.Value}}')"><i class="mdi-editor-mode-edit"></i></a>	
+							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Update"  href="#loadSkillModal"  onclick="configureUpdateTypeModal('{{$typeSkill.SkillId}}-{{$typeSkill.Name}}',{{$typeSkill.Value}})"><i class="mdi-editor-mode-edit"></i></a>	
 							<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Unassign"  href="#confirmUnassignModal"  onclick="$('#nameDelete').html('{{$typeSkill.Name}}');$('#typeSkillId').val({{$typeSkill.ID}});" data-dismiss="modal"><i class="mdi-content-remove-circle"></i></a>	
 						</td>
 					</tr>

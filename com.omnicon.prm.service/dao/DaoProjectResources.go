@@ -2,7 +2,6 @@ package dao
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
@@ -34,10 +33,11 @@ func getProjectResourcesCollection() db.Collection {
 func GetAllProjectResources() []*DOMAIN.ProjectResources {
 	// Slice to keep all ProjectResources
 	var projectResources []*DOMAIN.ProjectResources
-
-	if getProjectResourcesCollection() != nil {
+	session := GetSession()
+	if session != nil {
 		// Add all ProjectResources in projectResources variable
-		err := getProjectResourcesCollection().Find().All(&projectResources)
+		err := session.Select("p.id", "project_id", "resource_id", "project_name", "resource_name", "start_date", "end_date", "hours", "lead", "task", "asignated_by", "r.name", "r.last_name", "deliverable", "requirements", "priority", "additional_comments").From("ProjectResources AS p").Join("Resource AS r").On("p.asignated_by = r.id").All(&projectResources)
+		//err := getProjectResourcesCollection().Find().All(&projectResources)
 		// Close session when ends the method
 		defer session.Close()
 		if err != nil {
@@ -267,11 +267,12 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 	// Slice to keep all resources
 	projectsResources := []*DOMAIN.ProjectResources{}
 	var stringResponse string
-	if getProjectResourcesCollection() != nil {
-		result := getProjectResourcesCollection().Find()
-
+	session := GetSession()
+	if session != nil {
+		//result := getProjectResourcesCollection().Find()
+		result := session.Select("p.id", "project_id", "resource_id", "project_name", "resource_name", "start_date", "end_date", "hours", "lead", "task", "asignated_by", "r.name", "r.last_name", "deliverable", "requirements", "priority", "additional_comments").From("ProjectResources AS p").Join("Resource AS r").On("p.asignated_by = r.id")
 		// Close session when ends the method
-		defer session.Close()
+		//defer session.Close()
 
 		var filters bytes.Buffer
 		if pProjectResourceFilters.ID != 0 {
@@ -343,16 +344,68 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 			filters.WriteString(strconv.FormatFloat(pProjectResourceFilters.Hours, 'f', -1, 64))
 		}
 
+		if pProjectResourceFilters.Task != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("task = '")
+			filters.WriteString(pProjectResourceFilters.Task)
+			filters.WriteString("'")
+		}
+
+		if pProjectResourceFilters.AsignatedBy != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("asignated_by = '")
+			filters.WriteString(pProjectResourceFilters.AsignatedBy)
+			filters.WriteString("'")
+		}
+
+		if pProjectResourceFilters.Deliverable != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("deliverable = '")
+			filters.WriteString(pProjectResourceFilters.Deliverable)
+			filters.WriteString("'")
+		}
+
+		if pProjectResourceFilters.Requirements != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("requirements = '")
+			filters.WriteString(pProjectResourceFilters.Requirements)
+			filters.WriteString("'")
+		}
+
+		if pProjectResourceFilters.Priority != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("priority = '")
+			filters.WriteString(pProjectResourceFilters.Priority)
+			filters.WriteString("'")
+		}
+
+		if pProjectResourceFilters.AdditionalComments != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("additional_comments = '")
+			filters.WriteString(pProjectResourceFilters.AdditionalComments)
+			filters.WriteString("'")
+		}
 		if filters.String() != "" {
 			err := result.Where(filters.String()).All(&projectsResources)
-
+			session.Close()
 			if err != nil {
 				log.Error(err)
 			}
 		}
-
 		stringResponse = filters.String()
-		fmt.Println("query->", stringResponse)
+		//fmt.Println("query->", stringResponse, result.Where(filters.String()).String())
 	}
 	return projectsResources, stringResponse
 }

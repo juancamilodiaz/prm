@@ -644,6 +644,119 @@ func GetProjects(pRequest *DOMAIN.GetProjectsRQ) *DOMAIN.GetProjectsRS {
 	return &response
 }
 
+func Contains(a []*DOMAIN.ProjectResources, x int) (bool, int) {
+	for index, n := range a {
+		if x == n.ProjectId {
+			return true, index
+		}
+	}
+	return false, 0
+}
+
+//BuildResourceResponse Build and return an Slice of Resource structs
+func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResources) []*DOMAIN.ProjectResources {
+
+	projectResourcesResponse := []*DOMAIN.ProjectResources{}
+
+	for _, element := range projectResources {
+
+		// ckeck if the resource is duplicated and takes the index
+		exists, index := Contains(projectResourcesResponse, element.ProjectId)
+		//validate it if the resource is duplicated , if it is duplicated
+		if !exists {
+			//Instance ProjectResources structures and TaskDetail
+			resourcestruct := &DOMAIN.ProjectResources{}
+			taskDetail := &DOMAIN.TaskDetail{}
+
+			//Assigns values to each attribute of the instantiated structure
+			resourcestruct.ID = element.ID
+			resourcestruct.ProjectId = element.ProjectId
+			resourcestruct.ResourceId = element.ResourceId
+			resourcestruct.ProjectName = element.ProjectName
+			resourcestruct.ResourceName = element.ResourceName
+			resourcestruct.StartDate = element.StartDate
+			resourcestruct.EndDate = element.EndDate
+			resourcestruct.Lead = element.Lead
+			resourcestruct.Hours = element.Hours
+			resourcestruct.Task = element.Task
+			resourcestruct.AsignatedBy = ""
+			resourcestruct.Deliverable = ""
+			resourcestruct.Requirements = ""
+			resourcestruct.Priority = ""
+			resourcestruct.AdditionalComments = ""
+			resourcestruct.AssignatedByName = ""
+			resourcestruct.AssignatedByLastName = ""
+			//resourcesToProjectsRS.TotalHours += resourcestruct.Hours
+			//resourcestruct.TotalHours += resourcestruct.Hours
+			//Assigns values to each attribute of the instantiated structure
+			taskDetail.StartDate = element.StartDate
+			taskDetail.EndDate = element.EndDate
+			taskDetail.Hours = element.Hours
+			taskDetail.Task = element.Task
+			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.Deliverable = element.Deliverable
+			taskDetail.Requirements = element.Requirements
+			taskDetail.Priority = element.Priority
+			taskDetail.AdditionalComments = element.AdditionalComments
+			taskDetail.AssignatedByName = element.AssignatedByName
+			taskDetail.AssignatedByLastName = element.AssignatedByLastName
+			//Add the structure to the slice of structures
+			resourcestruct.TaskDetail = append(resourcestruct.TaskDetail, taskDetail)
+
+			//Add the structure to the slice of structures included ResourceTypes
+			projectResourcesResponse = append(projectResourcesResponse, resourcestruct)
+
+			taskDetail = nil
+			resourcestruct = nil
+		} else {
+			//Instance ProjectResources structures and TaskDetail
+			resourcestruct := &DOMAIN.ProjectResources{}
+			//Instance taskDetail structure
+			taskDetail := &DOMAIN.TaskDetail{}
+
+			//Assigns values to each attribute of the instantiated structure
+			resourcestruct.ID = element.ID
+			resourcestruct.ProjectId = element.ProjectId
+			resourcestruct.ResourceId = element.ResourceId
+			resourcestruct.ProjectName = element.ProjectName
+			resourcestruct.ResourceName = element.ResourceName
+			resourcestruct.StartDate = element.StartDate
+			resourcestruct.EndDate = element.EndDate
+			resourcestruct.Lead = element.Lead
+			resourcestruct.Hours = element.Hours
+			resourcestruct.Task = element.Task
+			resourcestruct.AsignatedBy = ""
+			resourcestruct.Deliverable = ""
+			resourcestruct.Requirements = ""
+			resourcestruct.Priority = ""
+			resourcestruct.AdditionalComments = ""
+			resourcestruct.AssignatedByName = ""
+			resourcestruct.AssignatedByLastName = ""
+			//Assigns values to each attribute of the instantiated structure
+			taskDetail.StartDate = element.StartDate
+			taskDetail.EndDate = element.EndDate
+			taskDetail.Hours = element.Hours
+			taskDetail.Task = element.Task
+			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.Deliverable = element.Deliverable
+			taskDetail.Requirements = element.Requirements
+			taskDetail.Priority = element.Priority
+			taskDetail.AdditionalComments = element.AdditionalComments
+			taskDetail.AssignatedByName = element.AssignatedByName
+			taskDetail.AssignatedByLastName = element.AssignatedByLastName
+			projectResourcesResponse[index].Hours += element.Hours
+			//projectResourcesResponse[index].TotalHours += projectResourcesResponse[index].Hours
+
+			//Add the structure to the slice of structures included ResourceTypes
+			projectResourcesResponse = append(projectResourcesResponse, resourcestruct)
+			//Add the structure to the slice of structures
+			projectResourcesResponse[index].TaskDetail = append(projectResourcesResponse[index].TaskDetail, taskDetail)
+			taskDetail = nil
+		}
+	}
+	return projectResourcesResponse
+}
+
 func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.GetResourcesToProjectsRS {
 	timeResponse := time.Now()
 	response := DOMAIN.GetResourcesToProjectsRS{}
@@ -657,6 +770,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 
 	filters := util.MappingFiltersProjectResource(pRequest)
 	projectsResources, filterString := dao.GetProjectsResourcesByFilters(filters, pRequest.StartDate, pRequest.EndDate, pRequest.Lead)
+
 	//responseTime := time.Now().Sub(timeResponse)
 	//fmt.Println("GetProjectsResourcesByFilters time:", responseTime.String())
 
@@ -664,6 +778,14 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 		projectsResources = dao.GetAllProjectResources()
 	}
 
+	projectsResourcesResponse := BuildResourcesToProjectsResponse(projectsResources)
+	var tempHour float64
+	for _, element := range projectsResourcesResponse {
+		if element.TaskDetail != nil {
+			tempHour += element.Hours
+		}
+	}
+	response.TotalHours = 45 - tempHour
 	/*
 		requestProjects := DOMAIN.GetProjectsRQ{}
 		requestProjects.StartDate = pRequest.StartDate
@@ -813,7 +935,7 @@ func GetResourcesToProjects(pRequest *DOMAIN.GetResourcesToProjectsRQ) *DOMAIN.G
 	response.AvailBreakdownPerRange = availBreakdownPerRange
 	//
 
-	response.ResourcesToProjects = projectsResources
+	response.ResourcesToProjects = projectsResourcesResponse
 
 	// Set value epsilon
 	response.EpsilonValue = EpsilonValue

@@ -926,9 +926,22 @@ func (this *ProjectController) GetOwnAssignation() {
 				defer res.Body.Close()
 				message := new(domain.GetResourcesToProjectsRS)
 				json.NewDecoder(res.Body).Decode(&message)
+
+				if message.TotalHours > 0 {
+					this.Data["Avability"] = "Available"
+				} else {
+					this.Data["Avability"] = "Unavailable"
+				}
+
+				//fmt.Printf("%+v\n", &}message.ResourcesToProjects)
+
 				this.Data["ResourcesToProjects"] = message.ResourcesToProjects
+				this.Data["TotalHours"] = message.TotalHours
 				this.Data["ResourceId"] = input.ResourceId
 				this.Data["Title"] = input.ResourceName
+				this.Data["StartDate"] = input.StartDate
+				this.Data["EndDate"] = input.EndDate
+				//this.Data["TotalHours"]
 				if input.ResourceName == "" {
 					for _, assig := range message.ResourcesToProjects {
 						this.Data["Title"] = assig.ResourceName
