@@ -280,11 +280,11 @@
 			</div>    
 		</div>
 	
-		<div class="input-field col s12 m5 l5">
-			<label class="active"> Active </label> 
-			<div class=" col s12 m5 l5">
-					<input type="checkbox" id="projectActive"><br/>
-			</div>   
+		<div class="input-field col s12 m5 l5" style="bottom: 15px;">
+				<p>
+					<input id="projectActive" type="checkbox" /> 
+					<label for="projectActive" ><span>Active</span></label>
+				</p> 
 		</div>
 		<div class="input-field col s12 m5 l5">
 			<label class="active">  Leader </label> 

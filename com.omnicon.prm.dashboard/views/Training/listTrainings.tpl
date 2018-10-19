@@ -53,6 +53,7 @@
 		$("#modalTitle").html("Update Training");
 		$("#trainingCreate").css("display", "none");
 		$("#trainingUpdate").css("display", "inline-block");
+		$('select').material_select();
 	}
 
 	createTraining = function(){
@@ -171,7 +172,7 @@
 						<label  for="trainingName"  class="active">Name</label>
 					</div>	
 					<!-- Select -->
-					<div class="input-field col s12 m5 l5">
+					<div class="input-field col s12 m5 l5" id="typeInput">
 						<label  class= "active">Select Type</label>
 						<select id="typeValue">
 							<option id="">Type...</option>
@@ -182,7 +183,7 @@
 					</div>
 					<!-- Select2 -->
 
-					<div class="input-field col s12 m5 l5">
+					<div class="input-field col s12 m5 l5" id="skillInput">
 						<label  class= "active">Select Skill</label>
 						<select id="skillValue" style="width: 174px; border-radius: 8px;">
             	 <option id="">Skill...</option>
@@ -215,7 +216,7 @@
 			</div>
 			<div class="modal-footer">
 				<a onclick="deleteTraining()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
-        		<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 
