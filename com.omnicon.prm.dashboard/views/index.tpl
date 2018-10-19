@@ -175,7 +175,7 @@
 		}
 
         	
-	getAssignationsByResource = function(resourceID, resourceName){
+	getTasksByResource = function(resourceID, resourceName){
 		var settings = {
 			method: 'POST',
 			url: '/projects/resources/ownAssignation',
@@ -253,7 +253,7 @@
                                     </li>
                                     <li><a href="" ng-click="link('settings')" onclick="sendTitle($(this).html())"><i class="mdi-action-settings"></i> Settings</a>
                                     </li>
-                                    <li><a href=""  onclick="getAssignationsByResource({{.ResourceID }},'');" ><i class="fas fa-tasks"></i> My Tasks</a>
+                                    <li><a href=""  onclick="getTasksByResource({{.ResourceID }},'');" ><i class="fas fa-tasks"></i> My Tasks</a>
                                     </li>
                                     <li class="divider"></li>
                                     <li><a href='{{urlfor "LoginController.Logout"}}'><i class="mdi-hardware-keyboard-tab"></i> Logout</a>

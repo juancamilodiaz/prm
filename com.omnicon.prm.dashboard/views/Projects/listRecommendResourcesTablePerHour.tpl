@@ -28,9 +28,11 @@
 		   	}       
 		});
 		if (!$('#skillsActive').prop("checked")) {
-			$('#compare').attr('disabled', 'disabled');
+			$('#compare').addClass('disabled', 'disabled');
+			$("#compare").css("display", "none");
 		}else{
-			$('#compare').removeAttr('disabled', 'disabled');
+			$('#compare').removeClass('disabled', 'disabled');
+			$("#compare").css("display", "inline-block");
 		}		
 				
 		$('#availabilityTable tbody').on('click', 'td.details-control', function(){
@@ -46,16 +48,16 @@
             // This row is already open - close it
 			row.child.hide();
             tr.removeClass('shown');
-			$(pObjBody).children('i').addClass('fa-caret-square-down');
-			$(pObjBody).children('i').removeClass('fa-caret-square-right');
+			$(pObjBody).children('i').addClass('fa-caret-square-right');
+			$(pObjBody).children('i').removeClass('fa-caret-square-down');
 			
         }
         else {
             // Open this row
             row.child( format(pListOfRange) ).show();
             tr.addClass('shown');
-			$(pObjBody).children('i').addClass('fa-caret-square-right');
-			$(pObjBody).children('i').removeClass('fa-caret-square-down');
+			$(pObjBody).children('i').addClass('fa-caret-square-down');
+			$(pObjBody).children('i').removeClass('fa-caret-square-right');
         }
     }
 	
@@ -93,7 +95,7 @@
 								{{if ne $totalHours 0.0}}
 									<tr>
 										<td class="col-sm-9" style="background-position-x: 1%;font-size:11px;text-align:left background-color: aliceblue;" onclick="showDetails($(this),{{$resourceAvailabilityInfo.ListOfRange}})">
-											<i class="fas fa-caret-square-down" style="margin-right: 10px;"></i>
+											<i class="fas fa-caret-square-right" style="margin-right: 10px;"></i>
 											{{if gt $resourceSkillValue 3.0}}
 												<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
 											{{end}}
