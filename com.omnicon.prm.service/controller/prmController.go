@@ -415,3 +415,24 @@ func ProcessUpdateProductivityReport(pRequest *domain.ProductivityReportRQ) *dom
 func ProcessDeleteProductivityReport(pRequest *domain.ProductivityReportRQ) *domain.ProductivityReportRS {
 	return tool.DeleteProductivityReport(pRequest)
 }
+
+/**
+*	Function to submit changes in the planning table
+ */
+func ProcessSubmitChanges(pRequest *domain.PlanningRQ) *domain.UpdatePlanningRS {
+	return tool.SubmitChanges(pRequest)
+}
+
+/**
+*	Function to get the planning table
+ */
+func ProcessGetPlanning(pRequest *domain.GetPlanningRQ) *domain.PlanningRS {
+	return tool.GetPlanning(pRequest)
+}
+
+/**
+*	Function confirm the changes and pass the data from Planning to
+ */
+func ProcessConfirmPlanning() *domain.UpdatePlanningRS {
+	return tool.ConfirmPlanning()
+}

@@ -296,3 +296,20 @@ type UsageByWeek struct {
 	DEV   int
 	MOM   int
 }
+
+type Planning struct {
+	Id                 int       `db:"Id"`
+	Type               string    `db:"type_name"`
+	Engineer           string    `db:"Engineer"`
+	Activity           string    `db:"Activity"`
+	Deliverable        string    `db:"Deliverable"`
+	Requirements       string    `db:"Requirements"`
+	StartDate          time.Time `db:"StartDate"`
+	EndDate            time.Time `db:"EndDate"`
+	TimeAssigned       int       `db:"Time"`
+	Priority           string    `db:"Priority"`
+	Project            string    `db:"Project"`
+	AdditionalComments string    `db:"AdditionalComments"`
+	AssignedBy         string    `db:"AssignedBy"`
+	ResourceType       []string
+}
