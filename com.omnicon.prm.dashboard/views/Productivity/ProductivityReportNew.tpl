@@ -823,8 +823,8 @@
             <li>The resources will lose the reported times.</li>
        
          <div class="modal-footer" style="text-align:center;">
-           <a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
-			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+        	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
          </div>
       </div>
    </div>

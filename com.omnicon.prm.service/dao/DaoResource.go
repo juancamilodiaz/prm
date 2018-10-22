@@ -46,6 +46,28 @@ func GetAllResources() []*DOMAIN.Resource {
 }
 
 /**
+*	Name : GetAllResourcesJoinResourceTypes
+*	Return: []*DOMAIN.Resource
+*	Description: Get all resources in a resource table
+ */
+func GetAllResourcesJoinResourceTypes() []*DOMAIN.ResourceQuery {
+	// Slice to keep all resources
+	var resources []*DOMAIN.ResourceQuery
+	ses := GetSession()
+	if ses != nil {
+		// Add all resources in resources variable
+		err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").All(&resources)
+		//err := getResourceCollection().Find().All(&resources)
+		// Close session when ends the method
+		defer ses.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}
+	return resources
+}
+
+/**
 *	Name : GetResourceById
 *	Params: pId
 *	Return: *DOMAIN.Resource
@@ -192,12 +214,14 @@ func DeleteResource(pResourceId int) (int, error) {
 *	Return: []*DOMAIN.Resource
 *	Description: Get resources by filters in DB
  */
-func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([]*DOMAIN.Resource, string) {
+func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([]*DOMAIN.ResourceQuery, string) {
 	// Slice to keep all resources
-	resources := []*DOMAIN.Resource{}
+	resources := []*DOMAIN.ResourceQuery{}
 	var stringResponse string
 
 	if getResourceCollection() != nil {
+		session.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id")
+
 		result := getResourceCollection().Find()
 
 		// Close session when ends the method
@@ -258,5 +282,79 @@ func GetResourcesByFilters(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([
 		}
 		stringResponse = filters.String()
 	}
+	return resources, stringResponse
+}
+
+func GetResourcesByFiltersJoinResourceTypes(pResourceFilters *DOMAIN.Resource, pEnabled *bool) ([]*DOMAIN.ResourceQuery, string) {
+	// Slice to keep all resources
+	resources := []*DOMAIN.ResourceQuery{}
+	var stringResponse string
+	ses := GetSession()
+	if ses != nil {
+
+		result := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id")
+
+		//result := getResourceCollection().Find()
+
+		// Close session when ends the method
+		//defer session.Close()
+
+		var filters bytes.Buffer
+		if pResourceFilters.ID != 0 {
+			filters.WriteString("Resource.id = '")
+			filters.WriteString(strconv.Itoa(pResourceFilters.ID))
+			filters.WriteString("'")
+		}
+		if pResourceFilters.Name != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("name = '")
+			filters.WriteString(pResourceFilters.Name)
+			filters.WriteString("'")
+		}
+		if pResourceFilters.LastName != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("last_name = '")
+			filters.WriteString(pResourceFilters.LastName)
+			filters.WriteString("'")
+		}
+		if pResourceFilters.Email != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("email = '")
+			filters.WriteString(pResourceFilters.Email)
+			filters.WriteString("'")
+		}
+		if pResourceFilters.EngineerRange != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("engineer_range = '")
+			filters.WriteString(pResourceFilters.EngineerRange)
+			filters.WriteString("'")
+		}
+		if pEnabled != nil {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("enabled = '")
+			filters.WriteString(strconv.FormatBool(*pEnabled))
+			filters.WriteString("'")
+		}
+		if filters.String() != "" {
+			err := result.Where(filters.String()).All(&resources)
+			ses.Close()
+			if err != nil {
+				log.Error(err)
+			}
+		}
+		stringResponse = filters.String()
+
+	}
+
 	return resources, stringResponse
 }
