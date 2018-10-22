@@ -53,7 +53,27 @@ footer {
   line-height: 20px;
   margin-top: 11px;
 }
+.Unavailable{
+  color:red;
+  font-weight:bold;
+  font-size: 1.1rem;
+}
+.Available{
+  color:green;
+  font-weight:bold;
+  font-size: 1.1rem;
+}
+#checkboxProject{
+  position:relative;
+  visibility: visible;
+  left: 15px;
+}
+#checkboxResources{
+  position:relative;
+  visibility: visible;
+  left: 15px;
 
+}
 #content .container .row {
   margin-bottom: 0;
 }
@@ -1480,6 +1500,10 @@ tr.group:hover {
 
 .marginCard {
   margin-top: 50px !important;
+}
+
+.btn {
+  margin-right: 5px !important;
 }
 
 .formSimulate {

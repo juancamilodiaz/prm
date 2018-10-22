@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html>
 
-<head>
 {{if .IsGet}}
-  	<title>Status Projects</title>
-  	<meta charset="utf-8">
-  	<meta name="viewport" content="width=device-width, initial-scale=1">
-  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js">
-	</script>
+
 {{end}}
 	<script>
 		var week=0;
@@ -18,7 +8,7 @@
 		var options;
 		var chart;
 		
-		google.charts.load('current', {'packages':['gantt']});
+		/*google.charts.load('current', {'packages':['gantt']});
 	    google.charts.setOnLoadCallback(drawChart);
 		
 		function drawChart() {
@@ -51,7 +41,7 @@
 		
 		function repaint() {
 			chart.draw(data, options);
-		}
+		}*/
 		
 		$(document).ready(function(){
 			$('.modal-trigger').leanModal();
@@ -61,16 +51,11 @@
 			$('#buttonOption').css("display", "none");
 			$('#datePicker').css("display", "none");
 			setWeek(0);
-			$( window ).resize(function() {repaint();});
+			//$( window ).resize(function() {repaint();});
 			$('#viewProjects').DataTable({
 			"iDisplayLength": 20,
-			"bLengthChange": false,
-			"columns":[
-				null,
-				null,
-				{"searchable":false}
-			]
-		});
+			"bLengthChange": false
+			});
 		$('#viewResourcesPerProjectUnassign').DataTable({
 			"iDisplayLength": 20,
 			"bLengthChange": false,
@@ -113,9 +98,8 @@
 		  return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
 		}
 	</script>
- </head>
+}
 
-<body id="home">
 
 <div class="row">
 		<div class="col s12   marginCard">
@@ -159,13 +143,10 @@
 					</div>
 				</div>
 				
-				<table id="viewResourcesPerProjectUnassign"  class="display striped TableConfig " cellspacing="0" width="100%">
+				<table id="viewResourcesPerProjectUnassign"  class="display TableConfig " cellspacing="0" width="100%">
 				</table>
 			</div>														
 		</div>
 	</div>
 	
 	<div id="chart_div"></div>	
-
-</body>
-</html>

@@ -397,7 +397,7 @@
 	<div class="col s12   marginCard">
 		<div id="pry_add">
 			<h4 id="titlePag">Trainings</h4>
-			<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
+			<a id="refreshButton" class="btn-floating btn-large waves-effect waves-light blue  tooltipped" data-tooltip= "Refresh"  ><i class="mdi-navigation-refresh large"></i></a>
 			<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Create Resource Training"><i class="mdi-action-note-add large"></i></a>
 			<a class='btn-floating btn-large waves-effect waves-light blue tooltipped' data-position="top" data-tooltip="Download PDF"  id="download-pdf" onclick="downloadPDF()" ><i class="fas fa-file-pdf"></i></a>
 		</div>
@@ -756,7 +756,7 @@
 			</div>
 			<div class="modal-footer">
 				<a onclick="deleteTrainingResource()" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
-        		<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 

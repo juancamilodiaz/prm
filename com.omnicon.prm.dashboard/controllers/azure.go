@@ -110,7 +110,7 @@ func (this *AzureController) Callback() {
 	if err == nil {
 		this.Session = session
 		//fmt.Println("session", session.AccessToken)
-		fmt.Println("s.Email 1", session.Email)
+		//fmt.Println("s.Email 1", session.Email)
 		this.IsLogin = true
 		if session.Email == "" {
 			session.Email, err = provider.GetEmailAddress(session)
@@ -119,7 +119,7 @@ func (this *AzureController) Callback() {
 		}
 
 		if session.User == "" {
-			fmt.Println("s.User", session.User)
+			//fmt.Println("s.User", session.User)
 			session.User, err = provider.GetUserName(session)
 			if err != nil && err.Error() == "not implemented" {
 				err = nil
@@ -196,8 +196,8 @@ func PersonalInFo() {
 func (this *AzureController) Get() {
 	if session != nil {
 		//	fmt.Println("s.AccessToken", session.AccessToken)
-		fmt.Println("s.Email 3", session.Email)
-		fmt.Println("session", session)
+		//	fmt.Println("s.Email 3", session.Email)
+		//	fmt.Println("session", session)
 
 		flash := beego.NewFlash()
 		email := session.Email

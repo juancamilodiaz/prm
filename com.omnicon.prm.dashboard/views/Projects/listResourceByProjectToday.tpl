@@ -15,7 +15,8 @@
 			selectMonths: true,
 			selectYears: 15,
 			format: 'yyyy-mm-dd',
-			formatSubmit: 'yyyy-mm-dd'
+			formatSubmit: 'yyyy-mm-dd',
+			container: 'header'
 		});
 
 		MyProject.table = $('#viewResourcesPerProjectUnassign').DataTable({		
@@ -481,11 +482,11 @@ function setResourceToProjectExc(){
     <div class="modal-content">
         <h5>Assign dates to the resource</h5><br>   
         <div class="input-field col s12">
-			<label> Start Date </label>
+			<label class="active"> Start Date </label>
 			<input type="date" id="resourceStartDate" class="datepicker">
         </div>
         <div class="input-field col s12">
-        	<label> End Date </label> 
+        	<label class="active"> End Date </label> 
             <input type="date" id="resourceEndDate" class="datepicker">
         
         </div>

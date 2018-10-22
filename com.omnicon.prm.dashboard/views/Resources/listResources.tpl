@@ -19,7 +19,6 @@
 		});
 		$('#datePicker').css("display", "none");
 		$('#backButton').css("display", "none");
-		sendTitle("Resources");
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
@@ -31,33 +30,6 @@
 		$('#buttonOption').attr("href", "#resourceModal");
 		
 
-
-
-		
-		
-		$("#resourceEmail").keyup(function(){
-
-	        var email = $("#resourceEmail").val();
-	
-	        if(email != 0)
-	        {
-	            if(isValidEmailAddress(email))
-	            {
-	                $("#resourceEmail").css({
-	                    "border-color": "lightgreen"
-	                });
-	            } else {
-	                $("#resourceEmail").css({
-	                    "border-color": "crimson"
-	                });
-	            }
-	        } else {
-	            $("#resourceEmail").css({
-	                "border-color": "crimson"
-	            });         
-	        }
-	
-	    });
 	});
 
 	
@@ -133,9 +105,7 @@
 				"Enabled": $('#resourceActive').is(":checked"),
 				"VisaUS": $('#resourceVisaUS').val()
 			}
-			
 		}
-		console.log(settings);
 		$.ajax(settings).done(function (response) {
 			validationError(response);
 			reload('/resources', {});
@@ -229,7 +199,7 @@
 			<th>Options</th>
 		</tr>
 	</thead>
-<tbody>
+	<tbody>
 		{{$typesResource := .TypesResource}}
 	 	{{range $key, $resource := .Resources}}
 		<tr>
@@ -246,7 +216,14 @@
 			<td>{{$resource.Email}}</td>
 			<td>{{$resource.EngineerRange}}</td>
 			<td>{{if $resource.VisaUS}} {{$resource.VisaUS}} {{end}}</td>
-			<td><input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled></td>
+			<td>
+				<div class="col">
+					<p>
+						<input type="checkbox" {{if $resource.Enabled}}checked{{end}} disabled>
+						<label  ></label>
+					</p>
+				</div>	
+			</td>
 			<td>							
 				<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Edit"  href="#resourceModal"  onclick="configureUpdateModal({{$resource.ID}},'{{$resource.Name}}','{{$resource.LastName}}','{{$resource.Email}}','{{$resource.EngineerRange}}',{{$resource.Enabled}},{{$resource.VisaUS}})"><i class="mdi-editor-mode-edit"></i></a>
 				<a class='modal-trigger tooltipped' data-position="top" data-tooltip="Delete"  href='#confirmModal' onclick='$("#nameDelete").html("{{$resource.Name}} {{$resource.LastName}}");$("#resourceID").val({{$resource.ID}});'><i class="mdi-action-delete"></i></a>

@@ -68,6 +68,7 @@ type GetResourcesToProjectsRS struct {
 	ResourcesToProjects    []*ProjectResources
 	Projects               []*Project
 	Resources              []*Resource
+	TotalHours             float64
 	AvailBreakdown         map[int]map[string]float64
 	AvailBreakdownPerRange map[int]*ResourceAvailabilityInformation
 	EpsilonValue           float64
