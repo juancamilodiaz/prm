@@ -21,7 +21,7 @@ func (c *MainController) NestPrepare() {
 
 /*Index*/
 func (c *MainController) Get() {
-	fmt.Println("default.Get, c.IsLogin", c.IsLogin)
+	//fmt.Println("default.Get, c.IsLogin", c.IsLogin)
 
 	personalInformation, err := json.Marshal(session.PInfo)
 	profilePicture, err := json.Marshal(session.ProfPic)

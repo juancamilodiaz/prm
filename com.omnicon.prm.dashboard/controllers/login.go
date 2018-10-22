@@ -59,8 +59,8 @@ func (this *LoginController) Login() {
 	///oauth2/start
 	session := this.Session
 	if session != nil {
-		fmt.Println("session2", session.AccessToken)
-		fmt.Println("s.Email 4", session.Email)
+		//fmt.Println("session2", session.AccessToken)
+		//fmt.Println("s.Email 4", session.Email)
 		this.Provider.GetEmailAddress(session)
 		//this.TplName = "Projects/listResourceByProjectToday.tpl"
 		this.TplName = "Projects/ProductivityReportNew.tpl"

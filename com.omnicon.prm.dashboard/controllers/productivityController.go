@@ -31,7 +31,13 @@ func GetResourcesID(email string) (int, bool) {
 	if err == nil {
 		defer resResources.Body.Close()
 		if messageResources.Resources != nil {
-			return messageResources.Resources[0].ID, true
+			if len(messageResources.Resources) > 0 {
+				return messageResources.Resources[0].ID, true
+			} else {
+				return 0, true
+			}
+		} else {
+			return 0, false
 		}
 
 	}

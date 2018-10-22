@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -684,7 +683,7 @@ func (this *ProjectController) GetRecommendationResourcesByProject() {
 					this.Data["HoursByPerson"] = hoursNumber / resourceNumber
 					this.TplName = "Projects/listRecommendResourcesTablePerHour.tpl"
 				} else {
-					fmt.Println("------>", this.Data["AvailBreakdownPerRange"])
+					//fmt.Println("------>", this.Data["AvailBreakdownPerRange"])
 					this.Data["ProjectHours"] = projectDays * 8
 					this.TplName = "Projects/listRecommendResourcesTable.tpl"
 				}

@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-<html>
 
-<head>
+{{if .IsGet}}
 
+{{end}}
 	<script>
 		var week=0;
 		var data;
 		var options;
 		var chart;
 		
-		google.charts.load('current', {'packages':['gantt']});
+		/*google.charts.load('current', {'packages':['gantt']});
 	    google.charts.setOnLoadCallback(drawChart);
 		
 		function drawChart() {
@@ -42,7 +41,7 @@
 		
 		function repaint() {
 			chart.draw(data, options);
-		}
+		}*/
 		
 		$(document).ready(function(){
 			$('.modal-trigger').leanModal();
@@ -52,16 +51,11 @@
 			$('#buttonOption').css("display", "none");
 			$('#datePicker').css("display", "none");
 			setWeek(0);
-			$( window ).resize(function() {repaint();});
+			//$( window ).resize(function() {repaint();});
 			$('#viewProjects').DataTable({
 			"iDisplayLength": 20,
-			"bLengthChange": false,
-			"columns":[
-				null,
-				null,
-				{"searchable":false}
-			]
-		});
+			"bLengthChange": false
+			});
 		$('#viewResourcesPerProjectUnassign').DataTable({
 			"iDisplayLength": 20,
 			"bLengthChange": false,
@@ -104,9 +98,8 @@
 		  return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
 		}
 	</script>
- </head>
+}
 
-<body id="home">
 
 <div class="row">
 		<div class="col s12   marginCard">
@@ -150,13 +143,10 @@
 					</div>
 				</div>
 				
-				<table id="viewResourcesPerProjectUnassign"  class="display striped TableConfig " cellspacing="0" width="100%">
+				<table id="viewResourcesPerProjectUnassign"  class="display TableConfig " cellspacing="0" width="100%">
 				</table>
 			</div>														
 		</div>
 	</div>
 	
 	<div id="chart_div"></div>	
-
-</body>
-</html>
