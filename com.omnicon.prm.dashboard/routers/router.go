@@ -34,6 +34,7 @@ func init() {
 	beego.Router("/resources/setskill", &controllers.ResourceController{}, "post:SetSkillsToResource")
 	beego.Router("/resources/deleteskill", &controllers.ResourceController{}, "post:DeleteSkillsToResource")
 	beego.Router("/resources/types", &controllers.ResourceController{}, "post:GetTypesByResource")
+	beego.Router("/resources/allAssigments", &controllers.ResourceController{}, "post:ReadResourcePlanning")
 	beego.Router("/resources/types/unassign", &controllers.ResourceController{}, "post:DeleteTypesByResource")
 	beego.Router("/resources/settype", &controllers.ResourceController{}, "post:SetTypesToResource")
 	// Forecast Projects

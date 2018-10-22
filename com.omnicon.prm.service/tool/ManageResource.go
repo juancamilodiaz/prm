@@ -342,7 +342,7 @@ func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource
 			//Instance Resource structures and ResourceTypes
 			resourcestruct := &DOMAIN.Resource{}
 			resourceTypesCustom := &DOMAIN.ResourceTypesCustom{}
-
+			taskDetail := &DOMAIN.TaskDetail{}
 			//Assigns values ​​to each attribute of the instantiated structure
 			resourcestruct.ID = element.ID
 			resourcestruct.Name = element.Name
@@ -361,12 +361,26 @@ func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource
 			//Add the structure to the slice of structures
 			resourcestruct.ResourceType = append(resourcestruct.ResourceType, resourceTypesCustom)
 
+			taskDetail.ProjectName = element.ProjectName
+			taskDetail.StartDate = element.StartDate
+			taskDetail.EndDate = element.EndDate
+			taskDetail.Hours = element.HoursTask
+			taskDetail.Task = element.Task
+			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.Deliverable = element.Deliverable
+			taskDetail.Requirements = element.Requirements
+			taskDetail.Priority = element.Priority
+			taskDetail.AdditionalComments = element.AdditionalComments
+
+			resourcestruct.TaskDetail = append(resourcestruct.TaskDetail, taskDetail)
+
 			//Add the structure to the slice of structures included ResourceTypes
 			resourceResponse = append(resourceResponse, resourcestruct)
 
 			resourceTypesCustom = nil
 			resourcestruct = nil
 		} else {
+			taskDetail := &DOMAIN.TaskDetail{}
 			//Instance ResourceTypes structure
 			resourceTypesCustom := &DOMAIN.ResourceTypesCustom{}
 
@@ -377,6 +391,19 @@ func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource
 
 			//Add the structure to the slice of structures
 			resourceResponse[index].ResourceType = append(resourceResponse[index].ResourceType, resourceTypesCustom)
+
+			taskDetail.ProjectName = element.ProjectName
+			taskDetail.StartDate = element.StartDate
+			taskDetail.EndDate = element.EndDate
+			taskDetail.Hours = element.HoursTask
+			taskDetail.Task = element.Task
+			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.Deliverable = element.Deliverable
+			taskDetail.Requirements = element.Requirements
+			taskDetail.Priority = element.Priority
+			taskDetail.AdditionalComments = element.AdditionalComments
+
+			resourceResponse[index].TaskDetail = append(resourceResponse[index].TaskDetail, taskDetail)
 			resourceTypesCustom = nil
 		}
 	}
@@ -389,7 +416,6 @@ func GetResources(pRequest *DOMAIN.GetResourcesRQ) *DOMAIN.GetResourcesRS {
 	response := DOMAIN.GetResourcesRS{}
 	filters := util.MappingFiltersResource(pRequest)
 	resources, filterString := dao.GetResourcesByFiltersJoinResourceTypes(filters, pRequest.Enabled)
-
 	if len(resources) == 0 && filterString == "" {
 		resources = dao.GetAllResourcesJoinResourceTypes()
 	}

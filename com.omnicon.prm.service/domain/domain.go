@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type Resource struct {
 	ID            int     `db:"id"`
@@ -11,26 +14,40 @@ type Resource struct {
 	EngineerRange string  `db:"engineer_range"`
 	Enabled       bool    `db:"enabled"`
 	VisaUS        *string `db:"visa_us"`
+	TaskStartDate string
+	TaskEndDate   string
 	Skills        map[string]int
 	ResourceType  []*ResourceTypesCustom
+	TaskDetail    []*TaskDetail
 	Type          []*Type
 }
 
 type ResourceQuery struct {
-	ID            int     `db:"id"`
-	Name          string  `db:"name"`
-	LastName      string  `db:"last_name"`
-	Email         string  `db:"email"`
-	Photo         string  `db:"photo"`
-	EngineerRange string  `db:"engineer_range"`
-	Enabled       bool    `db:"enabled"`
-	VisaUS        *string `db:"visa_us"`
-	ResourceId    int     `db:"resource_id"`
-	TypeId        int     `db:"type_id"`
-	NameTypeR     string  `db:"type_name"`
-	Skills        map[string]int
-	ResourceType  []*ResourceTypesCustom
-	Type          []*Type
+	ID                 int           `db:"id"`
+	Name               string        `db:"name"`
+	LastName           string        `db:"last_name"`
+	Email              string        `db:"email"`
+	Photo              string        `db:"photo"`
+	EngineerRange      string        `db:"engineer_range"`
+	Enabled            bool          `db:"enabled"`
+	VisaUS             *string       `db:"visa_us"`
+	ResourceId         int           `db:"resource_id"`
+	TypeId             int           `db:"type_id"`
+	NameTypeR          string        `db:"type_name"`
+	Task               string        `db:"task"`
+	HoursTask          float64       `db:"hours"`
+	ProjectName        string        `db:"project_name"`
+	StartDate          time.Time     `db:"start_date"`
+	EndDate            time.Time     `db:"end_date"`
+	AsignatedBy        sql.NullInt64 `db:"asignated_by"`
+	Deliverable        string        `db:"deliverable"`
+	Requirements       string        `db:"requirements"`
+	Priority           string        `db:"priority"`
+	AdditionalComments string        `db:"additional_comments"`
+	Skills             map[string]int
+
+	ResourceType []*ResourceTypesCustom
+	Type         []*Type
 }
 
 type Project struct {
@@ -63,38 +80,39 @@ type ProjectTypes struct {
 }
 
 type ProjectResources struct {
-	ID                   int       `db:"id"`
-	ProjectId            int       `db:"project_id"`
-	ResourceId           int       `db:"resource_id"`
-	ProjectName          string    `db:"project_name"`
-	ResourceName         string    `db:"resource_name"`
-	StartDate            time.Time `db:"start_date"`
-	EndDate              time.Time `db:"end_date"`
-	Lead                 bool      `db:"lead"`
-	Hours                float64   `db:"hours"`
-	Task                 string    `db:"task"`
-	AsignatedBy          string    `db:"asignated_by"`
-	Deliverable          string    `db:"deliverable"`
-	Requirements         string    `db:"requirements"`
-	Priority             string    `db:"priority"`
-	AdditionalComments   string    `db:"additional_comments"`
-	AssignatedByName     string    `db:"name"`
-	AssignatedByLastName string    `db:"last_name"`
+	ID                   int           `db:"id"`
+	ProjectId            int           `db:"project_id"`
+	ResourceId           int           `db:"resource_id"`
+	ProjectName          string        `db:"project_name"`
+	ResourceName         string        `db:"resource_name"`
+	StartDate            time.Time     `db:"start_date"`
+	EndDate              time.Time     `db:"end_date"`
+	Lead                 bool          `db:"lead"`
+	Hours                float64       `db:"hours"`
+	Task                 string        `db:"task"`
+	AsignatedBy          sql.NullInt64 `db:"asignated_by"`
+	Deliverable          string        `db:"deliverable"`
+	Requirements         string        `db:"requirements"`
+	Priority             string        `db:"priority"`
+	AdditionalComments   string        `db:"additional_comments"`
+	AssignatedByName     string        `db:"name"`
+	AssignatedByLastName string        `db:"last_name"`
 	TaskDetail           []*TaskDetail
 }
 
 type TaskDetail struct {
-	StartDate            time.Time `db:"start_date"`
-	EndDate              time.Time `db:"end_date"`
-	Hours                float64   `db:"hours"`
-	Task                 string    `db:"task"`
-	AsignatedBy          string    `db:"asignated_by"`
-	Deliverable          string    `db:"deliverable"`
-	Requirements         string    `db:"requirements"`
-	Priority             string    `db:"priority"`
-	AdditionalComments   string    `db:"additional_comments"`
-	AssignatedByName     string    `db:"name"`
-	AssignatedByLastName string    `db:"last_name"`
+	ProjectName          string        `db:"project_name"`
+	StartDate            time.Time     `db:"start_date"`
+	EndDate              time.Time     `db:"end_date"`
+	Hours                float64       `db:"hours"`
+	Task                 string        `db:"task"`
+	AsignatedBy          sql.NullInt64 `db:"asignated_by"`
+	Deliverable          string        `db:"deliverable"`
+	Requirements         string        `db:"requirements"`
+	Priority             string        `db:"priority"`
+	AdditionalComments   string        `db:"additional_comments"`
+	AssignatedByName     string        `db:"name"`
+	AssignatedByLastName string        `db:"last_name"`
 }
 
 type ResourceSkills struct {

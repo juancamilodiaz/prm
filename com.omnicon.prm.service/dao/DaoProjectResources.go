@@ -353,14 +353,14 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 			filters.WriteString("'")
 		}
 
-		if pProjectResourceFilters.AsignatedBy != "" {
+		/*if pProjectResourceFilters.AsignatedBy.Valid {
 			if filters.String() != "" {
 				filters.WriteString(" and ")
 			}
 			filters.WriteString("asignated_by = '")
-			filters.WriteString(pProjectResourceFilters.AsignatedBy)
+			filters.WriteString(strconv.Itoa(pProjectResourceFilters.AsignatedBy.V))
 			filters.WriteString("'")
-		}
+		}*/
 
 		if pProjectResourceFilters.Deliverable != "" {
 			if filters.String() != "" {
