@@ -74,6 +74,9 @@ func SetUpHandlers() {
 	http.HandleFunc("/UpdateProductivityReport", updateProductivityReport)
 	http.HandleFunc("/DeleteProductivityReport", deleteProductivityReport)
 	http.HandleFunc("/GetProjectsByResource", getProjectsByResource)
+	http.HandleFunc("/GetPlanning", getPlanning)
+	http.HandleFunc("/SubmitChanges", submitChanges)
+	http.HandleFunc("/ConfirmChanges", ConfirmChanges)
 }
 
 /*
@@ -2058,6 +2061,105 @@ func getProjectsByResource(pResponse http.ResponseWriter, pRequest *http.Request
 	pResponse.Header().Add("Content-Type", "application/json")
 	pResponse.Write(value)
 
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to creates or edits a register an assignation in the planning
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func submitChanges(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("SubmitChanges")
+
+	message := new(domain.PlanningRQ)
+	accept := pRequest.Header.Get("Accept")
+
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+
+	log.Info("Process Submit Changes", message)
+	response := controller.ProcessSubmitChanges(message)
+
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to the get all the information in the planning table
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func getPlanning(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("GetPlanning")
+
+	message := new(domain.GetPlanningRQ)
+	accept := pRequest.Header.Get("Accept")
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+	log.Info("Process Get Planning", message)
+	response := controller.ProcessGetPlanning(message)
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
+
+	processTime := time.Now().Sub(startTime)
+	log.Info("Process Time:", processTime.String())
+}
+
+/*
+Description : Function to the get all the information in the planning table
+
+Params :
+      pResponse http.ResponseWriter :  Contain the response that will be sent to the user
+	  pRequest *http.Request :         Contain the user's request
+*/
+func ConfirmChanges(pResponse http.ResponseWriter, pRequest *http.Request) {
+	startTime := time.Now()
+	defer panics.CatchPanic("ConfirmChanges")
+	message := new(domain.GetPlanningRQ)
+	accept := pRequest.Header.Get("Accept")
+	var err error
+	if accept == "application/json" || strings.Contains(accept, "application/json") {
+		err = json.NewDecoder(pRequest.Body).Decode(&message)
+		if err != nil {
+			log.Error("Error in Unmarshal process", err)
+		}
+	}
+	log.Info("Process Confirm Changes Planning", message)
+	response := controller.ProcessConfirmPlanning()
+	if response != nil && response.Header != nil {
+		response.GetHeader().ResponseTime = util.Concatenate(response.GetHeader().ResponseTime)
+	}
+	value := marshalJson(accept, response)
+	pResponse.Header().Add("Content-Type", "application/json")
+	pResponse.Write(value)
 	processTime := time.Now().Sub(startTime)
 	log.Info("Process Time:", processTime.String())
 }
