@@ -2,7 +2,38 @@
 <script src="/static/js/chartjs/Chart.min.js"></script>
 <script src="/static/js/chartjs/Chart.PieceLabel.js"></script>
 <script>
+
 	$(document).ready(function () {
+
+		searchProductivityReport = function(pProjectID){
+			
+			$(".searchReport").hide();
+			$(".loadingIcon").show();
+		
+			var settings = {
+				method: 'POST',
+				url: '/productivity',
+				headers: {
+					'Content-Type': undefined
+				},
+				data: { 
+					"ProjectID": pProjectID
+				}
+			}
+			$.ajax(settings).done(function (response) {
+				$("#content").html(response);				
+				$("#projectValue option[id="+pProjectID+"]").attr("selected", "selected");
+				//$("#titleSearch").html($("#projectValue").val());	
+				//console.warn($("#projectValue").val());	
+				$("#titleSearch").html(" - "+$("#projectValue").val());
+				$("#main-content2").show();	
+				$(".progressInfo").show();
+				$(".searchReport").show();
+				$(".loadingIcon").hide();
+			});	
+				
+		}
+			
 		$('.tooltipped').tooltip();
 		$('.modal-trigger').leanModal();
 		$('select').material_select();
@@ -41,10 +72,12 @@
 		if ({{.ProjectID}} == "" || {{.ProjectID}} == "Select a project..."){
 			$('#buttonOption').css("display", "none");
 			//searchProductivityReport(361); //Temporal code, must be removed
+			searchProductivityReport($('#projectValue option:eq(1)').attr('id'));
+			
 		}
+		
 
 	});
-	
 	configureCreateModal = function () {
 	
 		$("#taskID").val(null);
@@ -135,36 +168,9 @@
 		searchProductivityReport(projectID);
 
 	});
+	
 
-	searchProductivityReport = function(pProjectID){
-		$(".searchReport").hide();
-		$(".loadingIcon").show();
-		var projectID = $('#projectValue option:selected').attr('id');
-		if (pProjectID != null){
-			projectID = pProjectID;
-		}		
-		var settings = {
-			method: 'POST',
-			url: '/productivity',
-			headers: {
-				'Content-Type': undefined
-			},
-			data: { 
-				"ProjectID": projectID
-			}
-		}
-		$.ajax(settings).done(function (response) {
-			$("#content").html(response);				
-			$("#projectValue option[id="+projectID+"]").attr("selected", "selected");
-			//$("#titleSearch").html($("#projectValue").val());	
-			//console.warn($("#projectValue").val());	
-			$("#titleSearch").html(" - "+$("#projectValue").val());
-			$("#main-content2").show();	
-			$(".progressInfo").show();
-			$(".searchReport").show();
-			$(".loadingIcon").hide();
-		});		
-	}
+	
 	
 	$(document).on('click','#manageReport',function(){
 		console.log($('#actualHours').val());
@@ -207,6 +213,9 @@
 	}
 	
 	createReport = function () {
+		console.log("task id es:" + $('#taskID').val());
+		console.log("resource id es "+ $('#resourceID').val());
+		console.log("report hours es "+$('#reportHours').val());
 		var settings = {
 			method: 'POST',
 			url: '/productivity/createreport',
@@ -299,6 +308,7 @@
 			validationError(response);
 			searchProductivityReport({{.ProjectID}});
 		});
+
 	}
 	
 	//donwload pdf from original canvas
@@ -408,7 +418,9 @@
 		
 		$('#objectPdf').attr('data', doc.output('datauristring'));
 		$('#showDocumentPDF').modal('show');
-	}  
+	}
+//
+//searchProductivityReport($('#projectValue option:eq(1)').attr('id')); 	 
 </script>
 <div class="containerProductivity">
 <h4 id="titlePag"> </h4><h4 id="titleSearch"></h4> 
@@ -486,7 +498,7 @@
 				</div>
 			</div>	
 		<div id="tableData"> 
-		   	<table  id="viewProductivity" class="display" cellspacing="0" width="90%" >
+		   	<table  id="viewProductivity" class="display centered" cellspacing="0" width="90%" >
 			    <thead>
 			    	<tr>
 			        	<th rowspan="2" style="text-align:center;">Task</th>
@@ -823,8 +835,9 @@
             <li>The resources will lose the reported times.</li>
        
          <div class="modal-footer" style="text-align:center;">
-        	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
 			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="deleteTask()" >Delete</a>
+        	<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			
          </div>
       </div>
    </div>
@@ -856,9 +869,10 @@
 			
          </div>
          <div class="modal-footer">
-			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			
             <a id="taskCreate" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="createTask()" >Create</a>
             <a id="taskUpdate" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="updateTask()" >Update</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
          </div>
       </div>
    </div>
@@ -878,8 +892,9 @@
             </div>	
         </div>
          <div class="modal-footer">
-			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			
             <a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="manageReport()" >Edit</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
          </div>
       </div>
 </div>
@@ -897,8 +912,9 @@
             </div>
          </div>
          <div class="modal-footer">
-			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
+			
 			<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" onclick="manageBillableReport()" >Edit</a>
+			<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">Cancel</a>
          </div>
       </div>
    </div>
