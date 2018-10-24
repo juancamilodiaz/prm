@@ -366,7 +366,7 @@ func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource
 			taskDetail.EndDate = element.EndDate
 			taskDetail.Hours = element.HoursTask
 			taskDetail.Task = element.Task
-			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.AssignatedBy = element.AssignatedBy
 			taskDetail.Deliverable = element.Deliverable
 			taskDetail.Requirements = element.Requirements
 			taskDetail.Priority = element.Priority
@@ -397,7 +397,7 @@ func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource
 			taskDetail.EndDate = element.EndDate
 			taskDetail.Hours = element.HoursTask
 			taskDetail.Task = element.Task
-			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.AssignatedBy = element.AssignatedBy
 			taskDetail.Deliverable = element.Deliverable
 			taskDetail.Requirements = element.Requirements
 			taskDetail.Priority = element.Priority
