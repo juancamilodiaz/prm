@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"database/sql"
 	"time"
 )
 
