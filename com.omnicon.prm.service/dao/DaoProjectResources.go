@@ -36,7 +36,7 @@ func GetAllProjectResources() []*DOMAIN.ProjectResources {
 	session := GetSession()
 	if session != nil {
 		// Add all ProjectResources in projectResources variable
-		err := session.Select("p.id", "project_id", "resource_id", "project_name", "resource_name", "start_date", "end_date", "hours", "lead", "task", "asignated_by", "r.name", "r.last_name", "deliverable", "requirements", "priority", "additional_comments").From("ProjectResources AS p").Join("Resource AS r").On("p.asignated_by = r.id").All(&projectResources)
+		err := session.Select("p.id", "project_id", "resource_id", "project_name", "resource_name", "start_date", "end_date", "hours", "lead", "task", "assignated_by", "r.name", "r.last_name", "deliverable", "requirements", "priority", "additional_comments").From("ProjectResources AS p").Join("Resource AS r").On("p.assignated_by = r.id").All(&projectResources)
 		//err := getProjectResourcesCollection().Find().All(&projectResources)
 		// Close session when ends the method
 		defer session.Close()
@@ -270,7 +270,7 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 	session := GetSession()
 	if session != nil {
 		//result := getProjectResourcesCollection().Find()
-		result := session.Select("p.id", "project_id", "resource_id", "project_name", "resource_name", "start_date", "end_date", "hours", "lead", "task", "asignated_by", "r.name", "r.last_name", "deliverable", "requirements", "priority", "additional_comments").From("ProjectResources AS p").Join("Resource AS r").On("p.asignated_by = r.id")
+		result := session.Select("p.id", "project_id", "resource_id", "project_name", "resource_name", "start_date", "end_date", "hours", "lead", "task", "assignated_by", "r.name", "r.last_name", "deliverable", "requirements", "priority", "additional_comments").From("ProjectResources AS p").Join("Resource AS r").On("p.assignated_by = r.id")
 		// Close session when ends the method
 		//defer session.Close()
 
@@ -352,15 +352,15 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 			filters.WriteString(pProjectResourceFilters.Task)
 			filters.WriteString("'")
 		}
-
-		/*if pProjectResourceFilters.AsignatedBy.Valid {
-			if filters.String() != "" {
-				filters.WriteString(" and ")
-			}
-			filters.WriteString("asignated_by = '")
-			filters.WriteString(strconv.Itoa(pProjectResourceFilters.AsignatedBy.V))
-			filters.WriteString("'")
-		}*/
+		/*
+			if pProjectResourceFilters.AssignatedBy != "" {
+				if filters.String() != "" {
+					filters.WriteString(" and ")
+				}
+				filters.WriteString("assignated_by = '")
+				filters.WriteString(pProjectResourceFilters.AssignatedBy)
+				filters.WriteString("'")
+			}*/
 
 		if pProjectResourceFilters.Deliverable != "" {
 			if filters.String() != "" {

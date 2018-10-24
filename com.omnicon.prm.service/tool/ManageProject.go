@@ -680,7 +680,7 @@ func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResource
 			resourcestruct.Lead = element.Lead
 			resourcestruct.Hours = element.Hours
 			resourcestruct.Task = element.Task
-			resourcestruct.AsignatedBy = sql.NullInt64{Int64: int64(0), Valid: true}
+			resourcestruct.AssignatedBy = sql.NullInt64{Int64: int64(0), Valid: true}
 			resourcestruct.Deliverable = ""
 			resourcestruct.Requirements = ""
 			resourcestruct.Priority = ""
@@ -694,7 +694,7 @@ func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResource
 			taskDetail.EndDate = element.EndDate
 			taskDetail.Hours = element.Hours
 			taskDetail.Task = element.Task
-			taskDetail.AsignatedBy = sql.NullInt64{Int64: int64(0), Valid: true}
+			taskDetail.AssignatedBy = sql.NullInt64{Int64: int64(0), Valid: true}
 			taskDetail.Deliverable = element.Deliverable
 			taskDetail.Requirements = element.Requirements
 			taskDetail.Priority = element.Priority
@@ -726,7 +726,7 @@ func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResource
 			resourcestruct.Lead = element.Lead
 			resourcestruct.Hours = element.Hours
 			resourcestruct.Task = element.Task
-			resourcestruct.AsignatedBy = sql.NullInt64{Int64: int64(0), Valid: true}
+			resourcestruct.AssignatedBy = sql.NullInt64{Int64: int64(0), Valid: true}
 			resourcestruct.Deliverable = ""
 			resourcestruct.Requirements = ""
 			resourcestruct.Priority = ""
@@ -738,7 +738,7 @@ func BuildResourcesToProjectsResponse(projectResources []*DOMAIN.ProjectResource
 			taskDetail.EndDate = element.EndDate
 			taskDetail.Hours = element.Hours
 			taskDetail.Task = element.Task
-			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.AssignatedBy = element.AssignatedBy
 			taskDetail.Deliverable = element.Deliverable
 			taskDetail.Requirements = element.Requirements
 			taskDetail.Priority = element.Priority

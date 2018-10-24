@@ -39,7 +39,7 @@ type ResourceQuery struct {
 	ProjectName        string        `db:"project_name"`
 	StartDate          time.Time     `db:"start_date"`
 	EndDate            time.Time     `db:"end_date"`
-	AsignatedBy        sql.NullInt64 `db:"asignated_by"`
+	AssignatedBy       sql.NullInt64 `db:"assignated_by"`
 	Deliverable        string        `db:"deliverable"`
 	Requirements       string        `db:"requirements"`
 	Priority           string        `db:"priority"`
@@ -90,7 +90,7 @@ type ProjectResources struct {
 	Lead                 bool          `db:"lead"`
 	Hours                float64       `db:"hours"`
 	Task                 string        `db:"task"`
-	AsignatedBy          sql.NullInt64 `db:"asignated_by"`
+	AssignatedBy         sql.NullInt64 `db:"assignated_by"`
 	Deliverable          string        `db:"deliverable"`
 	Requirements         string        `db:"requirements"`
 	Priority             string        `db:"priority"`
@@ -106,7 +106,7 @@ type TaskDetail struct {
 	EndDate              time.Time     `db:"end_date"`
 	Hours                float64       `db:"hours"`
 	Task                 string        `db:"task"`
-	AsignatedBy          sql.NullInt64 `db:"asignated_by"`
+	AssignatedBy         sql.NullInt64 `db:"assignated_by"`
 	Deliverable          string        `db:"deliverable"`
 	Requirements         string        `db:"requirements"`
 	Priority             string        `db:"priority"`

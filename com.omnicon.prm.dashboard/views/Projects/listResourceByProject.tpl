@@ -286,6 +286,7 @@
 	</tbody>
 </table>
 </div>
+	
 
 
 
@@ -490,8 +491,8 @@
 				Are you sure that you want to unassign <b id="nameDelete"></b> from <b>{{.Title}}</b> project?
 			</div>
 			<div class="modal-footer">
-				<a id="resourceUnassign"  onclick="unassignResource()" class="waves-effect waves-green btn-flat modal-action modal-close" >Yes</a>
-        		<a class="waves-effect waves-red btn-flat modal-action modal-close">No</a>
+				<a id="resourceUnassign"  onclick="unassignResource()" class="btn green  white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 
@@ -514,18 +515,16 @@
 		</div>
 	</div>
 -->
-
-	<div class="modal" id="showInfoResourceModal">
-		  <div class="modal-content">
-				<h5 id="modalShowTitle" class="modal-title">Resource Information</h5>
-				<div class="divider"></div> <br>
-			 </div>
-			 <div class="modal-body" id="resourceInfo">
-				<input type="hidden" id="showResourceID">				
-			 </div>
-			 <div class="modal-footer">
-				<a  type="button" class="waves-effect waves-green btn-flat modal-action modal-close" >OK</button>
-			 </div>
-		  </div>
-	   </div>
-	</div>
+			<div class="modal" id="showInfoResourceModal">
+				<div class="modal-content">
+						<h5 id="modalShowTitle" class="modal-title">Resource Information</h5>
+						<div class="divider"></div> <br>
+				</div>
+					<div class="modal-body" id="resourceInfo">
+						<input type="hidden" id="showResourceID">				
+					</div>
+					<div class="modal-footer">
+						<a  class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close" >OK</a>
+					</div>
+			</div>
+  

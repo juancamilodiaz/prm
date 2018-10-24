@@ -75,6 +75,8 @@
 				$("#mask").css("display","block");
 			}
 		}
+
+        
 		
 		function sendTitle(sectionName){
 			$('#titlePag').html(sectionName)
@@ -120,6 +122,9 @@
 			$('#projectEndDate').val(null);
 			$('#projectActive').prop('checked', false);	
 			$('#projectTypeSimulator').val(null);
+             setTimeout(function() {
+                searchProductivityReport($('#projectValue option:eq(1)').attr('id'));
+            }, 2000);
 		});
 		
         getProjectSummaries = function(){
@@ -173,7 +178,12 @@
 			  $('.modal-backdrop').remove();
 			});
 		}
-
+         function chargeProject() {
+             setTimeout(function() {
+                searchProductivityReport($('#projectValue option:eq(1)').attr('id'));
+            }, 2000);
+            
+        }
         	
 	getTasksByResource = function(resourceID, resourceName){
 		var settings = {
@@ -281,7 +291,7 @@
                             </div>
                         </div>
                     </li>
-                    <li class="bold"><a href="" ng-click="link('productivity')"  class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
+                    <li class="bold"><a href="" ng-click="link('productivity')" onclick="chargeProject()"  class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
                     </li>
                     <li class="bold"><a href="" ng-click="link('projectsForecast')" class="waves-effect waves-cyan"><i class="mdi-action-trending-up"></i> Forecast Projects</a>
                     </li>                    

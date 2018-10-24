@@ -116,7 +116,7 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 	resourceToDelete := dao.GetResourceById(pResource.ID)
 	if resourceToDelete != nil {
 
-		// Delete asignation to project
+		// Delete assignation to project
 		projectsResource := dao.GetProjectResourcesByResourceId(pResource.ID)
 		for _, project := range projectsResource {
 			_, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(project.ProjectId, project.ResourceId)
@@ -366,7 +366,7 @@ func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource
 			taskDetail.EndDate = element.EndDate
 			taskDetail.Hours = element.HoursTask
 			taskDetail.Task = element.Task
-			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.AssignatedBy = element.AssignatedBy
 			taskDetail.Deliverable = element.Deliverable
 			taskDetail.Requirements = element.Requirements
 			taskDetail.Priority = element.Priority
@@ -397,7 +397,7 @@ func BuildResourceResponse(resources []*DOMAIN.ResourceQuery) []*DOMAIN.Resource
 			taskDetail.EndDate = element.EndDate
 			taskDetail.Hours = element.HoursTask
 			taskDetail.Task = element.Task
-			taskDetail.AsignatedBy = element.AsignatedBy
+			taskDetail.AssignatedBy = element.AssignatedBy
 			taskDetail.Deliverable = element.Deliverable
 			taskDetail.Requirements = element.Requirements
 			taskDetail.Priority = element.Priority
