@@ -1200,12 +1200,14 @@ tr.group:hover {
   margin-bottom: 0px;
 }
 .profile-dropdown{
-  width: 140px !important;
+  width: 160px !important;
 }
 /*----------------------------------------
     icon page
 ------------------------------------------*/
-
+.dropDownProfile{
+  left: 80px !important;
+}
 .icon-demo {
   line-height: 50px;
 }

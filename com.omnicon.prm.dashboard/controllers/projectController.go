@@ -911,7 +911,7 @@ func (this *ProjectController) GetOwnAssignation() {
 			input.Enabled = true
 			input.StartDate = startDateSplitted[0]
 			input.EndDate = EndDateSplitted[0]
-			input.ResourceId = input.ResourceId
+			//input.ResourceId = input.ResourceId
 			err := this.ParseForm(&input)
 			if err != nil {
 				log.Error("[ParseInput]", input)

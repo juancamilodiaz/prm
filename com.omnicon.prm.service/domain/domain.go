@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type Resource struct {
 	ID            int     `db:"id"`
@@ -11,26 +14,40 @@ type Resource struct {
 	EngineerRange string  `db:"engineer_range"`
 	Enabled       bool    `db:"enabled"`
 	VisaUS        *string `db:"visa_us"`
+	TaskStartDate string
+	TaskEndDate   string
 	Skills        map[string]int
 	ResourceType  []*ResourceTypesCustom
+	TaskDetail    []*TaskDetail
 	Type          []*Type
 }
 
 type ResourceQuery struct {
-	ID            int     `db:"id"`
-	Name          string  `db:"name"`
-	LastName      string  `db:"last_name"`
-	Email         string  `db:"email"`
-	Photo         string  `db:"photo"`
-	EngineerRange string  `db:"engineer_range"`
-	Enabled       bool    `db:"enabled"`
-	VisaUS        *string `db:"visa_us"`
-	ResourceId    int     `db:"resource_id"`
-	TypeId        int     `db:"type_id"`
-	NameTypeR     string  `db:"type_name"`
-	Skills        map[string]int
-	ResourceType  []*ResourceTypesCustom
-	Type          []*Type
+	ID                 int           `db:"id"`
+	Name               string        `db:"name"`
+	LastName           string        `db:"last_name"`
+	Email              string        `db:"email"`
+	Photo              string        `db:"photo"`
+	EngineerRange      string        `db:"engineer_range"`
+	Enabled            bool          `db:"enabled"`
+	VisaUS             *string       `db:"visa_us"`
+	ResourceId         int           `db:"resource_id"`
+	TypeId             int           `db:"type_id"`
+	NameTypeR          string        `db:"type_name"`
+	Task               string        `db:"task"`
+	HoursTask          float64       `db:"hours"`
+	ProjectName        string        `db:"project_name"`
+	StartDate          time.Time     `db:"start_date"`
+	EndDate            time.Time     `db:"end_date"`
+	AsignatedBy        sql.NullInt64 `db:"asignated_by"`
+	Deliverable        string        `db:"deliverable"`
+	Requirements       string        `db:"requirements"`
+	Priority           string        `db:"priority"`
+	AdditionalComments string        `db:"additional_comments"`
+	Skills             map[string]int
+
+	ResourceType []*ResourceTypesCustom
+	Type         []*Type
 }
 
 type Project struct {

@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/astaxie/beego"
+	"github.com/jinzhu/now"
 	"prm/com.omnicon.prm.service/domain"
 	"prm/com.omnicon.prm.service/log"
 )
@@ -32,6 +34,53 @@ func (this *ResourceController) ListResources() {
 
 		if level <= du {
 			operation := "GetResources"
+
+			res, err := PostData(operation, nil)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesRS)
+				json.NewDecoder(res.Body).Decode(&message)
+
+				this.Data["Resources"] = message.Resources
+
+				mapTypePerResource := make(map[int]map[int]string)
+
+				for _, resource := range message.Resources {
+					mapOfTypes := make(map[int]string)
+					for _, resourceType := range resource.ResourceType {
+						mapOfTypes[resourceType.TypeId] = resourceType.Name
+					}
+					mapTypePerResource[resource.ID] = mapOfTypes
+				}
+
+				this.Data["TypesResource"] = mapTypePerResource
+				if this.GetString("Template") == "select" {
+					this.TplName = "Projects/listResourceToDropDown.tpl"
+				} else {
+					this.TplName = "Resources/listResources.tpl"
+				}
+			} else {
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
+	}
+}
+
+func (this *ResourceController) ListTaskByResource() {
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
+
+		if level <= du {
+			operation := "GetTaskByResources"
 
 			res, err := PostData(operation, nil)
 
@@ -167,6 +216,58 @@ func (this *ResourceController) ReadResource() {
 	}
 }
 
+func (this *ResourceController) ReadResourcePlanning() {
+	if session != nil {
+		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
+
+		if level <= du {
+			operation := "GetResources"
+
+			input := domain.GetResourcesRQ{}
+			err := this.ParseForm(&input)
+
+			StartDate := now.BeginningOfWeek().String()
+			startDateSplitted := strings.Split(StartDate, " ")
+
+			EndDate := now.EndOfWeek().String()
+			EndDateSplitted := strings.Split(EndDate, " ")
+
+			input.TaskStartDate = startDateSplitted[0]
+			input.TaskEndDate = EndDateSplitted[0]
+
+			if err != nil {
+				log.Error("[ParseInput]", input)
+			}
+			log.Debugf("[ParseInput] Input: %+v \n", input)
+
+			inputBuffer := EncoderInput(input)
+
+			res, err := PostData(operation, inputBuffer)
+
+			if err == nil {
+				defer res.Body.Close()
+				message := new(domain.GetResourcesRS)
+				json.NewDecoder(res.Body).Decode(&message)
+				this.Data["StartDate"] = startDateSplitted[0]
+				this.Data["EndDate"] = EndDateSplitted[0]
+				this.Data["Resources"] = message.Resources
+				this.TplName = "Resources/viewAssigments.tpl"
+			} else {
+				log.Error(err.Error())
+				this.Data["Title"] = "The Service is down."
+				this.Data["Message"] = "Please contact with the system manager."
+				this.Data["Type"] = "Error"
+				this.TplName = "Common/message.tpl"
+			}
+			//body, _ := ioutil.ReadAll(res.Body)
+		} else if level > du {
+			this.Data["Title"] = "You don't have enough permissions."
+			this.Data["Message"] = "Please contact with the system manager."
+			this.Data["Type"] = "Error"
+			this.TplName = "Common/message.tpl"
+		}
+	}
+}
 func (this *ResourceController) UpdateResource() {
 	if session != nil {
 		level := authorizeLevel(session.Email, superusers, adminusers, planusers, trainerusers)
@@ -337,9 +438,9 @@ func (this *ResourceController) GetSkillsByResource() {
 				for skillName, _ := range mapSkillsAndValues {
 					listSkills = append(listSkills, skillName)
 				}
-			//	sort.Strings(listTypesName)
+				//	sort.Strings(listTypesName)
 				sort.Strings(listSkills)
-				
+
 				for index, _ := range listTypesName {
 					var listTemp []int
 

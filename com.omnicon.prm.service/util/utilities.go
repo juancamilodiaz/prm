@@ -334,6 +334,12 @@ func MappingFiltersResource(pRequest *domain.GetResourcesRQ) *domain.Resource {
 		if len(pRequest.Skills) > 0 {
 			filters.Skills = pRequest.Skills
 		}
+		if pRequest.TaskStartDate != "" {
+			filters.TaskStartDate = pRequest.TaskStartDate
+		}
+		if pRequest.TaskEndDate != "" {
+			filters.TaskEndDate = pRequest.TaskEndDate
+		}
 		return &filters
 	}
 	return nil
