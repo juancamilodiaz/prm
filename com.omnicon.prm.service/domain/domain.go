@@ -73,7 +73,7 @@ type ProjectResources struct {
 	Lead                 bool      `db:"lead"`
 	Hours                float64   `db:"hours"`
 	Task                 string    `db:"task"`
-	AsignatedBy          string    `db:"asignated_by"`
+	AssignatedBy          string    `db:"assignated_by"`
 	Deliverable          string    `db:"deliverable"`
 	Requirements         string    `db:"requirements"`
 	Priority             string    `db:"priority"`
@@ -88,7 +88,7 @@ type TaskDetail struct {
 	EndDate              time.Time `db:"end_date"`
 	Hours                float64   `db:"hours"`
 	Task                 string    `db:"task"`
-	AsignatedBy          string    `db:"asignated_by"`
+	AssignatedBy          string    `db:"assignated_by"`
 	Deliverable          string    `db:"deliverable"`
 	Requirements         string    `db:"requirements"`
 	Priority             string    `db:"priority"`

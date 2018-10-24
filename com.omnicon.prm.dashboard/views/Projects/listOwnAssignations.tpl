@@ -174,6 +174,6 @@
 				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].AssignatedByName+" " + d[index].AssignatedByLastName+'</td>'+					            
 	        	'</tr>';
 		}
-	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="centered highlight"><thead><tr><th>Activity</th><th>Deliverable</th><th>Requirements</th><th>Start Date</th><th>End Date</th><th>Time</th><th>Priority</th><th>Additional Comments</th><th>Asigned By</th></tr></thead>'+insert+'</table>';
+	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="centered highlight"><thead><tr><th>Activity</th><th>Deliverable</th><th>Requirements</th><th>Start Date</th><th>End Date</th><th>Time</th><th>Priority</th><th>Additional Comments</th><th>Assigned By</th></tr></thead>'+insert+'</table>';
 	}
 	</script>

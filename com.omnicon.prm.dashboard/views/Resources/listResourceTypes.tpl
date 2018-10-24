@@ -140,7 +140,7 @@
 			</div>
 			<div class="modal-footer">
 				<a id="resourceUnassign"  onclick="unassignResourceType($('#resourceIDToDelete').val(),$('#typeIDToDelete').val(),{{.Title}})" class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close" >Yes</a>
-        		<a class="btn green white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
+        		<a class="btn red white-text waves-effect waves-light btn-flat modal-action modal-close">No</a>
 			</div>
 </div>
 

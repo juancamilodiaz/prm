@@ -171,7 +171,7 @@
 		<div class="col s12 marginCard ">
 			<div id="pry_add">
 				<h4 id="titlePag"></h4>
-				<a id="backButton" class="btn-floating btn-large waves-effect waves-light blue modal-trigger tooltipped" data-tooltip= "Go To Projects"  ><i class="mdi-navigation-arrow-back large"></i></a>
+				<a id="backButton" class="btn-floating btn-large waves-effect waves-light blue  tooltipped" data-tooltip= "Go To Projects"  ><i class="mdi-navigation-arrow-back large"></i></a>
 				<a id="buttonOption" class="btn-floating btn-large waves-effect waves-light blue tooltipped" data-tooltip= "Save Project"><i class="mdi-action-note-add large"></i></a>
 			</div>
 
