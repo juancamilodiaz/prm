@@ -39,7 +39,7 @@ type ResourceQuery struct {
 	ProjectName        string        `db:"project_name"`
 	StartDate          time.Time     `db:"start_date"`
 	EndDate            time.Time     `db:"end_date"`
-	AsignatedBy        sql.NullInt64 `db:"asignated_by"`
+	AssignatedBy       sql.NullInt64 `db:"assignated_by"`
 	Deliverable        string        `db:"deliverable"`
 	Requirements       string        `db:"requirements"`
 	Priority           string        `db:"priority"`
@@ -80,38 +80,39 @@ type ProjectTypes struct {
 }
 
 type ProjectResources struct {
-	ID                   int       `db:"id"`
-	ProjectId            int       `db:"project_id"`
-	ResourceId           int       `db:"resource_id"`
-	ProjectName          string    `db:"project_name"`
-	ResourceName         string    `db:"resource_name"`
-	StartDate            time.Time `db:"start_date"`
-	EndDate              time.Time `db:"end_date"`
-	Lead                 bool      `db:"lead"`
-	Hours                float64   `db:"hours"`
-	Task                 string    `db:"task"`
-	AssignatedBy          string    `db:"assignated_by"`
-	Deliverable          string    `db:"deliverable"`
-	Requirements         string    `db:"requirements"`
-	Priority             string    `db:"priority"`
-	AdditionalComments   string    `db:"additional_comments"`
-	AssignatedByName     string    `db:"name"`
-	AssignatedByLastName string    `db:"last_name"`
+	ID                   int           `db:"id"`
+	ProjectId            int           `db:"project_id"`
+	ResourceId           int           `db:"resource_id"`
+	ProjectName          string        `db:"project_name"`
+	ResourceName         string        `db:"resource_name"`
+	StartDate            time.Time     `db:"start_date"`
+	EndDate              time.Time     `db:"end_date"`
+	Lead                 bool          `db:"lead"`
+	Hours                float64       `db:"hours"`
+	Task                 string        `db:"task"`
+	AssignatedBy         sql.NullInt64 `db:"assignated_by"`
+	Deliverable          string        `db:"deliverable"`
+	Requirements         string        `db:"requirements"`
+	Priority             string        `db:"priority"`
+	AdditionalComments   string        `db:"additional_comments"`
+	AssignatedByName     string        `db:"name"`
+	AssignatedByLastName string        `db:"last_name"`
 	TaskDetail           []*TaskDetail
 }
 
 type TaskDetail struct {
-	StartDate            time.Time `db:"start_date"`
-	EndDate              time.Time `db:"end_date"`
-	Hours                float64   `db:"hours"`
-	Task                 string    `db:"task"`
-	AssignatedBy          string    `db:"assignated_by"`
-	Deliverable          string    `db:"deliverable"`
-	Requirements         string    `db:"requirements"`
-	Priority             string    `db:"priority"`
-	AdditionalComments   string    `db:"additional_comments"`
-	AssignatedByName     string    `db:"name"`
-	AssignatedByLastName string    `db:"last_name"`
+	ProjectName          string        `db:"project_name"`
+	StartDate            time.Time     `db:"start_date"`
+	EndDate              time.Time     `db:"end_date"`
+	Hours                float64       `db:"hours"`
+	Task                 string        `db:"task"`
+	AssignatedBy         sql.NullInt64 `db:"assignated_by"`
+	Deliverable          string        `db:"deliverable"`
+	Requirements         string        `db:"requirements"`
+	Priority             string        `db:"priority"`
+	AdditionalComments   string        `db:"additional_comments"`
+	AssignatedByName     string        `db:"name"`
+	AssignatedByLastName string        `db:"last_name"`
 }
 
 type ResourceSkills struct {
