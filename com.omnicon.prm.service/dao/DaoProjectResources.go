@@ -352,15 +352,15 @@ func GetProjectsResourcesByFilters(pProjectResourceFilters *DOMAIN.ProjectResour
 			filters.WriteString(pProjectResourceFilters.Task)
 			filters.WriteString("'")
 		}
-
-		if pProjectResourceFilters.AssignatedBy != "" {
-			if filters.String() != "" {
-				filters.WriteString(" and ")
-			}
-			filters.WriteString("assignated_by = '")
-			filters.WriteString(pProjectResourceFilters.AssignatedBy)
-			filters.WriteString("'")
-		}
+		/*
+			if pProjectResourceFilters.AssignatedBy != "" {
+				if filters.String() != "" {
+					filters.WriteString(" and ")
+				}
+				filters.WriteString("assignated_by = '")
+				filters.WriteString(pProjectResourceFilters.AssignatedBy)
+				filters.WriteString("'")
+			}*/
 
 		if pProjectResourceFilters.Deliverable != "" {
 			if filters.String() != "" {

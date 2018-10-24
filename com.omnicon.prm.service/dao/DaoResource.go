@@ -59,7 +59,7 @@ func GetAllResourcesJoinResourceTypes() []*DOMAIN.ResourceQuery {
 		// Add all resources in resources variable
 		//err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").All(&resources)
 		//err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "ResourceTypes.resource_id", "type_id", "type_name", "task", "hours", "project_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").Join("ProjectResources").On("Resource.id = ProjectResources.resource_id").All(&resources)
-		err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "ResourceTypes.resource_id", "type_id", "type_name", "task", "start_date", "end_date", "hours", "project_name", "asignated_by", "deliverable", "requirements", "priority", "additional_comments").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").Join("ProjectResources").On("Resource.id = ProjectResources.resource_id").All(&resources)
+		err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "ResourceTypes.resource_id", "type_id", "type_name", "task", "start_date", "end_date", "hours", "project_name", "assignated_by", "deliverable", "requirements", "priority", "additional_comments").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").Join("ProjectResources").On("Resource.id = ProjectResources.resource_id").All(&resources)
 
 		//err := getResourceCollection().Find().All(&resources)
 		// Close session when ends the method
@@ -297,7 +297,7 @@ func GetResourcesByFiltersJoinResourceTypes(pResourceFilters *DOMAIN.Resource, p
 	ses := GetSession()
 	if ses != nil {
 
-		result := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "ResourceTypes.resource_id", "type_id", "type_name", "task", "start_date", "end_date", "hours", "project_name", "asignated_by", "deliverable", "requirements", "priority", "additional_comments").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").Join("ProjectResources").On("Resource.id = ProjectResources.resource_id")
+		result := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "ResourceTypes.resource_id", "type_id", "type_name", "task", "start_date", "end_date", "hours", "project_name", "assignated_by", "deliverable", "requirements", "priority", "additional_comments").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").Join("ProjectResources").On("Resource.id = ProjectResources.resource_id")
 
 		//result := getResourceCollection().Find()
 

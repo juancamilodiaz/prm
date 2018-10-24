@@ -116,7 +116,7 @@ func DeleteResource(pResource *DOMAIN.DeleteResourceRQ) *DOMAIN.DeleteResourceRS
 	resourceToDelete := dao.GetResourceById(pResource.ID)
 	if resourceToDelete != nil {
 
-		// Delete asignation to project
+		// Delete assignation to project
 		projectsResource := dao.GetProjectResourcesByResourceId(pResource.ID)
 		for _, project := range projectsResource {
 			_, err := dao.DeleteProjectResourcesByProjectIdAndResourceId(project.ProjectId, project.ResourceId)
