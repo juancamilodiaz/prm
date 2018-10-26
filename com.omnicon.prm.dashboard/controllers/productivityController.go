@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	//"fmt"
 	"net/http"
 	"strconv"
@@ -177,7 +176,7 @@ func (this *ProductivityController) ListProductivity() {
 						}
 					}
 					this.Data["Resources"] = resources
-					fmt.Println("resources--->", resources)
+					//fmt.Println("resources--->", resources)
 					this.Data["ResourcesNames"] = resourcesName
 					resourcesHours := []float64{}
 					var totalHoursExecutedProject float64

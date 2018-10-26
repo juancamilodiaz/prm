@@ -27,7 +27,9 @@ func CreateProductivityReport(pRequest *DOMAIN.ProductivityReportRQ) *DOMAIN.Pro
 	}
 
 	report := dao.GetProductivityReportByTaskIDAndResourceID(pRequest.TaskID, pRequest.ResourceID)
-	if report != nil {
+
+	//fmt.Println("%v: ", report)
+	if report != nil && len(report) > 0 {
 		message := "ProductivityReport already exist"
 		log.Error(message)
 		response.Message = message

@@ -23,6 +23,8 @@ type GetResourcesRQ struct {
 	Enabled       *bool
 	Skills        map[string]int
 	ResourceType  []*Type
+	TaskStartDate string
+	TaskEndDate   string
 }
 
 type SetResourceToProjectRQ struct {

@@ -75,6 +75,8 @@
 				$("#mask").css("display","block");
 			}
 		}
+
+        
 		
 		function sendTitle(sectionName){
 			$('#titlePag').html(sectionName)
@@ -120,6 +122,9 @@
 			$('#projectEndDate').val(null);
 			$('#projectActive').prop('checked', false);	
 			$('#projectTypeSimulator').val(null);
+             setTimeout(function() {
+                searchProductivityReport($('#projectValue option:eq(1)').attr('id'));
+            }, 2000);
 		});
 		
         getProjectSummaries = function(){
@@ -173,7 +178,12 @@
 			  $('.modal-backdrop').remove();
 			});
 		}
-
+         function chargeProject() {
+             setTimeout(function() {
+                searchProductivityReport($('#projectValue option:eq(1)').attr('id'));
+            }, 2000);
+            
+        }
         	
 	getTasksByResource = function(resourceID, resourceName){
 		var settings = {
@@ -191,6 +201,22 @@
 		  $("#content").html(response);
 		});
 	}
+	getAssigments = function(){
+		var settings = {
+			method: 'POST',
+			url: '/resources/allAssigments',
+			headers: {
+				'Content-Type': undefined
+			},
+			data: { 
+			}
+		}
+		$.ajax(settings).done(function (response) {
+		  $("#content").html(response);
+		});
+	}
+
+    
 
 	</script>
 
@@ -248,12 +274,14 @@
                                 </div>                                
                             <div class="col col s8 m8 l8">
                                 <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><i class="mdi-navigation-arrow-drop-down right"></i><span id="userName"></span><span id="lastName"></span></a>
-                                <ul id="profile-dropdown" class="dropdown-content profile-dropdown">
+                                <ul id="profile-dropdown" class="dropdown-content profile-dropdown dropDownProfile" >
                                     <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
                                     </li>
                                     <li><a href="" ng-click="link('settings')" onclick="sendTitle($(this).html())"><i class="mdi-action-settings"></i> Settings</a>
                                     </li>
                                     <li><a href=""  onclick="getTasksByResource({{.ResourceID }},'');" ><i class="fas fa-tasks"></i> My Tasks</a>
+                                    </li>
+                                    <li><a href=""  onclick="getAssigments();" ><i class="far fa-calendar-check"></i>Assignments</a>
                                     </li>
                                     <li class="divider"></li>
                                     <li><a href='{{urlfor "LoginController.Logout"}}'><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
@@ -263,7 +291,7 @@
                             </div>
                         </div>
                     </li>
-                    <li class="bold"><a href="" ng-click="link('productivity')"  class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
+                    <li class="bold"><a href="" ng-click="link('productivity')" onclick="chargeProject()"  class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
                     </li>
                     <li class="bold"><a href="" ng-click="link('projectsForecast')" class="waves-effect waves-cyan"><i class="mdi-action-trending-up"></i> Forecast Projects</a>
                     </li>                    

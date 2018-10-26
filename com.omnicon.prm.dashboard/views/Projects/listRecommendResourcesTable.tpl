@@ -154,15 +154,18 @@ text-align:left;
 												<i class="fas fa-caret-square-right" style="margin-right: 10px;"></i>
 												{{if gt $resourceSkillValue 3.0}}
 													<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
-												{{end}}
-												{{if and (le $resourceSkillValue 3.0) (gt $resourceSkillValue 2.0)}}
+										
+												{{else if and (le $resourceSkillValue 3.0) (gt $resourceSkillValue 2.0)}}
 													<img src="/static/img/skillUsers/user-yellow.png" class="pull-right"/>
-												{{end}}
-												{{if and (le $resourceSkillValue 2.0) (gt $resourceSkillValue 1.0)}}
+											
+												{{else if and (le $resourceSkillValue 2.0) (gt $resourceSkillValue 1.0)}}
 													<img src="/static/img/skillUsers/user-orange.png" class="pull-right"/>
-												{{end}}
-												{{if and (le $resourceSkillValue 1.0) (gt $resourceSkillValue 0.0)}}
+											
+												{{else if and (le $resourceSkillValue 1.0) (gt $resourceSkillValue 0.0)}}
 													<img src="/static/img/skillUsers/user-red.png" class="pull-right"/>
+											
+												{{else }}
+												<img src="/static/img/skillUsers/user-green.png" class="pull-right"/>
 												{{end}}
 												{{$resource.Name}} {{$resource.LastName}}
 											</td>

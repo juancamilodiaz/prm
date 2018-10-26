@@ -17,8 +17,12 @@
 			<input type="text" id="showResourceRank" value="{{$resource.EngineerRange}}" readonly>
 	</div>
 	<div class="input-field col s12 m5 l5">
-		   <label class="active"> Active </label> 
-			<input type="checkbox" id="showResourceActive" {{if $resource.Enabled}}checked{{end}} disabled><br/>
+		<p>
+		   
+			<input type="checkbox" id="showResourceActive" {{if $resource.Enabled}}checked{{end}} disabled>
+			<label class="active"> Active </label> 
+		</p>
+			<br/>
 		  
 	   </div>
 	</div>

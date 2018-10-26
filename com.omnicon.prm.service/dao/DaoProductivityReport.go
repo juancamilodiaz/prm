@@ -136,6 +136,7 @@ func GetProductivityReportByTaskIDAndResourceID(pTaskID, pResourceID int) []*DOM
 		res := getProductivityReportCollection().Find().Where("task_id = ?", pTaskID).And("resource_id = ?", pResourceID)
 		// Close session when ends the method
 		defer session.Close()
+
 		err := res.All(&productivityReport)
 		if err != nil {
 			log.Error(err)

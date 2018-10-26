@@ -18,7 +18,7 @@
 		$('#refreshButton').css("display", "inline-block");
 		$('#refreshButton').prop('onclick',null).off('click');
 		$('#refreshButton').click(function(){
-			reload('/projects/resources/ownAssignation',{
+			reload('/resources/allAssigments',{
 				"ResourceId": {{.ResourceId}}
 			});
 		});
@@ -32,14 +32,8 @@
 			formatSubmit: 'yyyy-mm-dd',
 			container: 'body'
 		});
-
         
-		$('#titlePag').html("My Tasks");
-
-
-
-
-
+		$('#titlePag').html("Assigments");
         
 	});
 	
@@ -68,33 +62,33 @@
 		<table id="viewResourceInProjects" class="display responsive-table" cellspacing="0" width="95%" >
 			<thead>
 				<tr>
-					<th>Project Name</th>
+					<th>Engineer</th>
+					<th>Engineer Range</th>
 					<th>Start Date</th>
 					<th>End Date</th>
-					<th>Hours</th>	
+					<th>Email</th>
 				</tr>
 			</thead>
 			<tbody>
 				{{$startDate := .StartDate}}
 				{{$endDate := .EndDate}}
 				{{$TotalHours := .TotalHours}}
-				{{range $key, $resourceToProject := .ResourcesToProjects}}
+				{{range $key, $resourcebyTask := .Resources}}
 				
-				{{ if ($resourceToProject.TaskDetail) }}
+				{{ if ($resourcebyTask.TaskDetail) }}
 				<tr>
 					</div>
-					<td style="background-position-x: 1%;text-align: -webkit-center;margin:0 0 0px;" onclick="showDetail($(this), {{$resourceToProject.TaskDetail}})"><span class="fas fa-caret-square-right" style="margin-top: 5px;float:left;"></span>{{$resourceToProject.ProjectName}}</td>
+					<td style="text-align:center;" onclick="showDetail($(this), {{$resourcebyTask.TaskDetail}})"><span class="fas fa-caret-square-right" style="margin-top: 5px;float:left;"></span>{{ $resourcebyTask.Name}} {{ $resourcebyTask.LastName}}</td>
+					<td>{{ $resourcebyTask.EngineerRange }}</td>
 					<td>{{ $startDate}}</td>
 					<td>{{ $endDate }}</td>
-					<td>{{$resourceToProject.Hours}}</td>
-
+					<td>{{ $resourcebyTask.Email }}</td>
 				</tr>
 					{{end}}
 					{{end}}
 			</tbody>
 			<tr>
-					<td colspan="3" class="{{.Avability}}">{{.Avability}}</td>
-					<td  class="{{.Avability}}">{{.TotalHours}}</td>
+					
 				</tr>	
 		</table>
 	</div>
@@ -163,7 +157,9 @@
 	    // `d` is the original data object for the row
 		var insert = '';
 		for (index = 0; index < d.length; index++) {
-			insert += '<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].Task+'</td>'+
+			
+			insert += '<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].ProjectName+'</td>'+
+				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].Task+'</td>'+
 				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].Deliverable+'</td>'+
 	            '<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].Requirements+'</td>'+
 				'<td class="col-sm-1" style="font-size:12px;text-align: -webkit-center;">'+d[index].StartDate.substring(0, 10)+'</td>'+	            
@@ -174,6 +170,6 @@
 				'<td class="col-sm-2" style="font-size:12px;text-align: -webkit-center;">'+d[index].AssignatedByName+" " + d[index].AssignatedByLastName+'</td>'+					            
 	        	'</tr>';
 		}
-	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="centered highlight"><thead><tr><th>Activity</th><th>Deliverable</th><th>Requirements</th><th>Start Date</th><th>End Date</th><th>Time</th><th>Priority</th><th>Additional Comments</th><th>Assigned By</th></tr></thead>'+insert+'</table>';
+	    return '<table border="0" style="width: 100%;margin-left: 6px;" class="centered highlight"><thead><tr><th>Project Name</th><th>Activity</th><th>Deliverable</th><th>Requirements</th><th>Start Date</th><th>End Date</th><th>Time</th><th>Priority</th><th>Additional Comments</th><th>Asigned By</th></tr></thead>'+insert+'</table>';
 	}
 	</script>

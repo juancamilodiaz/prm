@@ -2,6 +2,7 @@ package dao
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 
 	DOMAIN "prm/com.omnicon.prm.service/domain"
@@ -56,11 +57,15 @@ func GetAllResourcesJoinResourceTypes() []*DOMAIN.ResourceQuery {
 	ses := GetSession()
 	if ses != nil {
 		// Add all resources in resources variable
-		err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").All(&resources)
+		//err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").All(&resources)
+		//err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "ResourceTypes.resource_id", "type_id", "type_name", "task", "hours", "project_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").Join("ProjectResources").On("Resource.id = ProjectResources.resource_id").All(&resources)
+		err := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "ResourceTypes.resource_id", "type_id", "type_name", "task", "start_date", "end_date", "hours", "project_name", "assignated_by", "deliverable", "requirements", "priority", "additional_comments").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").Join("ProjectResources").On("Resource.id = ProjectResources.resource_id").All(&resources)
+
 		//err := getResourceCollection().Find().All(&resources)
 		// Close session when ends the method
 		defer ses.Close()
 		if err != nil {
+			fmt.Println("qqqqq-->", err)
 			log.Error(err)
 		}
 	}
@@ -292,13 +297,13 @@ func GetResourcesByFiltersJoinResourceTypes(pResourceFilters *DOMAIN.Resource, p
 	ses := GetSession()
 	if ses != nil {
 
-		result := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "resource_id", "type_id", "type_name").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id")
+		result := ses.Select("Resource.id", "name", "last_name", "email", "photo", "engineer_range", "enabled", "visa_us", "ResourceTypes.resource_id", "type_id", "type_name", "task", "start_date", "end_date", "hours", "project_name", "assignated_by", "deliverable", "requirements", "priority", "additional_comments").From("Resource").Join("ResourceTypes").On("Resource.id = ResourceTypes.resource_id").Join("ProjectResources").On("Resource.id = ProjectResources.resource_id")
 
 		//result := getResourceCollection().Find()
 
 		// Close session when ends the method
 		//defer session.Close()
-
+		//fmt.Println("%v", pResourceFilters)
 		var filters bytes.Buffer
 		if pResourceFilters.ID != 0 {
 			filters.WriteString("Resource.id = '")
@@ -329,6 +334,22 @@ func GetResourcesByFiltersJoinResourceTypes(pResourceFilters *DOMAIN.Resource, p
 			filters.WriteString(pResourceFilters.Email)
 			filters.WriteString("'")
 		}
+		if pResourceFilters.TaskStartDate != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("ProjectResources.start_date >= '")
+			filters.WriteString(pResourceFilters.TaskStartDate)
+			filters.WriteString("'")
+		}
+		if pResourceFilters.TaskEndDate != "" {
+			if filters.String() != "" {
+				filters.WriteString(" and ")
+			}
+			filters.WriteString("ProjectResources.end_date <= '")
+			filters.WriteString(pResourceFilters.TaskEndDate)
+			filters.WriteString("'")
+		}
 		if pResourceFilters.EngineerRange != "" {
 			if filters.String() != "" {
 				filters.WriteString(" and ")
@@ -347,12 +368,14 @@ func GetResourcesByFiltersJoinResourceTypes(pResourceFilters *DOMAIN.Resource, p
 		}
 		if filters.String() != "" {
 			err := result.Where(filters.String()).All(&resources)
+
 			ses.Close()
 			if err != nil {
 				log.Error(err)
 			}
 		}
 		stringResponse = filters.String()
+		fmt.Println("query resourcess--->", result.Where(filters.String()))
 
 	}
 
